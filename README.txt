@@ -13,3 +13,5 @@ Por simplicidade, empacotei fisicamente (packages) estas coisas por agregado.
 Como é óbvio, outras alternativas de empacotamento são aceitáveis e (se calhar) desejáveis.
 
 Também reconheço que podem ser introduzidas algumas melhorias interessantes com relativamente pouco esforço (mas de momento não tenho tempo).
+
+---
