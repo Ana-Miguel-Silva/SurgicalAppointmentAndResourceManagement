@@ -1,4 +1,4 @@
-
+## Projeto 24/25 
 Projeto exemplo/template em ASP.NET Core 5.0 API para demonstrar como usar/aplicar (alguns conceitos de) DDD nesta tecnologia e usando também Entity Framework.
 Adota um estilo arquitetural Onion.
 
