@@ -72,7 +72,7 @@ jobs:
       run: echo $env:Project_Path
 
     - name: Build the solution
-      run: dotnet build $env:Solution_Name -c $env:Configuration -p:Platform=x86|x64 --verbosity=d
+      run: dotnet build $env:Solution_Name
 
     - name: Build the solution
       run: pwsh -Command "dotnet build $env:Solution_Name -c $env:Configuration -p:Platform=x86|x64"
