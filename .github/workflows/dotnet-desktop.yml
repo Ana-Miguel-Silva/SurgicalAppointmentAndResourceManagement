@@ -57,7 +57,7 @@ jobs:
 
     env:
       Solution_Name: dddnetcore-1.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: SurgicalAppointmentAndResourceManagement\DDDNetCore.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Test_Project_Path: ./SurgicalAppointmentAndResourceManagement/DDDNetCore.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       Wap_Project_Directory: SurgicalAppointmentAndResourceManagement    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path:                 # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
@@ -70,6 +70,12 @@ jobs:
     
     - name: Log Project Path
       run: echo $env:Project_Path
+
+    - name: Build the solution
+      run: dotnet build $env:Solution_Name -c $env:Configuration -p:Platform=x86|x64 --verbosity=d
+
+    - name: Build the solution
+      run: pwsh -Command "dotnet build $env:Solution_Name -c $env:Configuration -p:Platform=x86|x64"
     
 
     # Install the .NET Core workload
@@ -88,7 +94,7 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild SurgicalAppointmentAndResourceManagement.sln /t:Restore /p:Configuration=$env:Configuration
+      run: msbuild dddnetcore-1.sln /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
 
@@ -118,3 +124,10 @@ jobs:
       with:
         name: MSIX Package
         path: ${{ env.Wap_Project_Directory }}\AppPackages
+
+    - name: Debug env variables
+      run: |
+        echo "Solution_Name: $env:Solution_Name"
+        echo "Test_Project_Path: $env:Test_Project_Path"
+        echo "Wap_Project_Directory: $env:Wap_Project_Directory"
+        echo "Wap_Project_Path: $env:Wap_Project_Path"
