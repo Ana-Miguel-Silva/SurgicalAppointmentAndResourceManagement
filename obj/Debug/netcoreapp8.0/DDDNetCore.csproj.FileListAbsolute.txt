@@ -56,3 +56,5 @@ C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\n
 C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\DDDNetCore.pdb
 C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\DDDNetCore.genruntimeconfig.cache
 C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\ref\DDDNetCore.dll
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\bin\Debug\netcoreapp8.0\package-lock.json
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\bin\Debug\netcoreapp8.0\package.json
