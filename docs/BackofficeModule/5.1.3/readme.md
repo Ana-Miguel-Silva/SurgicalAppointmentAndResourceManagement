@@ -1,17 +1,30 @@
-# US 5.1.2
+# US 5.1.3
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the patient interface. These functionalities are essential to allow patients to register in the application and then create a user profile, and book appointmens. 
 
 ## 2. Requirements
 
-**US 5.1.2** 
+**US 5.1.3** As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online.
 
 **Acceptance Criteria:** 
 
-- 
+- Patients can self-register using the external IAM system.
+
+- During registration, patients provide personal details (e.g., name, email, phone) and create a
+profile.
+
+- The system validates the email address by sending a verification email with a confirmation link.
+Patients cannot book appointments without completing the registration process.
+
+- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character
+
+- A patient must be unique in terms of `Medical Record Number`, `Email` and ‘Phone’.
+
+- Sensitive data (like medical history) must comply with GDPR, allowing patients
+to control their data access.
 
 **Customer Specifications and Clarifications:**
 
@@ -22,7 +35,8 @@ As part of the development of the software system, it is necessary to implement 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
 
 **Input and Output Data**
 
@@ -31,18 +45,21 @@ As part of the development of the software system, it is necessary to implement 
 * Typed data:
     * First Name
     * Last Name
-    * E-mail
+    * E-mail (Contact Information)
+    * Phone number (Contact Information)
+    * password
+    * Date of Birth    
+    * Allergies/Medical Conditions (optional)
+    * Emergency Contact
 
 
 * Selected data:
-    * User 
-    * Role
+    * Gender
+
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the registered patient
 
 ## 3. Analysis
 

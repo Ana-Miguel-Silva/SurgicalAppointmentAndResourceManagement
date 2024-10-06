@@ -7,22 +7,48 @@ As part of the development of the software system, it is necessary to implement 
 
 ## 2. Requirements
 
-**US 5.1.1** As Administrator, I want to be able to register, disable/enable, and list users of the backoffice
+**US 5.1.1** As an Admin, I want to register new backoffice users (e.g., doctors, nurses,
+technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions.
+
 
 **Acceptance Criteria:** 
 
-- 
+- Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal
+process, not via self-registration.
+
+- Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
+
+- Registered users receive a one-time setup link via email to set their password and activate their
+account.
+
+- The system enforces strong password requirements for security.
+
+- A confirmation email is sent to verify the user’s registration.
+
+- The user’s IAM record is linked to the respective user and staff/patient record
+in the backoffice data.
+
+- All users authenticate using the IAM.
+
+- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character
+
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question:** Can the user only be a staff member or patient, or can they be something else? 
 >
-> **Answer:** 
+>**Answer:** The users of the system are the administrators, nurses and doctors, as well as the patients (with limited functionality).
+
+
+> **Question:** Does the user have contact information, email and phone, both are mandatory?
+>
+>**Answer:** Yes.
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There are no dependencies to other US.
 
 **Input and Output Data**
 
@@ -32,17 +58,17 @@ As part of the development of the software system, it is necessary to implement 
     * First Name
     * Last Name
     * E-mail
+    * Phone number
+    * password
 
 
-* Selected data:
-    * User 
+* Selected data: 
     * Role
 
 
 **Output Data:**
 * Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+
 
 ## 3. Analysis
 
