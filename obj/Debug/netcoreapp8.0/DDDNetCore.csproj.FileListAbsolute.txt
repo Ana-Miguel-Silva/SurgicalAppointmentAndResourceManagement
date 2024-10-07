@@ -97,3 +97,11 @@ C:\Users\tiago\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\n
 C:\Users\tiago\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets\msbuild.buildTransitive.DDDNetCore.props
 C:\Users\tiago\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets.pack.json
 C:\Users\tiago\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\scopedcss\bundle\DDDNetCore.styles.css
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets.build.json
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets.development.json
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets\msbuild.DDDNetCore.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets\msbuild.build.DDDNetCore.props
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets\msbuild.buildMultiTargeting.DDDNetCore.props
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets\msbuild.buildTransitive.DDDNetCore.props
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\staticwebassets.pack.json
+C:\Users\avlis\IdeaProjects\SurgicalAppointmentAndResourceManagement\obj\Debug\netcoreapp8.0\scopedcss\bundle\DDDNetCore.styles.css
