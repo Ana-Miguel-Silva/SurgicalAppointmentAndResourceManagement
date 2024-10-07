@@ -56,7 +56,7 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: dddnetcore-1.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Solution_Name: dddnetcore.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: ./DDDNetCore.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       Wap_Project_Directory:  ./MyWpfApp.Package   # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path:  ./MyWpfApp.Package/MyWpfApp.Package.wapproj               # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
@@ -90,7 +90,7 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild dddnetcore-1.sln /t:Restore /p:Configuration=$env:Configuration
+      run: msbuild dddnetcore.sln /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
 

@@ -14,6 +14,9 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
+using DDDSample1.Domain.OperationRequests;
+using DDDSample1.Infrastructure.OperationRequests;
+
 
 namespace DDDSample1
 {
@@ -76,6 +79,9 @@ namespace DDDSample1
 
             services.AddTransient<IFamilyRepository,FamilyRepository>();
             services.AddTransient<FamilyService>();
+
+            services.AddTransient<IOperationRequestRepository,OperationRequestRepository>();
+            services.AddTransient<OperationRequestService>();
         }
     }
 }
