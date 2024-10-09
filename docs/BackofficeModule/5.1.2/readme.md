@@ -3,7 +3,9 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system.
+This is the first time this task has been assigned for development.
+
 
 ## 2. Requirements
 

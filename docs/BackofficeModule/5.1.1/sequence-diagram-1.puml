@@ -1,0 +1,21 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+'hide footbox
+actor "Admin" as AD
+'participant ":ListApplicationsByOpeningUI" as UI <<presentation>>
+'control ":ListApplicationsByOpeningController" as CTRL <<application>>
+'participant ":RepositoryFactory" as Fact <<factory>>
+'participant ":JobOpeningRepository" as OpeningRepo <<repository>>
+'participant ":JobApplicationRepository" as ApplicationRepo <<repository>>
+activate AD
+
+
+deactivate AD
+
+
+@enduml

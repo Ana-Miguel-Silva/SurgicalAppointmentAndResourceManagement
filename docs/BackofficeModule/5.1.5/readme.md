@@ -3,52 +3,60 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the patient interface. These functionalities are essential to allow patients to delete their account and all the data. 
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.5** 
+**US 5.1.5** As a Patient, I want to delete my account and all associated data, so that I can exercise my right to be forgotten as per GDPR.
 
 **Acceptance Criteria:** 
 
-- 
+- Patients can request to delete their account through the profile settings.
+
+- The system sends a confirmation email to the patient before proceeding with account deletion.
+
+- Upon confirmation, all personal data is permanently deleted from the system within the legally
+required time frame (e.g., 30 days).
+
+- Patients are notified once the deletion is complete, and the system logs the action for GDPR
+compliance.
+
+- Some anonymized data may be retained for legal or research purposes, but all identifiable
+information is erased.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+>**Question**: Is removing an operation type the same as deactivating it?
 >
-> **Answer:** 
+> **Answer**: Yes, deactivating makes the operation type unavailable for future use but retains historical data.
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
-* Selected data:
-    * User 
-    * Role
+    * Confirmation of the delete operation. 
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation.
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+>**Question**: What happens to patient data after the profile is deleted?
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+>**Answer**: Patient data must be retained for a legally mandated period before being anonymized or deleted.
+
+
+
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

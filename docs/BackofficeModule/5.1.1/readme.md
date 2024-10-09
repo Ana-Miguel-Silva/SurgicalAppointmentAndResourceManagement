@@ -4,6 +4,7 @@
 ## 1. Context
 
 As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
@@ -46,6 +47,23 @@ in the backoffice data.
 >**Answer:** Yes.
 
 
+>**Question:**  Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.". Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
+>
+>**Answer:** What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
+
+
+
+> **Question:** Can you clarify the username and email requirements?
+>
+>**Answer:**The username is the "official" email address of the user. for backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an easy configuration of the DNS domain (e.g., environment variable).
+>For patients, the username is the email address provided in the patient record and used as identity in the external IAM. for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That email address will be his username when he self-registers in the system
+
+
+
+>**Question**: What defines session inactivity?
+>
+> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
+
 **Dependencies/References:**
 
 * There are no dependencies to other US.
@@ -55,11 +73,8 @@ in the backoffice data.
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
     * E-mail
-    * Phone number
-    * password
+    * Username
 
 
 * Selected data: 
@@ -72,9 +87,9 @@ in the backoffice data.
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+>
+>
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

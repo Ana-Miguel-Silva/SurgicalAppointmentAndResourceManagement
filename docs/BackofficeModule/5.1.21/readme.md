@@ -3,11 +3,13 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to edit existing operation types, to update or correct information. 
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.21** 
+**US 5.1.21** As an Admin, I want to edit existing operation types, so that I can update or correct
+information about the procedure.
 
 **Acceptance Criteria:** 
 
@@ -15,14 +17,16 @@ As part of the development of the software system, it is necessary to implement 
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question:**Can you clarify? "Historical data is maintained, but new operation requests will use the updated operation type information."
 >
-> **Answer:** 
+> **Answer:** It means that if an operation type is changed we need to keep track of its changes. For instance,Operation Type "A" is defined as taking 30 minutes preparation, 1h surgery and 30 minutes cleaning with a team of 1 doctor with specialization X and one nurse with specialization Y some operations are requested, scheduled and performed based on this definition after sometime, the hospital changes its procedures and defines the operation type "A" as needing 30 min prep, 30 min. surgery and 30 min. cleaning, with a team of 3 doctors and one nurse.New operations will be requested, scheduled and performed using this new definition, however, we need to keep historical data, so that if the admin wants to know the details of an operation in the past, the system must show the operation type as it was defined at the time of the operation request.
+
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
 
 **Input and Output Data**
 

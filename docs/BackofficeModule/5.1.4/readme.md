@@ -3,52 +3,61 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the patient interface. These functionalities are essential to allow patients to update their profile in the system.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.4** 
+**US 5.1.4** As a Patient, I want to update my user profile, so that I can change my personal details and preferences.
+
 
 **Acceptance Criteria:** 
 
-- 
+- Patients can log in and update their profile details (e.g., name, contact information,
+preferences).
+
+- Changes to sensitive data, such as email, trigger an additional verification step (e.g.,
+confirmation email).
+
+- All profile updates are securely stored in the system.
+
+- The system logs all changes made to the patient's profile for audit purposes.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question**: Can patients update both their user and patient profile information?
 >
-> **Answer:** 
+> **Answer**: Patients can update contact information but not medical details. Changes must be verified and validated.
+
+
+> **Question:** what do preferences mean in the patient profile?
+>
+> **Answer:** Preferences are for now related to marketing consent or not by the patient, or other related GDPR preferences
+
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
+    * contact information (email, phone number)
 
-
-* Selected data:
-    * User 
-    * Role
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation.
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+>
+>
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

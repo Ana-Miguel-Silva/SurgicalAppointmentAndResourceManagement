@@ -3,52 +3,63 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the user interface. These functionalities are essential to allow on-authenticated users to log in to the system.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.6** 
+**US 5.1.6** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
+
 
 **Acceptance Criteria:** 
 
-- 
+- Backoffice users log in using their username and password.
+
+- Role-based access control ensures that users only have access to features appropriate to their
+role (e.g., doctors can manage appointments, admins can manage users and settings).
+
+- After five failed login attempts, the user account is temporarily locked, and a notification is
+sent to the admin.
+
+- Login sessions expire after a period of inactivity to ensure security.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question**: What defines session inactivity?
 >
-> **Answer:** 
+> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
     * E-mail
+    * Password
 
-
-* Selected data:
-    * User 
-    * Role
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the available features.
+
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+> **Question**: What defines session inactivity?
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect
+
+Therefore we implemented BLA BLA BLA ...
+
+
+
+
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

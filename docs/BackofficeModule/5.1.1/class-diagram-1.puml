@@ -1,0 +1,43 @@
+@startuml                                                                                                                                                                             @startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing true
+skinparam linetype polyline
+'skinparam linetype orto
+'left to right direction
+
+skinparam classAttributeIconSize 0
+
+class ListApplicationsByOpeningUI {
+    - showOpenings()
+    - showApplications()
+}
+class Controller {
+    + getJobOpenings(): List<JobOpening>
+    + getJobApplicationsByOpening(jobOpening): List<JobApplication>
+}
+
+
+class RepositoryFactory {
+    + jobOpenings(): Repository
+    + jobApplications(): JobApplicationRepository
+}
+
+class Repository {
+    + getJobOpenings(): List<JobOpening>
+}
+
+class JobOpening {
+
+}
+
+
+
+ListApplicationsByOpeningUI .> Controller
+Controller ..> RepositoryFactory : repositories
+RepositoryFactory -> RepositoryFactory : instance
+RepositoryFactory --> "1" Repository
+RepositoryFactory --> "1" JobApplicationRepository
+Repository "1" --> "*" JobOpening : jobOpening
+JobApplicationRepository "1" --> "*" JobApplication : jobApplication
+@enduml
