@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement functinality that allows administrators to edit existing Staff Profiles. This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
@@ -11,7 +11,10 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for and select a staff profile to edit.
+- Editable fields include contact information, availability slots, and specialization.
+- The system logs all profile changes, and any changes to contact information trigger a confirmation email to the staff member.
+- The edited data is updated in real-time across the system.
 
 **Customer Specifications and Clarifications:**
 
@@ -22,33 +25,28 @@ As part of the development of the software system, it is necessary to implement 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "XX:  XXXX, since it is necessary to be able to Sign Up as admin to edit a Staff Profile.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
+    * Availability Slots
+    * Contact Information
+        * E-mail
+        * Phone number
 
 
 * Selected data:
-    * User 
-    * Role
+    * Staff Profile
+    * Specialization
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the updated Staff Profile
 
 ## 3. Analysis
-
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)
