@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement functinality that allows administrators to deactivate a Staff Profile. This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
@@ -11,7 +11,9 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for and select a staff profile to deactivate.
+- Deactivating a staff profile removes them from the active roster, but their historical data (e.g., appointments) remains accessible.
+- The system confirms deactivation and records the action for audit purposes.
 
 **Customer Specifications and Clarifications:**
 
@@ -22,27 +24,18 @@ As part of the development of the software system, it is necessary to implement 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "XX:  XXXX, since it is necessary to be able to Sign Up as admin to deacitvate a Staff Profile.
 
 **Input and Output Data**
 
 **Input Data:**
 
-* Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
 * Selected data:
-    * User 
-    * Role
+    * Staff Profile 
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation.
 
 ## 3. Analysis
 

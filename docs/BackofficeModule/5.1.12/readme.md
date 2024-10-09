@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement functinality that allows administrators to create new Staff Profiles. This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
@@ -11,18 +11,29 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can input staff details such as first name, last name, contact information, and specialization.
+- A unique staff ID (License Number) is generated upon profile creation.
+- The system ensures that the staff's email and phone number are unique.
+- The profile is stored securely, and access is based on role-based permissions.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question:** How should the specialization be assigned to a staff? Should the admin write it like a first name? Or should the admin select the specialization?
 >
-> **Answer:** 
+> **Answer:** the system has a list of specializations. staff is assigned a specialization from that list
+
+> **Question:** Can a doctor haver more than one Expertise?
+>
+> **Answer:** no. consider only one specialization per doctor
+
+> **Question:** Are healthcare staff IDs unique across roles? 
+>
+> **Answer:** Yes, staff IDs are unique and not role-specific (e.g., a doctor and nurse can share the same ID format).
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "XX:  XXXX, since it is necessary to be able to Sign Up as admin to create a new Staff Profile.
 
 **Input and Output Data**
 
@@ -31,24 +42,23 @@ As part of the development of the software system, it is necessary to implement 
 * Typed data:
     * First Name
     * Last Name
-    * E-mail
+    * Contact Information
+        * E-mail
+        * Phone number
 
 
 * Selected data:
-    * User 
-    * Role
+    * Specialization
+
+* Generated data:
+    * License number
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the registered Staff Profile
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)
@@ -56,15 +66,15 @@ As part of the development of the software system, it is necessary to implement 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** E-mail, Staff
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** AddStaffProfileController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** 
 
-**Repository:**	UserRepository
+**Repository:**	StaffRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** 
 
 
 
