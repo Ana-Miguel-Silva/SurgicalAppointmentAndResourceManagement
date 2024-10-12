@@ -16,6 +16,7 @@ using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
+using System;
 
 
 namespace DDDSample1
@@ -32,14 +33,22 @@ namespace DDDSample1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DDDSample1DbContext>(opt =>
+            /*services.AddDbContext<DDDSample1DbContext>(opt =>
                 opt.UseInMemoryDatabase("DDDSample1DB")
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
-            ConfigureMyServices(services);
+            ConfigureMyServices(services);*/
+
+            services.AddDbContext<DDDSample1DbContext>(options =>
+                options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
+                    new MySqlServerVersion(new Version(8, 0, 0))
+                ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
             
+                        
 
             services.AddControllers().AddNewtonsoftJson();
+
+            ConfigureMyServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
