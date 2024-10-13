@@ -32,7 +32,9 @@ in the backoffice data.
 
 - All users authenticate using the IAM.
 
-- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character
+- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character.
+
+- Account locked if log in errror 5 times.
 
 
 **Customer Specifications and Clarifications:**
@@ -87,9 +89,11 @@ in the backoffice data.
 
 ## 3. Analysis
 
+>**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
 >
->
->
+> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
+
+
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

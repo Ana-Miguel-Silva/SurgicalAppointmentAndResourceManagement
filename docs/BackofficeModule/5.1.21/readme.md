@@ -13,7 +13,15 @@ information about the procedure.
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for and select an existing operation type to edit.
+
+- Editable fields include operation name, required staff by specialization, and estimated
+duration.
+
+- Changes are reflected in the system immediately for future operation requests.
+
+- Historical data is maintained, but new operation requests will use the updated operation type
+information.
 
 **Customer Specifications and Clarifications:**
 
@@ -21,6 +29,14 @@ information about the procedure.
 >
 > **Answer:** It means that if an operation type is changed we need to keep track of its changes. For instance,Operation Type "A" is defined as taking 30 minutes preparation, 1h surgery and 30 minutes cleaning with a team of 1 doctor with specialization X and one nurse with specialization Y some operations are requested, scheduled and performed based on this definition after sometime, the hospital changes its procedures and defines the operation type "A" as needing 30 min prep, 30 min. surgery and 30 min. cleaning, with a team of 3 doctors and one nurse.New operations will be requested, scheduled and performed using this new definition, however, we need to keep historical data, so that if the admin wants to know the details of an operation in the past, the system must show the operation type as it was defined at the time of the operation request.
 
+
+
+> **Question:** If the operation type already has a specialization associated, how can we have staff with different specializations?
+>What do you understand by specialization? Is it cardiology/orthopedics? Or anaesthesist/circulating/...
+>
+> **Answer:** The operation is mainly associated with one specialization, but for a specific operation it might require a team with multiple specializations.
+>Cardiology, orthopedics, anaesthesist are specializations that either doctors or nurses can have.
+>The circulating technician is a different type of medical professional. for now the system doesn't need to support technicians
 
 
 **Dependencies/References:**
@@ -33,20 +49,17 @@ backoffice system with appropriate permissions."
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
+    * Password
     * E-mail
 
 
 * Selected data:
-    * User 
-    * Role
+    * Operation 
+    * Operation Type
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the changed data.
 
 ## 3. Analysis
 
