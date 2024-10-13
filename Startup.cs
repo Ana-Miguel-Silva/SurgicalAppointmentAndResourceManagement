@@ -7,11 +7,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using DDDSample1.Infrastructure;
 using DDDSample1.Infrastructure.Categories;
+using DDDSample1.Infrastructure.Users;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.Families;
 using DDDSample1.Infrastructure.Shared;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
+using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
@@ -82,6 +84,9 @@ namespace DDDSample1
 
             services.AddTransient<ICategoryRepository,CategoryRepository>();
             services.AddTransient<CategoryService>();
+
+            services.AddTransient<IUserRepository,UserRepository>();
+            services.AddTransient<UserService>();
 
             services.AddTransient<IProductRepository,ProductRepository>();
             services.AddTransient<ProductService>();
