@@ -15,14 +15,14 @@ namespace DDDSample1.Domain.Patient
 
 
 
-        //public DateOfBirth DateOfBirth { get;  private set; }
+        public DateTime DateOfBirth { get;  private set; }
         //public MedicalsConditions MedicalsConditions{ get;  private set; }
         //public EmergencyContact EmergencyContact{ get;  private set; }
         //public AppointmentHistory AppointmentHistory{ get;  private set; }
 
 
 
-        /*public Patient(PatientId id, string firstName, string lastName, DateOfBirth dateOfBirth, 
+        /*public Patient(PatientId id, string firstName, string lastName, DateTime dateOfBirth, 
                    MedicalsConditions medicalsConditions, EmergencyContact emergencyContact, 
                    AppointmentHistory appointmentHistory)
     {
