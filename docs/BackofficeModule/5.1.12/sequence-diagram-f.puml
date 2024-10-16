@@ -1,0 +1,47 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Actor" as AD
+participant "Frontend" as FE <<component>>
+participant "Controller" as CTRL <<component>>
+participant "ApplicationService" as SERV <<component>>
+participant "Item" as DOM <<component>>
+participant "ItemRepository" as REPO <<component>>
+
+activate AD
+AD -> FE: access page
+activate FE
+FE -> CTRL: getCreateForm()
+activate CTRL
+CTRL --> FE: form
+deactivate CTRL
+FE --> AD: data input
+deactivate FE
+AD -> FE : info to create item
+activate FE
+FE -> CTRL: createItem(...)
+activate CTRL
+CTRL -> SERV: createItem(...)
+activate SERV
+SERV -> DOM**: create()
+SERV -> REPO: save(item)
+activate REPO
+REPO --> SERV: success
+deactivate REPO
+SERV --> CTRL: success
+deactivate SERV
+CTRL --> FE: success
+deactivate CTRL
+FE --> AD : success and data
+
+deactivate FE
+
+deactivate AD
+
+
+
+@enduml
