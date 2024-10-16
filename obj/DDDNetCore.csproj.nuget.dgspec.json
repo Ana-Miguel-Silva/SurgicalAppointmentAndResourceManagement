@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {}
+    "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
+    "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+        "projectUniqueName": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
         "projectName": "DDDNetCore",
-        "projectPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-        "packagesPath": "C:\\Users\\tiago\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
+        "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+        "packagesPath": "C:\\Users\\avlis\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\tiago\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

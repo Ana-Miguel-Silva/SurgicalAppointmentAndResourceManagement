@@ -10,6 +10,8 @@ namespace DDDSample1.Domain.Users
 
         public string email { get;  set; }
 
+         public string role { get;  set; }
+
 
     }
 }

@@ -19,7 +19,7 @@ namespace DDDSample1.Domain.Users
         {
             var list = await this._repo.GetAllAsync();
             
-            List<UserDto> listDto = list.ConvertAll<UserDto>(cat => new UserDto{Id = cat.Id.AsGuid(), email = cat.email, Username = cat.Username});
+            List<UserDto> listDto = list.ConvertAll<UserDto>(cat => new UserDto{Id = cat.Id.AsGuid(), email = cat.email.fullEmail, Username = cat.Username, role = cat.role.ToString()});
 
             return listDto;
         }
@@ -31,20 +31,26 @@ namespace DDDSample1.Domain.Users
             if(cat == null)
                 return null;
 
-            return new UserDto{Id = cat.Id.AsGuid(), email = cat.email, Username = cat.Username};
+            return new UserDto{Id = cat.Id.AsGuid(), email = cat.email.fullEmail, Username = cat.Username, role = cat.role.ToString()};
         }
 
+        
         public async Task<UserDto> AddAsync(CreatingUserDto dto)
         {
-            var User = new User(dto.email, dto.Username);
+            //var User = new User(dto.email.fullEmail, dto.Username, dto.role.ToString());
+            var username = string.IsNullOrEmpty(dto.Username) ? dto.email.GetUsername() : dto.Username;
+
+            var User = new User(dto.email.fullEmail, username, dto.role.ToString());
 
             await this._repo.AddAsync(User);
 
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(), email = User.email, Username = User.Username };
+            return new UserDto { Id = User.Id.AsGuid(), email = User.email.fullEmail, Username = User.Username, role = User.role.ToString() };
         }
 
+
+       
         public async Task<UserDto> UpdateAsync(UserDto dto)
         {
             var User = await this._repo.GetByIdAsync(new UserId(dto.Id)); 
@@ -57,7 +63,7 @@ namespace DDDSample1.Domain.Users
             
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(),  email = User.email, Username = User.Username };
+            return new UserDto { Id = User.Id.AsGuid(),  email = User.email.fullEmail, Username = User.Username, role = User.role.ToString()  };
         }
 
        
@@ -75,7 +81,7 @@ namespace DDDSample1.Domain.Users
             this._repo.Remove(User);
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(), email = User.email, Username = User.Username };
+            return new UserDto { Id = User.Id.AsGuid(), email = User.email.fullEmail, Username = User.Username, role = User.role.ToString() };
         }
     }
 }
