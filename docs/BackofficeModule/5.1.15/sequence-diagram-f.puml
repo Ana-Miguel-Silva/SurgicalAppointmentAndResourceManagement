@@ -1,0 +1,37 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Actor" as AD
+participant "Frontend" as FE <<component>>
+participant "Controller" as CTRL <<component>>
+participant "ApplicationService" as SERV <<component>>
+participant "ItemRepository" as REPO <<component>>
+
+activate AD
+AD -> FE: access page
+activate FE
+FE -> CTRL: getItems()
+activate CTRL
+CTRL -> SERV: getItems()
+activate SERV
+SERV -> REPO: getItems()
+activate REPO
+REPO --> SERV: itemsList
+deactivate REPO
+SERV --> CTRL: itemsList
+deactivate SERV
+CTRL --> FE: itemsDTOList
+deactivate CTRL
+FE --> AD : list of items
+
+deactivate FE
+
+deactivate AD
+
+
+
+@enduml

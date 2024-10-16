@@ -7,30 +7,30 @@ namespace DDDSample1.Domain.OperationRequests
     public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     {
 
-        public CategoryId PatientId { get;  private set; }
+        public CategoryId PatientId { get; private set; }
 
-        public CategoryId DoctorId { get;  private set; }
+        public CategoryId DoctorId { get; private set; }
 
-        public CategoryId OperationTypeId { get;  private set; }
+        public CategoryId OperationTypeId { get; private set; }
 
-        public DateTime Deadline { get;  private set; }        
+        public DateTime Deadline { get; private set; }
 
-        public string Priorirty { get;  private set; } //String, Class, Enum, ... ?
+        public string Priorirty { get; private set; }
 
-        public bool Active{ get;  private set; }
+        public bool Active { get; private set; }
 
         private OperationRequest()
         {
             this.Active = true;
         }
 
-        public OperationRequest(CategoryId patId, CategoryId docId,CategoryId opTypeId,DateTime deadline, string priorirty)
+        public OperationRequest(CategoryId patId, CategoryId docId, CategoryId opTypeId, DateTime deadline, string priorirty)
         {
 
             //verificar de operationType dá match com a especialização do doutor
             //verificar se data é valida
 
-            if (patId == null || docId == null || opTypeId == null || InPast(deadline))
+            if (patId == null || docId == null || opTypeId == null || deadline == null || priorirty == null)
                 throw new BusinessRuleValidationException("One of the operation request parameters was not valid");
 
             this.Id = new OperationRequestId(Guid.NewGuid());
@@ -80,16 +80,22 @@ namespace DDDSample1.Domain.OperationRequests
             if (!this.Active)
                 throw new BusinessRuleValidationException("Cannot change the deadline of an inactive operation request.");
 
-            if (InPast(newDeadline))
-                throw new BusinessRuleValidationException("The new deadline must be in the future.");
+            if (newDeadline == null)
+                throw new BusinessRuleValidationException("The new deadline must be valid.");
 
             this.Deadline = newDeadline;
         }
 
-        public Boolean InPast(DateTime date){
-            return date <= DateTime.Now;
-        }
+        public void ChangePriority(String priorirty)
+        {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the deadline of an inactive operation request.");
 
+            if (priorirty == null)
+                throw new BusinessRuleValidationException("The new priorirty must be valid.");
+
+            this.Priorirty = priorirty;
+        }
         public void MarkAsInative()
         {
             this.Active = false;

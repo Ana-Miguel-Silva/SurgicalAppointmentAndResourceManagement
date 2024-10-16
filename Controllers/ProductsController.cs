@@ -51,13 +51,13 @@ namespace DDDSample1.Controllers
 
                 return CreatedAtAction(nameof(GetGetById), new { id = prod.Id }, prod);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
-        
+
         // PUT: api/Products/5
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDto>> Update(Guid id, ProductDto dto)
@@ -70,16 +70,16 @@ namespace DDDSample1.Controllers
             try
             {
                 var prod = await _service.UpdateAsync(dto);
-                
+
                 if (prod == null)
                 {
                     return NotFound();
                 }
                 return Ok(prod);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
@@ -96,7 +96,7 @@ namespace DDDSample1.Controllers
 
             return Ok(prod);
         }
-        
+
         // DELETE: api/Products/5
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<ProductDto>> HardDelete(Guid id)
@@ -112,9 +112,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(prod);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

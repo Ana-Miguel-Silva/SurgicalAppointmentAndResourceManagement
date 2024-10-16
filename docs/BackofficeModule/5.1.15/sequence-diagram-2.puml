@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Actor" as AD
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+activate AD
+AD -> FE: access page
+activate FE
+FE -> BE: getItems()
+activate BE
+BE --> FE: itemsDTOList
+deactivate BE
+FE --> AD : list of items
+deactivate FE
+deactivate AD
+
+
+@enduml

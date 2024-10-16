@@ -1,0 +1,53 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Actor" as AD
+participant "Frontend" as FE <<component>>
+participant "Controller" as CTRL <<component>>
+participant "ItemService" as SERV <<component>>
+participant "ItemRepository" as REPO <<component>>
+
+activate AD
+AD -> FE: access page
+activate FE
+FE -> CTRL: getEditForm(ID)
+activate CTRL
+CTRL -> SERV: getInfo(ID)
+activate SERV
+SERV -> REPO: get(ID)
+activate REPO
+REPO --> SERV: Item
+deactivate REPO
+SERV --> CTRL: Item
+deactivate SERV
+CTRL --> FE: ItemDTO (?)
+deactivate CTRL
+FE --> AD: provide edit form
+deactivate FE
+AD -> FE : edit info of item
+activate FE
+FE -> CTRL: updateItem(...)
+activate CTRL
+CTRL -> SERV: updateItem(...)
+activate SERV
+SERV -> REPO: update(item)
+activate REPO
+REPO --> SERV: success
+deactivate REPO
+SERV --> CTRL: success
+deactivate SERV
+CTRL --> FE: success
+deactivate CTRL
+FE --> AD : success and data
+
+deactivate FE
+
+deactivate AD
+
+
+
+@enduml
