@@ -22,14 +22,14 @@ namespace DDDSample1.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<PatientDto>>> GetAll()
         {
             return await _service.GetAllAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetGetById(Guid id)
+        public async Task<ActionResult<PatientDto>> GetGetById(Guid id)
         {
             var prod = await _service.GetByIdAsync(new ProductId(id));
 
@@ -43,7 +43,7 @@ namespace DDDSample1.Controllers
 
         // POST: api/Products
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> Create(CreatingProductDto dto)
+        public async Task<ActionResult<PatientDto>> Create(CreatingProductDto dto)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace DDDSample1.Controllers
         
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductDto>> Update(Guid id, ProductDto dto)
+        public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
         {
             if (id != dto.Id)
             {
@@ -85,7 +85,7 @@ namespace DDDSample1.Controllers
 
         // Inactivate: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ProductDto>> SoftDelete(Guid id)
+        public async Task<ActionResult<PatientDto>> SoftDelete(Guid id)
         {
             var prod = await _service.InactivateAsync(new ProductId(id));
 
@@ -99,7 +99,7 @@ namespace DDDSample1.Controllers
         
         // DELETE: api/Products/5
         [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<ProductDto>> HardDelete(Guid id)
+        public async Task<ActionResult<PatientDto>> HardDelete(Guid id)
         {
             try
             {

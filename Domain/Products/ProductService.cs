@@ -19,17 +19,17 @@ namespace DDDSample1.Domain.Products
             this._repoCat = repoCategories;
         }
 
-        public async Task<List<ProductDto>> GetAllAsync()
+        public async Task<List<PatientDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
             
-            List<ProductDto> listDto = list.ConvertAll<ProductDto>(prod => 
+            List<PatientDto> listDto = list.ConvertAll<PatientDto>(prod => 
                 new ProductDto(prod.Id.AsGuid(),prod.Description,prod.CategoryId));
 
             return listDto;
         }
 
-        public async Task<ProductDto> GetByIdAsync(ProductId id)
+        public async Task<PatientDto> GetByIdAsync(ProductId id)
         {
             var prod = await this._repo.GetByIdAsync(id);
             
@@ -39,7 +39,7 @@ namespace DDDSample1.Domain.Products
             return new ProductDto(prod.Id.AsGuid(),prod.Description,prod.CategoryId);
         }
 
-        public async Task<ProductDto> AddAsync(CreatingProductDto dto)
+        public async Task<PatientDto> AddAsync(CreatingProductDto dto)
         {
             await checkCategoryIdAsync(dto.CategoryId);
             var product = new Product(dto.Description,dto.CategoryId);
@@ -51,7 +51,7 @@ namespace DDDSample1.Domain.Products
             return new ProductDto(product.Id.AsGuid(),product.Description,product.CategoryId);
         }
 
-        public async Task<ProductDto> UpdateAsync(ProductDto dto)
+        public async Task<PatientDto> UpdateAsync(PatientDto dto)
         {
             await checkCategoryIdAsync(dto.CategoryId);
             var product = await this._repo.GetByIdAsync(new ProductId(dto.Id)); 
@@ -68,7 +68,7 @@ namespace DDDSample1.Domain.Products
             return new ProductDto(product.Id.AsGuid(),product.Description,product.CategoryId);
         }
 
-        public async Task<ProductDto> InactivateAsync(ProductId id)
+        public async Task<PatientDto> InactivateAsync(ProductId id)
         {
             var product = await this._repo.GetByIdAsync(id); 
 
@@ -82,7 +82,7 @@ namespace DDDSample1.Domain.Products
             return new ProductDto(product.Id.AsGuid(),product.Description,product.CategoryId);
         }
 
-        public async Task<ProductDto> DeleteAsync(ProductId id)
+        public async Task<PatientDto> DeleteAsync(ProductId id)
         {
             var product = await this._repo.GetByIdAsync(id); 
 
