@@ -3095,16 +3095,11 @@
     ]
   },
   "packageFolders": {
-<<<<<<< HEAD
     "C:\\Users\\avlis\\.nuget\\packages\\": {}
-=======
-    "C:\\Users\\dmopm\\.nuget\\packages\\": {}
->>>>>>> 06e0e54cd5c0a071e82673bb506bb1cb4147dfb4
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
       "projectName": "DDDNetCore",
       "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
@@ -3113,16 +3108,6 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
-=======
-      "projectUniqueName": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-      "projectName": "DDDNetCore",
-      "projectPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-      "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\obj\\",
-      "projectStyle": "PackageReference",
-      "configFilePaths": [
-        "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
->>>>>>> 06e0e54cd5c0a071e82673bb506bb1cb4147dfb4
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3224,5 +3209,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

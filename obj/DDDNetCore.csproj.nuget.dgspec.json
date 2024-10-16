@@ -1,7 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
     "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {}
   },
   "projects": {
@@ -16,22 +15,6 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
-=======
-    "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {}
-  },
-  "projects": {
-    "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-        "projectName": "DDDNetCore",
-        "projectPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-        "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\obj\\",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
->>>>>>> 06e0e54cd5c0a071e82673bb506bb1cb4147dfb4
         ],
         "originalTargetFrameworks": [
           "net8.0"

@@ -14,3 +14,8 @@ obj/project.nuget.cache
 =======
 /.idea
 >>>>>>> 06e0e54cd5c0a071e82673bb506bb1cb4147dfb4
+bin/Debug/net8.0/DDDNetCore.dll
+bin/Debug/net8.0/DDDNetCore.exe
+bin/Debug/net8.0/DDDNetCore.pdb
+obj/DDDNetCore.csproj.nuget.dgspec.json
+obj/DDDNetCore.csproj.nuget.g.props
