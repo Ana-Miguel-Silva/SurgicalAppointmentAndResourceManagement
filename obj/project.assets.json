@@ -3095,19 +3095,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\tiago\\.nuget\\packages\\": {}
+    "C:\\Users\\dmopm\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
       "projectName": "DDDNetCore",
-      "projectPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-      "packagesPath": "C:\\Users\\tiago\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
+      "projectPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+      "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\tiago\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

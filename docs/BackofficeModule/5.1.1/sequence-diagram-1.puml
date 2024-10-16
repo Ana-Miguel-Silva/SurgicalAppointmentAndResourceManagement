@@ -1,7 +1,7 @@
 @startuml name 
 skinparam monochrome true
 skinparam packageStyle rectangle
-skinparam shadowing falseS
+skinparam shadowing false
 
 autonumber
 
