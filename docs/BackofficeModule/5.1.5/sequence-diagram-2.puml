@@ -19,9 +19,10 @@ BE --> FE: form
 deactivate BE
 FE --> AD : data input
 deactivate FE
-AD -> FE : info to create patient profile (name, email, phone)
+AD -> FE : confirmation to delete account(email)
 activate FE
-FE -> BE : createPatientProfile(name, email, phone)
+FE -> BE : deleteAccount(email)
+activate BE
 BE --> FE: success
 deactivate BE
 FE --> AD : success and data

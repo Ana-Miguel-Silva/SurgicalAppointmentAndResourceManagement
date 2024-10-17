@@ -1,4 +1,4 @@
-@startuml 5.1.3
+@startuml 5.1.4
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -9,31 +9,32 @@ actor "Patient" as AD
 participant "Frontend" as FE <<component>>
 participant "PatientController" as CTRL <<component>>
 participant "PatientService" as SERV <<component>>
-participant "PatientProfile" as DOM <<component>>
 participant "PatientProfileRepository" as REPO <<component>>
 
 activate AD
-
 AD -> FE: access page
-
 activate FE
-
-FE -> CTRL: getCreateForm()
+FE -> CTRL: getEditForm(ID)
 activate CTRL
-CTRL --> FE: form
-deactivate CTRL
-FE --> AD: data input
-
-deactivate FE
-
-AD -> FE : info to create patient profile (name, email, phone)
-activate FE
-FE -> CTRL: createPatientProfile(name, email, phone)
-activate CTRL
-CTRL -> SERV: createPatientProfile(name, email, phone)
+CTRL -> SERV: getInfo(ID)
 activate SERV
-SERV -> DOM**: create()
-SERV -> REPO: save(patientProfile)
+SERV -> REPO: get(ID)
+activate REPO
+REPO --> SERV: Item
+deactivate REPO
+SERV --> CTRL: Item
+deactivate SERV
+CTRL --> FE: ItemDTO (?)
+deactivate CTRL
+FE --> AD: provide edit form
+deactivate FE
+AD -> FE : edit info of item
+activate FE
+FE -> CTRL: updateItem(...)
+activate CTRL
+CTRL -> SERV: updateItem(...)
+activate SERV
+SERV -> REPO: update(item)
 activate REPO
 REPO --> SERV: success
 deactivate REPO

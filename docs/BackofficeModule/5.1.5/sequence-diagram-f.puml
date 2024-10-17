@@ -9,8 +9,11 @@ actor "Patient" as AD
 participant "Frontend" as FE <<component>>
 participant "PatientController" as CTRL <<component>>
 participant "PatientService" as SERV <<component>>
-participant "PatientProfile" as DOM <<component>>
+'participant "PatientProfile" as DOM <<component>>
+participant "UserRepository" as UREPO <<component>>
 participant "PatientProfileRepository" as REPO <<component>>
+
+
 
 activate AD
 
@@ -26,14 +29,18 @@ FE --> AD: data input
 
 deactivate FE
 
-AD -> FE : info to create patient profile (name, email, phone)
+AD -> FE : confirmation to delete account(email)
 activate FE
-FE -> CTRL: createPatientProfile(name, email, phone)
+FE -> CTRL: deleteAccount(email)
 activate CTRL
-CTRL -> SERV: createPatientProfile(name, email, phone)
+CTRL -> SERV: deleteAccount(email)
 activate SERV
-SERV -> DOM**: create()
-SERV -> REPO: save(patientProfile)
+
+SERV -> UREPO: delete(email)
+activate UREPO
+UREPO --> SERV: success
+deactivate UREPO
+SERV -> REPO: delete(email)
 activate REPO
 REPO --> SERV: success
 deactivate REPO

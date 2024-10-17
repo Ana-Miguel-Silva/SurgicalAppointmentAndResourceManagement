@@ -1,21 +1,26 @@
-@startuml name 
+@startuml 5.1.1
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-'hide footbox
 actor "Admin" as AD
-'participant ":ListApplicationsByOpeningUI" as UI <<presentation>>
-'control ":ListApplicationsByOpeningController" as CTRL <<application>>
-'participant ":RepositoryFactory" as Fact <<factory>>
-'participant ":JobOpeningRepository" as OpeningRepo <<repository>>
-'participant ":JobApplicationRepository" as ApplicationRepo <<repository>>
-activate AD
+participant "SAaRM System" as SYS <<system>>
 
+activate AD
+AD -> SYS: access page
+activate SYS
+SYS --> AD : data input
+deactivate SYS
+AD -> SYS : info to create user(email, username, role)
+activate SYS
+SYS --> AD : success and data
+
+deactivate SYS
 
 deactivate AD
+
 
 
 @enduml
