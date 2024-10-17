@@ -13,6 +13,8 @@ namespace DDDSample1.Infrastructure.Users
             //builder.ToTable("Categories", SchemaNames.DDDSample1);
             builder.HasKey(b => b.Id);
             //builder.Property<bool>("_active").HasColumnName("Active");
+
+            builder.HasOne(b => b.email);
         }
     }
 }

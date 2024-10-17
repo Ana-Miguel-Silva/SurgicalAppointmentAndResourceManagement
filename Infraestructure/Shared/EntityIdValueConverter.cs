@@ -12,6 +12,6 @@ namespace DDDSample1.Infrastructure.Shared
         {
         }
 
-        private static TTypedIdValue Create(String id) => Activator.CreateInstance(typeof(TTypedIdValue), id) as TTypedIdValue;
+        private static TTypedIdValue? Create(String id) => Activator.CreateInstance(typeof(TTypedIdValue), id) as TTypedIdValue;
     }
 }

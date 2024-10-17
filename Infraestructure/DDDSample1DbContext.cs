@@ -8,6 +8,7 @@ using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Users;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.OperationRequests;
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Infrastructure
 {
@@ -29,8 +30,10 @@ namespace DDDSample1.Infrastructure
 
         }
 
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {        
             modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());

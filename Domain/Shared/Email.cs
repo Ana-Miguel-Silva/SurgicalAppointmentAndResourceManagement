@@ -1,20 +1,28 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Shared
 {
-    public class Email
+    public class Email : IValueObject
     {
+        [Key]
+        public EmailID EmailId { get;}
         public string fullEmail { get; private set; }
+
+        private Email() { }
 
         public Email(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || !IsValidEmail(email))
+            this.EmailId = new EmailID(Guid.NewGuid());
+        
+
+            if (string.IsNullOrWhiteSpace(email))
             {
                 throw new ArgumentException("Invalid email format", nameof(email));
             }
 
-            fullEmail = email;         
+            fullEmail = email;
         }
 
         public string GetUsername()
@@ -23,9 +31,10 @@ namespace DDDSample1.Domain.Shared
             return list.Length > 0 ? list[0] : string.Empty; 
         }
 
-        private bool IsValidEmail(string email)
+        IEnumerable<object> IValueObject.GetEqualityComponents()
         {
-            return new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(email);
+            yield return EmailId;
+            yield return fullEmail;
         }
     }
 }

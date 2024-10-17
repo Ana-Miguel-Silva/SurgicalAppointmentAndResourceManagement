@@ -1,5 +1,4 @@
 @startuml 5.1.1
-skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 

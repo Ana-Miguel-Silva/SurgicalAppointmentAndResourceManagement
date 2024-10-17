@@ -19,3 +19,6 @@ bin/Debug/net8.0/DDDNetCore.exe
 bin/Debug/net8.0/DDDNetCore.pdb
 obj/DDDNetCore.csproj.nuget.dgspec.json
 obj/DDDNetCore.csproj.nuget.g.props
+bin/Debug/net8.0/DDDNetCore.dll
+bin/Debug/net8.0/DDDNetCore.exe
+bin/Debug/net8.0/DDDNetCore.pdb

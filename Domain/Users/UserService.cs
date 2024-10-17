@@ -19,19 +19,31 @@ namespace DDDSample1.Domain.Users
         {
             var list = await this._repo.GetAllAsync();
             
-            List<UserDto> listDto = list.ConvertAll<UserDto>(cat => new UserDto{Id = cat.Id.AsGuid(), email = cat.email.fullEmail, Username = cat.Username, role = cat.role.ToString()});
+            List<UserDto> listDto = list.Select(cat => new UserDto
+            {
+                Id = cat.Id.AsGuid(),
+                email = cat.email.fullEmail,
+                Username = cat.Username,
+                role = cat.role.ToString()
+            }).ToList();
 
             return listDto;
         }
 
-        public async Task<UserDto> GetByIdAsync(UserId id)
+        public async Task<UserDto?> GetByIdAsync(UserId id)
         {
             var cat = await this._repo.GetByIdAsync(id);
             
             if(cat == null)
                 return null;
 
-            return new UserDto{Id = cat.Id.AsGuid(), email = cat.email.fullEmail, Username = cat.Username, role = cat.role.ToString()};
+            return new UserDto
+            {
+                Id = cat.Id.AsGuid(),
+                email = cat.email.fullEmail,
+                Username = cat.Username,
+                role = cat.role.ToString()
+            };
         }
 
         
@@ -40,7 +52,8 @@ namespace DDDSample1.Domain.Users
             //var User = new User(dto.email.fullEmail, dto.Username, dto.role.ToString());
             var username = string.IsNullOrEmpty(dto.Username) ? dto.email.GetUsername() : dto.Username;
 
-            var User = new User(dto.email.fullEmail, username, dto.role.ToString());
+            var email = new Email(dto.email.fullEmail);
+            var User = new User(email, username, dto.role.ToString());
 
             await this._repo.AddAsync(User);
 
@@ -51,15 +64,17 @@ namespace DDDSample1.Domain.Users
 
 
        
-        public async Task<UserDto> UpdateAsync(UserDto dto)
+        public async Task<UserDto?> UpdateAsync(UserDto dto)
         {
             var User = await this._repo.GetByIdAsync(new UserId(dto.Id)); 
 
             if (User == null)
                 return null;   
 
+            var newEmail = new Email(dto.email);
+
             // change all field
-            User.ChangeEmail(dto.email);
+            User.ChangeEmail(newEmail);
             
             await this._unitOfWork.CommitAsync();
 
@@ -67,7 +82,7 @@ namespace DDDSample1.Domain.Users
         }
 
        
-         public async Task<UserDto> DeleteAsync(UserId id)
+         public async Task<UserDto?> DeleteAsync(UserId id)
         {
             var User = await this._repo.GetByIdAsync(id); 
 
