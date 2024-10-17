@@ -14,16 +14,16 @@ namespace DDDSample1.Domain.OperationRequests
 
         public DateTime Deadline { get;  private set; }        
 
-        public string Priorirty { get;  private set; }
+        public string Priority { get;  private set; }
 
-        public OperationRequestDto(Guid Id, CategoryId patId, CategoryId docId,CategoryId opTypeId,DateTime deadline, string priorirty)
+        public OperationRequestDto(Guid Id, CategoryId patId, CategoryId docId,CategoryId opTypeId,DateTime deadline, string Priority)
         {
             this.Id = Id;
             this.PatientId = patId;
             this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
-            this.Priorirty = priorirty;
+            this.Priority = Priority;
         }
     }
 }

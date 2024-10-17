@@ -39,7 +39,9 @@ namespace DDDSample1.Domain.Users
 
             CheckRole(dto.Role);
 
-            var user = new User(dto.Username, dto.Email, dto.Role);
+            var emailObject = new Email(dto.Email);
+
+            var user = new User(dto.Username, emailObject, dto.Role);
 
             await this._repo.AddAsync(user);
 

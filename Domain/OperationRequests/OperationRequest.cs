@@ -14,7 +14,7 @@ namespace DDDSample1.Domain.OperationRequests
 
         public DateTime Deadline { get; private set; }
 
-        public string Priorirty { get; private set; }
+        public string Priority { get; private set; }
 
         public bool Active { get; private set; }
 
@@ -23,13 +23,13 @@ namespace DDDSample1.Domain.OperationRequests
             this.Active = true;
         }
 
-        public OperationRequest(CategoryId patId, CategoryId docId, CategoryId opTypeId, DateTime deadline, string priorirty)
+        public OperationRequest(CategoryId patId, CategoryId docId, CategoryId opTypeId, DateTime deadline, string Priority)
         {
 
             //verificar de operationType dá match com a especialização do doutor
             //verificar se data é valida
 
-            if (patId == null || docId == null || opTypeId == null || deadline == null || priorirty == null)
+            if (patId == null || docId == null || opTypeId == null || deadline == null || Priority == null)
                 throw new BusinessRuleValidationException("One of the operation request parameters was not valid");
 
             this.Id = new OperationRequestId(Guid.NewGuid());
@@ -37,7 +37,7 @@ namespace DDDSample1.Domain.OperationRequests
             this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
-            this.Priorirty = priorirty;
+            this.Priority = Priority;
             this.Active = true;
         }
 
@@ -85,15 +85,15 @@ namespace DDDSample1.Domain.OperationRequests
             this.Deadline = newDeadline;
         }
 
-        public void ChangePriority(String priorirty)
+        public void ChangePriority(String Priority)
         {
             if (!this.Active)
                 throw new BusinessRuleValidationException("Cannot change the deadline of an inactive operation request.");
 
-            if (priorirty == null)
-                throw new BusinessRuleValidationException("The new priorirty must be valid.");
+            if (Priority == null)
+                throw new BusinessRuleValidationException("The new Priority must be valid.");
 
-            this.Priorirty = priorirty;
+            this.Priority = Priority;
         }
         public void MarkAsInative()
         {
