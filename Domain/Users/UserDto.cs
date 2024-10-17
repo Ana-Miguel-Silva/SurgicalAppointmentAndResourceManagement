@@ -1,4 +1,5 @@
 using System;
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Users
 {
@@ -6,12 +7,19 @@ namespace DDDSample1.Domain.Users
     {
         public Guid Id { get; set; }
 
-        public string Username { get;  set; }
+        public string Username { get; set; }
 
-        public string email { get;  set; }
+        public Email Email { get; set; }
 
-         public string role { get;  set; }
+        public string Role { get; set; }
 
+        public UserDto(Guid Id, string Username, Email email, string role)
+        {
+            this.Id = Id;
+            this.Username = Username;
+            this.Email = email;
+            this.Role = role;
+        }
 
     }
 }

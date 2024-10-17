@@ -1,6 +1,5 @@
-using System;
-using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.OperationRequests;
+using DDDSample1.Domain.SurgeryRooms;
 
 
 namespace DDDSample1.Domain.Appointments
@@ -9,7 +8,7 @@ namespace DDDSample1.Domain.Appointments
     {
         public Guid Id { get; set; }
 
-        public CategoryId RoomId { get; private set; }
+        public SurgeryRoomId RoomId { get; private set; }
 
         public OperationRequestId OperationRequestId { get; private set; }
 
@@ -17,7 +16,7 @@ namespace DDDSample1.Domain.Appointments
 
         public string AppStatus { get; private set; }
 
-        public AppointmentDto(Guid Id, CategoryId roomId, OperationRequestId opReqId, DateTime date, string status)
+        public AppointmentDto(Guid Id, SurgeryRoomId roomId, OperationRequestId opReqId, DateTime date, string status)
         {
             this.Id = Id;
             this.RoomId = roomId;

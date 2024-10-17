@@ -3,53 +3,63 @@ using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Users
 {
-    public enum Role
-    {
-        Admin,
-        Doctor, 
-        Nurse,
-        Technician,
-        Patient
-    }
 
     public class User : Entity<UserId>, IAggregateRoot
     {
-        public string Username { get;  set; }
-        public Email email { get;  set; } 
-        public Role role { get;  set; } 
+        public string Username { get; private set; }
+        public Email Email { get; private set; }
+        public string Role { get; private set; }
 
-    
-        public User() {}
-        
-        public User(Email email,string username, string role)
+        public bool Active { get; private set; }
+
+
+        private User()
+        {
+            this.Active = true;
+        }
+
+        public User(string username, Email email, string role)
         {
             this.Id = new UserId(Guid.NewGuid());
             this.Username = username;
-            this.email = email;
-            Enum.TryParse<Role>(role, out var roleParsed);
-            this.role = roleParsed;
+            this.Email = email;
+            this.Role = role;
+
         }
 
-        public User(Email email, string role)
+        /*public User(Email email, string role)
         {
-            this.Id = new UserId(Guid.NewGuid());
-            this.email = email;
-            this.Username = this.email.GetUsername();
-            Enum.TryParse<Role>(role, out var roleParsed);
-            this.role = roleParsed;
+            Id = new UserId(Guid.NewGuid());
+            Email = email;
+            Username = email.GetUsername();
+            SetRole(role);
         }
 
         public User(Email email)
         {
-            this.Id = new UserId(Guid.NewGuid());            
-            this.email = email;
-            this.Username = this.email.GetUsername();
-            this.role = Role.Admin; 
-        }
+            Id = new UserId(Guid.NewGuid());
+            Email = email;
+            Username = email.GetUsername();
+            Role = Role.Admin; 
+        }*/
 
         public void ChangeEmail(Email email)
         {
-            this.email = email;
+            Email = email;
+        }
+
+        /*private void SetRole(string role)
+        {
+            if (!Enum.TryParse<Role>(role, out var roleParsed))
+            {
+                throw new ArgumentException($"Invalid role: {role}");
+            }
+            Role = roleParsed;
+        }*/
+
+        public void MarkAsInative()
+        {
+            this.Active = false;
         }
     }
 }

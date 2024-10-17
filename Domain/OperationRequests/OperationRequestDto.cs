@@ -1,4 +1,3 @@
-using System;
 using DDDSample1.Domain.Categories;
 
 namespace DDDSample1.Domain.OperationRequests

@@ -1,8 +1,5 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
-using System;
+using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Domain.OperationRequests;
 
 namespace DDDSample1.Domain.Appointments
@@ -11,14 +8,15 @@ namespace DDDSample1.Domain.Appointments
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppointmentRepository _repo;
-        private readonly ICategoryRepository _repoCat;
+        private readonly ISurgeryRoomRepository _repoRooms;
         private readonly IOperationRequestRepository _repoOpReq;
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ICategoryRepository repoCategories)
+        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
-            this._repoCat = repoCategories;
+            this._repoRooms = repoSurgeryRooms;
+            this._repoOpReq = repoOperationRequests;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()
@@ -43,11 +41,11 @@ namespace DDDSample1.Domain.Appointments
 
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
         {
-            checkOperationRequestIdAsync(dto.OperationRequestId);
-            checkRoomIdAsync(dto.RoomId);
+            await checkOperationRequestIdAsync(dto.OperationRequestId);
+            await checkRoomIdAsync(dto.RoomId);
             CheckDate(dto.Date);
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date);
+            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus);
 
             await this._repo.AddAsync(appointment);
 
@@ -103,9 +101,9 @@ namespace DDDSample1.Domain.Appointments
             return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus);
         }
 
-        private async Task checkRoomIdAsync(CategoryId doctorId)
+        private async Task checkRoomIdAsync(SurgeryRoomId doctorId)
         {
-            var category = await _repoCat.GetByIdAsync(doctorId);
+            var category = await _repoRooms.GetByIdAsync(doctorId);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid Room Id.");
         }

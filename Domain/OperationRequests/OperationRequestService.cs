@@ -1,8 +1,5 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
-using System;
 
 namespace DDDSample1.Domain.OperationRequests
 {
@@ -133,7 +130,7 @@ namespace DDDSample1.Domain.OperationRequests
 
         private static void CheckPriority(String priorirty)
         {
-            if (Priority.IsValid(priorirty.ToUpper()))
+            if (!Priority.IsValid(priorirty.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Priorirty.");
         }
 

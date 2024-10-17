@@ -1,4 +1,4 @@
-namespace DDDSample1.Domain.OperationRequests
+namespace DDDSample1.Domain.Appointments
 {
     public static class Status
     {

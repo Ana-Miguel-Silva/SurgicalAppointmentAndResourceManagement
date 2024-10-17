@@ -1,14 +1,13 @@
-using System;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.OperationRequests;
+using DDDSample1.Domain.SurgeryRooms;
 
 namespace DDDSample1.Domain.Appointments
 {
     public class Appointment : Entity<AppointmentId>, IAggregateRoot
     {
 
-        public CategoryId RoomId { get; private set; }
+        public SurgeryRoomId RoomId { get; private set; }
 
         public OperationRequestId OperationRequestId { get; private set; }
 
@@ -23,7 +22,7 @@ namespace DDDSample1.Domain.Appointments
             this.Active = true;
         }
 
-        public Appointment(CategoryId roomId, OperationRequestId opReqId, DateTime date)
+        public Appointment(SurgeryRoomId roomId, OperationRequestId opReqId, DateTime date, string status)
         {
             if (roomId == null || opReqId == null || date == null)
                 throw new BusinessRuleValidationException("One of the appointment parameters was not valid");
@@ -32,7 +31,7 @@ namespace DDDSample1.Domain.Appointments
             this.RoomId = roomId;
             this.OperationRequestId = opReqId;
             this.Date = date;
-            this.AppStatus = Status.SCHEDULED;
+            this.AppStatus = status;
             this.Active = true;
         }
 

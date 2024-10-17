@@ -1,40 +1,32 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using DDDSample1.Domain.Shared;
+using System.Collections.Generic;
 
 namespace DDDSample1.Domain.Shared
 {
     public class Email : IValueObject
     {
-        [Key]
-        public EmailID EmailId { get;}
-        public string fullEmail { get; private set; }
+        public string FullEmail { get; private set; }
 
-        private Email() { }
-
-        public Email(string email)
+        public Email(string fullEmail)
         {
-            this.EmailId = new EmailID(Guid.NewGuid());
-        
-
-            if (string.IsNullOrWhiteSpace(email))
+            // Optional: Validate the email format
+            if (string.IsNullOrWhiteSpace(fullEmail) || !fullEmail.Contains("@"))
             {
-                throw new ArgumentException("Invalid email format", nameof(email));
+                throw new ArgumentException("Invalid email format", nameof(fullEmail));
             }
 
-            fullEmail = email;
+            FullEmail = fullEmail;
         }
 
         public string GetUsername()
         {
-            string[] list = fullEmail.Split('@');
-            return list.Length > 0 ? list[0] : string.Empty; 
+            string[] list = FullEmail.Split('@');
+            return list.Length > 0 ? list[0] : string.Empty;
         }
 
-        IEnumerable<object> IValueObject.GetEqualityComponents()
+        public IEnumerable<object> GetEqualityComponents()
         {
-            yield return EmailId;
-            yield return fullEmail;
+            yield return FullEmail;
         }
     }
 }

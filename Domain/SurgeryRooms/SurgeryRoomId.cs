@@ -1,16 +1,16 @@
 using DDDSample1.Domain.Shared;
 using Newtonsoft.Json;
 
-namespace DDDSample1.Domain.Appointments
+namespace DDDSample1.Domain.SurgeryRooms
 {
-    public class AppointmentId : EntityId
+    public class SurgeryRoomId : EntityId
     {
         [JsonConstructor]
-        public AppointmentId(Guid value) : base(value)
+        public SurgeryRoomId(Guid value) : base(value)
         {
         }
 
-        public AppointmentId(String value) : base(value)
+        public SurgeryRoomId(String value) : base(value)
         {
         }
 

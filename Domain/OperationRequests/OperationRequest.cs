@@ -1,4 +1,3 @@
-using System;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
 

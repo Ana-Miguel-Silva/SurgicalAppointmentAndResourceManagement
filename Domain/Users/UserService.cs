@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.SurgeryRooms;
 
 namespace DDDSample1.Domain.Users
 {
@@ -18,85 +17,88 @@ namespace DDDSample1.Domain.Users
         public async Task<List<UserDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
-            
-            List<UserDto> listDto = list.Select(cat => new UserDto
-            {
-                Id = cat.Id.AsGuid(),
-                email = cat.email.fullEmail,
-                Username = cat.Username,
-                role = cat.role.ToString()
-            }).ToList();
+
+            List<UserDto> listDto = list.ConvertAll<UserDto>(user =>
+                new(user.Id.AsGuid(), user.Username, user.Email, user.Role));
 
             return listDto;
         }
 
-        public async Task<UserDto?> GetByIdAsync(UserId id)
+        public async Task<UserDto> GetByIdAsync(UserId id)
         {
-            var cat = await this._repo.GetByIdAsync(id);
-            
-            if(cat == null)
+            var user = await this._repo.GetByIdAsync(id);
+
+            if (user == null)
                 return null;
 
-            return new UserDto
-            {
-                Id = cat.Id.AsGuid(),
-                email = cat.email.fullEmail,
-                Username = cat.Username,
-                role = cat.role.ToString()
-            };
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
         }
 
-        
         public async Task<UserDto> AddAsync(CreatingUserDto dto)
         {
-            //var User = new User(dto.email.fullEmail, dto.Username, dto.role.ToString());
-            var username = string.IsNullOrEmpty(dto.Username) ? dto.email.GetUsername() : dto.Username;
 
-            var email = new Email(dto.email.fullEmail);
-            var User = new User(email, username, dto.role.ToString());
+            CheckRole(dto.Role);
 
-            await this._repo.AddAsync(User);
+            var user = new User(dto.Username, dto.Email, dto.Role);
+
+            await this._repo.AddAsync(user);
 
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(), email = User.email.fullEmail, Username = User.Username, role = User.role.ToString() };
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
         }
 
-
-       
-        public async Task<UserDto?> UpdateAsync(UserDto dto)
+        public async Task<UserDto> UpdateAsync(UserDto dto)
         {
-            var User = await this._repo.GetByIdAsync(new UserId(dto.Id)); 
 
-            if (User == null)
-                return null;   
+            var user = await this._repo.GetByIdAsync(new UserId(dto.Id));
 
-            var newEmail = new Email(dto.email);
+            if (user == null)
+                return null;
 
-            // change all field
-            User.ChangeEmail(newEmail);
-            
+            // change deadline and priority
+            user.ChangeEmail(dto.Email);
+
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(),  email = User.email.fullEmail, Username = User.Username, role = User.role.ToString()  };
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
         }
 
-       
-         public async Task<UserDto?> DeleteAsync(UserId id)
+        public async Task<UserDto> InactivateAsync(UserId id)
         {
-            var User = await this._repo.GetByIdAsync(id); 
+            var user = await this._repo.GetByIdAsync(id);
 
-            if (User == null)
-                return null;   
+            if (user == null)
+                return null;
 
-           /* if (User.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active User.");
-                */
-            
-            this._repo.Remove(User);
+            user.MarkAsInative();
+
             await this._unitOfWork.CommitAsync();
 
-            return new UserDto { Id = User.Id.AsGuid(), email = User.email.fullEmail, Username = User.Username, role = User.role.ToString() };
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
         }
+
+        public async Task<UserDto> DeleteAsync(UserId id)
+        {
+            var user = await this._repo.GetByIdAsync(id);
+
+            if (user == null)
+                return null;
+
+            if (user.Active)
+                throw new BusinessRuleValidationException("It is not possible to delete an active user.");
+
+            this._repo.Remove(user);
+            await this._unitOfWork.CommitAsync();
+
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
+        }
+
+        private static void CheckRole(String role)
+        {
+            if (!Role.IsValid(role.ToUpper()))
+                throw new BusinessRuleValidationException("Invalid Role.");
+        }
+
     }
 }

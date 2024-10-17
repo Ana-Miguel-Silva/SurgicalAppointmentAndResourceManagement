@@ -4,17 +4,23 @@ using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Infrastructure.Users
 {
-    internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            // cf. https://www.entityframeworktutorial.net/efcore/fluent-api-in-entity-framework-core.aspx
-            
-            //builder.ToTable("Categories", SchemaNames.DDDSample1);
-            builder.HasKey(b => b.Id);
-            //builder.Property<bool>("_active").HasColumnName("Active");
+            builder.HasKey(u => u.Id); // Primary key
 
-            builder.HasOne(b => b.email);
+            builder.OwnsOne(u => u.Email, emailBuilder =>
+            {
+                emailBuilder.Property(e => e.FullEmail).HasColumnName("Email"); // Map to column
+            });
+
+            builder.Property(u => u.Username)
+                .IsRequired()
+                .HasMaxLength(100); // Example constraints
+
+            builder.Property(u => u.Role)
+                .IsRequired();
         }
     }
 }
