@@ -19,9 +19,13 @@ namespace DDDSample1.Infrastructure.Staff
                 .IsRequired()
                 .HasMaxLength(100); // Example constraints
 
-            builder.OwnsOne(u => u.PhoneNumber, phoneBuilder)
-                .IsRequired()
-                .HasMaxLength(9);
+            builder.OwnsOne(u => u.PhoneNumber, phoneBuilder =>
+            {
+                phoneBuilder.Property(e => e.Number)
+                    .HasColumnName("PhoneNumber") 
+                    .IsRequired() 
+                    .HasMaxLength(9);
+            });
         }
     }
 }
