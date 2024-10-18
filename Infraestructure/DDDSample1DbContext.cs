@@ -1,19 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Users;
-using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Domain.Staff;
 using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Users;
-using DDDSample1.Infrastructure.Staff;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Infrastructure.Appointments;
 using DDDSample1.Infrastructure.SurgeryRooms;
+using DDDSample1.Infrastructure.Staff;
 
 namespace DDDSample1.Infrastructure
 {
@@ -26,7 +26,7 @@ namespace DDDSample1.Infrastructure
         public DbSet<OperationRequest> OperationRequests { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
-        public DbSet<StaffProfile> StaffProfiles{ get; set; }
+        public DbSet<StaffProfile> StaffProfiles { get; set; }
 
 
         public DDDSample1DbContext(DbContextOptions options) : base(options)
@@ -40,12 +40,12 @@ namespace DDDSample1.Infrastructure
         {
             modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
         }
     }
 }

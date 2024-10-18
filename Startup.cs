@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using DDDSample1.Infrastructure;
 using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Users;
+using DDDSample1.Infrastructure.Staff;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.Families;
 using DDDSample1.Infrastructure.Shared;
@@ -19,6 +20,7 @@ using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
 using System;
+using DDDSample1.Domain.Staff;
 
 
 namespace DDDSample1
@@ -87,6 +89,10 @@ namespace DDDSample1
 
             services.AddTransient<IUserRepository,UserRepository>();
             services.AddTransient<UserService>();
+
+            services.AddTransient<IStaffRepository,StaffRepository>();
+            services.AddTransient<StaffService>();
+
 
             services.AddTransient<IProductRepository,ProductRepository>();
             services.AddTransient<ProductService>();

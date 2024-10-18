@@ -8,6 +8,7 @@ namespace DDDSample1.Domain.Staff
     {
         public string Username { get; private set; }
         public Email Email { get; private set; }
+        
         public PhoneNumber PhoneNumber { get; private set; }
 
         public bool Active { get; private set; }
@@ -33,6 +34,12 @@ namespace DDDSample1.Domain.Staff
         {
             Email = email;
         }
+
+        public void ChangePhone(PhoneNumber phone)
+        {
+            PhoneNumber = phone;
+        }
+
 
 
 

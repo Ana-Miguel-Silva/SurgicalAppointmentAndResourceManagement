@@ -4,7 +4,7 @@ using DDDSample1.Domain.Staff;
 
 namespace DDDSample1.Infrastructure.Staff
 {
-    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<StaffProfile>
+    public class StaffEntityTypeConfiguration : IEntityTypeConfiguration<StaffProfile>
     {
         public void Configure(EntityTypeBuilder<StaffProfile> builder)
         {
@@ -19,8 +19,9 @@ namespace DDDSample1.Infrastructure.Staff
                 .IsRequired()
                 .HasMaxLength(100); // Example constraints
 
-            builder.Property(u => u.Role)
-                .IsRequired();
+            builder.OwnsOne(u => u.PhoneNumber, phoneBuilder)
+                .IsRequired()
+                .HasMaxLength(9);
         }
     }
 }
