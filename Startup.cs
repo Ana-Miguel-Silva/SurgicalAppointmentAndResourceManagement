@@ -19,6 +19,10 @@ using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
+using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Infrastructure.Appointments;
+using DDDSample1.Infrastructure.SurgeryRooms;
 using System;
 using DDDSample1.Domain.Staff;
 
@@ -47,8 +51,8 @@ namespace DDDSample1
                 options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
                     new MySqlServerVersion(new Version(8, 0, 0))
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
-            
-                        
+
+
 
             services.AddControllers().AddNewtonsoftJson();
 
@@ -82,26 +86,36 @@ namespace DDDSample1
 
         public void ConfigureMyServices(IServiceCollection services)
         {
-            services.AddTransient<IUnitOfWork,UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<ICategoryRepository,CategoryRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<CategoryService>();
 
-            services.AddTransient<IUserRepository,UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserService>();
 
             services.AddTransient<IStaffRepository,StaffRepository>();
             services.AddTransient<StaffService>();
 
 
-            services.AddTransient<IProductRepository,ProductRepository>();
+            services.AddTransient<IStaffRepository,StaffRepository>();
+            services.AddTransient<StaffService>();
+
+
+            services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ProductService>();
 
-            services.AddTransient<IFamilyRepository,FamilyRepository>();
+            services.AddTransient<IFamilyRepository, FamilyRepository>();
             services.AddTransient<FamilyService>();
 
-            services.AddTransient<IOperationRequestRepository,OperationRequestRepository>();
+            services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
+
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<AppointmentService>();
+
+            services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
+            services.AddTransient<SurgeryRoomService>();
         }
     }
 }
