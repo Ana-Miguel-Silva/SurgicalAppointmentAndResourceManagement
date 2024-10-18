@@ -1,7 +1,7 @@
-using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.SurgeryRooms;
 
-namespace DDDSample1.Domain.OperationRequests;
+namespace DDDSample1.Domain.Appointments;
 
 public class CreatingAppointmentDto
 {

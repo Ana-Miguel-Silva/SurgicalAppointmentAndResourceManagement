@@ -8,11 +8,8 @@ namespace DDDSample1.Infrastructure.OperationRequests
     {
         public void Configure(EntityTypeBuilder<OperationRequest> builder)
         {
+            //builder.ToTable("OperationRequests", SchemaNames.DDDSample1);
             builder.HasKey(b => b.Id);
-
-            builder.Property(b => b.Priority)
-                .IsRequired() 
-                .HasColumnName("Priority"); 
         }
     }
 

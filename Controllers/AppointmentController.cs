@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Appointments;
 
 
