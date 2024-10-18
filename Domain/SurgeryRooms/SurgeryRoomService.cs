@@ -94,7 +94,7 @@ namespace DDDSample1.Domain.SurgeryRooms
 
         private static void CheckStatus(String status)
         {
-            if (CurrentStatus.IsValid(status.ToUpper()))
+            if (!CurrentStatus.IsValid(status.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 

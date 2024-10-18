@@ -124,7 +124,7 @@ namespace DDDSample1.Domain.Appointments
 
         private static void CheckStatus(String status)
         {
-            if (Status.IsValid(status.ToUpper()))
+            if (!Status.IsValid(status.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
