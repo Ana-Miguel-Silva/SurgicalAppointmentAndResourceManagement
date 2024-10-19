@@ -8,6 +8,8 @@ namespace DDDSample1.Domain.Users
     {
         public string Username { get; private set; }
         public Email Email { get; private set; }
+
+        public Password Password { get; private set; }
         public string Role { get; private set; }
 
         public bool Active { get; private set; }
@@ -24,7 +26,7 @@ namespace DDDSample1.Domain.Users
             this.Username = username;
             this.Email = email;
             this.Role = role;
-
+            this.Password = new Password("#Password0");
         }
 
         /*public User(Email email, string role)
@@ -56,6 +58,11 @@ namespace DDDSample1.Domain.Users
             }
             Role = roleParsed;
         }*/
+
+        public void SetUpPassword(Password password)
+        {
+            this.Password = password;
+        }
 
         public void MarkAsInative()
         {

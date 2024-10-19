@@ -23,7 +23,9 @@ using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.Appointments;
 using DDDSample1.Infrastructure.SurgeryRooms;
-using System;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using DDDSample1.Domain.Staff;
 
 
@@ -52,11 +54,37 @@ namespace DDDSample1
                     new MySqlServerVersion(new Version(8, 0, 0))
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
-
-
             services.AddControllers().AddNewtonsoftJson();
 
+    
+            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Audience"]
+                    };
+                });
+
             ConfigureMyServices(services);
+
+            
+
+            /*var secretKey = Configuration["Jwt:Secret"];
+            services.AddScoped<UserService>(provider => new UserService(
+                provider.GetRequiredService<IUnitOfWork>(),
+                provider.GetRequiredService<IUserRepository>(),
+                provider.GetRequiredService<IMailService>(),
+                secretKey
+            ));*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,8 +106,17 @@ namespace DDDSample1
 
             app.UseAuthorization();
 
+            
+
             app.UseEndpoints(endpoints =>
             {
+                
+                endpoints.MapPost("/gmail", async (SendEmailRequest sendEmailRequest, IMailService mailService) =>
+                {
+                    await mailService.SendEmailAsync(sendEmailRequest);
+                    return Results.Ok("Email sent successfully");
+                });
+
                 endpoints.MapControllers();
             });
         }
@@ -93,6 +130,24 @@ namespace DDDSample1
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserService>();
+
+            /*services.AddTransient<UserService>(provider =>
+            {
+                var jwtSettings = new JwtSettings
+                {
+                    Secret = Configuration["Jwt:Secret"],
+                    Issuer = Configuration["Jwt:Issuer"],
+                    Audience = Configuration["Jwt:Audience"]
+                };
+
+                return new UserService(
+                    provider.GetRequiredService<IUnitOfWork>(),
+                    provider.GetRequiredService<IUserRepository>(),
+                    provider.GetRequiredService<IMailService>(),
+                    jwtSettings.Secret,
+                    (Microsoft.Extensions.Options.IOptions<JwtSettings>)jwtSettings
+                );
+            });*/
 
             services.AddTransient<IStaffRepository,StaffRepository>();
             services.AddTransient<StaffService>();
@@ -116,6 +171,9 @@ namespace DDDSample1
 
             services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
             services.AddTransient<SurgeryRoomService>();
+
+            services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
+            services.AddScoped<IMailService, GmailService>();
         }
     }
 }
