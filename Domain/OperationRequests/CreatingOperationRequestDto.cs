@@ -1,21 +1,24 @@
-using DDDSample1.Domain.Categories;
+using DDDSample1.Domain.Patient;
+using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.OperationTypes;
+
 
 namespace DDDSample1.Domain.OperationRequests;
 
     public class CreatingOperationRequestDto
     {
 
-        public CategoryId PatientId { get; set; }
+        public PatientId PatientId { get; set; }
 
-        public CategoryId DoctorId { get; set; }
+        public LicenseNumber DoctorId { get; set; }
 
-        public CategoryId OperationTypeId { get; set; }
+        public OperationTypeId OperationTypeId { get; set; }
 
         public DateTime Deadline { get; set; }        
 
         public string Priority { get; set; }
 
-        public CreatingOperationRequestDto(CategoryId patId, CategoryId docId,CategoryId opTypeId,DateTime deadline, string Priority)
+        public CreatingOperationRequestDto(PatientId patId, LicenseNumber docId,OperationTypeId opTypeId,DateTime deadline, string Priority)
         {
             this.PatientId = patId;
             this.DoctorId = docId;

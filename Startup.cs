@@ -20,8 +20,10 @@ using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.Appointments;
+using DDDSample1.Infrastructure.OperationTypes;
 using DDDSample1.Infrastructure.SurgeryRooms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -173,6 +175,9 @@ namespace DDDSample1
 
             services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
             services.AddTransient<SurgeryRoomService>();
+
+            services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
+            services.AddTransient<OperationTypeService>();
 
             services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
             services.AddScoped<IMailService, GmailService>();
