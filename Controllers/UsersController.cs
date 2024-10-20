@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -13,10 +14,13 @@ namespace DDDSample1.Controllers
     {
         private readonly UserService _service;
 
+        private readonly AuthorizationService _authService;
 
-        public UsersController(UserService service)
+
+        public UsersController(UserService service, AuthorizationService authService)
         {
             _service = service;
+            _authService = authService;
             
         }
 
@@ -63,6 +67,29 @@ namespace DDDSample1.Controllers
             });
         }
 
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] LoginRequest login)
+        {
+            try
+            {
+                Console.WriteLine($"Username: {login.Username}, Password: {login.Password}");
+
+                var result = await _service.Login(login.Username, login.Password);
+
+                
+                return Ok($"Token para autenticação: {result}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetById(Guid id)
         {
@@ -103,10 +130,23 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/User/setPassword
+        
         [HttpPost("setPassword")]
         public async Task<ActionResult> SetUpPassword([FromBody] PasswordRequest passwordRequest)
         {
-            var (user, userId) = await _service.ValidateTokenAndGetUser (passwordRequest.Token);
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+
+            User user;    
+
+            try
+            {
+                (user) = await _authService.ValidateTokenAsync(authorizationHeader);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
     
             if (user == null)
             {

@@ -1,44 +1,36 @@
-using System;
-using System.Collections.Generic;
-
+using BCrypt.Net;
 
 namespace DDDSample1.Domain.Shared
 {
     public class Password : IValueObject
     {
-
-
         public string Pass { get; private set; }
 
+        private Password() { }
 
-         private Password() { }
-
-        public Password(string password)
+        public Password(string plainTextPassword)
         {
-            // Optional: Validate the email format
-            if (string.IsNullOrWhiteSpace(password) || !ContainsCapital(password) || !ContainsDigit(password) || !ContainsNonAlphanumeric(password) || password.Length < 10)
+            if (string.IsNullOrWhiteSpace(plainTextPassword) || !ContainsCapital(plainTextPassword) ||
+                !ContainsDigit(plainTextPassword) || !ContainsNonAlphanumeric(plainTextPassword) ||
+                plainTextPassword.Length < 10)
             {
-                throw new ArgumentException("Invalid passowrd format", nameof(password));
+                throw new ArgumentException("Invalid password format", nameof(plainTextPassword));
             }
 
-            Pass = password;
+            // Hash the password using BCrypt
+            Pass = BCrypt.Net.BCrypt.HashPassword(plainTextPassword);
+            //Console.WriteLine(Pass);
         }
 
-        private bool ContainsDigit(string input)
-        {
-            return input.Any(char.IsDigit);
+        public bool Verify(string plainTextPassword)
+        {   
+            //Console.WriteLine(BCrypt.Net.BCrypt.EnhancedVerify(plainTextPassword, Pass));
+            return BCrypt.Net.BCrypt.Verify(plainTextPassword, Pass);
         }
 
-        private bool ContainsCapital(string input)
-        {
-            return input.Any(char.IsUpper);
-        }
-
-        private bool ContainsNonAlphanumeric(string input)
-        {
-            return input.Any(c => !char.IsLetterOrDigit(c));
-        }
-
+        private bool ContainsDigit(string input) => input.Any(char.IsDigit);
+        private bool ContainsCapital(string input) => input.Any(char.IsUpper);
+        private bool ContainsNonAlphanumeric(string input) => input.Any(c => !char.IsLetterOrDigit(c));
 
         public IEnumerable<object> GetEqualityComponents()
         {

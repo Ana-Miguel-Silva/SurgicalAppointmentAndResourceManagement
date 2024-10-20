@@ -4,6 +4,9 @@ using System;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Staff;
+using Microsoft.AspNetCore.Authorization;
+using DDSample1.Domain.Shared;
+using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Controllers
 {
@@ -11,11 +14,16 @@ namespace DDDSample1.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
+
+        private readonly string RoleAdmin = "Admin";
         private readonly StaffService _service;
 
-        public StaffController(StaffService service)
+        private readonly AuthorizationService _authService;
+
+        public StaffController(StaffService service, AuthorizationService authService)
         {
             _service = service;
+            _authService = authService;
         }
 
         // GET: api/Staff
@@ -41,11 +49,28 @@ namespace DDDSample1.Controllers
 
         // POST: api/Staff
         [HttpPost]
+        
         public async Task<ActionResult<StaffDto>> Create(CreatingStaffDto dto)
         {
-            var cat = await _service.AddAsync(dto);
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            User user;                      
+            try
+            {
+                user = await _authService.ValidateTokenAsync(authorizationHeader);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
 
-            return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
+            bool isAuthoraze = await _authService.validateUserRole(user, RoleAdmin);
+
+            if(isAuthoraze){
+                var cat = await _service.AddAsync(dto);
+
+                return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
+            }
+             return Forbid(); 
         }
 
         

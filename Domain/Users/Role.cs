@@ -1,4 +1,4 @@
-namespace DDDSample1.Domain.SurgeryRooms
+namespace DDDSample1.Domain.Users
 {
     public static class Role
     {

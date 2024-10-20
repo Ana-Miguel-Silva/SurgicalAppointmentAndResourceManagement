@@ -109,7 +109,7 @@ namespace DDDSample1.Domain.Users
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.AsString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                // Add additional claims as needed
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             // Create the JWT header
@@ -141,7 +141,7 @@ namespace DDDSample1.Domain.Users
 
 
 
-        public async Task<(User  user, Guid userId)> ValidateTokenAndGetUser(string token)
+        public async Task<User> ValidateTokenAndGetUser(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             try
@@ -162,8 +162,12 @@ namespace DDDSample1.Domain.Users
                 if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
                 {
                     Console.WriteLine("Token is invalid: NameIdentifier claim is missing or not a valid GUID.");
-                    return (null, Guid.Empty); // Token invalid
+                    return null;// Token invalid
                 }
+
+                var userRoleClaim = claimsPrincipal.FindFirst(ClaimTypes.Role);
+                Console.WriteLine($"{userRoleClaim}");
+                
 
                
                 var userId2 = Guid.Parse(userIdClaim.Value);
@@ -173,23 +177,59 @@ namespace DDDSample1.Domain.Users
 
                  Console.WriteLine(user.Id);
                  Console.WriteLine(userIdObject);
-                return (user, userId2);
+                return user;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Token validation error: {ex.Message}");
-                return (null, Guid.Empty);
+                return null;
             }
         }
 
                
         public async Task UpdatePassword(User user, string newPassword)
         {
-            Password password = new Password(newPassword);
-            
-            user.SetUpPassword(password);
+            try
+            {
+                user.SetPassword(newPassword);
+                
+            }
+            catch (ArgumentException ex)
+            {
+                throw new Exception("Password does not meet the required format.", ex);
+            }     
 
-            await this._unitOfWork.CommitAsync();
+            try
+            {
+                await this._unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {                
+                throw new Exception("An error occurred while updating the password.", ex);
+            }       
+        }
+
+        public async Task<string> Login(string username, string password)
+        {
+            
+            var users = await _repo.GetByUsernameAsync(username);
+
+            var user = users.FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            if (!user.CheckPassword(password))
+            {
+                throw new Exception("Invalid password.");
+            }
+
+            var token = GenerateToken(user);
+
+            //var userDto = new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
+            return token;
         }
 
 

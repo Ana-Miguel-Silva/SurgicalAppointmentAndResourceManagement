@@ -59,8 +59,14 @@ namespace DDDSample1
     
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer("Bearer", options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -72,6 +78,18 @@ namespace DDDSample1
                         ValidIssuer = Configuration["Jwt:Issuer"],
                         ValidAudience = Configuration["Jwt:Audience"]
                     };
+
+                    options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            Console.WriteLine("Erro de autenticação: " + context.Exception.Message);
+                            return Task.CompletedTask;
+                        }
+                    };
+
                 });
 
             ConfigureMyServices(services);
@@ -105,8 +123,8 @@ namespace DDDSample1
             app.UseRouting();
 
             app.UseAuthorization();
-
-            
+            app.UseAuthentication();
+ 
 
             app.UseEndpoints(endpoints =>
             {
@@ -130,24 +148,8 @@ namespace DDDSample1
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserService>();
+            services.AddTransient<AuthorizationService>();
 
-            /*services.AddTransient<UserService>(provider =>
-            {
-                var jwtSettings = new JwtSettings
-                {
-                    Secret = Configuration["Jwt:Secret"],
-                    Issuer = Configuration["Jwt:Issuer"],
-                    Audience = Configuration["Jwt:Audience"]
-                };
-
-                return new UserService(
-                    provider.GetRequiredService<IUnitOfWork>(),
-                    provider.GetRequiredService<IUserRepository>(),
-                    provider.GetRequiredService<IMailService>(),
-                    jwtSettings.Secret,
-                    (Microsoft.Extensions.Options.IOptions<JwtSettings>)jwtSettings
-                );
-            });*/
 
             services.AddTransient<IStaffRepository,StaffRepository>();
             services.AddTransient<StaffService>();
