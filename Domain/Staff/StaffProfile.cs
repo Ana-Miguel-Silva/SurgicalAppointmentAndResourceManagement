@@ -4,9 +4,10 @@ using DDDSample1.Domain.Shared;
 namespace DDDSample1.Domain.Staff
 {
 
-    public class StaffProfile : Entity<LicenseNumber>, IAggregateRoot
+    public class StaffProfile : Entity<StaffId>, IAggregateRoot
     {
         public string Username { get; private set; }
+        public string Specialization { get; private set; }
         public Email Email { get; private set; }
         
         public PhoneNumber PhoneNumber { get; private set; }
@@ -19,12 +20,13 @@ namespace DDDSample1.Domain.Staff
             this.Active = true;
         }
 
-        public StaffProfile(string username, Email email, PhoneNumber phone)
+        public StaffProfile(string username, Email email, PhoneNumber phone, string specialization)
         {
-            this.Id = new LicenseNumber(Guid.NewGuid());
+            this.Id = new StaffId("H");
             this.Username = username;
             this.Email = email;
             this.PhoneNumber = phone;
+            this.Specialization = specialization;
 
         }
 

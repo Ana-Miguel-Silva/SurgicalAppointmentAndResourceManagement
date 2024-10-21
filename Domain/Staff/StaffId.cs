@@ -4,14 +4,14 @@ using Newtonsoft.Json;
 
 namespace DDDSample1.Domain.Staff
 {
-    public class LicenseNumber : EntityId
+    public class StaffId : EntityId
     {
         [JsonConstructor]
-        public LicenseNumber(Guid value) : base(value)
+        public StaffId(Guid value) : base(value)
         {
         }
 
-        public LicenseNumber(String value) : base(value)
+        public StaffId(String value) : base(value)
         {
         }
 

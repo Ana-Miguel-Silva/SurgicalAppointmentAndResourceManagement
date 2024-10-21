@@ -11,6 +11,7 @@ namespace DDDSample1.Domain.Users
         public string Role { get; private set; }
 
         public bool Active { get; private set; }
+        public string LicenseNumber { get; private set; }
 
 
         private User()
@@ -48,6 +49,10 @@ namespace DDDSample1.Domain.Users
             Email = email;
         }
 
+        public void ChangeLicenseNumber(string licenseNumber)
+        {
+            LicenseNumber = licenseNumber;
+        }
         /*private void SetRole(string role)
         {
             if (!Enum.TryParse<Role>(role, out var roleParsed))
