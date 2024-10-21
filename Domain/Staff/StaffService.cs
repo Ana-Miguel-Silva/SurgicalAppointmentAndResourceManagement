@@ -20,26 +20,26 @@ namespace DDDSample1.Domain.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber));
+                new(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization));
 
             return listDto;
         }
 
         public async Task<StaffDto> GetByIdAsync(StaffId id)
         {
-            var user = await this._repo.GetByIdAsync(id);
+            var staff = await this._repo.GetByIdAsync(id);
 
-            if (user == null)
+            if (staff == null)
                 return null;
     
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
         }
 
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
             var emailObject = new Email(dto.Email);
 
-            var user = new StaffProfile(dto.Username, emailObject, new PhoneNumber(dto.PhoneNumber));
+            var user = new StaffProfile(dto.Username, emailObject, new PhoneNumber(dto.PhoneNumber), dto.Specialization);
 
             await this._repo.AddAsync(user);
 
@@ -49,51 +49,51 @@ namespace DDDSample1.Domain.Staff
             if (user == null)
                 return null;
                 
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
+            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber, user.Specialization);
         }
 
         public async Task<StaffDto> UpdateAsync(StaffDto dto)
         {
 
-            var user = await this._repo.GetByIdAsync(new StaffId(dto.Id));
+            var staff = await this._repo.GetByIdAsync(new StaffId(dto.Id));
 
-            if (user == null)
+            if (staff == null)
                 return null;
 
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
         }
 
         public async Task<StaffDto> InactivateAsync(StaffId id)
         {
-            var user = await this._repo.GetByIdAsync(id);
+            var staff = await this._repo.GetByIdAsync(id);
 
-            if (user == null)
+            if (staff == null)
                 return null;
 
-            user.MarkAsInative();
+            staff.MarkAsInative();
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
         }
 
         public async Task<StaffDto> DeleteAsync(StaffId id)
         {
-            var user = await this._repo.GetByIdAsync(id);
+            var staff = await this._repo.GetByIdAsync(id);
 
-            if (user == null)
+            if (staff == null)
                 return null;
 
-            if (user.Active)
+            if (staff.Active)
                 throw new BusinessRuleValidationException("It is not possible to delete an active user.");
 
-            this._repo.Remove(user);
+            this._repo.Remove(staff);
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
+             return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
         }
 
     }

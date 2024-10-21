@@ -117,7 +117,7 @@ namespace DDDSample1.Domain.OperationRequests
                 throw new BusinessRuleValidationException("Invalid Patient Id.");
         }*/
 
-        private async Task checkDoctorIdAsync(LicenseNumber doctorId)
+        private async Task checkDoctorIdAsync(StaffId doctorId)
         {
             var category = await _repoDoc.GetByIdAsync(doctorId);
             if (category == null)
