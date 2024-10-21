@@ -25,7 +25,7 @@ namespace DDDSample1.Domain.Staff
             return listDto;
         }
 
-        public async Task<StaffDto> GetByIdAsync(StaffID id)
+        public async Task<StaffDto> GetByIdAsync(StaffId id)
         {
             var user = await this._repo.GetByIdAsync(id);
 
@@ -55,7 +55,7 @@ namespace DDDSample1.Domain.Staff
         public async Task<StaffDto> UpdateAsync(StaffDto dto)
         {
 
-            var user = await this._repo.GetByIdAsync(new StaffID(dto.Id));
+            var user = await this._repo.GetByIdAsync(new StaffId(dto.Id));
 
             if (user == null)
                 return null;
@@ -66,7 +66,7 @@ namespace DDDSample1.Domain.Staff
             return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
         }
 
-        public async Task<StaffDto> InactivateAsync(StaffID id)
+        public async Task<StaffDto> InactivateAsync(StaffId id)
         {
             var user = await this._repo.GetByIdAsync(id);
 
@@ -80,7 +80,7 @@ namespace DDDSample1.Domain.Staff
             return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber);
         }
 
-        public async Task<StaffDto> DeleteAsync(StaffID id)
+        public async Task<StaffDto> DeleteAsync(StaffId id)
         {
             var user = await this._repo.GetByIdAsync(id);
 

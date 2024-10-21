@@ -37,7 +37,7 @@ namespace DDDSample1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetGetById(Guid id)
         {
-            var cat = await _service.GetByIdAsync(new StaffID(id));
+            var cat = await _service.GetByIdAsync(new StaffId(id));
 
             if (cat == null)
             {
@@ -104,7 +104,7 @@ namespace DDDSample1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<StaffDto>> SoftDelete(Guid id)
         {
-            var cat = await _service.InactivateAsync(new StaffID(id));
+            var cat = await _service.InactivateAsync(new StaffId(id));
 
             if (cat == null)
             {
@@ -121,7 +121,7 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var cat = await _service.DeleteAsync(new StaffID(id));
+                var cat = await _service.DeleteAsync(new StaffId(id));
 
                 if (cat == null)
                 {
