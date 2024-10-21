@@ -116,6 +116,31 @@ namespace DDDNetCore.Migrations
                     b.ToTable("OperationRequests");
                 });
 
+            modelBuilder.Entity("DDDSample1.Domain.OperationTypes.OperationType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("EstimatedDuration")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RequiredStaff")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OperationTypes");
+                });
+
             modelBuilder.Entity("DDDSample1.Domain.Products.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -293,6 +318,24 @@ namespace DDDNetCore.Migrations
 
             modelBuilder.Entity("DDDSample1.Domain.Users.User", b =>
                 {
+                    b.OwnsOne("DDDSample1.Domain.Shared.Password", "Password", b1 =>
+                        {
+                            b1.Property<string>("UserId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Pass")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Password");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsOne("DDDSample1.Domain.Shared.Email", "Email", b1 =>
                         {
                             b1.Property<string>("UserId")
@@ -312,6 +355,9 @@ namespace DDDNetCore.Migrations
                         });
 
                     b.Navigation("Email")
+                        .IsRequired();
+
+                    b.Navigation("Password")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

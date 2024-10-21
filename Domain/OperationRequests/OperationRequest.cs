@@ -1,16 +1,20 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
+using DDDSample1.Domain.Patient;
+using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.OperationTypes;
+
 
 namespace DDDSample1.Domain.OperationRequests
 {
     public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     {
 
-        public CategoryId PatientId { get; private set; }
+        public PatientId PatientId { get; private set; }
 
-        public CategoryId DoctorId { get; private set; }
+        public LicenseNumber DoctorId { get; private set; }
 
-        public CategoryId OperationTypeId { get; private set; }
+        public OperationTypeId OperationTypeId { get; private set; }
 
         public DateTime Deadline { get; private set; }
 
@@ -23,7 +27,7 @@ namespace DDDSample1.Domain.OperationRequests
             this.Active = true;
         }
 
-        public OperationRequest(CategoryId patId, CategoryId docId, CategoryId opTypeId, DateTime deadline, string Priority)
+        public OperationRequest(PatientId patId, LicenseNumber docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
         {
 
             //verificar de operationType dá match com a especialização do doutor

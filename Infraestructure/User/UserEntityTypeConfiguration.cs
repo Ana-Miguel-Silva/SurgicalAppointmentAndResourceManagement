@@ -15,6 +15,11 @@ namespace DDDSample1.Infrastructure.Users
                 emailBuilder.Property(e => e.FullEmail).HasColumnName("Email"); // Map to column
             });
 
+            builder.OwnsOne(u => u.Password, passwordBuilder =>
+            {
+                passwordBuilder.Property(e => e.Pass).HasColumnName("Password"); // Map to column
+            });
+
             builder.Property(u => u.Username)
                 .IsRequired()
                 .HasMaxLength(100); // Example constraints

@@ -1,4 +1,7 @@
-using DDDSample1.Domain.Categories;
+using System.ComponentModel;
+using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Patient;
 
 namespace DDDSample1.Domain.OperationRequests
 {
@@ -6,17 +9,17 @@ namespace DDDSample1.Domain.OperationRequests
     {
         public Guid Id { get; set; }
 
-        public CategoryId PatientId { get;  private set; }
+        public PatientId PatientId { get; set; }
 
-        public CategoryId DoctorId { get;  private set; }
+        public LicenseNumber DoctorId { get; set; }
 
-        public CategoryId OperationTypeId { get;  private set; }
+        public OperationTypeId OperationTypeId { get; set; }
 
-        public DateTime Deadline { get;  private set; }        
+        public DateTime Deadline { get; set; }
 
-        public string Priority { get;  private set; }
+        public string Priority { get; set; }
 
-        public OperationRequestDto(Guid Id, CategoryId patId, CategoryId docId,CategoryId opTypeId,DateTime deadline, string Priority)
+        public OperationRequestDto(Guid Id, PatientId patId, LicenseNumber docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
         {
             this.Id = Id;
             this.PatientId = patId;

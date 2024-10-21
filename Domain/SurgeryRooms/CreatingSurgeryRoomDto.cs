@@ -5,15 +5,15 @@ namespace DDDSample1.Domain.SurgeryRooms;
     public class CreatingSurgeryRoomDto
     {
 
-        public string Type { get; private set; }
+        public string Type { get;  set; }
 
-        public int Capacity { get; private set; }
+        public int Capacity { get;  set; }
 
-        public List<string> AssignedEquipment { get; private set; }
+        public List<string> AssignedEquipment { get;  set; }
 
-        public string Status { get; private set; }
+        public string Status { get;  set; }
 
-        public List<Slot> MaintenanceSlots { get; private set; }
+        public List<Slot> MaintenanceSlots { get;  set; }
 
         public CreatingSurgeryRoomDto(string Type, int Capacity, List<string> AssignedEquipment, List<Slot> MaintenanceSlots)
         {

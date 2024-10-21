@@ -1,5 +1,8 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
+using DDDSample1.Domain.Patient;
+using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.OperationTypes;
 
 namespace DDDSample1.Domain.OperationRequests
 {
@@ -7,13 +10,19 @@ namespace DDDSample1.Domain.OperationRequests
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationRequestRepository _repo;
-        private readonly ICategoryRepository _repoCat;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, ICategoryRepository repoCategories)
+        //private readonly IPatientRepository _repoPat;
+        private readonly IStaffRepository _repoDoc;
+        private readonly IOperationTypeRepository _repoOpType;
+
+
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoDoc, IOperationTypeRepository repoOpType)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
-            this._repoCat = repoCategories;
+            //this._repoPat = repoPat;
+            this._repoDoc = repoDoc;
+            this._repoOpType = repoOpType;
         }
 
         public async Task<List<OperationRequestDto>> GetAllAsync()
@@ -38,18 +47,18 @@ namespace DDDSample1.Domain.OperationRequests
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            await checkPatientIdAsync(dto.PatientId);
+            //await checkPatientIdAsync(dto.PatientId);
             await checkDoctorIdAsync(dto.DoctorId);
             await checkOperationTypeIdAsync(dto.OperationTypeId);
             CheckDate(dto.Deadline);
-            CheckPriority(dto.Priority); 
+            CheckPriority(dto.Priority);
 
-            var operationRequest = new OperationRequest(dto.PatientId, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority); 
+            var operationRequest = new OperationRequest(dto.PatientId, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority);
 
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority); 
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto)
@@ -101,23 +110,23 @@ namespace DDDSample1.Domain.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        private async Task checkPatientIdAsync(CategoryId patientId)
+        /*private async Task checkPatientIdAsync(PatientId patientId)
         {
-            var category = await _repoCat.GetByIdAsync(patientId);
+            var category = await _repoPat.GetByIdAsync(patientId);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid Patient Id.");
-        }
+        }*/
 
-        private async Task checkDoctorIdAsync(CategoryId doctorId)
+        private async Task checkDoctorIdAsync(LicenseNumber doctorId)
         {
-            var category = await _repoCat.GetByIdAsync(doctorId);
+            var category = await _repoDoc.GetByIdAsync(doctorId);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid Doctor Id.");
         }
 
-        private async Task checkOperationTypeIdAsync(CategoryId operationTypeId)
+        private async Task checkOperationTypeIdAsync(OperationTypeId operationTypeId)
         {
-            var category = await _repoCat.GetByIdAsync(operationTypeId);
+            var category = await _repoOpType.GetByIdAsync(operationTypeId);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid OperationType Id.");
         }

@@ -1,5 +1,6 @@
 using System;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Domain.Users
 {
@@ -8,6 +9,8 @@ namespace DDDSample1.Domain.Users
     {
         public string Username { get; private set; }
         public Email Email { get; private set; }
+
+        public Password Password { get; private set; }
         public string Role { get; private set; }
 
         public bool Active { get; private set; }
@@ -21,11 +24,17 @@ namespace DDDSample1.Domain.Users
 
         public User(string username, Email email, string role)
         {
+
+            /*if (!this.Role.IsValid(role.ToUpperInvariant()))
+            {
+                throw new ArgumentException($"Invalid role: {role}");
+            }*/
+
             this.Id = new UserId(Guid.NewGuid());
             this.Username = username;
             this.Email = email;
             this.Role = role;
-
+            this.Password = new Password("#Password0");
         }
 
         /*public User(Email email, string role)
@@ -62,9 +71,21 @@ namespace DDDSample1.Domain.Users
             Role = roleParsed;
         }*/
 
+
         public void MarkAsInative()
         {
             this.Active = false;
         }
+
+        public void SetPassword(string plainTextPassword)
+        {
+            Password = new Password(plainTextPassword);
+        }
+
+        public bool CheckPassword(string plainTextPassword)
+        {
+            return Password.Verify(plainTextPassword);
+        }
+
     }
 }

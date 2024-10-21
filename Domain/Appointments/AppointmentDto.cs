@@ -8,13 +8,13 @@ namespace DDDSample1.Domain.Appointments
     {
         public Guid Id { get; set; }
 
-        public SurgeryRoomId RoomId { get; private set; }
+        public SurgeryRoomId RoomId { get; set; }
 
-        public OperationRequestId OperationRequestId { get; private set; }
+        public OperationRequestId OperationRequestId { get; set; }
 
-        public DateTime Date { get; private set; }
+        public DateTime Date { get; set; }
 
-        public string AppStatus { get; private set; }
+        public string AppStatus { get; set; }
 
         public AppointmentDto(Guid Id, SurgeryRoomId roomId, OperationRequestId opReqId, DateTime date, string status)
         {
