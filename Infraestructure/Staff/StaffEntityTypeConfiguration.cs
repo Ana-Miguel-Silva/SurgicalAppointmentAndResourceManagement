@@ -26,6 +26,14 @@ namespace DDDSample1.Infrastructure.Staff
                     .IsRequired() 
                     .HasMaxLength(9);
             });
+
+            builder.Property(u => u.Specialization)
+                .IsRequired()
+                .HasMaxLength(50); // Example constraint, adjust as needed
+
+            // Configure Active property
+            builder.Property(u => u.Active)
+                .IsRequired();
         }
     }
 }

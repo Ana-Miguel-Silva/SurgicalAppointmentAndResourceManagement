@@ -26,8 +26,6 @@ namespace DDDSample1.Infrastructure
         public DbSet<Product> Products { get; set; }
         public DbSet<Family> Families { get; set; }
         public DbSet<OperationRequest> OperationRequests { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
         public DbSet<StaffProfile> StaffProfiles { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
 
@@ -46,8 +44,6 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
         }

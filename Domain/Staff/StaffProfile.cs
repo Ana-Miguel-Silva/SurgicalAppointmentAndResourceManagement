@@ -22,7 +22,7 @@ namespace DDDSample1.Domain.Staff
 
         public StaffProfile(string username, Email email, PhoneNumber phone, string specialization)
         {
-            this.Id = new StaffId("H");
+            this.Id = new StaffId(Guid.NewGuid());
             this.Username = username;
             this.Email = email;
             this.PhoneNumber = phone;

@@ -170,12 +170,6 @@ namespace DDDSample1
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
 
-            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
-            services.AddTransient<AppointmentService>();
-
-            services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
-            services.AddTransient<SurgeryRoomService>();
-
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             services.AddTransient<OperationTypeService>();
 

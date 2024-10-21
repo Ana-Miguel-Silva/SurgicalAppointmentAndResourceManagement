@@ -1,4 +1,4 @@
-using DDDSample1.Domain.SurgeryRooms;
+/*using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.Shared;
 
 namespace DDDSample1.Infrastructure.SurgeryRooms
@@ -10,4 +10,4 @@ namespace DDDSample1.Infrastructure.SurgeryRooms
            
         }
     }
-}
+}*/

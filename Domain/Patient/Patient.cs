@@ -8,14 +8,16 @@ namespace DDDSample1.Domain.Patient
     public class Patient : Entity<PatientId>, IAggregateRoot
     {
 
-        public string FullName { get; private set; }
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-
-
-
-
+        public FullName name { get; private set; }
+    
         public DateTime DateOfBirth { get;  private set; }
+
+        public MedicalRecordNumber medicalRecordNumber { get;  private set; }
+
+        public string gender { get;  private set; }
+
+        
+
         //public MedicalsConditions MedicalsConditions{ get;  private set; }
         //public EmergencyContact EmergencyContact{ get;  private set; }
         //public AppointmentHistory AppointmentHistory{ get;  private set; }
