@@ -13,6 +13,7 @@ namespace DDDSample1.Domain.Staff
         public PhoneNumber PhoneNumber { get; private set; }
 
         public bool Active { get; private set; }
+        //public string LicenseNumber { get; private set; }
 
 
         private StaffProfile()
@@ -43,6 +44,11 @@ namespace DDDSample1.Domain.Staff
         }
 
 
+
+        /*public void ChangeLicenseNumber(string licenseNumber)
+        {
+            LicenseNumber = licenseNumber;
+        }*/
 
 
         public void MarkAsInative()

@@ -24,6 +24,18 @@ namespace DDDSample1.Domain.Staff
 
             return listDto;
         }
+        public async Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization)
+        {
+            var list = await this._repo.GetAllAsync();
+
+            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
+                new(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization));
+            if (name != null) listDto = listDto.Where(x => x.Username.Equals(name)).ToList();
+            //if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
+            if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
+            if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
+            return listDto;
+        }
 
         public async Task<StaffDto> GetByIdAsync(StaffId id)
         {

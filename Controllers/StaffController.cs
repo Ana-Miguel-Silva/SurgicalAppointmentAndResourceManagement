@@ -26,11 +26,20 @@ namespace DDDSample1.Controllers
             _authService = authService;
         }
 
-        // GET: api/Staff
+        // GET: api/Staff?name=x&id=1&license=b&phone=999999999
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)
         {
-            return await _service.GetAllAsync();
+            return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization);
+        }
+
+        public class GetStaffQueryObject 
+        {
+            public string? id { get; set; }
+            public string? name { get; set; }
+            public string? license { get; set; }
+            public string? phone { get; set; }
+            public string? specialization { get; set; }
         }
 
         // GET: api/Staff/5
