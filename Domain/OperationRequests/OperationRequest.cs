@@ -10,7 +10,7 @@ namespace DDDSample1.Domain.OperationRequests
     public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     {
 
-        public MedicalRecordNumber MedicalRecordNumber { get; private set; }
+        public PatientId MedicalRecordNumber { get; private set; }
 
         public StaffId DoctorId { get; private set; }
 
@@ -27,13 +27,10 @@ namespace DDDSample1.Domain.OperationRequests
             this.Active = true;
         }
 
-        public OperationRequest(MedicalRecordNumber patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
+        public OperationRequest(PatientId patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string priority)
         {
 
-            //verificar de operationType dá match com a especialização do doutor
-            //verificar se data é valida
-
-            if (patId == null || docId == null || opTypeId == null || deadline == null || Priority == null)
+            if (patId == null || docId == null || opTypeId == null || deadline == null || priority == null)
                 throw new BusinessRuleValidationException("One of the operation request parameters was not valid");
 
             this.Id = new OperationRequestId(Guid.NewGuid());
@@ -41,42 +38,9 @@ namespace DDDSample1.Domain.OperationRequests
             this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
-            this.Priority = Priority;
+            this.Priority = priority;
             this.Active = true;
         }
-
-        /*
-
-        public void ChangeMedicalRecordNumber(CategoryId patId)
-        {
-            if (!this.Active)
-                throw new BusinessRuleValidationException("It is not possible to change the category of an inactive operation request.");
-            if (catId == null)
-                throw new BusinessRuleValidationException("Every operation request requires a patient.");
-            this.MedicalRecordNumber = patId;;
-        }
-
-        public void ChangeDoctorId(CategoryId docId)
-        {
-            if (!this.Active)
-                throw new BusinessRuleValidationException("It is not possible to change the doctor of an inactive operation request.");
-            if (docId == null)
-                throw new BusinessRuleValidationException("Every operation request requires a valid doctor.");
-            
-            this.DoctorId = docId;
-        }
-
-        public void ChangeOperationTypeId(CategoryId opTypeId)
-        {
-            if (!this.Active)
-                throw new BusinessRuleValidationException("It is not possible to change the operation type of an inactive operation request.");
-            if (opTypeId == null)
-                throw new BusinessRuleValidationException("Every operation request requires a valid operation type.");
-            
-            this.OperationTypeId = opTypeId;
-        }
-
-        */
 
         public void ChangeDeadline(DateTime newDeadline)
         {

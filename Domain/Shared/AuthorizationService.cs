@@ -27,8 +27,8 @@ public class AuthorizationService
 
     public AuthorizationService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
     {
-          _repo = userRepository;
-         _jwtSettings = jwtSettings.Value;
+        _repo = userRepository;
+        _jwtSettings = jwtSettings.Value;
     }
 
     public string GenerateToken(UserDto user)
@@ -176,8 +176,8 @@ public class AuthorizationService
 
     public async Task<bool> ValidateUserRole(User User, List<string> Role)
     {
-        return Role.Contains(User.Role);
+        return Role.Contains(User.Role.ToUpper());
     }
 
-    
+
 }
