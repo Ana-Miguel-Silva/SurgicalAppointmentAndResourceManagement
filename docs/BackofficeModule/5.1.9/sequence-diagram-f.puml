@@ -20,19 +20,19 @@ CTRL -> SERV: getInfo(ID)
 activate SERV
 SERV -> REPO: get(ID)
 activate REPO
-REPO --> SERV: Item
+REPO --> SERV: Patient
 deactivate REPO
-SERV --> CTRL: Item
+SERV --> CTRL: Patient
 deactivate SERV
-CTRL --> FE: ItemDTO (?)
+CTRL --> FE: Patient
 deactivate CTRL
 FE --> AD: provide edit form
 deactivate FE
 AD -> FE : edit info of item
 activate FE
-FE -> CTRL: updateItem(...)
+FE -> CTRL: updatePatient(Phone, Email, MedicalConditions)
 activate CTRL
-CTRL -> SERV: updateItem(...)
+CTRL -> SERV: updatePatient(...)
 activate SERV
 SERV -> REPO: update(item)
 activate REPO
