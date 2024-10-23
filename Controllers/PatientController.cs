@@ -34,7 +34,7 @@ namespace DDDSample1.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDto>> GetGetById(MedicalRecordNumber id)
+        public async Task<ActionResult<PatientDto>> GetGetById(PatientId id)
         {
             var cat = await _service.GetByIdAsync(id);
 
@@ -46,22 +46,23 @@ namespace DDDSample1.Controllers
             return cat;
         }
 
-        // POST: api/User
+        // POST: api/Patients
         [HttpPost]
-        public async Task<ActionResult<object>> Create(CreatingPatientDto dto)
+        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
             var result = await _service.AddAsync(dto);
 
             if (result == null)
             {
-                return BadRequest("Não foi possível criar o pacient.");
+                return BadRequest("Wasn't possible to create the patient.");
             }
 
-            // Retorna as informações no formato esperado
-            return CreatedAtAction(nameof(GetById), new { id = result.medicalRecordNumber }, new
+            /*return CreatedAtAction(nameof(GetById), new { id = result. }, new
             {
                 Patient = result,
-            });
+            });*/
+
+            return result;
         }
 
 
@@ -88,7 +89,7 @@ namespace DDDSample1.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDto>> GetById(MedicalRecordNumber id)
+        public async Task<ActionResult<PatientDto>> GetById(PatientId id)
         {
             var user = await _service.GetByIdAsync(id);
             if (user == null)
@@ -103,9 +104,9 @@ namespace DDDSample1.Controllers
         /*
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<PatientDto>> Update(MedicalRecordNumber id, PatientDto dto)
+        public async Task<ActionResult<PatientDto>> Update(PatientId id, PatientDto dto)
         {
-            if (id != dto.medicalRecordNumber)
+            if (id != dto.PatientId)
             {
                 return BadRequest();
             }
@@ -182,7 +183,7 @@ namespace DDDSample1.Controllers
         
         // DELETE: api/User/5
         [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<PatientDto>> HardDelete(MedicalRecordNumber id)
+        public async Task<ActionResult<PatientDto>> HardDelete(PatientId id)
         {
             try
             {

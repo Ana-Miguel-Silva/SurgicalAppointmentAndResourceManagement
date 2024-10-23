@@ -45,7 +45,7 @@ namespace DDDSample1.Controllers
             return cat;
         }
 
-        // POST: api/User
+        // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)
         {
@@ -53,7 +53,7 @@ namespace DDDSample1.Controllers
 
             if (result == null)
             {
-                return BadRequest("Não foi possível criar o usuário.");
+                return BadRequest("Wasn't possible to create the user.");
             }
 
             // Retorna as informações no formato esperado

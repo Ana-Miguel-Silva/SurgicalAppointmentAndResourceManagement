@@ -7,6 +7,8 @@ namespace DDDSample1.Domain.Patients
     public class PatientDto
     {
         public FullName name { get;  set; }
+
+        public Guid Id { get; set; }
     
         public DateTime DateOfBirth { get;   set; }
 
@@ -18,7 +20,7 @@ namespace DDDSample1.Domain.Patients
 
         public List<string> AppointmentHistory { get;   set; }
 
-        public PhoneNumber EmergencyContact { get;   set; }
+        public EmergencyContact EmergencyContact { get;   set; }
 
         public PhoneNumber Phone { get;   set; }
 
@@ -26,11 +28,12 @@ namespace DDDSample1.Domain.Patients
 
          public Email UserEmail { get;   set; }
 
-        public PatientDto(string name, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail,PhoneNumber emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
+        public PatientDto(Guid Id, string name, DateTime dateOfBirth, 
+                   PhoneNumber phone,Email email, Email userEmail,EmergencyContact emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
         //Validação para se não forem nulls
+        this.Id = Id;
         this.medicalRecordNumber = new MedicalRecordNumber();
         this.name = new FullName(name);
         this.Allergies = Allergies;

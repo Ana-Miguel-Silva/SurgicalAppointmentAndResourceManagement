@@ -77,8 +77,8 @@ namespace DDDSample1.Domain.Users
 
             var body = $"Hello {user.Username},<br>\n" +
                     "You requested to set up your password for your Health App account.\r\n" +
-                    "<br>Please click on the following link to set up your password:\r\n" +
-                    $"{resetLink}<br>" +                    
+                    "<br>Please click on the following link to set up your password:\r\n\n" +
+                    $"{resetLink}<br>\r" +                    
                     "<br>If you did not request this, please ignore this email.\r\n" +
                     "<br>The link will expire in 1 hour.";
 
