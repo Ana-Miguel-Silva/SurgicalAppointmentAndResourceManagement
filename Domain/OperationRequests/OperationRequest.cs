@@ -1,6 +1,6 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
-using DDDSample1.Domain.Patient;
+using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
 
@@ -10,7 +10,7 @@ namespace DDDSample1.Domain.OperationRequests
     public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     {
 
-        public PatientId PatientId { get; private set; }
+        public MedicalRecordNumber MedicalRecordNumber { get; private set; }
 
         public StaffId DoctorId { get; private set; }
 
@@ -27,7 +27,7 @@ namespace DDDSample1.Domain.OperationRequests
             this.Active = true;
         }
 
-        public OperationRequest(PatientId patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
+        public OperationRequest(MedicalRecordNumber patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
         {
 
             //verificar de operationType dá match com a especialização do doutor
@@ -37,7 +37,7 @@ namespace DDDSample1.Domain.OperationRequests
                 throw new BusinessRuleValidationException("One of the operation request parameters was not valid");
 
             this.Id = new OperationRequestId(Guid.NewGuid());
-            this.PatientId = patId;
+            this.MedicalRecordNumber = patId;
             this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
@@ -47,13 +47,13 @@ namespace DDDSample1.Domain.OperationRequests
 
         /*
 
-        public void ChangePatientId(CategoryId patId)
+        public void ChangeMedicalRecordNumber(CategoryId patId)
         {
             if (!this.Active)
                 throw new BusinessRuleValidationException("It is not possible to change the category of an inactive operation request.");
             if (catId == null)
                 throw new BusinessRuleValidationException("Every operation request requires a patient.");
-            this.PatientId = patId;;
+            this.MedicalRecordNumber = patId;;
         }
 
         public void ChangeDoctorId(CategoryId docId)
