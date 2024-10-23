@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Users;
 
 
 namespace DDDSample1.Controllers
@@ -10,9 +11,12 @@ namespace DDDSample1.Controllers
     public class OperationTypes : ControllerBase
     {
         private readonly OperationTypeService _service;
+        private readonly AuthorizationService _authService;
 
-        public OperationTypes(OperationTypeService service)
+
+        public OperationTypes(OperationTypeService service,AuthorizationService authService)
         {
+            _authService = authService;
             _service = service;
         }
 
@@ -58,25 +62,37 @@ namespace DDDSample1.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationTypeDto>> Update(Guid id, OperationTypeDto dto)
         {
-            if (id != dto.Id)
-            {
-                return BadRequest();
-            }
+            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN}).Result){
 
-            try
-            {
-                var operationType = await _service.UpdateAsync(dto);
-                
-                if (operationType == null)
+                try
                 {
-                    return NotFound();
+                    if (id != dto.Id)
+                    {
+                        return BadRequest();
+                    }
+
+                    try
+                    {
+                        var operationType = await _service.UpdateAsync(dto);
+                        
+                        if (operationType == null)
+                        {
+                            return NotFound();
+                        }
+                        return Ok(operationType);
+                    }
+                    catch(BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new {Message = ex.Message});
+                    }
+
                 }
-                return Ok(operationType);
+                    catch(BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new {Message = ex.Message});
+                }
             }
-            catch(BusinessRuleValidationException ex)
-            {
-                return BadRequest(new {Message = ex.Message});
-            }
+            return Forbid(); 
         }
 
         // Inactivate: api/OperationTypes/5
