@@ -33,7 +33,7 @@ namespace DDDSample1.Controllers
             return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization);
         }
 
-        public class GetStaffQueryObject 
+        public class GetStaffQueryObject
         {
             public string? id { get; set; }
             public string? name { get; set; }
@@ -58,11 +58,11 @@ namespace DDDSample1.Controllers
 
         // POST: api/Staff
         [HttpPost]
-        
+
         public async Task<ActionResult<StaffDto>> Create(CreatingStaffDto dto)
         {
             var authorizationHeader = Request.Headers["Authorization"].ToString();
-            User user;                      
+            User user;
             try
             {
                 user = await _authService.ValidateTokenAsync(authorizationHeader);
@@ -72,17 +72,18 @@ namespace DDDSample1.Controllers
                 return Unauthorized(ex.Message);
             }
 
-            bool isAuthoraze = await _authService.validateUserRole(user, RoleAdmin);
+            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
 
-            if(isAuthoraze){
+            if (isAuthoraze)
+            {
                 var cat = await _service.AddAsync(dto);
 
                 return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
             }
-             return Forbid(); 
+            return Forbid();
         }
 
-        
+
         // PUT: api/Staff/5
         [HttpPut("{id}")]
         public async Task<ActionResult<StaffDto>> Update(Guid id, StaffDto dto)
@@ -95,16 +96,16 @@ namespace DDDSample1.Controllers
             try
             {
                 var cat = await _service.UpdateAsync(dto);
-                
+
                 if (cat == null)
                 {
                     return NotFound();
                 }
                 return Ok(cat);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
@@ -123,7 +124,7 @@ namespace DDDSample1.Controllers
             return Ok(cat);
         }
         */
-        
+
         // DELETE: api/Staff/5
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<StaffDto>> HardDelete(Guid id)
@@ -139,9 +140,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(cat);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

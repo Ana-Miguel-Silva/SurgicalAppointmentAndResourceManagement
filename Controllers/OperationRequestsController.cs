@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
+using DDDSample1.Domain.Users;
 
 
 namespace DDDSample1.Controllers
@@ -11,8 +12,11 @@ namespace DDDSample1.Controllers
     {
         private readonly OperationRequestService _service;
 
-        public OperationRequests(OperationRequestService service)
+        private readonly AuthorizationService _authService;
+
+        public OperationRequests(OperationRequestService service, AuthorizationService authService)
         {
+            _authService = authService;
             _service = service;
         }
 
@@ -40,17 +44,22 @@ namespace DDDSample1.Controllers
         // POST: api/OperationRequests
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
-        {
-            try
-            {
-                var operationRequest = await _service.AddAsync(dto);
+        {            
 
-                return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
+            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.DOCTOR}).Result){
+
+                try
+                {
+                    var operationRequest = await _service.AddAsync(dto);
+
+                   return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
+                }
+                    catch(BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new {Message = ex.Message});
+                }
             }
-            catch(BusinessRuleValidationException ex)
-            {
-                return BadRequest(new {Message = ex.Message});
-            }
+            return Forbid(); 
         }
 
         

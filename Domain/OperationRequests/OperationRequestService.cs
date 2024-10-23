@@ -47,11 +47,10 @@ namespace DDDSample1.Domain.OperationRequests
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            //await checkPatientIdAsync(dto.PatientId);
-            await checkDoctorIdAsync(dto.DoctorId);
-            await checkOperationTypeIdAsync(dto.OperationTypeId);
+            
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
+            await checkOperationAndDoctorAsync(dto.OperationTypeId, dto.DoctorId);
 
             var operationRequest = new OperationRequest(dto.PatientId, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority);
 
@@ -119,16 +118,31 @@ namespace DDDSample1.Domain.OperationRequests
 
         private async Task checkDoctorIdAsync(StaffId doctorId)
         {
-            var category = await _repoDoc.GetByIdAsync(doctorId);
-            if (category == null)
+            var doctor = await _repoDoc.GetByIdAsync(doctorId);
+            if (doctor == null)
                 throw new BusinessRuleValidationException("Invalid Doctor Id.");
         }
 
         private async Task checkOperationTypeIdAsync(OperationTypeId operationTypeId)
         {
-            var category = await _repoOpType.GetByIdAsync(operationTypeId);
-            if (category == null)
+            var operationType = await _repoOpType.GetByIdAsync(operationTypeId);
+            if (operationType == null)
                 throw new BusinessRuleValidationException("Invalid OperationType Id.");
+        }
+
+        private async Task checkOperationAndDoctorAsync(OperationTypeId operationTypeId, StaffId doctorId)
+        {
+            var operationType = await _repoOpType.GetByIdAsync(operationTypeId);
+            if (operationType == null)
+                throw new BusinessRuleValidationException("Invalid OperationType Id.");
+
+                var doctor = await _repoDoc.GetByIdAsync(doctorId);
+            if (doctor == null)
+                throw new BusinessRuleValidationException("Invalid Doctor Id.");
+
+            if(operationType.GetAllSpecializations(operationType.RequiredStaff).Contains(doctor.Specialization))
+                throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
+
         }
 
         private static void CheckDate(DateTime date)
