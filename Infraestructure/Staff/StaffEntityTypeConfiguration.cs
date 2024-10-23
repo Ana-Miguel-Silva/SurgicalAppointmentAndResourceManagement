@@ -15,11 +15,19 @@ namespace DDDSample1.Infrastructure.Staff
                 emailBuilder.Property(e => e.FullEmail).HasColumnName("Email"); // Map to column
             });
 
-            builder.OwnsOne(u => u.Name, fullNameBuilder => 
+            builder.OwnsOne(sp => sp.Name, nameBuilder =>
             {
-                fullNameBuilder.Property(e => e.getFull())
-                    .HasColumnName("FullName")
-                    .IsRequired();
+                nameBuilder.Property(n => n.FirstName)
+                    .HasColumnName("FirstName")
+                    .HasMaxLength(100);
+
+                nameBuilder.Property(n => n.MiddleNames)
+                    .HasColumnName("MiddleNames")
+                    .HasMaxLength(200);
+
+                nameBuilder.Property(n => n.LastName)
+                    .HasColumnName("LastName")
+                    .HasMaxLength(100);
             });
                 
 

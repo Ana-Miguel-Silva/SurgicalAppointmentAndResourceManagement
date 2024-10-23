@@ -25,6 +25,18 @@ public class FullName : IValueObject
       }
     }
 
+    public FullName(){
+        
+    }
+
+    public FullName(string first, string middle, string last)
+    {
+        this.FirstName = first;
+        this.MiddleNames = middle;
+        this.LastName = last;
+
+    }
+
     public string getFull(){
         return string.Join(FirstName, MiddleNames, LastName);
     }

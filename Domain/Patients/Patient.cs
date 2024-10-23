@@ -42,7 +42,7 @@ namespace DDDSample1.Domain.Patients
         this.Phone = phone;
         this.DateOfBirth = dateOfBirth;
         this.Email = email;
-        this.UserEmail = email;
+        this.UserEmail = userEmail;
         this.gender = gender; 
         this.EmergencyContact = emergencyContact;     
         }

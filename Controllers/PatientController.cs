@@ -100,7 +100,7 @@ namespace DDDSample1.Controllers
         }
 
 
-    
+        /*
         // PUT: api/User/5
         [HttpPut("{id}")]
         public async Task<ActionResult<PatientDto>> Update(MedicalRecordNumber id, PatientDto dto)
@@ -125,6 +125,7 @@ namespace DDDSample1.Controllers
                 return BadRequest(new {Message = ex.Message});
             }
         }
+        */
 
         // POST: api/User/setPassword
         

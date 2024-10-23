@@ -18,6 +18,20 @@ namespace DDDSample1.Infrastructure.Patients
                  emailBuilder.HasIndex(e => e.FullEmail).IsUnique();
             });
 
+           builder.OwnsOne(sp => sp.name, nameBuilder =>
+            {
+                nameBuilder.Property(n => n.FirstName)
+                    .HasColumnName("FirstName")
+                    .HasMaxLength(100);
+
+                nameBuilder.Property(n => n.MiddleNames)
+                    .HasColumnName("MiddleNames")
+                    .HasMaxLength(200);
+
+                nameBuilder.Property(n => n.LastName)
+                    .HasColumnName("LastName")
+                    .HasMaxLength(100);
+            });
             
         }
     }

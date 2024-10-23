@@ -58,11 +58,8 @@ public class AuthorizationService
 
     public async Task<bool> ValidateUserRole(User User, List<string> Role)
     {
-        return Role.Contains(User.Role);
+        return Role.Contains(User.Role.ToUpper());
     }
 
-    internal object ValidateUserRole(string authorizationHeader, string dOCTOR)
-    {
-        throw new NotImplementedException();
-    }
+   
 }

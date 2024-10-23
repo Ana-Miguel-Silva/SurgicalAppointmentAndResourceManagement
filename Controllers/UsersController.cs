@@ -134,6 +134,7 @@ namespace DDDSample1.Controllers
         [HttpPost("setPassword")]
         public async Task<ActionResult> SetUpPassword([FromBody] PasswordRequest passwordRequest)
         {
+            
             var authorizationHeader = Request.Headers["Authorization"].ToString();
 
             User user;    
