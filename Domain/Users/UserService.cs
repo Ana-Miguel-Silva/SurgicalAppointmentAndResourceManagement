@@ -44,9 +44,10 @@ namespace DDDSample1.Domain.Users
 
         public async Task<UserDto> AddAsync(CreatingUserDto dto)
         {
-            CheckRole(dto.Role);
+            
 
             var emailObject = new Email(dto.Email);
+            CheckRole(dto.Role);
             var user = new User(dto.Username, emailObject, dto.Role);
 
             await _repo.AddAsync(user);
@@ -78,9 +79,8 @@ namespace DDDSample1.Domain.Users
             var body = $"Hello {user.Username},<br>\n" +
                     "You requested to set up your password for your Health App account.\r\n" +
                     "<br>Please click on the following link to set up your password:\r\n\n" +
-                    $"{resetLink}<br>\r" +                    
-                    "<br>If you did not request this, please ignore this email.\r\n" +
-                    "<br>The link will expire in 1 hour.";
+                    $"{resetLink}<br>\r\n\n" +                    
+                    "<br>If you did not request this, please ignore this email.\r\n";
 
             var sendEmailRequest = new SendEmailRequest(
                 user.Email.FullEmail, // Destinatário
@@ -188,7 +188,7 @@ namespace DDDSample1.Domain.Users
             return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
         }
 
-        private static void CheckRole(String role)
+        public static void CheckRole(String role)
         {
             if (!Role.IsValid(role.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Role.");

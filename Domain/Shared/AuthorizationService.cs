@@ -179,8 +179,5 @@ public class AuthorizationService
         return Role.Contains(User.Role);
     }
 
-    internal object ValidateUserRole(string authorizationHeader, string dOCTOR)
-    {
-        throw new NotImplementedException();
-    }
+    
 }

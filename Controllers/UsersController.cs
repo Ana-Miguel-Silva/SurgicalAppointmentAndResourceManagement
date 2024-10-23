@@ -49,6 +49,7 @@ namespace DDDSample1.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)
         {
+
             var result = await _service.AddAsync(dto);
 
             if (result == null)
