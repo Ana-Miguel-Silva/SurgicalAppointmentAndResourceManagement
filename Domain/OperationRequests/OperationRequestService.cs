@@ -1,6 +1,6 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
-using DDDSample1.Domain.Patient;
+using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
 
@@ -30,7 +30,7 @@ namespace DDDSample1.Domain.OperationRequests
             var list = await this._repo.GetAllAsync();
 
             List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(operationRequest =>
-                new(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority));
+                new(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority));
 
             return listDto;
         }
@@ -42,23 +42,23 @@ namespace DDDSample1.Domain.OperationRequests
             if (operationRequest == null)
                 return null;
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            //await checkPatientIdAsync(dto.PatientId);
+            //await checkMedicalRecordNumberAsync(dto.MedicalRecordNumber);
             await checkDoctorIdAsync(dto.DoctorId);
             await checkOperationTypeIdAsync(dto.OperationTypeId);
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
 
-            var operationRequest = new OperationRequest(dto.PatientId, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority);
+            var operationRequest = new OperationRequest(dto.MedicalRecordNumber, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority);
 
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto)
@@ -77,7 +77,7 @@ namespace DDDSample1.Domain.OperationRequests
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
         public async Task<OperationRequestDto> InactivateAsync(OperationRequestId id)
@@ -91,7 +91,7 @@ namespace DDDSample1.Domain.OperationRequests
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
         public async Task<OperationRequestDto> DeleteAsync(OperationRequestId id)
@@ -107,12 +107,12 @@ namespace DDDSample1.Domain.OperationRequests
             this._repo.Remove(operationRequest);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.PatientId, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
+            return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        /*private async Task checkPatientIdAsync(PatientId patientId)
+        /*private async Task checkMedicalRecordNumberAsync(MedicalRecordNumber MedicalRecordNumber)
         {
-            var category = await _repoPat.GetByIdAsync(patientId);
+            var category = await _repoPat.GetByIdAsync(MedicalRecordNumber);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid Patient Id.");
         }*/

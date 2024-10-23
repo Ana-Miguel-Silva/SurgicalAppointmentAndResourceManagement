@@ -32,4 +32,9 @@ public class FullName : IValueObject
        yield return MiddleNames;
        yield return LastName;
     }
+
+    public string toName(){
+
+        return this.FirstName + " " + this.MiddleNames + " " + this.LastName;
+    }
 }

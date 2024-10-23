@@ -32,9 +32,10 @@ to control their data access.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question:** In an allergy record, is it necessary to include the date of diagnosis and the name of the doctor who made it?
+>What defines an allergy and one medical condition?
 >
-> **Answer:** 
+> **Answer:** allergies is is a free text field. the doctor will fill it in as best-suited
 
 
 **Dependencies/References:**

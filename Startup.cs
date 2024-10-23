@@ -29,6 +29,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.Patients;
+using DDDSample1.Infrastructure.Patients;
 
 
 namespace DDDSample1
@@ -155,6 +157,9 @@ namespace DDDSample1
 
             services.AddTransient<IStaffRepository,StaffRepository>();
             services.AddTransient<StaffService>();
+
+            services.AddTransient<IPatientRepository,PatientRepository>();
+            services.AddTransient<PatientService>();
 
 
             services.AddTransient<IStaffRepository,StaffRepository>();
