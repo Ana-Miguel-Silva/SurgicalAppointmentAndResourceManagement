@@ -7,9 +7,9 @@ namespace DDDSample1.Domain.OperationTypes
 
         public string Name { get; private set; }
 
-        public List<string> RequiredStaff { get; private set; }
+        public List<RequiredStaff> RequiredStaff { get; private set; }
 
-        public List<string> EstimatedDuration { get; private set; }
+        public EstimatedDuration EstimatedDuration { get; private set; }
 
         public bool Active { get; private set; }
 
@@ -18,7 +18,7 @@ namespace DDDSample1.Domain.OperationTypes
             this.Active = true;
         }
 
-        public OperationType(string name, List<string> requiredStaff, List<string> estimatedDuration)
+        public OperationType(string name, List<RequiredStaff> requiredStaff, EstimatedDuration estimatedDuration)
         {
             if (name == null || requiredStaff == null || estimatedDuration == null)
                 throw new BusinessRuleValidationException("One of the operationType parameters was not valid");
@@ -30,7 +30,7 @@ namespace DDDSample1.Domain.OperationTypes
             this.Active = true;
         }
 
-        public void ChangeEstimatedDuration(List<string> newEstimatedDuration)
+        public void ChangeEstimatedDuration(EstimatedDuration newEstimatedDuration)
         {
             if (!this.Active)
                 throw new BusinessRuleValidationException("Cannot change the estimated duration of an inactive operationType.");
@@ -39,6 +39,18 @@ namespace DDDSample1.Domain.OperationTypes
                 throw new BusinessRuleValidationException("The new estimated duration must be valid.");
 
             this.EstimatedDuration = newEstimatedDuration;
+        }
+
+        public List<string> GetAllSpecializations(List<RequiredStaff> staffList)
+        {
+            HashSet<string> specializations = new HashSet<string>();
+
+            foreach (var staff in staffList)
+            {
+                specializations.Add(staff.Specialization);
+            }
+            
+            return specializations.ToList();
         }
 
         public void MarkAsInative()

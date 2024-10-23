@@ -102,16 +102,13 @@ namespace DDDSample1.Domain.OperationTypes
             if (name == null || name.Length == 0)
                 throw new BusinessRuleValidationException("Invalid OperationType Name.");
         }
-
-        //Seré necessário verificar o formato das strings da listas?
-
-        private static void CheckEstimatedTime(List<string> estimatedTime)
+        private static void CheckEstimatedTime(EstimatedDuration estimatedTime)
         {
-            if (estimatedTime == null || estimatedTime.Count == 0)
+            if (estimatedTime == null)
                 throw new BusinessRuleValidationException("Invalid Estimated Time.");
         }
 
-        private static void CheckRequiredStaff(List<string> requiredStaff)
+        private static void CheckRequiredStaff(List<RequiredStaff> requiredStaff)
         {
             if (requiredStaff == null || requiredStaff.Count == 0)
                 throw new BusinessRuleValidationException("Invalid Required Staff.");

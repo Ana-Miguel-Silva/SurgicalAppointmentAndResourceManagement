@@ -1,5 +1,4 @@
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.SurgeryRooms;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
