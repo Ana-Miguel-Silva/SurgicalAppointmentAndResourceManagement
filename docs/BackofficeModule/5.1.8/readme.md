@@ -22,7 +22,7 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 >
 > **Answer 1: Registering a patient record is a separate action from the patient self-registering as a user** 
 
-> **Question 2: I understand that the Admin can create the Pacient profile and leave the User as inactive, but how does the activation happen? If that pacient eventualy wants to register himself, should there be an option to activate an existing profile? For example, associate the e-mail from registration input with the existing profile's e-mail? The feature 5.1.3 asks for the full registration, but doesn't say anything about profiles that already exist.**
+> **Question 2: I understand that the Admin can create the Patient profile and leave the User as inactive, but how does the activation happen? If that pacient eventualy wants to register himself, should there be an option to activate an existing profile? For example, associate the e-mail from registration input with the existing profile's e-mail? The feature 5.1.3 asks for the full registration, but doesn't say anything about profiles that already exist.**
 >
 > **Answer 2: the admin register the patient (this does not create a user for that patient) optionally, the patient self-registers in the system by providing the same email that is currently recorded in their patient record and the system associates the user and the patient there is no option for someone who is not a patient of the system to register as a user** 
 
@@ -49,33 +49,29 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 **Dependencies/References:**
 
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
+    * Full Name
     * E-mail
-
-
-* Selected data:
-    * User 
-    * Role
+    * Phone
+    * Gender
+    * Date of Birth
+    * Medical Conditions (?)
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the registered patient (Add Patient)
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Question 97:** 
+> 
+> **Answer:** 
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)
@@ -103,13 +99,9 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 
 
 
-### 4.2. Class Diagram
+### 4.2. Applied Patterns
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
@@ -165,7 +157,7 @@ public void verifyIfUsersAreEquals() {
   final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
 
 * **String generatePassword()** this method automatically generate a password for the User. 
-
+k
 
 
 ### Methods in the DeactivateUsersController
