@@ -71,7 +71,7 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 ## 4. Design
 
 [//]: # (TODO: Ainda necessario alterar esta parte)
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** E-mail, Patient
 
 **Controller:** PatientController
 

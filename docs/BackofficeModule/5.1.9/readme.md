@@ -56,33 +56,37 @@ As part of the development of the software system, it is necessary to implement 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Patient
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** PatientController
 
 **UI:** DeactivateUserUI, AddUserUI, ListUserUI
 
 **Repository:**	UserRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** PatientService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+#### Edit Patient Profile
 
+**Sequence Diagram Level 1**
 
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
+**Sequence Diagram Level 2**
 
-### 4.2. Class Diagram
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+**Sequence Diagram Level 3**
 
-### 4.3. Applied Patterns
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit Patient Profile")
 
-### 4.4. Tests
+### 4.2. Applied Patterns
+
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 

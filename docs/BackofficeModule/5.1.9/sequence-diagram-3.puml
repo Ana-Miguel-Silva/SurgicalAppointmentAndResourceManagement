@@ -5,16 +5,12 @@ skinparam shadowing false
 
 autonumber
 
-actor "Patient" as AD
-participant "Frontend" as FE <<component>>
 participant "PatientController" as CTRL <<component>>
 participant "PatientService" as SERV <<component>>
 participant "PatientRepository" as REPO <<component>>
 
-activate AD
-AD -> FE: access page
-activate FE
-FE -> CTRL: getEditForm(ID)
+
+-> CTRL: getEditForm(ID)
 activate CTRL
 CTRL -> SERV: getInfo(ID)
 activate SERV
@@ -24,29 +20,19 @@ REPO --> SERV: Patient
 deactivate REPO
 SERV --> CTRL: Patient
 deactivate SERV
-CTRL --> FE: Patient
+<-- CTRL : PatientDto
 deactivate CTRL
-FE --> AD: provide edit form
-deactivate FE
-AD -> FE : edit info of item
-activate FE
-FE -> CTRL: updatePatient(Phone, Email, MedicalConditions)
+ -> CTRL: updatePatient(Full Name, Phone, Email, MedicalConditions, AppointmentHistory)
 activate CTRL
-CTRL -> SERV: updatePatient(...)
+CTRL -> SERV: updatePatient(Full Name, Phone, Email, MedicalConditions, AppointmentHistory)
 activate SERV
-SERV -> REPO: update(item)
+SERV -> REPO: update(Patient)
 activate REPO
 REPO --> SERV: success
 deactivate REPO
 SERV --> CTRL: success
 deactivate SERV
-CTRL --> FE: success
-deactivate CTRL
-FE --> AD : success and data
-
-deactivate FE
-
-deactivate AD
+<-- CTRL  : success
 
 
 
