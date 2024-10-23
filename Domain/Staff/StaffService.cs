@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Domain.Staff
 {
@@ -19,7 +20,7 @@ namespace DDDSample1.Domain.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization));
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots));
 
             return listDto;
         }
@@ -28,8 +29,8 @@ namespace DDDSample1.Domain.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization));
-            if (name != null) listDto = listDto.Where(x => x.Username.Equals(name)).ToList();
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots));
+            if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
             //if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
@@ -43,24 +44,28 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
     
-            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots);
         }
 
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
             var emailObject = new Email(dto.Email);
+            List<Slot> converted = [];
+            foreach (var slot in dto.Slots)
+            {
+                converted.Add(new Slot(slot.Start, slot.End));
+            }
+            var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted);
 
-            var user = new StaffProfile(dto.Username, emailObject, new PhoneNumber(dto.PhoneNumber), dto.Specialization);
-
-            await this._repo.AddAsync(user);
+            await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();
      
 
-            if (user == null)
+            if (staff == null)
                 return null;
                 
-            return new StaffDto(user.Id.AsGuid(), user.Username, user.Email, user.PhoneNumber, user.Specialization);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted);
         }
 
         public async Task<StaffDto> UpdateAsync(StaffDto dto)
@@ -74,7 +79,7 @@ namespace DDDSample1.Domain.Staff
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots);
         }
 
         public async Task<StaffDto> InactivateAsync(StaffId id)
@@ -88,7 +93,7 @@ namespace DDDSample1.Domain.Staff
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots);
         }
 
         public async Task<StaffDto> DeleteAsync(StaffId id)
@@ -99,13 +104,17 @@ namespace DDDSample1.Domain.Staff
                 return null;
 
             if (staff.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active user.");
+                throw new BusinessRuleValidationException("It is not possible to delete an active staff.");
 
             this._repo.Remove(staff);
             await this._unitOfWork.CommitAsync();
 
-             return new StaffDto(staff.Id.AsGuid(), staff.Username, staff.Email, staff.PhoneNumber, staff.Specialization);
+             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots);
         }
-
+        private static void CheckRole(String role)
+        {
+            if (!Role.IsValid(role.ToUpper()) || role.ToUpper().Equals("ADMIN") || role.ToUpper().Equals("PATIENT"))
+                throw new BusinessRuleValidationException("Invalid Role.");
+        }
     }
 }

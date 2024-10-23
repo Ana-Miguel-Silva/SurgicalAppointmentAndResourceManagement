@@ -25,6 +25,10 @@ public class FullName : IValueObject
       }
     }
 
+    public string getFull(){
+        return string.Join(FirstName, MiddleNames, LastName);
+    }
+
 
     IEnumerable<object> IValueObject.GetEqualityComponents()
     {

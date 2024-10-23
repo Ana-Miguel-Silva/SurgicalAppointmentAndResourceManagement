@@ -15,9 +15,13 @@ namespace DDDSample1.Infrastructure.Staff
                 emailBuilder.Property(e => e.FullEmail).HasColumnName("Email"); // Map to column
             });
 
-            builder.Property(u => u.Username)
-                .IsRequired()
-                .HasMaxLength(100); // Example constraints
+            builder.OwnsOne(u => u.Name, fullNameBuilder => 
+            {
+                fullNameBuilder.Property(e => e.getFull())
+                    .HasColumnName("FullName")
+                    .IsRequired();
+            });
+                
 
             builder.OwnsOne(u => u.PhoneNumber, phoneBuilder =>
             {
@@ -31,9 +35,33 @@ namespace DDDSample1.Infrastructure.Staff
                 .IsRequired()
                 .HasMaxLength(50); // Example constraint, adjust as needed
 
+            builder.Property(u => u.Role)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(u => u.LicenseNumber)
+                .IsRequired()
+                .HasMaxLength(10);
+
             // Configure Active property
             builder.Property(u => u.Active)
                 .IsRequired();
+
+
+            builder.OwnsMany(u => u.AvailabilitySlots, slotBuilder =>
+            {
+                slotBuilder.WithOwner().HasForeignKey("StaffId");
+
+                slotBuilder.Property(s => s.StartTime)
+                    .HasColumnName("StartTime")
+                    .IsRequired();
+
+                slotBuilder.Property(s => s.EndTime)
+                    .HasColumnName("EndTime")
+                    .IsRequired();
+
+                slotBuilder.ToTable("StaffAvailabilitySlots");
+            });
         }
     }
 }

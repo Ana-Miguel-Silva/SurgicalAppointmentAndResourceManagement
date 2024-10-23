@@ -1,24 +1,28 @@
+using System.Globalization;
+
 namespace DDDSample1.Domain.Shared
 {
     public class Slot : IValueObject
     {
-        public DateOnly StartDate { get; private set; }
-        public DateOnly EndDate { get; private set; }
-        public TimeSpan StartTime { get; private set; }
-        public TimeSpan EndTime { get; private set; }
+        public DateTime StartTime { get; private set; }
+        public DateTime EndTime { get; private set; }
 
-        public Slot(DateOnly startDate, DateOnly endDate, TimeSpan startTime, TimeSpan endTime)
-        {
-            StartDate = startDate;
-            EndDate = endDate;
-            StartTime = startTime;
-            EndTime = endTime;
+
+        public Slot(DateTime start, DateTime end) {
+            StartTime = start;
+            EndTime = end;
+        }
+        public Slot(string start, string end) {
+            StartTime = DateTime.Parse(start);
+            EndTime = DateTime.Parse(end);
+        }
+
+        public TimeSpan timespan(){
+            return EndTime - StartTime;
         }
 
         public IEnumerable<object> GetEqualityComponents()
         {
-            yield return StartDate;
-            yield return EndDate;
             yield return StartTime;
             yield return EndTime;
         }

@@ -6,14 +6,16 @@ namespace DDDSample1.Domain.Staff
 
     public class StaffProfile : Entity<StaffId>, IAggregateRoot
     {
-        public string Username { get; private set; }
+        public FullName Name { get; private set; }
         public string Specialization { get; private set; }
         public Email Email { get; private set; }
-        
         public PhoneNumber PhoneNumber { get; private set; }
+        public string Role { get; private set; }
 
         public bool Active { get; private set; }
-        //public string LicenseNumber { get; private set; }
+        
+        public List<Slot> AvailabilitySlots { get; private set; }
+        public string? LicenseNumber { get; private set; }
 
 
         private StaffProfile()
@@ -21,13 +23,15 @@ namespace DDDSample1.Domain.Staff
             this.Active = true;
         }
 
-        public StaffProfile(string username, Email email, PhoneNumber phone, string specialization)
+        public StaffProfile(FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots)
         {
             this.Id = new StaffId(Guid.NewGuid());
-            this.Username = username;
+            this.Name = name;
             this.Email = email;
             this.PhoneNumber = phone;
+            this.Role = role;
             this.Specialization = specialization;
+            this.AvailabilitySlots = slots;
 
         }
 
@@ -41,6 +45,11 @@ namespace DDDSample1.Domain.Staff
         public void ChangePhone(PhoneNumber phone)
         {
             PhoneNumber = phone;
+        }
+
+        public void UpdateSlots(List<Slot> slots)
+        {
+            AvailabilitySlots = slots;
         }
 
 
