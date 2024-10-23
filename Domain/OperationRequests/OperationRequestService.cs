@@ -1,6 +1,4 @@
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
-using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
 
@@ -47,9 +45,7 @@ namespace DDDSample1.Domain.OperationRequests
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            //await checkMedicalRecordNumberAsync(dto.MedicalRecordNumber);
-            await checkDoctorIdAsync(dto.DoctorId);
-            await checkOperationTypeIdAsync(dto.OperationTypeId);
+
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
             await checkOperationAndDoctorAsync(dto.OperationTypeId, dto.DoctorId);
@@ -67,7 +63,15 @@ namespace DDDSample1.Domain.OperationRequests
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
 
+
             var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
+
+            //var doctors = await _repoDoc.GetByUsernameAsync(authUserEmail);
+
+           // var doctor = doctors.FirstOrDefault();
+
+           // if(operationRequest.DoctorId != doctor.Id)
+             //   throw new BusinessRuleValidationException("Doctor is not the creator of the Operation Request.");
 
             if (operationRequest == null)
                 return null;
@@ -132,19 +136,20 @@ namespace DDDSample1.Domain.OperationRequests
                 throw new BusinessRuleValidationException("Invalid OperationType Id.");
         }
 
-        private async Task checkOperationAndDoctorAsync(OperationTypeId operationTypeId, StaffId doctorId)
+        private async Task<bool> checkOperationAndDoctorAsync(OperationTypeId operationTypeId, StaffId doctorId)
         {
             var operationType = await _repoOpType.GetByIdAsync(operationTypeId);
             if (operationType == null)
                 throw new BusinessRuleValidationException("Invalid OperationType Id.");
 
-                var doctor = await _repoDoc.GetByIdAsync(doctorId);
+            var doctor = await _repoDoc.GetByIdAsync(doctorId);
             if (doctor == null)
                 throw new BusinessRuleValidationException("Invalid Doctor Id.");
 
-            if(operationType.GetAllSpecializations(operationType.RequiredStaff).Contains(doctor.Specialization))
-                throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
-
+            if (operationType.GetAllSpecializations(operationType.RequiredStaff).Contains(doctor.Specialization))
+                return true;
+        
+            throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
         }
 
         private static void CheckDate(DateTime date)
@@ -157,6 +162,11 @@ namespace DDDSample1.Domain.OperationRequests
         {
             if (!Priority.IsValid(priority.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Priority.");
+        }
+
+        private static void CheckCreator()
+        {
+           
         }
 
     }

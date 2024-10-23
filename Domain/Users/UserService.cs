@@ -12,7 +12,7 @@ namespace DDDSample1.Domain.Users
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _repo;
         private readonly IMailService _mailService;
-        
+
         private readonly JwtSettings _jwtSettings;
 
         public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IMailService mailService, IOptions<JwtSettings> jwtSettings)
@@ -20,7 +20,7 @@ namespace DDDSample1.Domain.Users
             _unitOfWork = unitOfWork;
             _repo = userRepository;
             _mailService = mailService;
-            _jwtSettings = jwtSettings.Value; 
+            _jwtSettings = jwtSettings.Value;
         }
         public async Task<List<UserDto>> GetAllAsync()
         {
@@ -56,7 +56,7 @@ namespace DDDSample1.Domain.Users
             var token = GenerateToken(user);
             var currentTime = DateTime.UtcNow;
             double time = _jwtSettings.TokenExpiryInMinutes;
-            var expirationTime = currentTime.AddMinutes(_jwtSettings.TokenExpiryInMinutes); 
+            var expirationTime = currentTime.AddMinutes(_jwtSettings.TokenExpiryInMinutes);
 
             await SendPasswordSetupEmail(user);
 
@@ -67,10 +67,10 @@ namespace DDDSample1.Domain.Users
 
 
         private async Task SendPasswordSetupEmail(User user)
-        {            
+        {
 
             var token = GenerateToken(user);
-            
+
             var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38833556-d2be1ab7-de01-46ca-8a52-93ab95f42312?tab=body";
 
             var body = $"Hello {user.Username},\r\n\r\n" +
@@ -90,7 +90,7 @@ namespace DDDSample1.Domain.Users
             await _mailService.SendEmailAsync(sendEmailRequest);
         }
 
-  
+
 
 
         public string GenerateToken(User user)
@@ -154,7 +154,7 @@ namespace DDDSample1.Domain.Users
                     ValidateAudience = true,
                     ValidAudience = _jwtSettings.Audience,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5) 
+                    ClockSkew = TimeSpan.FromMinutes(5)
                 }, out var validatedToken);
 
                 var userIdClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
@@ -166,16 +166,16 @@ namespace DDDSample1.Domain.Users
 
                 var userRoleClaim = claimsPrincipal.FindFirst(ClaimTypes.Role);
                 Console.WriteLine($"{userRoleClaim}");
-                
 
-               
+
+
                 var userId2 = Guid.Parse(userIdClaim.Value);
                 var userIdObject = new UserId(userId2);
-                
+
                 var user = await _repo.GetByIdAsync(userIdObject);
 
-                 Console.WriteLine(user.Id);
-                 Console.WriteLine(userIdObject);
+                Console.WriteLine(user.Id);
+                Console.WriteLine(userIdObject);
                 return user;
             }
             catch (Exception ex)
@@ -185,32 +185,32 @@ namespace DDDSample1.Domain.Users
             }
         }
 
-               
+
         public async Task UpdatePassword(User user, string newPassword)
         {
             try
             {
                 user.SetPassword(newPassword);
-                
+
             }
             catch (ArgumentException ex)
             {
                 throw new Exception("Password does not meet the required format.", ex);
-            }     
+            }
 
             try
             {
                 await this._unitOfWork.CommitAsync();
             }
             catch (Exception ex)
-            {                
+            {
                 throw new Exception("An error occurred while updating the password.", ex);
-            }       
+            }
         }
 
         public async Task<string> Login(string username, string password)
         {
-            
+
             var users = await _repo.GetByUsernameAsync(username);
 
             var user = users.FirstOrDefault();
@@ -232,7 +232,7 @@ namespace DDDSample1.Domain.Users
         }
 
 
-      
+
 
         public async Task<UserDto> UpdateAsync(UserDto dto)
         {

@@ -56,10 +56,28 @@ public class AuthorizationService
         return isAuthoraze;
     }
 
-    public async Task<bool> ValidateUserRole(User User, List<string> Role)
+    public async Task<string> GetUserEmail(string authorizationHeader)
     {
-        return Role.Contains(User.Role.ToUpper());
+        User user;
+        try
+        {
+            user = await ValidateTokenAsync(authorizationHeader);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
+
+        return user.Email.ToString();
     }
 
-   
+    public async Task<bool> ValidateUserRole(User User, List<string> Role)
+    {
+        return Role.Contains(User.Role);
+    }
+
+    internal object ValidateUserRole(string authorizationHeader, string dOCTOR)
+    {
+        throw new NotImplementedException();
+    }
 }

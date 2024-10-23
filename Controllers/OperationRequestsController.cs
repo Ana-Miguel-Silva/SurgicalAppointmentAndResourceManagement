@@ -24,7 +24,21 @@ namespace DDDSample1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAll()
         {
-            return await _service.GetAllAsync();
+
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
+            {
+
+                try
+                {
+                    return await _service.GetAllAsync();
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Forbid();
+
         }
 
         // GET: api/OperationRequests/5
@@ -44,48 +58,56 @@ namespace DDDSample1.Controllers
         // POST: api/OperationRequests
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
-        {            
+        {
 
-            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.DOCTOR}).Result){
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
+            {
 
                 try
                 {
                     var operationRequest = await _service.AddAsync(dto);
 
-                   return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
+                    return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
                 }
-                    catch(BusinessRuleValidationException ex)
+                catch (BusinessRuleValidationException ex)
                 {
-                    return BadRequest(new {Message = ex.Message});
+                    return BadRequest(new { Message = ex.Message });
                 }
             }
-            return Forbid(); 
+            return Forbid();
         }
 
-        
+
         // PUT: api/OperationRequests/5
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(Guid id, OperationRequestDto dto)
         {
-            if (id != dto.Id)
-            {
-                return BadRequest();
-            }
 
-            try
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
-                var operationRequest = await _service.UpdateAsync(dto);
-                
-                if (operationRequest == null)
+
+                if (id != dto.Id)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                return Ok(operationRequest);
+
+                try
+                {
+                    var operationRequest = await _service.UpdateAsync(dto);
+
+                    if (operationRequest == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(operationRequest);
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
             }
-            catch(BusinessRuleValidationException ex)
-            {
-                return BadRequest(new {Message = ex.Message});
-            }
+            return Forbid();
         }
 
         // Inactivate: api/OperationRequests/5
@@ -101,7 +123,7 @@ namespace DDDSample1.Controllers
 
             return Ok(operationRequest);
         }
-        
+
         // DELETE: api/OperationRequests/5
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
@@ -117,9 +139,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(operationRequest);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

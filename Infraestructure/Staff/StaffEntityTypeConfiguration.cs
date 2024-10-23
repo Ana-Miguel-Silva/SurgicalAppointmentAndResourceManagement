@@ -29,13 +29,13 @@ namespace DDDSample1.Infrastructure.Staff
                     .HasColumnName("LastName")
                     .HasMaxLength(100);
             });
-                
+
 
             builder.OwnsOne(u => u.PhoneNumber, phoneBuilder =>
             {
                 phoneBuilder.Property(e => e.Number)
-                    .HasColumnName("PhoneNumber") 
-                    .IsRequired() 
+                    .HasColumnName("PhoneNumber")
+                    .IsRequired()
                     .HasMaxLength(9);
             });
 
@@ -56,19 +56,12 @@ namespace DDDSample1.Infrastructure.Staff
                 .IsRequired();
 
 
-            builder.OwnsMany(u => u.AvailabilitySlots, slotBuilder =>
+            builder.OwnsMany(sp => sp.AvailabilitySlots, slotsBuilder =>
             {
-                slotBuilder.WithOwner().HasForeignKey("StaffId");
-
-                slotBuilder.Property(s => s.StartTime)
-                    .HasColumnName("StartTime")
-                    .IsRequired();
-
-                slotBuilder.Property(s => s.EndTime)
-                    .HasColumnName("EndTime")
-                    .IsRequired();
-
-                slotBuilder.ToTable("StaffAvailabilitySlots");
+                slotsBuilder.ToTable("StaffAvailabilitySlots");
+                slotsBuilder.WithOwner().HasForeignKey("StaffProfileId");
+                slotsBuilder.Property(s => s.StartTime).HasColumnName("StartTime").IsRequired();
+                slotsBuilder.Property(s => s.EndTime).HasColumnName("EndTime").IsRequired();
             });
         }
     }

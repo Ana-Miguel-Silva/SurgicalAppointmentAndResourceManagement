@@ -7,6 +7,7 @@ namespace DDDSample1.Domain.Shared
         public DateTime StartTime { get; private set; }
         public DateTime EndTime { get; private set; }
 
+  private Slot() { }
 
         public Slot(DateTime start, DateTime end) {
             StartTime = start;
