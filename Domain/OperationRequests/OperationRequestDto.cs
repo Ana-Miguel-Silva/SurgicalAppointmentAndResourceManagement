@@ -10,7 +10,7 @@ namespace DDDSample1.Domain.OperationRequests
     {
         public Guid Id { get; set; }
 
-        public MedicalRecordNumber MedicalRecordNumber { get; set; }
+        public PatientId MedicalRecordNumber { get; set; }
 
         public StaffId DoctorId { get; set; }
 
@@ -20,14 +20,14 @@ namespace DDDSample1.Domain.OperationRequests
 
         public string Priority { get; set; }
 
-        public OperationRequestDto(Guid Id, MedicalRecordNumber patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string Priority)
+        public OperationRequestDto(Guid id, PatientId patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string priority)
         {
-            this.Id = Id;
+            this.Id = id;
             this.MedicalRecordNumber = patId;
             this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
-            this.Priority = Priority;
+            this.Priority = priority;
         }
     }
 }

@@ -3,16 +3,16 @@ using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Patients
 {
-  public static class Gender
+  public static class Gender 
     {
-      public const string FEMININO = "FEMININO";
-      public const string MASCULINO = "MASCULINO";
+      public const string FEMALE = "FEMALE";
+      public const string MALE = "MALE";
 
       
 
       public static string[] Genders()
       {
-          return [FEMININO, MASCULINO];
+          return [FEMALE, MALE];
       }
 
       public static bool IsValid(string Status)

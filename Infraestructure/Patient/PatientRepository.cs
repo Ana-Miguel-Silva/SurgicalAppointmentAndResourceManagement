@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DDDSample1.Infrastructure.Patients
 {
-    public class PatientRepository : BaseRepository<Patient, MedicalRecordNumber>, IPatientRepository
+    public class PatientRepository : BaseRepository<Patient, PatientId>, IPatientRepository
     {
         private readonly DDDSample1DbContext _context;
     

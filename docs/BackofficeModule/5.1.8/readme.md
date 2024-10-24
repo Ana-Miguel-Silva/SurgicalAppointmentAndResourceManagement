@@ -38,14 +38,6 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 >
 > **Answer 5:** 
 
-> **Question 6:**
->
-> **Answer 7:** 
-
-> **Question 7:**
->
-> **Answer 7:** 
-
 **Dependencies/References:**
 
 
@@ -78,10 +70,10 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 
 ## 4. Design
 
+[//]: # (TODO: Ainda necessario alterar esta parte)
+**Domain Class/es:** E-mail, Patient
 
-**Domain Class/es:** E-mail, SystemUser
-
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** PatientController
 
 **UI:** DeactivateUserUI, AddUserUI, ListUserUI
 
@@ -93,11 +85,19 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+#### Create Patient Profile
 
+**Sequence Diagram Level 1**
 
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
+**Sequence Diagram Level 2**
+
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
+
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Creat Patient Profile")
 
 ### 4.2. Applied Patterns
 

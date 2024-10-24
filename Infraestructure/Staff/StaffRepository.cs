@@ -14,12 +14,12 @@ namespace DDDSample1.Infrastructure.Staff
 
         }
 
-       /* public async Task<List<StaffProfile>> GetByUsernameAsync(string username)
+        public async Task<List<StaffProfile>> GetByUsernameAsync(string email)
         {
             return await _context.StaffProfiles
-                .Where(s => s.Email.Contains(username))
+                .Where(s => s.Email.ToString().Contains(email))
                 .ToListAsync();
         }
-*/
+
     }
 }

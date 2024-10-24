@@ -22,8 +22,9 @@ namespace DDDSample1.Infrastructure.Users
                 passwordBuilder.Property(e => e.Pass).HasColumnName("Password"); // Map to column
             });
 
+
             builder.Property(u => u.Username)
-                .IsRequired()
+                .IsRequired().IsRequired()
                 .HasMaxLength(100); // Example constraints
 
             builder.Property(u => u.Role)

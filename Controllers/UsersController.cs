@@ -45,26 +45,20 @@ namespace DDDSample1.Controllers
             return cat;
         }
 
-        // POST: api/User
+        // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<object>> Create(CreatingUserDto dto)
+        public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)
         {
+
             var result = await _service.AddAsync(dto);
 
-            if (result.User == null)
+            if (result == null)
             {
-                return BadRequest("Não foi possível criar o usuário.");
+                return BadRequest("Wasn't possible to create the user.");
             }
 
             // Retorna as informações no formato esperado
-            return CreatedAtAction(nameof(GetById), new { id = result.User.Id }, new
-            {
-                User = result.User,
-                Token = result.Token,
-                CurrentTime = result.CurrentTime,
-                ExpirationTime = result.ExpirationTime,
-                Time = result.time
-            });
+            return result;
         }
 
 
@@ -76,10 +70,12 @@ namespace DDDSample1.Controllers
             {
                 Console.WriteLine($"Username: {login.Username}, Password: {login.Password}");
 
-                var result = await _service.Login(login.Username, login.Password);
+                var user = await _service.Login(login.Username, login.Password);
+
+                var token = _authService.GenerateToken(user);
 
                 
-                return Ok($"Token para autenticação: {result}");
+                return Ok($"Token para autenticação: {token}");
             }
             catch (Exception ex)
             {
@@ -133,30 +129,11 @@ namespace DDDSample1.Controllers
         
         [HttpPost("setPassword")]
         public async Task<ActionResult> SetUpPassword([FromBody] PasswordRequest passwordRequest)
-        {
-            
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-
-            User user;    
+        {                     
 
             try
             {
-                (user) = await _authService.ValidateTokenAsync(authorizationHeader);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-
-    
-            if (user == null)
-            {
-                return Unauthorized("Invalid token.");
-            }
-
-            try
-            {
-                await _service.UpdatePassword(user, passwordRequest.Password);
+                await _service.UpdatePassword(passwordRequest.Username, passwordRequest.Password);
                 return Ok("Password has been reset successfully.");
             }
             catch (Exception ex)

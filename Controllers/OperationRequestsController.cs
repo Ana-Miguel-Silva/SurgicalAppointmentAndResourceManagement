@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Users;
+using DDDSample1.Domain.OperationTypes;
 
 
 namespace DDDSample1.Controllers
@@ -62,7 +63,6 @@ namespace DDDSample1.Controllers
 
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
-
                 try
                 {
                     var operationRequest = await _service.AddAsync(dto);
@@ -76,6 +76,23 @@ namespace DDDSample1.Controllers
             }
             return Forbid();
         }
+
+        // GET: api/OperationRequests/search
+        [HttpGet("{search}")]
+        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFiltered(
+            [FromQuery] string? patientId,
+            [FromQuery] Guid? operationTypeId,
+            [FromQuery] string? priority,
+            [FromQuery] bool? status)
+        {
+            MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
+            OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
+
+            var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority);
+
+            return operationRequests;
+        }
+
 
 
         // PUT: api/OperationRequests/5
@@ -93,7 +110,7 @@ namespace DDDSample1.Controllers
 
                 try
                 {
-                    var operationRequest = await _service.UpdateAsync(dto);
+                    var operationRequest = await _service.UpdateAsync(dto, _authService.GetUserEmail(Request.Headers["Authorization"]).Result);
 
                     if (operationRequest == null)
                     {

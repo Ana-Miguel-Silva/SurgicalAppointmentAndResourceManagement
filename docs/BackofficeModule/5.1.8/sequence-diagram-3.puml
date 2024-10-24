@@ -5,30 +5,18 @@ skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
-participant "Frontend" as FE <<component>>
 participant "PatientController" as CTRL <<component>>
 participant "PatientService" as SERV <<component>>
 participant "Patient" as DOM <<component>>
 participant "PatientRepository" as REPO <<component>>
 
-activate AD
 
-AD -> FE: access page
-
-activate FE
-
-FE -> CTRL: getCreateForm()
+ -> CTRL: getCreateForm()
 activate CTRL
-CTRL --> FE: form
+<-- CTRL  : form
 deactivate CTRL
-FE --> AD: data input
 
-deactivate FE
-
-AD -> FE : info to create Patient(fullName,email, phone, gender, dateOfBirth,(?))
-activate FE
-FE -> CTRL: createPatient(fullName,email, phone, gender, dateOfBirth,(?))
+-> CTRL: createPatient(fullName,email, phone, gender, dateOfBirth,(?))
 activate CTRL
 CTRL -> SERV: createPatient(fullName,email, phone, gender, dateOfBirth,(?))
 activate SERV
@@ -39,13 +27,9 @@ REPO --> SERV: success
 deactivate REPO
 SERV --> CTRL: success
 deactivate SERV
-CTRL --> FE: success
+<-- CTRL: success
 deactivate CTRL
-FE --> AD : success and data
 
-deactivate FE
-
-deactivate AD
 
 
 

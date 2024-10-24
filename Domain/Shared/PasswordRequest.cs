@@ -6,7 +6,10 @@ namespace DDDSample1.Domain.Shared
       
       public string Password { get; set; }
 
-      public PasswordRequest( string pass){
+      public string Username { get; set; }
+
+      public PasswordRequest( string username, string pass){
+        this.Username = username;
         this.Password = pass;
       }
   }

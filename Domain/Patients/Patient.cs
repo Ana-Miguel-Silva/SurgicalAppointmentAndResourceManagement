@@ -5,7 +5,7 @@ using DDDSample1.Domain.Categories;
 
 namespace DDDSample1.Domain.Patients
 {
-    public class Patient : Entity<MedicalRecordNumber>, IAggregateRoot
+    public class Patient : Entity<PatientId>, IAggregateRoot
     {
 
         public FullName name { get; private set; }
@@ -20,7 +20,7 @@ namespace DDDSample1.Domain.Patients
 
         public List<string> AppointmentHistory { get;  private set; }
 
-        public PhoneNumber EmergencyContact { get;  private set; }
+        public EmergencyContact EmergencyContact { get;  private set; }
 
         public PhoneNumber Phone { get;  private set; }
 
@@ -31,10 +31,11 @@ namespace DDDSample1.Domain.Patients
 
 
         public Patient(string name, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail, PhoneNumber emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
+                   PhoneNumber phone,Email email, Email userEmail, EmergencyContact emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
         //Validação para se não forem nulls
+        this.Id = new PatientId(Guid.NewGuid());
         this.medicalRecordNumber = new MedicalRecordNumber();
         this.name = new FullName(name);
         this.Allergies = Allergies;
@@ -47,9 +48,7 @@ namespace DDDSample1.Domain.Patients
         this.EmergencyContact = emergencyContact;     
         }
 
-        public Patient()
-        {
-        }
+        protected Patient() { }
 
         /*
         public void ChangeDescription(string description)
