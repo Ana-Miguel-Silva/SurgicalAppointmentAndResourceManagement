@@ -73,12 +73,17 @@ namespace DDDSample1.Domain.Patients
 
         public async Task<PatientDto> UpdateAsync(PatientDto dto)
         {
+            //CheckGender(dto.gender);
             //await checkCategoryIdAsync(dto.CategoryId);
             var prod = await this._repo.GetByIdAsync(new PatientId(dto.Id)); 
-
+            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            Console.Write(prod);
+            Console.Write("\nAQUI");
             if (prod == null)
-                return null;   
+                return null;  
 
+
+            prod.ChangeName(dto.name);
             
             await this._unitOfWork.CommitAsync();
 
@@ -117,6 +122,9 @@ namespace DDDSample1.Domain.Patients
             return new PatientDto(prod.Id.AsGuid(), prod.name.toName(), prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
         }
+
+        
+        
     	/*
         private async Task checkCategoryIdAsync(CategoryId categoryId)
         {

@@ -72,5 +72,14 @@ namespace DDDSample1.Domain.Patients
         }
 
         */
+
+        public void ChangeName(FullName name)
+        {
+            //f (!this.Active)
+            //    throw new BusinessRuleValidationException("It is not possible to change the description to an inactive Patient.");
+            this.name = name;
+        }
+
+
     }
 }

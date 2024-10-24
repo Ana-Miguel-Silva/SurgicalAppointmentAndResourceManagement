@@ -100,6 +100,54 @@ namespace DDDSample1.Controllers
             return Ok(user);
         }
 
+        // PUT: api/Patients/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
+        {
+
+            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+            //TODO: Testes e verificar se funciona sem ser com id
+            //_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result
+            if(true){
+            Console.Write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+                try
+                {
+                    if (id != dto.Id)
+                    {
+                        return BadRequest();
+                    }
+
+            Console.Write("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+                    try
+                    {
+                        var patientProfile = await _service.UpdateAsync(dto);
+                        
+            Console.Write("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+
+                        if (patientProfile == null)
+                        {
+                            return NotFound();
+                        }
+                        return Ok(patientProfile);
+                    }
+                    catch(BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new {Message = ex.Message});
+                    }
+
+                }
+                    catch(BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new {Message = ex.Message});
+                }
+            }
+            return Forbid(); 
+        }
+
 
         /*
         // PUT: api/User/5

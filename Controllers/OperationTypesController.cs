@@ -95,6 +95,8 @@ namespace DDDSample1.Controllers
             return Forbid(); 
         }
 
+
+
         // Inactivate: api/OperationTypes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<OperationTypeDto>> SoftDelete(Guid id)
