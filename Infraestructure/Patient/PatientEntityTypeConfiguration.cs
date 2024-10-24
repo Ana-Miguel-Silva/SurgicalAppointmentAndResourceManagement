@@ -48,36 +48,46 @@ namespace DDDSample1.Infrastructure.Patients
     
             builder.OwnsOne(p => p.EmergencyContact, emergencyContactBuilder =>
             {
-        
                 emergencyContactBuilder.OwnsOne(ec => ec.Name, nameBuilder =>
                 {
                     nameBuilder.Property(n => n.FirstName)
                         .HasColumnName("EmergencyContactFirstName")
-                        .IsRequired();
+                        .IsRequired(false);
 
                     nameBuilder.Property(n => n.LastName)
                         .HasColumnName("EmergencyContactLastName")
-                        .IsRequired();
+                        .IsRequired(false);
                 });
 
-     
                 emergencyContactBuilder.OwnsOne(ec => ec.Phone, phoneBuilder =>
                 {
                     phoneBuilder.Property(p => p.Number)
                         .HasColumnName("EmergencyContactPhone")
-                        .IsRequired()
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .IsRequired(false);
                 });
-
 
                 emergencyContactBuilder.OwnsOne(ec => ec.Email, emailBuilder =>
                 {
                     emailBuilder.Property(e => e.FullEmail)
                         .HasColumnName("EmergencyContactEmail")
-                        .IsRequired();
+                        .IsRequired(false);
                 });
             });
 
+            builder.Property(u => u.gender)
+                .HasColumnName("Gender")
+                .IsRequired();
+
+            builder.Property(u => u.Allergies)
+                .HasColumnName("Allergies")
+                .IsRequired(false);
+
+            builder.Property(u => u.AppointmentHistory)
+                .HasColumnName("AppointmentHistory")
+                .IsRequired(false);
+
+                
 
             builder.OwnsOne(u => u.Email, emailBuilder =>
             {

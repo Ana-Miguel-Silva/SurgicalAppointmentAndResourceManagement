@@ -43,7 +43,7 @@ namespace DDDSample1.Domain.Patients
                    prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
         }
 
-        public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
+        /*public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
         {
 
             CheckGender(dto.Gender);
@@ -63,6 +63,28 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto( Patient.Id.AsGuid(),Patient.name.toName(), Patient.DateOfBirth, 
                    Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
+        }*/
+
+        public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
+        {
+
+            CheckGender(dto.gender);
+
+            var emailObject = new Email(dto.Email);
+            var emailUserObject = new Email(dto.UserEmail);
+            //var emergencyContactObject = new EmergencyContact(dto.EmergencyContact.Name, new PhoneNumber(dto.EmergencyContact.Phone), new Email(dto.EmergencyContact.Email));
+            var phoneNumberObject = new PhoneNumber(dto.Phone);
+
+
+            var Patient = new Patient(dto.Name, dto.DateOfBirth, 
+                   phoneNumberObject, emailObject, emailUserObject, dto.gender);
+
+            await this._repo.AddAsync(Patient);
+
+            await this._unitOfWork.CommitAsync();
+
+            return new PatientDto( Patient.Id.AsGuid(),Patient.name.toName(), Patient.DateOfBirth, 
+                   Patient.Phone, Patient.Email,Patient.UserEmail, Patient.gender);
         }
 
         private static void CheckGender(String gender)

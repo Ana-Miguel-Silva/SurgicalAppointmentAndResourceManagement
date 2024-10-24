@@ -14,13 +14,10 @@ namespace DDDSample1.Domain.Patients
 
         public MedicalRecordNumber medicalRecordNumber { get;   set; }
 
-        public string gender { get;   set; }
-
-        public List<string> Allergies { get;   set; }
-
-        public List<string> AppointmentHistory { get;   set; }
-
-        public EmergencyContact EmergencyContact { get;   set; }
+        public string gender { get; set; }  
+        public List<string> Allergies { get; set; } 
+        public List<string>? AppointmentHistory { get; set; }  
+        public EmergencyContact EmergencyContact { get; set; } 
 
         public PhoneNumber Phone { get;   set; }
 
@@ -45,5 +42,20 @@ namespace DDDSample1.Domain.Patients
         this.gender = gender; 
         this.EmergencyContact = emergencyContact;     
         }
+
+        public PatientDto(Guid Id,string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)
+        {
+            this.Id = Id;
+            this.medicalRecordNumber = new MedicalRecordNumber();
+            this.name = new FullName(name1);
+            this.Phone = phoneNumberObject;
+            this.DateOfBirth = dateOfBirth;
+            this.Email = emailObject;
+            this.UserEmail = emailUserObject;
+            this.gender = gender;
+
+        }
+
+        
     }
 }
