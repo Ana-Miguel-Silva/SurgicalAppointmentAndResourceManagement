@@ -98,9 +98,12 @@ namespace DDDSample1.Domain.Patients
             //CheckGender(dto.gender);
             //await checkCategoryIdAsync(dto.CategoryId);
             var prod = await this._repo.GetByIdAsync(new PatientId(dto.Id)); 
+            
             Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            
             Console.Write(prod);
             Console.Write("\nAQUI");
+
             if (prod == null)
                 return null;  
 
