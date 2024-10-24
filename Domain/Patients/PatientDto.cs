@@ -26,7 +26,7 @@ namespace DDDSample1.Domain.Patients
          public Email UserEmail { get;   set; }
 
         public PatientDto(Guid Id, string name, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail,EmergencyContact emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
+                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
         //TODO:Validação para se não forem nulls
@@ -40,10 +40,10 @@ namespace DDDSample1.Domain.Patients
         this.Email = email;
         this.UserEmail = userEmail;
         this.gender = gender; 
-        this.EmergencyContact = emergencyContact;     
+        this.EmergencyContact = new EmergencyContact(nameEmergency, phoneEmergency, emailEmergency);     
         }
 
-        public PatientDto(Guid Id,string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)
+        /*public PatientDto(Guid Id,string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)
         {
             this.Id = Id;
             this.medicalRecordNumber = new MedicalRecordNumber();
@@ -53,8 +53,7 @@ namespace DDDSample1.Domain.Patients
             this.Email = emailObject;
             this.UserEmail = emailUserObject;
             this.gender = gender;
-
-        }
+        }*/
 
         
     }

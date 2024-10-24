@@ -15,7 +15,7 @@ namespace DDDSample1.Domain.Patients
 
     public EmergencyContactDto(string name, string phoneNumber, string email)
     {
-      this.Name = (name);
+      this.Name = name;
       this.Phone = phoneNumber;
       this.Email = email;
     }

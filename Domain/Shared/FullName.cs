@@ -16,14 +16,20 @@ namespace DDDSample1.Domain.Shared
         // Constructor for EF Core to bind properties directly
         public FullName(string firstName, string middleNames, string lastName)
         {
-            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
+            FirstName = firstName;
             MiddleNames = middleNames; // MiddleNames can be empty or null
-            LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
+            LastName = lastName;
         }
 
         // Convenience constructor for domain logic
         public FullName(string fullName)
         {
+
+            if (string.IsNullOrWhiteSpace(fullName)) 
+            {
+                throw new ArgumentException("Name cannot be null or empty");
+            }
+
             string[] names = fullName.Split(' ');
 
             this.FirstName = names[0];

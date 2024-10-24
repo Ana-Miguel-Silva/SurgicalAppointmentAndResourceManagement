@@ -105,6 +105,8 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
         {
 
+            
+
             Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
 
             //TODO: Testes e verificar se funciona sem ser com id

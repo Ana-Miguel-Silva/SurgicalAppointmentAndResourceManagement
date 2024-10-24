@@ -26,8 +26,8 @@ namespace DDDSample1.Domain.Patients
 
             
             List<PatientDto> listDto = list.ConvertAll<PatientDto>(prod => 
-                new PatientDto( prod.Id.AsGuid(),prod.name.toName(), prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory));
+                new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+                   prod.Phone, prod.Email, prod.UserEmail,  prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory));
 
             return listDto;
         }
@@ -39,8 +39,8 @@ namespace DDDSample1.Domain.Patients
             if(prod == null)
                 return null;
 
-            return new PatientDto( prod.Id.AsGuid(),prod.name.toName(), prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
+            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+                   prod.Phone, prod.Email, prod.UserEmail,  prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);
         }
 
         /*public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
@@ -61,7 +61,7 @@ namespace DDDSample1.Domain.Patients
 
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto( Patient.Id.AsGuid(),Patient.name.toName(), Patient.DateOfBirth, 
+            return new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.DateOfBirth, 
                    Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
         }*/
 
@@ -81,10 +81,22 @@ namespace DDDSample1.Domain.Patients
 
             await this._repo.AddAsync(Patient);
 
+            
+
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto( Patient.Id.AsGuid(),Patient.name.toName(), Patient.DateOfBirth, 
-                   Patient.Phone, Patient.Email,Patient.UserEmail, Patient.gender);
+             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.DateOfBirth, Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact.Name.GetFullName(),Patient.EmergencyContact.Phone , Patient.EmergencyContact.Email, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
+
+             if (string.IsNullOrEmpty(dto.Name))
+            {
+                throw new ArgumentException("Patient's name cannot be null or empty.");
+            }
+            if (dto.EmergencyContact != null && string.IsNullOrEmpty(dto.EmergencyContact.Name.GetFullName()))
+            {
+                throw new ArgumentException("Emergency contact's name cannot be null or empty.");
+            }
+            
+            return newDto;
         }
 
         private static void CheckGender(String gender)
@@ -97,7 +109,18 @@ namespace DDDSample1.Domain.Patients
         {
             //CheckGender(dto.gender);
             //await checkCategoryIdAsync(dto.CategoryId);
-            var prod = await this._repo.GetByIdAsync(new PatientId(dto.Id)); 
+           
+            if (string.IsNullOrEmpty(dto.name.GetFullName()))
+            {
+                throw new ArgumentException("Patient's name cannot be null or empty.");
+            }
+            if (dto.EmergencyContact != null && string.IsNullOrEmpty(dto.EmergencyContact.Name.GetFullName()))
+            {
+                throw new ArgumentException("Emergency contact's name cannot be null or empty.");
+            }
+
+             var prod = await this._repo.GetByIdAsync(new PatientId(dto.Id)); 
+
             
             Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             
@@ -108,12 +131,26 @@ namespace DDDSample1.Domain.Patients
                 return null;  
 
 
-            prod.ChangeName(dto.name);
+            prod.ChangeName(new FullName(dto.name.GetFullName()));
             
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto( prod.Id.AsGuid(),prod.name.toName(), prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
+            PatientDto n = new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);
+
+                   
+             if (string.IsNullOrEmpty(dto.name.GetFullName()))
+            {
+                throw new ArgumentException("Patient's name cannot be null or empty.");
+            }
+            if (dto.EmergencyContact != null && string.IsNullOrEmpty(dto.EmergencyContact.Name.GetFullName()))
+            {
+                throw new ArgumentException("Emergency contact's name cannot be null or empty.");
+            }
+            
+
+
+            return n;
         }
 
         public async Task<PatientDto> InactivateAsync(PatientId id)
@@ -127,8 +164,8 @@ namespace DDDSample1.Domain.Patients
             
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto(prod.Id.AsGuid(), prod.name.toName(), prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
+            return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.DateOfBirth, 
+                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);
         }
 
         public async Task<PatientDto> DeleteAsync(PatientId id)
@@ -144,8 +181,8 @@ namespace DDDSample1.Domain.Patients
             this._repo.Remove(prod);
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto(prod.Id.AsGuid(), prod.name.toName(), prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact, prod.gender, prod.Allergies, prod.AppointmentHistory);
+            return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.DateOfBirth, 
+                   prod.Phone, prod.Email, prod.UserEmail,  prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);
         }
 
         

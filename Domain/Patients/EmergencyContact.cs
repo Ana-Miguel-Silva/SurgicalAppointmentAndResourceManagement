@@ -17,6 +17,7 @@ namespace DDDSample1.Domain.Patients
     public EmergencyContact(string name, PhoneNumber phoneNumber, Email email)
     {
       this.Name = new FullName(name);
+      Console.Write("sssssssssss ${Name}");
       this.Phone = phoneNumber;
       this.Email = email;
     }

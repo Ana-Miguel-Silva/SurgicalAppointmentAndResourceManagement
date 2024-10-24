@@ -7,11 +7,6 @@ namespace DDDSample1.Domain.Patients
 {
     public class Patient : Entity<PatientId>, IAggregateRoot
     {
-        private string name1;
-        private PhoneNumber phoneNumberObject;
-        private Email emailObject;
-        private Email emailUserObject;
-
         public FullName name { get; private set; }
     
         public DateTime DateOfBirth { get;  private set; }
@@ -35,7 +30,7 @@ namespace DDDSample1.Domain.Patients
 
 
         public Patient(string name, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail, EmergencyContact emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
+                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
         //Validação para se não forem nulls
@@ -49,7 +44,7 @@ namespace DDDSample1.Domain.Patients
         this.Email = email;
         this.UserEmail = userEmail;
         this.gender = gender; 
-        this.EmergencyContact = emergencyContact;     
+        this.EmergencyContact = new EmergencyContact(nameEmergency, phoneEmergency, emailEmergency);     
         }
 
         protected Patient() { }
@@ -66,7 +61,7 @@ namespace DDDSample1.Domain.Patients
             this.gender = gender;
             this.Allergies =  new List<string>();  
             this.AppointmentHistory = new List<string>();
-            this.EmergencyContact = new EmergencyContact( string.Empty, new PhoneNumber("999999999"), new Email("default@gmail.com")); 
+            this.EmergencyContact = new EmergencyContact( "default dd dd", new PhoneNumber("999999999"), new Email("default@gmail.com")); 
         }
 
         /*
