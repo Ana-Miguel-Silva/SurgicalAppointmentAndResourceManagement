@@ -18,9 +18,13 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question 1: Hello Client, When one of the contents that administrator edits is a sensitive content (eg. email), the notification is sent for what patient's email, the email in patient account, the old email of patient or the new email of patient?**
+> 
+> **Answer 1: If the email is changed, the notification should be sent to the "old" email** 
+
+> **Question 2:**
 >
-> **Answer:** 
+> **Answer 2:**
 
 
 **Dependencies/References:**
@@ -42,10 +46,6 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 
 ## 3. Analysis
-
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)

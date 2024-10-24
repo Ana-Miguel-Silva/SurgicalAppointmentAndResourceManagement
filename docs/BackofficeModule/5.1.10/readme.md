@@ -3,46 +3,39 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-
+As an Admin, I want to delete a patient profile, so that I can remove patients who are no longer under care
 ## 2. Requirements
 
 **US 5.1.10** 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for a patient profile and mark it for deletion.
+- Before deletion, the system prompts the admin to confirm the action.
+- Once deleted, all patient data is permanently removed from the system within a predefined time frame.
+- The system logs the deletion for audit and GDPR compliance purposes.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question 1:**
 >
-> **Answer:** 
+> **Answer 1:** 
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
-* Selected data:
-    * User 
-    * Role
+    * E-mail/Id
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the deleted patient (Delete Patient)
 
 ## 3. Analysis
 
@@ -70,19 +63,26 @@ As part of the development of the software system, it is necessary to implement 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+#### Delete Patient Profile
+
+**Sequence Diagram Level 1**
+
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
+
+**Sequence Diagram Level 2**
+
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
+
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Delete Patient Profile")
 
 
 
 
-### 4.2. Class Diagram
+### 4.2. Applied Patterns
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
