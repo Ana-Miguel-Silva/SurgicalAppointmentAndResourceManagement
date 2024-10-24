@@ -16,7 +16,7 @@ namespace DDDSample1.Domain.OperationRequests
 
         public OperationTypeId OperationTypeId { get; set; }
 
-        public DateTime Deadline { get; set; }
+        public DateTime Deadline { get; set; }        
 
         public string Priority { get; set; }
 

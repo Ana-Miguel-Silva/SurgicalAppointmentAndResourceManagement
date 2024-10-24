@@ -64,17 +64,18 @@ namespace DDDSample1.Domain.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
+        public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto, string authUserEmail)
         {
+            //verifies if the auth user has a staff profile
+            var doctor = await CheckDoctorAsync(authUserEmail);
+            var operationType = await CheckOperationTypeAsync(dto.OperationTypeId);
+            await CheckSpecializationsAsync(operationType, doctor);
 
-            await CheckPatientIdAsync(dto.MedicalRecordNumber);
-            var operationType = await CheckOperationTypeIdAsync(dto.OperationTypeId);
-            var doctor = await CheckDoctorIdAsync(dto.DoctorId);
+            await CheckPatientAsync(dto.MedicalRecordNumber);
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
-            CheckOperationAndDoctorAsync(operationType, doctor);
 
-            var operationRequest = new OperationRequest(dto.MedicalRecordNumber, dto.DoctorId, dto.OperationTypeId, dto.Deadline, dto.Priority);
+            var operationRequest = new OperationRequest(dto.MedicalRecordNumber, doctor.Id, dto.OperationTypeId, dto.Deadline, dto.Priority);
 
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
@@ -84,15 +85,13 @@ namespace DDDSample1.Domain.OperationRequests
 
         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto, string authUserEmail)
         {
+
+            var doctor = await CheckDoctorAsync(authUserEmail);
+
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
 
-
             var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
-
-            var doctors = await _repoDoc.GetByUsernameAsync(authUserEmail);
-
-            var doctor = doctors.FirstOrDefault();
 
             if (operationRequest.DoctorId != doctor.Id)
                 throw new BusinessRuleValidationException("Doctor is not the creator of the Operation Request.");
@@ -138,14 +137,14 @@ namespace DDDSample1.Domain.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        private async Task CheckPatientIdAsync(PatientId patientId)
+        private async Task CheckPatientAsync(PatientId patientId)
         {
             var patient = await _repoPat.GetByIdAsync(patientId);
             if (patient == null)
                 throw new BusinessRuleValidationException("Invalid Patient Id.");
         }
 
-        private async Task<OperationType> CheckOperationTypeIdAsync(OperationTypeId operationTypeId)
+        private async Task<OperationType> CheckOperationTypeAsync(OperationTypeId operationTypeId)
         {
             var operationType = await _repoOpType.GetByIdAsync(operationTypeId);
             if (operationType == null)
@@ -154,20 +153,26 @@ namespace DDDSample1.Domain.OperationRequests
             return operationType;
         }
 
-        private async Task<StaffProfile> CheckDoctorIdAsync(StaffGuid doctorId)
+        private async Task<StaffProfile> CheckDoctorAsync(string email)
         {
-            var doctor = await _repoDoc.GetByIdAsync(doctorId);
+            var doctors = await _repoDoc.GetByUsernameAsync(email);
+
+            if (doctors.Count == 0 || doctors == null)
+                throw new BusinessRuleValidationException("The authenticated User does not have a Staff Profileaw.");
+
+            var doctor = doctors.FirstOrDefault();
+
             if (doctor == null)
-                throw new BusinessRuleValidationException("Invalid Doctor Id.");
+                throw new BusinessRuleValidationException("The authenticated User does not have a Staff Profile12.");
 
             return doctor;
         }
 
 
-        private async Task CheckOperationAndDoctorAsync(OperationType operationType, StaffProfile doctor)
+        private async Task CheckSpecializationsAsync(OperationType operationType, StaffProfile doctor)
         {
             if (!operationType.GetAllSpecializations(operationType.RequiredStaff).Contains(doctor.Specialization))
-            throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
+                throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
         }
 
         private static void CheckDate(DateTime date)

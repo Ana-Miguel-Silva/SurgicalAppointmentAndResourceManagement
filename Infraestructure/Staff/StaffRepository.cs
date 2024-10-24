@@ -17,8 +17,8 @@ namespace DDDSample1.Infrastructure.Staff
         public async Task<List<StaffProfile>> GetByUsernameAsync(string email)
         {
             return await _context.StaffProfiles
-                .Where(s => s.Email.ToString().Contains(email))
-                .ToListAsync();
+            .Where(s => s.Email.FullEmail.Contains(email))
+            .ToListAsync();
         }
 
     }

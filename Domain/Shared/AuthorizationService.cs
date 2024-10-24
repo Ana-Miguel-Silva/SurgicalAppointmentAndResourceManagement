@@ -171,7 +171,7 @@ public class AuthorizationService
             return null;
         }
 
-        return user.Email.ToString();
+        return user.Email.FullEmail.ToString();
     }
 
     public async Task<bool> ValidateUserRole(User User, List<string> Role)

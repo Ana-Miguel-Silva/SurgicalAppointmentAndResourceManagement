@@ -65,7 +65,10 @@ namespace DDDSample1.Controllers
             {
                 try
                 {
-                    var operationRequest = await _service.AddAsync(dto);
+
+                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+                    var operationRequest = await _service.AddAsync(dto, userEmail);
 
                     return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
                 }

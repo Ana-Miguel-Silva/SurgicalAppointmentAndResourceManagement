@@ -11,8 +11,6 @@ namespace DDDSample1.Domain.OperationRequests;
 
         public PatientId MedicalRecordNumber { get; set; }
 
-        public StaffGuid DoctorId { get; set; }
-
         public OperationTypeId OperationTypeId { get; set; }
 
         public DateTime Deadline { get; set; }        
@@ -23,7 +21,6 @@ namespace DDDSample1.Domain.OperationRequests;
     public CreatingOperationRequestDto(PatientId patId, StaffGuid docId,OperationTypeId opTypeId,DateTime deadline, string priority)
         {
             this.MedicalRecordNumber = patId;
-            this.DoctorId = docId;
             this.OperationTypeId = opTypeId;
             this.Deadline = deadline;
             this.Priority = priority;
