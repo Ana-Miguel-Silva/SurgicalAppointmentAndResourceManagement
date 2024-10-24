@@ -105,7 +105,7 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
         {
 
-            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
 
             //TODO: Testes e verificar se funciona sem ser com id
             //_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result
@@ -125,7 +125,7 @@ namespace DDDSample1.Controllers
                     {
                         var patientProfile = await _service.UpdateAsync(dto);
                         
-            Console.Write("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+            Console.Write("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
 
 
                         if (patientProfile == null)
