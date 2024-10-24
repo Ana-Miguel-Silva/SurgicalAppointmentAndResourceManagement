@@ -30,7 +30,7 @@ namespace DDDSample1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)
         {
-            return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization);
+            return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role);
         }
 
         public class GetStaffQueryObject
@@ -40,6 +40,7 @@ namespace DDDSample1.Controllers
             public string? license { get; set; }
             public string? phone { get; set; }
             public string? specialization { get; set; }
+            public string? role { get; set; }
         }
 
         // GET: api/Staff/5

@@ -48,7 +48,6 @@ namespace DDDSample1.Infrastructure.Staff
                 .HasMaxLength(50);
 
             builder.Property(u => u.LicenseNumber)
-                .IsRequired()
                 .HasMaxLength(10);
 
             // Configure Active property

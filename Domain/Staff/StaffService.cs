@@ -24,7 +24,7 @@ namespace DDDSample1.Domain.Staff
 
             return listDto;
         }
-        public async Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization)
+        public async Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization, string? role)
         {
             var list = await this._repo.GetAllAsync();
 
@@ -34,6 +34,7 @@ namespace DDDSample1.Domain.Staff
             //if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
+            if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
             return listDto;
         }
 
@@ -55,7 +56,11 @@ namespace DDDSample1.Domain.Staff
             {
                 converted.Add(new Slot(slot.Start, slot.End));
             }
-            var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted);
+
+            int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role).Result.Count();
+            string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
+
+            var staff = new StaffProfile(new FullName(dto.Name + finalID), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted);
 
             await this._repo.AddAsync(staff);
 
