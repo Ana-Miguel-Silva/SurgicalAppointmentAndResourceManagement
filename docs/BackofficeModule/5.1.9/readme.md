@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As an Admin, I want to edit an existing patient profile, so that I can update their information when needed.
 
 ## 2. Requirements
 
@@ -11,7 +11,10 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for and select a patient profile to edit.
+- Editable fields include name, contact information, medical history, and allergies. 
+- Changes to sensitive data (e.g., contact information) trigger an email notification to the patient. 
+- The system logs all profile changes for auditing purposes.
 
 **Customer Specifications and Clarifications:**
 
@@ -22,27 +25,21 @@ As part of the development of the software system, it is necessary to implement 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
-* Selected data:
-    * User 
-    * Role
-
+  * E-mail
+  * Phone
+  * Date of Birth
+  * Medical Conditions (?)
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the updated patient (Update Patient)
+
 
 ## 3. Analysis
 
