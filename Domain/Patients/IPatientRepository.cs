@@ -4,6 +4,8 @@ namespace DDDSample1.Domain.Patients
 {
     public interface IPatientRepository : IRepository<Patient, PatientId>
     {
-        Task<Patient> GetByIdAsync(PatientId id);
+
+
+        //Task<Patient> GetByIdAsync(PatientId id);
     }
 }

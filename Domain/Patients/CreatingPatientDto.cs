@@ -13,7 +13,12 @@ namespace DDDSample1.Domain.Patients
         public string gender { get; set; }  
         public List<string>? Allergies { get; set; } 
         public List<string>? AppointmentHistory { get; set; }  
-        public EmergencyContact? EmergencyContact { get; set; } 
+
+        public string nameEmergency { get;   set; }
+        public PhoneNumber phoneEmergency { get;   set; }
+        public Email emailEmergency { get;   set; }
+
+        //public EmergencyContact? EmergencyContact { get; set; } 
 
         /*public CreatingPatientDto(string name, DateTime dateOfBirth,string phone,string email, string userEmail, EmergencyContactDto emergencyContact, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
@@ -40,6 +45,9 @@ namespace DDDSample1.Domain.Patients
             this.Email = emailObject;
             this.UserEmail = emailUserObject;
             this.gender = gender;
+            this.nameEmergency = "default dd";
+            this.phoneEmergency = new PhoneNumber("999999999");
+            this.emailEmergency = new Email("default@gmail.com");
         }
 
     }

@@ -46,34 +46,28 @@ namespace DDDSample1.Infrastructure.Patients
             });
 
     
-            builder.OwnsOne(p => p.EmergencyContact, emergencyContactBuilder =>
+            builder.Property(u => u.nameEmergency)
+                .HasColumnName("EmergencyContactName")
+                .IsRequired();
+
+           builder.OwnsOne(p => p.phoneEmergency, phoneBuilder =>
             {
-                emergencyContactBuilder.OwnsOne(ec => ec.Name, nameBuilder =>
-                {
-                    nameBuilder.Property(n => n.FirstName)
-                        .HasColumnName("EmergencyContactFirstName")
-                        .IsRequired(false);
-
-                    nameBuilder.Property(n => n.LastName)
-                        .HasColumnName("EmergencyContactLastName")
-                        .IsRequired(false);
-                });
-
-                emergencyContactBuilder.OwnsOne(ec => ec.Phone, phoneBuilder =>
-                {
-                    phoneBuilder.Property(p => p.Number)
-                        .HasColumnName("EmergencyContactPhone")
-                        .HasMaxLength(15)
-                        .IsRequired(false);
-                });
-
-                emergencyContactBuilder.OwnsOne(ec => ec.Email, emailBuilder =>
-                {
-                    emailBuilder.Property(e => e.FullEmail)
-                        .HasColumnName("EmergencyContactEmail")
-                        .IsRequired(false);
-                });
+                phoneBuilder.Property(pn => pn.Number)
+                    .HasColumnName("EmergencyContactPhone")
+                    .IsRequired()
+                    .HasMaxLength(15); 
             });
+
+            builder.OwnsOne(u => u.emailEmergency, emailBuilder =>
+            {
+                emailBuilder.Property(e => e.FullEmail)
+                    .HasColumnName("EmergencyContactEmail")
+                    .IsRequired();
+                emailBuilder.HasIndex(e => e.FullEmail).IsUnique();
+            });
+
+
+         
 
             builder.Property(u => u.gender)
                 .HasColumnName("Gender")

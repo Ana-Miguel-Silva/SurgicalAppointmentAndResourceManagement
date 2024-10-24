@@ -19,7 +19,11 @@ namespace DDDSample1.Domain.Patients
 
         public List<string>? AppointmentHistory { get;  private set; }
 
-        public EmergencyContact EmergencyContact { get;  private set; }
+        //public EmergencyContact EmergencyContact { get;  private set; }
+
+        public string nameEmergency { get;  private set; }
+        public PhoneNumber phoneEmergency { get;  private set; }
+        public Email emailEmergency { get;  private set; }
 
         public PhoneNumber Phone { get;  private set; }
 
@@ -44,7 +48,9 @@ namespace DDDSample1.Domain.Patients
         this.Email = email;
         this.UserEmail = userEmail;
         this.gender = gender; 
-        this.EmergencyContact = new EmergencyContact(nameEmergency, phoneEmergency, emailEmergency);     
+        this.nameEmergency = nameEmergency;
+        this.phoneEmergency = phoneEmergency;
+        this.emailEmergency = emailEmergency;     
         }
 
         protected Patient() { }
@@ -61,7 +67,10 @@ namespace DDDSample1.Domain.Patients
             this.gender = gender;
             this.Allergies =  new List<string>();  
             this.AppointmentHistory = new List<string>();
-            this.EmergencyContact = new EmergencyContact( "default dd dd", new PhoneNumber("999999999"), new Email("default@gmail.com")); 
+            this.nameEmergency = "default dd";
+            this.phoneEmergency = new PhoneNumber("999999999");
+            this.emailEmergency = new Email("default@gmail.com");     
+        
         }
 
         /*
@@ -93,6 +102,38 @@ namespace DDDSample1.Domain.Patients
             //    throw new BusinessRuleValidationException("It is not possible to change the description to an inactive Patient.");
             this.name = name;
         }
+
+        public void ChangeNameEmergency(string name)
+        {            
+            this.nameEmergency = name;
+        }
+
+        public void ChangePhoneEmergency(PhoneNumber phone)
+        {            
+            this.phoneEmergency = phone;
+        }
+
+        public void ChangeEmailEmergency(Email email)
+        {            
+            this.emailEmergency = email;
+        }
+
+        public void ChangeGender(string gender)
+        {            
+            this.gender = gender;
+        }
+
+        public void ChangeAllergies(List<string> allergiesList)
+        {            
+            this.Allergies = allergiesList;
+        }
+
+        public void ChangeAppointmentHistory(List<string> AppointmentHistoryList)
+        {            
+            this.AppointmentHistory = AppointmentHistoryList;
+        }
+
+
 
 
     }

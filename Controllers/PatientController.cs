@@ -107,13 +107,10 @@ namespace DDDSample1.Controllers
 
             
 
-            Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-
             //TODO: Testes e verificar se funciona sem ser com id
             //_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result
             if(true){
-            Console.Write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
+            
                 try
                 {
                     if (id != dto.Id)
@@ -121,15 +118,11 @@ namespace DDDSample1.Controllers
                         return BadRequest();
                     }
 
-            Console.Write("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
                     try
                     {
                         var patientProfile = await _service.UpdateAsync(dto);
                         
-            Console.Write("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-
-
+           
                         if (patientProfile == null)
                         {
                             return NotFound();

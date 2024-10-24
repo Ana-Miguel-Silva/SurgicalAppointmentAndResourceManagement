@@ -16,12 +16,12 @@ namespace DDDSample1.Infrastructure.Patients
         }
 
 
-        public async Task<List<Patient>> GetByEmailAsync(string email)
+        /*public async Task<List<Patient>> GetByEmailAsync(string email)
         {
             return await _context.Patients
                 .Where(u => u.Email.FullEmail.Contains(email))
                 .ToListAsync();
-        }
+        }*/
 
 
     }
