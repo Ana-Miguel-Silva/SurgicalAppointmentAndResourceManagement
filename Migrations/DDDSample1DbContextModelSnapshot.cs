@@ -160,7 +160,6 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LicenseNumber")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
@@ -174,7 +173,18 @@ namespace DDDNetCore.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("StaffId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("StaffInteralID");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
+                    b.HasIndex("StaffId")
+                        .IsUnique();
 
                     b.ToTable("StaffProfiles");
                 });
@@ -520,10 +530,13 @@ namespace DDDNetCore.Migrations
 
                             b1.Property<string>("FullEmail")
                                 .IsRequired()
-                                .HasColumnType("longtext")
+                                .HasColumnType("varchar(255)")
                                 .HasColumnName("Email");
 
                             b1.HasKey("StaffProfileId");
+
+                            b1.HasIndex("FullEmail")
+                                .IsUnique();
 
                             b1.ToTable("StaffProfiles");
 
@@ -574,6 +587,9 @@ namespace DDDNetCore.Migrations
                                 .HasColumnName("PhoneNumber");
 
                             b1.HasKey("StaffProfileId");
+
+                            b1.HasIndex("Number")
+                                .IsUnique();
 
                             b1.ToTable("StaffProfiles");
 

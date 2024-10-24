@@ -9,10 +9,12 @@ namespace DDDSample1.Infrastructure.Staff
         public void Configure(EntityTypeBuilder<StaffProfile> builder)
         {
             builder.HasKey(u => u.Id); // Primary key
+            
 
             builder.OwnsOne(u => u.Email, emailBuilder =>
             {
                 emailBuilder.Property(e => e.FullEmail).HasColumnName("Email"); // Map to column
+                emailBuilder.HasIndex(e => e.FullEmail).IsUnique();
             });
 
             builder.OwnsOne(sp => sp.Name, nameBuilder =>
@@ -37,8 +39,10 @@ namespace DDDSample1.Infrastructure.Staff
                     .HasColumnName("PhoneNumber")
                     .IsRequired()
                     .HasMaxLength(9);
+                phoneBuilder.HasIndex(e => e.Number).IsUnique();
             });
-
+            builder.Property(u => u.StaffId)
+                .IsRequired();
             builder.Property(u => u.Specialization)
                 .IsRequired()
                 .HasMaxLength(50); // Example constraint, adjust as needed
@@ -61,7 +65,12 @@ namespace DDDSample1.Infrastructure.Staff
                 slotsBuilder.WithOwner().HasForeignKey("StaffProfileId");
                 slotsBuilder.Property(s => s.StartTime).HasColumnName("StartTime").IsRequired();
                 slotsBuilder.Property(s => s.EndTime).HasColumnName("EndTime").IsRequired();
+
+                
             });
+
+            builder.HasIndex(u => u.LicenseNumber).IsUnique();
+            builder.HasIndex(u => u.StaffId).IsUnique();
         }
     }
 }

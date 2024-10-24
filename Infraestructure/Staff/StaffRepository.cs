@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DDDSample1.Infrastructure.Staff
 {
-    public class StaffRepository : BaseRepository<StaffProfile, StaffId>, IStaffRepository
+    public class StaffRepository : BaseRepository<StaffProfile, StaffGuid>, IStaffRepository
     {
         private readonly DDDSample1DbContext _context;
 

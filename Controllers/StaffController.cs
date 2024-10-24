@@ -45,9 +45,9 @@ namespace DDDSample1.Controllers
 
         // GET: api/Staff/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StaffDto>> GetGetById(Guid id)
+        public async Task<ActionResult<StaffDto>> GetGetById(string id)
         {
-            var cat = await _service.GetByIdAsync(new StaffId(id));
+            var cat = await _service.GetByIdAsync(new StaffGuid(id));
 
             if (cat == null)
             {
@@ -87,9 +87,9 @@ namespace DDDSample1.Controllers
 
         // PUT: api/Staff/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<StaffDto>> Update(Guid id, StaffDto dto)
+        public async Task<ActionResult<StaffDto>> Update(string id, StaffDto dto)
         {
-            if (id != dto.Id)
+            if (id != dto.StaffId)
             {
                 return BadRequest();
             }
@@ -115,7 +115,7 @@ namespace DDDSample1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<StaffDto>> SoftDelete(Guid id)
         {
-            var cat = await _service.InactivateAsync(new StaffId(id));
+            var cat = await _service.InactivateAsync(new StaffGuid(id));
 
             if (cat == null)
             {
@@ -128,11 +128,11 @@ namespace DDDSample1.Controllers
 
         // DELETE: api/Staff/5
         [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<StaffDto>> HardDelete(Guid id)
+        public async Task<ActionResult<StaffDto>> HardDelete(string id)
         {
             try
             {
-                var cat = await _service.DeleteAsync(new StaffId(id));
+                var cat = await _service.DeleteAsync(new StaffGuid(id));
 
                 if (cat == null)
                 {

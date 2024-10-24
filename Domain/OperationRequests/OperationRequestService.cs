@@ -154,7 +154,7 @@ namespace DDDSample1.Domain.OperationRequests
             return operationType;
         }
 
-        private async Task<StaffProfile> CheckDoctorIdAsync(StaffId doctorId)
+        private async Task<StaffProfile> CheckDoctorIdAsync(StaffGuid doctorId)
         {
             var doctor = await _repoDoc.GetByIdAsync(doctorId);
             if (doctor == null)

@@ -4,8 +4,9 @@ using DDDSample1.Domain.Shared;
 namespace DDDSample1.Domain.Staff
 {
 
-    public class StaffProfile : Entity<StaffId>, IAggregateRoot
+    public class StaffProfile : Entity<StaffGuid>, IAggregateRoot
     {
+        public string StaffId { get; private set; }
         public FullName Name { get; private set; }
         public string Specialization { get; private set; }
         public Email Email { get; private set; }
@@ -23,9 +24,10 @@ namespace DDDSample1.Domain.Staff
             this.Active = true;
         }
 
-        public StaffProfile(FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots)
+        public StaffProfile(FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots, string ID)
         {
-            this.Id = new StaffId(Guid.NewGuid());
+            this.Id = new StaffGuid(Guid.NewGuid());
+            this.StaffId = ID;
             this.Name = name;
             this.Email = email;
             this.PhoneNumber = phone;

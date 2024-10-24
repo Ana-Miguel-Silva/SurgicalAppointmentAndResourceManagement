@@ -12,7 +12,7 @@ namespace DDDSample1.Domain.OperationRequests
 
         public PatientId MedicalRecordNumber { get; private set; }
 
-        public StaffId DoctorId { get; private set; }
+        public StaffGuid DoctorId { get; private set; }
 
         public OperationTypeId OperationTypeId { get; private set; }
 
@@ -27,7 +27,7 @@ namespace DDDSample1.Domain.OperationRequests
             this.Active = true;
         }
 
-        public OperationRequest(PatientId patId, StaffId docId, OperationTypeId opTypeId, DateTime deadline, string priority)
+        public OperationRequest(PatientId patId, StaffGuid docId, OperationTypeId opTypeId, DateTime deadline, string priority)
         {
 
             if (patId == null || docId == null || opTypeId == null || deadline == null || priority == null)
