@@ -25,7 +25,7 @@ namespace DDDSample1.Domain.Shared
         public FullName(string fullName)
         {
 
-            if (string.IsNullOrWhiteSpace(fullName)) 
+            if (string.IsNullOrWhiteSpace(fullName))
             {
                 throw new ArgumentException("Name cannot be null or empty");
             }
@@ -58,9 +58,14 @@ namespace DDDSample1.Domain.Shared
             yield return LastName;
         }
 
-        public string toName(){
+        public string toName()
+        {
 
-        return this.FirstName + " " + this.MiddleNames + " " + this.LastName;
-    }
+            if (this.MiddleNames == null || this.MiddleNames == "")
+                return this.FirstName + " " + this.LastName;
+            else
+
+                return this.FirstName + " " + this.MiddleNames + " " + this.LastName;
+        }
     }
 }

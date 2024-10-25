@@ -9,8 +9,8 @@ namespace DDDSample1.Infrastructure.Patients
     public class PatientRepository : BaseRepository<Patient, PatientId>, IPatientRepository
     {
         private readonly DDDSample1DbContext _context;
-    
-        public PatientRepository(DDDSample1DbContext context):base(context.Patients)
+
+        public PatientRepository(DDDSample1DbContext context) : base(context.Patients)
         {
             _context = context;
         }
@@ -23,6 +23,12 @@ namespace DDDSample1.Infrastructure.Patients
                 .ToListAsync();
         }*/
 
+        public async Task<List<Patient>> GetByNameAsync(string name)
+        {
+            var patients = await _context.Patients.ToListAsync();
+
+            return patients.Where(p => p.name.toName().Contains(name)).ToList();
+        }
 
     }
 }

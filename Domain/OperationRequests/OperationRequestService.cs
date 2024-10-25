@@ -33,7 +33,7 @@ namespace DDDSample1.Domain.OperationRequests
             return listDto;
         }
 
-        public async Task<List<OperationRequestDto>> GetAllFilteredAsync(MedicalRecordNumber? patientId, OperationTypeId? operationTypeId, bool? status, string? priority)
+        public async Task<List<OperationRequestDto>> GetAllFilteredAsync(MedicalRecordNumber? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
         {
             var operationRequests = await this._repo.GetAllAsync();
 
@@ -45,6 +45,25 @@ namespace DDDSample1.Domain.OperationRequests
 
             if (!string.IsNullOrEmpty(priority))
                 operationRequests = operationRequests.Where(o => o.Priority.Equals(priority, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (!string.IsNullOrEmpty(operationTypeName))
+            {
+                var operationTypes = await this._repoOpType.GetByNameAsync(operationTypeName);
+
+                var operationType = operationTypes.FirstOrDefault();
+
+                operationRequests = operationRequests.Where(o => o.OperationTypeId == operationType.Id).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(patientName))
+            {
+
+                var patients = await this._repoPat.GetByNameAsync(patientName);
+
+                var patientIds = patients.Select(p => p.Id).ToList();
+
+                operationRequests = operationRequests.Where(o => patientIds.Contains(o.MedicalRecordNumber)).ToList();
+            }
 
             if (status.HasValue)
             {
