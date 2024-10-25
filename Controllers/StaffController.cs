@@ -47,7 +47,7 @@ namespace DDDSample1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetGetById(string id)
         {
-            var cat = await _service.GetByIdAsync(new StaffGuid(id));
+            var cat = await _service.GetByStaffIDAsync(id);
 
             if (cat == null)
             {
@@ -89,6 +89,7 @@ namespace DDDSample1.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<StaffDto>> Update(string id, StaffDto dto)
         {
+            Console.Write(dto.Name);
             if (id != dto.StaffId)
             {
                 return BadRequest();

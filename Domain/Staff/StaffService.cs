@@ -47,6 +47,15 @@ namespace DDDSample1.Domain.Staff
     
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
         }
+        public async Task<StaffDto> GetByStaffIDAsync(string id)
+        {
+            var staff = await this._repo.GetByStaffIDAsync(id);
+
+            if (staff == null)
+                return null;
+    
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+        }
 
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
@@ -59,14 +68,14 @@ namespace DDDSample1.Domain.Staff
                 if ((convertedSLot.timespan().TotalMinutes % 15) != 0) flag = false;
                 converted.Add(convertedSLot);
             }
-            if(!flag) converted = null;
+            if(!flag) return null;
 
             int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role).Result.Count();
             char roleId = dto.Role[0];
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
 
-            var staff = new StaffProfile(new FullName(dto.Name + finalID), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID);
+            var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID);
 
             await this._repo.AddAsync(staff);
 
@@ -87,10 +96,11 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
 
-
+            staff.ChangeEmail(dto.Email);
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+            //return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+            return dto;
         }
 
         public async Task<StaffDto> InactivateAsync(StaffGuid id)
