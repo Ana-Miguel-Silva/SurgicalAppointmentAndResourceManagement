@@ -20,7 +20,7 @@ namespace DDDSample1.Domain.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId));
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber));
 
             return listDto;
         }
@@ -29,7 +29,7 @@ namespace DDDSample1.Domain.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId));
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber));
             if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
             //if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
@@ -45,7 +45,7 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
     
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
         }
         public async Task<StaffDto> GetByStaffIDAsync(string id)
         {
@@ -54,7 +54,7 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
     
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
         }
 
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
@@ -70,11 +70,13 @@ namespace DDDSample1.Domain.Staff
             }
             if(!flag) return null;
 
+            CheckRole(dto.Role);
+            CheckSpecialization(dto.Specialization);
+
             int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role).Result.Count();
             char roleId = dto.Role[0];
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
-
             var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID);
 
             await this._repo.AddAsync(staff);
@@ -85,7 +87,7 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
                 
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted, staff.StaffId);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted, staff.StaffId, staff.LicenseNumber);
         }
 
         public async Task<StaffDto> UpdateAsync(StaffDto dto)
@@ -96,16 +98,31 @@ namespace DDDSample1.Domain.Staff
             if (staff == null)
                 return null;
 
-            staff.ChangeEmail(dto.Email);
+            if(staff.Email != dto.Email) staff.ChangeEmail(dto.Email);
+            if(staff.PhoneNumber != dto.PhoneNumber) staff.ChangePhone(dto.PhoneNumber);
+            //List<Slot> converted = [];
+            //var flag = true;
+            //foreach (var slot in dto.Slots)
+            //{
+            //    var convertedSLot = new Slot(slot.StartTime, slot.EndTime);
+            //    if ((convertedSLot.timespan().TotalMinutes % 15) != 0) flag = false;
+            //    converted.Add(convertedSLot);
+            //}
+            //if(!flag) return null;
+            //staff.UpdateSlots(converted);
+            staff.ChangeLicenseNumber(dto.LicenseNumber);
+            CheckSpecialization(dto.Specialization);
+            staff.UpdateSpecialization(dto.Specialization);
+
             await this._unitOfWork.CommitAsync();
 
             //return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
             return dto;
         }
 
-        public async Task<StaffDto> InactivateAsync(StaffGuid id)
+        public async Task<StaffDto> InactivateAsync(string id)
         {
-            var staff = await this._repo.GetByIdAsync(id);
+            var staff = await this._repo.GetByStaffIDAsync(id);
 
             if (staff == null)
                 return null;
@@ -114,12 +131,12 @@ namespace DDDSample1.Domain.Staff
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
         }
 
-        public async Task<StaffDto> DeleteAsync(StaffGuid id)
+        public async Task<StaffDto> DeleteAsync(string id)
         {
-            var staff = await this._repo.GetByIdAsync(id);
+            var staff = await this._repo.GetByStaffIDAsync(id);
 
             if (staff == null)
                 return null;
@@ -130,12 +147,17 @@ namespace DDDSample1.Domain.Staff
             this._repo.Remove(staff);
             await this._unitOfWork.CommitAsync();
 
-             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
+             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
         }
         private static void CheckRole(String role)
         {
             if (!Role.IsValid(role.ToUpper()) || role.ToUpper().Equals("ADMIN") || role.ToUpper().Equals("PATIENT"))
                 throw new BusinessRuleValidationException("Invalid Role.");
+        }
+        private static void CheckSpecialization(String specialization)
+        {
+            if (!Specialization.IsValid(specialization.ToUpper()))
+                throw new BusinessRuleValidationException("Invalid Specialization.");
         }
     }
 }
