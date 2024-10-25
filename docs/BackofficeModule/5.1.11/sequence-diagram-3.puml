@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "PatientController" as CTRL <<component>>
+participant "PatientService" as SERV <<component>>
+participant "PatientRepository" as REPO <<component>>
+
+ -> CTRL: getPatients()
+activate CTRL
+CTRL -> SERV: getPatients()
+activate SERV
+SERV -> REPO: getPatients()
+activate REPO
+REPO --> SERV: PatientsList
+deactivate REPO
+SERV --> CTRL: PatientsList
+deactivate SERV
+<-- CTRL : PatientsDTOList
+
+
+
+@enduml

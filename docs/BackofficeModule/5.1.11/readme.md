@@ -15,6 +15,8 @@ As part of the development of the software system, it is necessary to implement 
 
 **Customer Specifications and Clarifications:**
 
+[//]: # (TODO: Verificar as perguntas melhor para este)
+
 > **Question 23:**
 >
 > **Answer:** 
@@ -22,27 +24,23 @@ As part of the development of the software system, it is necessary to implement 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
+    * None
 
 
 * Selected data:
-    * User 
-    * Role
+    * None
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the listed patients (List Patient)
+
 
 ## 3. Analysis
 
@@ -70,19 +68,24 @@ As part of the development of the software system, it is necessary to implement 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+#### List Patient Profile
+
+**Sequence Diagram Level 1**
+
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
+
+**Sequence Diagram Level 2**
+
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
+
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "List Patient Profile")
 
 
+### 4.2. Applied Patterns
 
-
-### 4.2. Class Diagram
-
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
