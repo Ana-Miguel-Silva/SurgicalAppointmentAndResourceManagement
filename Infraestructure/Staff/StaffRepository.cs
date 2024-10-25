@@ -21,5 +21,25 @@ namespace DDDSample1.Infrastructure.Staff
             .ToListAsync();
         }
 
+        public async Task<StaffProfile> GetByStaffIDAsync(string StaffId)
+        {
+            return await _context.StaffProfiles
+            .Where(s => s.StaffId.Equals(StaffId))
+            .FirstOrDefaultAsync();
+        }
+        
+        public async Task<StaffProfile> UpdateAsync(StaffProfile obj){
+            var existing = await _context.StaffProfiles.FindAsync(obj.Id);
+            
+            if (existing == null)
+            {
+                return null;
+            }
+
+            _context.Entry(existing).CurrentValues.SetValues(obj);
+            await _context.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

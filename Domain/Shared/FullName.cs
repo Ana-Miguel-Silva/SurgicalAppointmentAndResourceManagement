@@ -6,9 +6,9 @@ namespace DDDSample1.Domain.Shared
 {
     public class FullName : IValueObject
     {
-        public string FirstName { get; private set; }
-        public string MiddleNames { get; private set; }
-        public string LastName { get; private set; }
+        public string FirstName { get; set; }
+        public string MiddleNames { get; set; }
+        public string LastName { get; set; }
 
         // Parameterless constructor required by EF Core
         private FullName() { }
