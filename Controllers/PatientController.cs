@@ -232,11 +232,16 @@ namespace DDDSample1.Controllers
         
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
-            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
             try
             {
+                bool isPatient = false;
+                if(user.Role.ToUpper().Equals(Role.PATIENT)){
+                    isPatient = true;
+                }
                 var patientId = new PatientId(Guid.Parse(id));  
-                var cat = await _service.DeleteAsync(patientId);
+                var cat = await _service.DeleteAsync(patientId, isPatient);
 
                 if (cat == null)
                 {

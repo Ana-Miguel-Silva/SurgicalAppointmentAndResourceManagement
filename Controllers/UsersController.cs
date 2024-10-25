@@ -50,15 +50,21 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)
         {
 
-            var result = await _service.AddAsync(dto);
+            if(dto != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN}).Result){
+                var result = await _service.AddAsync(dto);
 
-            if (result == null)
-            {
-                return BadRequest("Wasn't possible to create the user.");
+                if (result == null)
+                {
+                    return BadRequest("Wasn't possible to create the user.");
+                }
+               
+                return result;
+
             }
 
-            // Retorna as informações no formato esperado
-            return result;
+            return Forbid();
+
+            
         }
 
 

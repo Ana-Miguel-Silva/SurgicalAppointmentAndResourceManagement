@@ -24,11 +24,22 @@ namespace DDDSample1.Infrastructure.Users
 
 
             builder.Property(u => u.Username)
-                .IsRequired().IsRequired()
-                .HasMaxLength(100); // Example constraints
+                .IsRequired()
+                .HasMaxLength(100);
+
+             builder.HasIndex(u => u.Username).IsUnique();
 
             builder.Property(u => u.Role)
                 .IsRequired();
+
+            builder.Property(u => u.FailedLoginAttempts)
+                .HasColumnName("FailedLoginAttempts")
+                .IsRequired();
+
+            builder.Property(u => u.LockoutEndTime)
+                .HasColumnName("LockoutEndTime")
+                .IsRequired(false); 
+
         }
     }
 }

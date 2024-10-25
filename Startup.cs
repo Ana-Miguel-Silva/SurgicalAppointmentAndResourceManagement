@@ -137,6 +137,8 @@ namespace DDDSample1
 
                 endpoints.MapControllers();
             });
+
+            SeedAdminUser(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -177,5 +179,28 @@ namespace DDDSample1
             services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
             services.AddScoped<IMailService, GmailService>();
         }
+
+        public async Task SeedAdminUser(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+                var adminUsername = "admin";
+                var adminEmail = new Email("1221137@isep.ipp.pt");
+                var adminRole = "Admin";
+
+                User existingAdmin = await userService.GetByUsernameAsync(adminUsername);
+
+                if (existingAdmin == null)
+                {
+                    var adminDto = new CreatingUserDto(adminUsername, adminEmail.FullEmail, adminRole);
+
+                    await userService.AddAsync(adminDto);
+                }
+                
+            }
+        }
+
     }
 }
