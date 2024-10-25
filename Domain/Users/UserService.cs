@@ -130,13 +130,42 @@ namespace DDDSample1.Domain.Users
             {
                 throw new Exception("User not found.");
             }
+            if (user.IsLockedOut()) throw new Exception("The user only has 5 attemps to login. Please wait 15 minuts and try again!");
 
             if (!user.CheckPassword(password))
             {
+                user.RegisterFailedLoginAttempt();
+
+                if (user.IsLockedOut())
+                {
+                    await NotifyAdminOfLockout(user);
+                }
+
+                await _unitOfWork.CommitAsync(); 
                 throw new Exception("Invalid password.");
             }
+            
+
+            user.ResetFailedLoginAttempts();
+            await _unitOfWork.CommitAsync(); 
 
             return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
+        }
+
+
+        private async Task NotifyAdminOfLockout(User user)
+        {
+            var adminUser = await _repo.GetAdminUserAsync();
+            if (adminUser == null)
+            {
+                throw new Exception("Admin user not found.");
+            }
+
+            var subject = $"User Account Locked - {user.Username}";
+            var body = $"The account for user {user.Username} has been temporarily locked due to multiple failed login attempts.";
+
+            var sendEmailRequest = new SendEmailRequest(adminUser.Email.FullEmail, subject, body);
+            await _mailService.SendEmailAsync(sendEmailRequest);
         }
 
 

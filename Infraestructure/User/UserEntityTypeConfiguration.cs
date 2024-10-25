@@ -29,6 +29,15 @@ namespace DDDSample1.Infrastructure.Users
 
             builder.Property(u => u.Role)
                 .IsRequired();
+
+            builder.Property(u => u.FailedLoginAttempts)
+                .HasColumnName("FailedLoginAttempts")
+                .IsRequired();
+
+            builder.Property(u => u.LockoutEndTime)
+                .HasColumnName("LockoutEndTime")
+                .IsRequired(false); // Allow null values if the user is not locked out
+
         }
     }
 }

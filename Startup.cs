@@ -137,6 +137,8 @@ namespace DDDSample1
 
                 endpoints.MapControllers();
             });
+
+            //SeedAdminUser(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -177,5 +179,34 @@ namespace DDDSample1
             services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
             services.AddScoped<IMailService, GmailService>();
         }
+
+        /*public void SeedAdminUser(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+                // Verifique se o admin já existe
+                var adminUsername = "admin";
+                var existingAdmin = userService.GetByUsernameAsync(adminUsername).Result;
+
+                if (existingAdmin == null)
+                {
+                    var adminEmail = new Email("admin@example.com");
+                    var adminRole = "Admin";
+
+                    var adminDto = new CreatingUserDto
+                    {
+                        Username = adminUsername,
+                        Email = adminEmail,
+                        Role = adminRole
+                    };
+
+                    // Crie o admin usando o UserService
+                    userService.AddAsync(adminDto).Wait();
+                }
+            }
+        }*/
+
     }
 }

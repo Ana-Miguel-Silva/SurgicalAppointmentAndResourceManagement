@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
+using System.Threading.Tasks.Dataflow;
 
 
 
@@ -11,12 +12,15 @@ namespace DDDSample1.Domain.Patients
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
 
+        private readonly IMailService _mailService;
 
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository repo)
+
+        public PatientService(IUnitOfWork unitOfWork, IMailService mailService, IPatientRepository repo)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            _mailService = mailService;
         }
 
         public async Task<List<PatientDto>> GetAllAsync()
@@ -160,12 +164,43 @@ namespace DDDSample1.Domain.Patients
 
         }
 
-        public async Task<PatientDto> DeleteAsync(PatientId id)
+         private async Task SendConfirmationEmail(Patient patient)
+        {
+
+            //var token = GenerateToken(user);
+
+            var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38833556-3e300fdc-d431-41d5-8570-ce1c58b858a2?tab=body";
+
+            string urlDelete = $"https://localhost:5001/api/Patients/{patient.Id.AsString()}/hard";
+
+            var body = $"Hello {patient.name.GetFullName()},<br>\n" +
+                    "You requested to delete your account Health App account.\r\n" +
+                    "<br>If you still wish to proced please click on the following link:\r\n\n" +
+                    $"{resetLink}<br>\r\n\n" +
+                    "<br>In the Delete header past this info" + $"{urlDelete}<br>\r\n\n" +                     
+                    "<br>If you did not request this, please ignore this email.\r\n";
+
+            var sendEmailRequest = new SendEmailRequest(
+                patient.Email.FullEmail, // Destinatário
+                "Health App - Confirmation to delete account", // Assunto
+                body // Corpo
+            );
+
+            await _mailService.SendEmailAsync(sendEmailRequest);
+        }
+
+        public async Task<PatientDto> DeleteAsync(PatientId id, bool isPatient)
         {
             var prod = await this._repo.GetByIdAsync(id); 
 
             if (prod == null)
                 throw new BusinessRuleValidationException($"Patient is not registered in the database. ID not found: {id.AsString()}");
+
+            if(isPatient){
+                await SendConfirmationEmail(prod);
+            }else{
+
+            }
 
 
             //if (Patient.Active)

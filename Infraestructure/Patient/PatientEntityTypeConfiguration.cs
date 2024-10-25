@@ -63,7 +63,7 @@ namespace DDDSample1.Infrastructure.Patients
                 emailBuilder.Property(e => e.FullEmail)
                     .HasColumnName("EmergencyContactEmail")
                     .IsRequired();
-                emailBuilder.HasIndex(e => e.FullEmail).IsUnique();
+                emailBuilder.HasIndex(e => e.FullEmail);
             });
 
 

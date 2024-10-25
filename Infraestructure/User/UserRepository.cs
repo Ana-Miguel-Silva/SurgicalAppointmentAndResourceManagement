@@ -19,5 +19,11 @@ namespace DDDSample1.Infrastructure.Users
                 .Where(u => u.Username.Contains(username))
                 .ToListAsync();
         }
+
+        public async Task<User> GetAdminUserAsync()
+        {
+            var users = await GetAllAsync();
+            return users.FirstOrDefault(user => user.Role == "Admin");
+        }
     }
 }

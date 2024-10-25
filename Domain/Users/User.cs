@@ -7,6 +7,9 @@
 
         public class User : Entity<UserId>, IAggregateRoot
         {
+
+            private const int MaxFailedLoginAttempts = 5;
+            private const int LockoutDurationMinutes = 15;
             public string Username { get; private set; }
             public Email Email { get; private set; }
 
@@ -14,6 +17,10 @@
             public string Role { get; private set; }
 
             public bool Active { get; private set; }
+
+            public int FailedLoginAttempts { get; private set; } = 0;
+            public DateTime? LockoutEndTime { get; private set; }
+            
 
 
             private User()
@@ -82,6 +89,29 @@
             public bool CheckPassword(string plainTextPassword)
             {
                 return Password.Verify(plainTextPassword);
+            }
+
+            public void RegisterFailedLoginAttempt()
+            {
+                FailedLoginAttempts++;
+                if (FailedLoginAttempts >= MaxFailedLoginAttempts)
+                {
+                    LockoutEndTime = DateTime.UtcNow.AddMinutes(LockoutDurationMinutes);
+                    FailedLoginAttempts = 0; 
+                }
+            }
+
+         
+            public bool IsLockedOut()
+            {
+                return LockoutEndTime.HasValue && LockoutEndTime > DateTime.UtcNow;
+            }
+
+            
+            public void ResetFailedLoginAttempts()
+            {
+                FailedLoginAttempts = 0;
+                LockoutEndTime = null;
             }
 
         }
