@@ -13,7 +13,7 @@ AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : info to create patient profile (name, email, phone)
+AD -> SYS : info to create Patient (fullName,email, phone, gender, dateOfBirth, userEmail)
 activate SYS
 SYS --> AD : success and data
 

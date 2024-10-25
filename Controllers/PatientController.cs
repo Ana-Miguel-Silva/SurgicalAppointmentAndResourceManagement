@@ -329,16 +329,16 @@ namespace DDDSample1.Controllers
 
                 var patientId = new PatientId(Guid.Parse(id));
 
-                var cat = await _service.DeleteAsync(patientId, isPatient);
+                var patientProfile = await _service.DeleteAsync(patientId, isPatient);
 
-                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(cat));
+                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(patientProfile));
 
                 if (cat == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(cat);
+                return Ok(patientProfile);
             }
             catch (BusinessRuleValidationException ex)
             {

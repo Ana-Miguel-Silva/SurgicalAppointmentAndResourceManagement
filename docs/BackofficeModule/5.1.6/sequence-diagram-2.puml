@@ -1,25 +1,26 @@
-@startuml 5.1.6
+@startuml 5.1.4
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "BackofficeUser" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
-
-
-activate AD
-AD -> FE: access page
+-> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getEditForm(ID)
 activate BE
-BE --> FE: form
+BE --> FE: token
 deactivate BE
-FE --> AD : data input
+<-- FE : token
 deactivate FE
-deactivate AD
+
+
+deactivate FE
+
+
 
 
 @enduml

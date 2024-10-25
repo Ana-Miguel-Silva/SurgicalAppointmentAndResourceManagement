@@ -5,14 +5,18 @@ skinparam shadowing false
 
 autonumber
 
-actor "BackofficeUser" as AD
+actor "BackOfficeUser" as AD
 participant "SAaRM System" as SYS <<system>>
 
+
+
 activate AD
+
 AD -> SYS: access page
+
 activate SYS
-SYS --> AD : data input
-deactivate SYS
+
+SYS --> AD: token
 
 
 deactivate SYS

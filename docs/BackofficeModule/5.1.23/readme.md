@@ -3,82 +3,92 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. 
+These functionalities are essential to allow administrators to view operation types.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.23** 
+**US 5.1.23**  As an Admin, I want to list/search operation types, so that I can see the details, edit, and remove operation types
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search and filter operation types by name, specialization, or status
+  (active/inactive).
+
+- The system displays operation types in a searchable list with attributes such as name, required
+  staff, and estimated duration.
+
+- Admins can select an operation type to view, edit, or deactivate it.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
->
-> **Answer:** 
 
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "5.1.20 As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures in the system."
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
+    * name
+    * specialization
+    * status
 
-
-* Selected data:
-    * User 
-    * Role
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the data of the operations types.
+
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** OperationTypes, RequiredStaff
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** OperationTypesController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:**
 
-**Repository:**	UserRepository
+**Repository:**	OperationTypesRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** OperationTypesService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Filter OperationTypes Level 1**
+
+![Filter OperationTypes](sequence-diagram-1.svg "Filter OperationTypes")
+
+
+**Filter OperationTypes Level 2**
+
+![Filter OperationTypes](sequence-diagram-2.svg "Filter OperationTypes")
+
+**Filter OperationTypes Level 3**
+
+![Filter OperationTypes](sequence-diagram-3.svg "Filter OperationTypes")
 
 
 
 
-### 4.2. Class Diagram
+[//]: # (### 4.2. Class Diagram)
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
 ### 4.3. Applied Patterns
 
@@ -125,31 +135,13 @@ public void verifyIfUsersAreEquals() {
 ## 5. Implementation
 
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in the OperationTypesController
+* **public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered(
+  [FromQuery] string? name,
+  [FromQuery] string? specialization,
+  [FromQuery] bool? status)**  this method filters to list all operationtypes
 
 
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
 
 
 ## 6. Integration/Demonstration

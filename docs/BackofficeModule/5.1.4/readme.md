@@ -41,17 +41,29 @@ confirmation email).
 * There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
 backoffice system with appropriate permissions."
 
+
+* There is a dependency to "5.1.6 As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+
+* There is a dependency to "As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online."
+
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * contact information (email, phone number)
-
+  * Full name
+  * E-mail (Contact Information)
+  * Phone number (Contact Information)
+  * UserEmail
+  * Date of Birth
+  * Gender
+  * Allergies
+  * Appoitment History 
 
 
 **Output Data:**
-* Display the success of the operation.
+* Display the success of the operation and the data updated.
 
 ## 3. Analysis
 
@@ -59,35 +71,48 @@ backoffice system with appropriate permissions."
 >
 >
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # ()
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** PatientController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** 
 
-**Repository:**	UserRepository
+**Repository:**	PatientRepository, LogsRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** PatientService, AuthorizationService, LogsService, GmailService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Update Patient Level 1**
+
+![Update Patient](sequence-diagram-1.svg "Update Patient")
+
+
+**Update Patient Level 2**
+
+![Update Patient](sequence-diagram-2.svg "Update Patient")
+
+**Update Patient Level 3**
+
+![Update Patient](sequence-diagram-3.svg "Update Patient")
 
 
 
 
-### 4.2. Class Diagram
+[//]: # (### 4.2. Class Diagram)
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
 ### 4.3. Applied Patterns
 
@@ -135,30 +160,8 @@ public void verifyIfUsersAreEquals() {
 
 
 ### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+* **public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)**  this method updates the patient info
 
-
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
 
 
 ## 6. Integration/Demonstration

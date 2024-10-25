@@ -1,4 +1,4 @@
-@startuml 5.1.3
+@startuml 5.1.4
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -8,27 +8,22 @@ autonumber
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
-
-
 -> FE: access page
-
 activate FE
-
-FE -> BE: getCreateForm()
+FE -> BE: getEditForm(ID)
 activate BE
-BE --> FE: form
+BE --> FE: PatientDto
 deactivate BE
-<--FE: data input
-
+<-- FE : provide update form
 deactivate FE
-
--> FE : confirmation to delete account(email)
+-> FE : update info of Patient
 activate FE
-FE -> BE: deleteAccount(email)
+FE -> BE: pdate(string email, PatientDto dto)
 activate BE
+
 BE --> FE: success
 deactivate BE
-<-- FE  : success and data
+<-- FE : success and data
 
 deactivate FE
 

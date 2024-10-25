@@ -55,34 +55,42 @@ backoffice system with appropriate permissions."
 >
 > **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect
 
-Therefore we implemented BLA BLA BLA ...
 
 
 
 
+[//]: # (### 3.1. Domain Model)
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Email, User
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** UserController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** 
 
 **Repository:**	UserRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** UserService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Login Patient Level 1**
+
+![Login Patient](sequence-diagram-1.svg "Login Patient")
+
+
+**Login Patient Level 2**
+
+![Login Patient](sequence-diagram-2.svg "Login Patient")
+
+**Login Patient Level 3**
+![Login Patient](sequence-diagram-3.svg "Login Patient")
 
 
 
@@ -136,31 +144,12 @@ public void verifyIfUsersAreEquals() {
 ## 5. Implementation
 
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in the tUsersController
+* **Login([FromBody] LoginRequest login)**  this method verifies the username and password from a user
 
 
 
-### Methods in the AddUsersController
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
 
 
 ## 6. Integration/Demonstration

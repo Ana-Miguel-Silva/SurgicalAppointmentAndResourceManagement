@@ -43,6 +43,7 @@ backoffice system with appropriate permissions."
 **Input Data:**
 
 * Typed data:
+    * id
     * Confirmation of the delete operation. 
 
 
@@ -58,35 +59,45 @@ backoffice system with appropriate permissions."
 
 
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
+**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber
 
-**Domain Class/es:** E-mail, SystemUser
+**Controller:** PatientController
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**UI:**
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**Repository:**	PatientRepository, LogsRepository
 
-**Repository:**	UserRepository
-
-**Service:** UserManagementService, AuthorizationService
+**Service:** PatientService, AuthorizationService, LogsService, GmailService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Delete Patient Level 1**
+
+![Delete Patient](sequence-diagram-1.svg "Delete Patient")
 
 
+**Update Patient Level 2**
 
+![Delete Patient](sequence-diagram-2.svg "Delete Patient")
 
-### 4.2. Class Diagram
+**Update Patient Level 3**
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+![Delete Patient](sequence-diagram-3.svg "Delete Patient")
+
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.2. Class Diagram)
+
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
 ### 4.3. Applied Patterns
 

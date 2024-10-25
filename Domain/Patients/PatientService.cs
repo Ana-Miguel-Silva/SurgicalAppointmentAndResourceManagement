@@ -180,8 +180,7 @@ namespace DDDSample1.Domain.Patients
                     "<br>If you still wish to proced please click on the following link:\r\n\n" +
                     $"{resetLink}<br>\r\n\n" +
                     "\rThen write true or false, if you with to autorize!\n\n\r" +
-                    "<\r>Then in the Delete header past this info" + $"{urlDelete}<br>\r\n\n" +                     
-                    "<br>If you did not request this, please ignore this email.\r\n";
+                    "<\r>Then in the Delete header past this info" + $"{urlDelete}<br>\r\n\n";
 
             var sendEmailRequest = new SendEmailRequest(
                 patient.Email.FullEmail, // Destinatário

@@ -1,4 +1,4 @@
-@startuml 5.1.5
+@startuml 5.1.4
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -8,20 +8,14 @@ autonumber
 actor "Patient" as AD
 participant "SAaRM System" as SYS <<system>>
 
-
-
 activate AD
-
 AD -> SYS: access page
-
 activate SYS
-
-SYS --> AD: data input
-
+SYS --> AD: provide update form
 deactivate SYS
-
-AD -> SYS : confirmation to delete account(email)
+AD -> SYS : update info of Patient
 activate SYS
+
 SYS --> AD : success and data
 
 deactivate SYS

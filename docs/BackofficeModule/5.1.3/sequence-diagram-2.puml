@@ -4,29 +4,26 @@ skinparam shadowing false
 
 autonumber
 
-actor "Patient" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+ -> FE: access page
 activate FE
 FE -> BE: getCreateForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<-- FE   : data input
 deactivate FE
-AD -> FE : info to create patient profile (name, email, phone)
+-> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth,userEmail)
 activate FE
-FE -> BE : createPatientProfile(name, email, phone)
+FE -> BE : createPatientProfile(fullName,email, phone, gender, dateOfBirth,userEmail)
+activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
-deactivate FE
-deactivate AD
+<-- FE   : success and data
 
 
 @enduml

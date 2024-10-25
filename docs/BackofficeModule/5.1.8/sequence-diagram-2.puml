@@ -20,8 +20,10 @@ deactivate FE
 -> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth,(?))
 activate FE
 FE -> BE : createPatientProfile(fullName,email, phone, gender, dateOfBirth,(?))
+activate BE
 BE --> FE: success
 deactivate BE
+
 <-- FE   : success and data
 
 
