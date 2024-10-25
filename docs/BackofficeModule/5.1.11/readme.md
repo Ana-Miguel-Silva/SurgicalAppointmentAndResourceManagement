@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As an Admin, I want to list/search patient profiles by different attributes, so that I can view the details, edit, and remove patient profiles.
 
 ## 2. Requirements
 
@@ -11,7 +11,10 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search patient profiles by various attributes, including name, email, date of birth, or medical record number.
+- The system displays search results in a list view with key patient information (name, email, date of birth).
+- Admins can select a profile from the list to view, edit, or delete the patient record. 
+- The search results are paginated, and filters are available to refine the search results.
 
 **Customer Specifications and Clarifications:**
 
@@ -38,7 +41,7 @@ As part of the development of the software system, it is necessary to implement 
     * None
 
 
-**Output Data:**
+**Output Data:**e 
 * Display the success of the operation and the data of the listed patients (List Patient)
 
 

@@ -30,7 +30,7 @@ namespace DDDSample1.Domain.Patients
 
             
             List<PatientDto> listDto = list.ConvertAll<PatientDto>(prod => 
-                new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+                new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory));
 
             return listDto;
@@ -43,7 +43,7 @@ namespace DDDSample1.Domain.Patients
             if(prod == null)
                 return null;
 
-            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory);
 
         }
@@ -90,7 +90,7 @@ namespace DDDSample1.Domain.Patients
 
             await this._unitOfWork.CommitAsync();
 
-             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.DateOfBirth, Patient.Phone, Patient.Email, Patient.UserEmail, Patient.nameEmergency,Patient.phoneEmergency , Patient.emailEmergency, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
+             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.medicalRecordNumber, Patient.DateOfBirth, Patient.Phone, Patient.Email, Patient.UserEmail, Patient.nameEmergency,Patient.phoneEmergency , Patient.emailEmergency, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
 
              if (string.IsNullOrEmpty(dto.Name))
             {
@@ -137,7 +137,7 @@ namespace DDDSample1.Domain.Patients
             await this._unitOfWork.CommitAsync();
 
             return new PatientDto(
-                patient.Id.AsGuid(), patient.name.toName(), patient.DateOfBirth, 
+                patient.Id.AsGuid(), patient.name.toName(), patient.medicalRecordNumber,  patient.DateOfBirth, 
                 patient.Phone, patient.Email, patient.UserEmail, 
                 patient.nameEmergency, patient.phoneEmergency, 
                 patient.emailEmergency, patient.gender, 
@@ -156,10 +156,10 @@ namespace DDDSample1.Domain.Patients
             
             await this._unitOfWork.CommitAsync();
 
-            /*return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.DateOfBirth, 
+            /*return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);*/
 
-            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory);
 
         }
@@ -208,9 +208,44 @@ namespace DDDSample1.Domain.Patients
             this._repo.Remove(prod);
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.DateOfBirth, 
+            return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory);
 
+        }
+
+        public async Task<List<PatientDto>> GetAllFilteredAsync(
+            string? nameFull,
+            DateTime? DateOfBirth,
+            List<string>? Allergies,
+            string medicalRecordNumber,
+            List<string>? AppointmentHistory
+            )
+        {
+
+            var patientsProfile = await this._repo.GetAllAsync();
+
+        // Filtros aplicados conforme cada critério
+        /*if (!string.IsNullOrEmpty(nameFull))
+            patientsProfile = patientsProfile.Where(o => o.name.Equals(nameFull, StringComparison.OrdinalIgnoreCase));*/
+
+
+        if (DateOfBirth.HasValue)
+            patientsProfile = patientsProfile.Where(o => o.DateOfBirth.Date == DateOfBirth.Value.Date).ToList();
+
+        if (Allergies != null && Allergies.Any())
+            patientsProfile = patientsProfile.Where(o => o.Allergies != null && o.Allergies.Any(a => Allergies.Contains(a))).ToList();
+
+        if (!string.IsNullOrEmpty(medicalRecordNumber))
+            patientsProfile = patientsProfile.Where(o => o.medicalRecordNumber.number.Equals(medicalRecordNumber)).ToList();
+
+        if (AppointmentHistory != null && AppointmentHistory.Any())
+            patientsProfile = patientsProfile.Where(o => o.AppointmentHistory != null && o.AppointmentHistory.Any(a => AppointmentHistory.Contains(a))).ToList();
+
+
+            return patientsProfile.ConvertAll<PatientDto>(patients =>
+                new(patients.Id.AsGuid(), patients.name.toName(), patients.medicalRecordNumber, patients.DateOfBirth,patients.Phone,
+                 patients.Email, patients.UserEmail, patients.nameEmergency,
+                 patients.phoneEmergency, patients.emailEmergency, patients.gender, patients.Allergies, patients.AppointmentHistory )).ToList();
         }
 
         
