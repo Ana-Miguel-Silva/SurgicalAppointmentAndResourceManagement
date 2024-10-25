@@ -2,20 +2,26 @@ namespace DDDSample1.Domain.Staff
 {
     public static class Specialization
     {
-        public const string ADMIN = "ADMIN";
-        public const string DOCTOR = "DOCTOR";
-        public const string NURSE = "NURSE";
-        public const string TECHNICIAN = "TECHNICIAN";
-        public const string PATIENT = "PATIENT";
+        public const string PEDIATRICS = "PEDIATRICS";
+        public const string SURGERY = "SURGERY";
+        public const string CARDIOLOGY = "CARDIOLOGY";
+        public const string ORTHOPEDICS = "ORTHOPEDICS";
+        public const string ANAESTHESIOLOGY = "ANAESTHESIOLOGY";
+        public const string NEUROLOGY = "NEUROLOGY";
+        public const string ONCOLOGY = "ONCOLOGY";
+        public const string GYNECOLOGY = "GYNECOLOGY";
+        public const string OBSTETRICS = "OBSTETRICS";
+        public const string RADIOLOGY = "RADIOLOGY";
+        public const string UROLOGY = "UROLOGY";
 
-        public static string[] Roles()
+        public static string[] Specializations()
         {
-            return [ADMIN, DOCTOR, NURSE, TECHNICIAN, PATIENT];
+            return [PEDIATRICS, SURGERY, CARDIOLOGY, ORTHOPEDICS, ANAESTHESIOLOGY, NEUROLOGY, ONCOLOGY, GYNECOLOGY, OBSTETRICS, RADIOLOGY, UROLOGY];
         }
 
         public static bool IsValid(string Status)
         {
-            return Roles().Contains(Status);
+            return Specializations().Contains(Status);
         }
     }
 }

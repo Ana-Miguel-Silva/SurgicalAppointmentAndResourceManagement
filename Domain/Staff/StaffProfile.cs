@@ -34,7 +34,7 @@ namespace DDDSample1.Domain.Staff
             this.Role = role;
             this.Specialization = specialization;
             this.AvailabilitySlots = slots;
-
+             this.Active = true;
         }
 
 
@@ -56,11 +56,14 @@ namespace DDDSample1.Domain.Staff
 
 
 
-        /*public void ChangeLicenseNumber(string licenseNumber)
+        public void ChangeLicenseNumber(string licenseNumber)
         {
             LicenseNumber = licenseNumber;
-        }*/
-
+        }
+        public void UpdateSpecialization(string specialization)
+        {
+            Specialization = specialization;
+        }
 
         public void MarkAsInative()
         {
