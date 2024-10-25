@@ -169,7 +169,7 @@ namespace DDDSample1.Domain.Patients
 
             //var token = GenerateToken(user);
 
-            var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38833556-3e300fdc-d431-41d5-8570-ce1c58b858a2?tab=body";
+            var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/environment/38865574-80fc09d7-9602-4738-aa58-9685f2d733ed";
 
             string urlDelete = $"https://localhost:5001/api/Patients/{patient.Id.AsString()}/hard";
 
@@ -177,7 +177,8 @@ namespace DDDSample1.Domain.Patients
                     "You requested to delete your account Health App account.\r\n" +
                     "<br>If you still wish to proced please click on the following link:\r\n\n" +
                     $"{resetLink}<br>\r\n\n" +
-                    "<br>In the Delete header past this info" + $"{urlDelete}<br>\r\n\n" +                     
+                    "\rThen write true or false, if you with to autorize!\n\n\r" +
+                    "<\r>Then in the Delete header past this info" + $"{urlDelete}<br>\r\n\n" +                     
                     "<br>If you did not request this, please ignore this email.\r\n";
 
             var sendEmailRequest = new SendEmailRequest(
@@ -198,8 +199,6 @@ namespace DDDSample1.Domain.Patients
 
             if(isPatient){
                 await SendConfirmationEmail(prod);
-            }else{
-
             }
 
 

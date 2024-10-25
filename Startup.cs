@@ -27,7 +27,8 @@ using System.Text;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
-
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DDDSample1
 {
@@ -55,8 +56,27 @@ namespace DDDSample1
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
             services.AddControllers().AddNewtonsoftJson();
+            
 
-    
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = Configuration["GoogleKeys:ClientId"];
+                options.ClientSecret = Configuration["GoogleKeys:ClientSecret"];
+                options.CallbackPath = "/signin-google"; 
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.Lax;  // Ou `SameSiteMode.None` se o seu ambiente exigir.
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+            
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
 
             services.AddAuthentication(options =>
@@ -122,9 +142,8 @@ namespace DDDSample1
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
- 
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -137,6 +156,7 @@ namespace DDDSample1
 
                 endpoints.MapControllers();
             });
+
 
             SeedAdminUser(app.ApplicationServices);
         }

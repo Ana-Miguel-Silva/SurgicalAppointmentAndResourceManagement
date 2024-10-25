@@ -6,6 +6,9 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using DDDSample1.Domain.Patients;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DDDSample1.Controllers
 {
@@ -67,6 +70,52 @@ namespace DDDSample1.Controllers
              }
              return Forbid();
         }
+
+        [HttpPost("ExternalIAM")]
+        public async Task<ActionResult<PatientDto>> RegisterExternalIAM()
+        {
+             ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
+
+                /*await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, 
+                    new AuthenticationProperties
+                    {
+                        RedirectUri = Url.Action("GoogleResponse")
+                    });*/
+
+
+                return Challenge(new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                }, GoogleDefaults.AuthenticationScheme);
+                    
+             //}
+             //return Forbid();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded || result.Principal == null)
+            {
+                return Redirect("/erro"); 
+            }
+
+            var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            }).ToList();
+
+            // Redireciona para uma URL específica, incluindo as claims caso necessário
+            var redirectUrl = "https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6?tab=body";
+            return Redirect(redirectUrl);
+        }
+
 
 
 
@@ -239,6 +288,7 @@ namespace DDDSample1.Controllers
                 bool isPatient = false;
                 if(user.Role.ToUpper().Equals(Role.PATIENT)){
                     isPatient = true;
+                    
                 }
                 var patientId = new PatientId(Guid.Parse(id));  
                 var cat = await _service.DeleteAsync(patientId, isPatient);

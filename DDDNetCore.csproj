@@ -14,7 +14,7 @@
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
 
     <!-- Unificando versões do Entity Framework Core -->

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tTPktZaa1aY=",
+  "dgSpecHash": "wDIZ1GFgksM=",
   "success": true,
   "projectFilePath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,7 @@
     "C:\\Users\\avlis\\.nuget\\packages\\google.apis.auth\\1.68.0\\google.apis.auth.1.68.0.nupkg.sha512",
     "C:\\Users\\avlis\\.nuget\\packages\\google.apis.core\\1.68.0\\google.apis.core.1.68.0.nupkg.sha512",
     "C:\\Users\\avlis\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
-    "C:\\Users\\avlis\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\8.0.8\\microsoft.aspnetcore.authentication.google.8.0.8.nupkg.sha512",
+    "C:\\Users\\avlis\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\8.0.10\\microsoft.aspnetcore.authentication.google.8.0.10.nupkg.sha512",
     "C:\\Users\\avlis\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.8\\microsoft.aspnetcore.authentication.jwtbearer.8.0.8.nupkg.sha512",
     "C:\\Users\\avlis\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\8.0.0\\microsoft.aspnetcore.jsonpatch.8.0.0.nupkg.sha512",
     "C:\\Users\\avlis\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\8.0.0\\microsoft.aspnetcore.mvc.newtonsoftjson.8.0.0.nupkg.sha512",

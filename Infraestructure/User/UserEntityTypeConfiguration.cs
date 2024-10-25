@@ -12,14 +12,14 @@ namespace DDDSample1.Infrastructure.Users
 
             builder.OwnsOne(u => u.Email, emailBuilder =>
             {
-                emailBuilder.Property(e => e.FullEmail).HasColumnName("Email").IsRequired(); // Map to column
-
+                emailBuilder.Property(e => e.FullEmail).HasColumnName("Email").IsRequired();
+                
                  emailBuilder.HasIndex(e => e.FullEmail).IsUnique();
             });
 
             builder.OwnsOne(u => u.Password, passwordBuilder =>
             {
-                passwordBuilder.Property(e => e.Pass).HasColumnName("Password"); // Map to column
+                passwordBuilder.Property(e => e.Pass).HasColumnName("Password");
             });
 
 
