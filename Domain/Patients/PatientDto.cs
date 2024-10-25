@@ -30,13 +30,13 @@ namespace DDDSample1.Domain.Patients
 
          public Email UserEmail { get;   set; }
 
-        public PatientDto(Guid Id, string name, DateTime dateOfBirth, 
+        public PatientDto(Guid Id, string name, MedicalRecordNumber medicalRecordNumber, DateTime dateOfBirth, 
                    PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
         //TODO:Validação para se não forem nulls
         this.Id = Id;
-        this.medicalRecordNumber = new MedicalRecordNumber();
+        this.medicalRecordNumber = medicalRecordNumber;
         this.name = new FullName(name);
         this.Allergies = Allergies;
         this.AppointmentHistory = AppointmentHistory;

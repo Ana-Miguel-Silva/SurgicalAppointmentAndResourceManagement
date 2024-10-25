@@ -67,8 +67,6 @@ namespace DDDSample1.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationTypeDto>> Update(Guid id, OperationTypeDto dto)
         {
-            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-            Console.Write(_authService);
             if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN}).Result){
 
                 try

@@ -146,6 +146,35 @@ namespace DDDSample1.Controllers
             return Forbid(); 
         }
 
+        // GET: api/Patients/search
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllFiltered(
+            [FromQuery] string? name,
+            [FromQuery] DateTime? DateOfBirth,
+            [FromQuery] string? medicalRecordNumber,
+            [FromQuery] List<string>? Allergies,
+            [FromQuery] List<string>? AppointmentHistory )
+            //[FromQuery] bool? status)
+
+            
+            
+        {
+
+            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXAAAAAAAAAAAAAAAAXXXXXXXXXXXXXXXXXXX\n");
+            Console.Write(name + " here\n");
+
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
+            {
+                //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
+                //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
+
+                var operationRequests = await _service.GetAllFilteredAsync(name,DateOfBirth,Allergies,medicalRecordNumber,AppointmentHistory);
+
+                return operationRequests;
+            }
+            return Forbid();
+        }
+
 
         /*
         // PUT: api/User/5
