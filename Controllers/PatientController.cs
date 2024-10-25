@@ -9,6 +9,8 @@ using DDDSample1.Domain.Patients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using DDDSample1.Domain.Logging;
+using Newtonsoft.Json;
 
 namespace DDDSample1.Controllers
 {
@@ -20,11 +22,14 @@ namespace DDDSample1.Controllers
 
         private readonly AuthorizationService _authService;
 
+         private readonly LogService _logService;
 
-        public PatientsController(PatientService service, AuthorizationService authService)
+
+        public PatientsController(PatientService service, AuthorizationService authService, LogService logService)
         {
             _service = service;
             _authService = authService;
+            _logService = logService;
             
         }
 
@@ -65,6 +70,7 @@ namespace DDDSample1.Controllers
                 {
                     Patient = result,
                 });*/
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result));
 
                 return result;
              }
@@ -177,6 +183,8 @@ namespace DDDSample1.Controllers
                             {
                                 return NotFound();
                             }
+
+                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
                             return Ok(patientProfile);
                         }
                         catch(BusinessRuleValidationException ex)
@@ -316,11 +324,14 @@ namespace DDDSample1.Controllers
             {
                 bool isPatient = false;
                 if(user.Role.ToUpper().Equals(Role.PATIENT)){
-                    isPatient = true;
-                    
+                    isPatient = true;                    
                 }
-                var patientId = new PatientId(Guid.Parse(id));  
+
+                var patientId = new PatientId(Guid.Parse(id)); 
+
                 var cat = await _service.DeleteAsync(patientId, isPatient);
+
+                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(cat));
 
                 if (cat == null)
                 {
