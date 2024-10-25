@@ -138,7 +138,7 @@ namespace DDDSample1
                 endpoints.MapControllers();
             });
 
-            //SeedAdminUser(app.ApplicationServices);
+            SeedAdminUser(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -180,33 +180,27 @@ namespace DDDSample1
             services.AddScoped<IMailService, GmailService>();
         }
 
-        /*public void SeedAdminUser(IServiceProvider serviceProvider)
+        public async Task SeedAdminUser(IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
                 var userService = scope.ServiceProvider.GetRequiredService<UserService>();
 
-                // Verifique se o admin já existe
                 var adminUsername = "admin";
-                var existingAdmin = userService.GetByUsernameAsync(adminUsername).Result;
+                var adminEmail = new Email("1221137@isep.ipp.pt");
+                var adminRole = "Admin";
+
+                User existingAdmin = await userService.GetByUsernameAsync(adminUsername);
 
                 if (existingAdmin == null)
                 {
-                    var adminEmail = new Email("admin@example.com");
-                    var adminRole = "Admin";
+                    var adminDto = new CreatingUserDto(adminUsername, adminEmail.FullEmail, adminRole);
 
-                    var adminDto = new CreatingUserDto
-                    {
-                        Username = adminUsername,
-                        Email = adminEmail,
-                        Role = adminRole
-                    };
-
-                    // Crie o admin usando o UserService
-                    userService.AddAsync(adminDto).Wait();
+                    await userService.AddAsync(adminDto);
                 }
+                
             }
-        }*/
+        }
 
     }
 }

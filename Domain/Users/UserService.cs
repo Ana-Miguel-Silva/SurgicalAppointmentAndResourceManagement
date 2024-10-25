@@ -223,6 +223,12 @@ namespace DDDSample1.Domain.Users
                 throw new BusinessRuleValidationException("Invalid Role.");
         }
 
+        public async Task<User> GetByUsernameAsync(string adminUsername)
+        {
+            var users = await _repo.GetByUsernameAsync(adminUsername);      
+
+            return users.FirstOrDefault();            
+        }
     }
 
 
