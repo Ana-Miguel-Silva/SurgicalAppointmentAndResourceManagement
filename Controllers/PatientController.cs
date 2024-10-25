@@ -6,6 +6,7 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using DDDSample1.Domain.Patients;
+using System.Threading.Tasks.Dataflow;
 
 namespace DDDSample1.Controllers
 {
@@ -104,17 +105,17 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/Patients/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
+        [HttpPut("{email}")]
+        public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)
         {           
 
             //TODO: Testes e verificar se funciona sem ser com id
             if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
-                if(true){
                 
                     try
                     {
-                        if (id != dto.Id)
+                      
+                        if (!(email.Equals(dto.Email.FullEmail)))
                         {
                             return BadRequest();
                         }
@@ -139,8 +140,7 @@ namespace DDDSample1.Controllers
                         catch(BusinessRuleValidationException ex)
                     {
                         return BadRequest(new {Message = ex.Message});
-                    }
-                }      
+                    } 
                 
             }
             return Forbid(); 
@@ -152,23 +152,23 @@ namespace DDDSample1.Controllers
             [FromQuery] string? name,
             [FromQuery] DateTime? DateOfBirth,
             [FromQuery] string? medicalRecordNumber,
+            [FromQuery] string? email,
             [FromQuery] List<string>? Allergies,
-            [FromQuery] List<string>? AppointmentHistory )
+            [FromQuery] List<string>? AppointmentHistory 
+            
+            )
             //[FromQuery] bool? status)
 
             
             
         {
 
-            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXAAAAAAAAAAAAAAAAXXXXXXXXXXXXXXXXXXX\n");
-            Console.Write(name + " here\n");
-
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
             {
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-                var operationRequests = await _service.GetAllFilteredAsync(name,DateOfBirth,Allergies,medicalRecordNumber,AppointmentHistory);
+                var operationRequests = await _service.GetAllFilteredAsync(name,email,DateOfBirth,Allergies,medicalRecordNumber,AppointmentHistory);
 
                 return operationRequests;
             }

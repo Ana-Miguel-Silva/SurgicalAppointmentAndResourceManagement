@@ -115,13 +115,15 @@ namespace DDDSample1.Domain.Patients
             //CheckGender(dto.gender);
             //await checkCategoryIdAsync(dto.CategoryId);
            
-            var patient = await this._repo.GetByIdAsync(new PatientId(dto.Id));
+            var patient = await this._repo.GetByEmailAsync(dto.Email.FullEmail);
 
             if (patient == null)
             {
                 return null; // Patient not found
             }
 
+
+            //TODO: Se for dados sensiveis mandar email, logo fazer uma verificação para se algum deles for mudado ser mandado email
             // Update patient's name
             patient.ChangeName(new FullName(dto.name.GetFullName()));
 
@@ -216,6 +218,7 @@ namespace DDDSample1.Domain.Patients
 
         public async Task<List<PatientDto>> GetAllFilteredAsync(
             string? nameFull,
+            string? email,
             DateTime? DateOfBirth,
             List<string>? Allergies,
             string medicalRecordNumber,
@@ -226,8 +229,8 @@ namespace DDDSample1.Domain.Patients
             var patientsProfile = await this._repo.GetAllAsync();
 
         // Filtros aplicados conforme cada critério
-        /*if (!string.IsNullOrEmpty(nameFull))
-            patientsProfile = patientsProfile.Where(o => o.name.Equals(nameFull, StringComparison.OrdinalIgnoreCase));*/
+        if (!string.IsNullOrEmpty(nameFull))
+            patientsProfile = patientsProfile.Where(o => o.name.toName().Equals(nameFull)).ToList();
 
 
         if (DateOfBirth.HasValue)
@@ -238,6 +241,9 @@ namespace DDDSample1.Domain.Patients
 
         if (!string.IsNullOrEmpty(medicalRecordNumber))
             patientsProfile = patientsProfile.Where(o => o.medicalRecordNumber.number.Equals(medicalRecordNumber)).ToList();
+        
+        if (!string.IsNullOrEmpty(email))
+            patientsProfile = patientsProfile.Where(o => o.Email.FullEmail.Equals(email)).ToList();
 
         if (AppointmentHistory != null && AppointmentHistory.Any())
             patientsProfile = patientsProfile.Where(o => o.AppointmentHistory != null && o.AppointmentHistory.Any(a => AppointmentHistory.Contains(a))).ToList();

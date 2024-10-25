@@ -6,6 +6,9 @@ namespace DDDSample1.Domain.Patients
     {
         Task<List<Patient>> GetByNameAsync(string name);
 
+        Task<Patient> GetByEmailAsync(string email);
+
+
         //Task<Patient> GetByIdAsync(PatientId id);
     }
 }

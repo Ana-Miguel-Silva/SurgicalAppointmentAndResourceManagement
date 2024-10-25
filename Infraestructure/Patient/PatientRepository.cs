@@ -30,5 +30,12 @@ namespace DDDSample1.Infrastructure.Patients
             return patients.Where(p => p.name.toName().Contains(name)).ToList();
         }
 
+        public async Task<Patient> GetByEmailAsync(string email)
+        {
+            var patients = await _context.Patients.ToListAsync();
+
+            return patients.FirstOrDefault(p => p.Email.FullEmail.Contains(email));
+        }
+
     }
 }

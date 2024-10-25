@@ -20,9 +20,9 @@ As an Admin, I want to list/search patient profiles by different attributes, so 
 
 [//]: # (TODO: Verificar as perguntas melhor para este)
 
-> **Question 23:**
+> **Question 1:**
 >
-> **Answer:** 
+> **Answer 1:** 
 
 
 **Dependencies/References:**
