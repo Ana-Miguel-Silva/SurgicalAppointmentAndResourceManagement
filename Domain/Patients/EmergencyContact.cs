@@ -16,7 +16,7 @@ namespace DDDSample1.Domain.Patients
 
     public EmergencyContact(string name, PhoneNumber phoneNumber, Email email)
     {
-      this.Name = new FullName(name);
+      this.Name = new FullName(name);     
       this.Phone = phoneNumber;
       this.Email = email;
     }

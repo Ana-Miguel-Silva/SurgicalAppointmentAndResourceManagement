@@ -5,44 +5,42 @@
 namespace DDDNetCore.Migrations
 {
     /// <inheritdoc />
-    public partial class OperationRequestUpdat : Migration
+    public partial class UniqueOperationTypeName : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Priority",
-                table: "OperationRequests",
-                type: "varchar(50)",
-                maxLength: 50,
-                nullable: true,
+                name: "Name",
+                table: "OperationTypes",
+                type: "varchar(255)",
+                nullable: false,
                 oldClrType: typeof(string),
-                oldType: "varchar(50)",
-                oldMaxLength: 50)
+                oldType: "longtext")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OperationTypes_Name",
+                table: "OperationTypes",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "OperationRequests",
-                keyColumn: "Priority",
-                keyValue: null,
-                column: "Priority",
-                value: "");
+            migrationBuilder.DropIndex(
+                name: "IX_OperationTypes_Name",
+                table: "OperationTypes");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Priority",
-                table: "OperationRequests",
-                type: "varchar(50)",
-                maxLength: 50,
+                name: "Name",
+                table: "OperationTypes",
+                type: "longtext",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "varchar(50)",
-                oldMaxLength: 50,
-                oldNullable: true)
+                oldType: "varchar(255)")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
         }

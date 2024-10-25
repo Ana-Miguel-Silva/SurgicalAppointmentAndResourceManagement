@@ -8,7 +8,8 @@ namespace DDDSample1.Infrastructure.OperationTypes
     {
         public void Configure(EntityTypeBuilder<OperationType> builder)
         {
-            // Configure RequiredStaff as a collection
+            builder.HasIndex(ot => ot.Name).IsUnique();
+            
             builder.OwnsMany(ot => ot.RequiredStaff, staffBuilder =>
             {
                 staffBuilder.ToTable("OperationTypeRequiredStaff");
@@ -19,26 +20,25 @@ namespace DDDSample1.Infrastructure.OperationTypes
                 staffBuilder.Property(rs => rs.Role).HasColumnName("Role");
             });
 
-            // Configure EstimatedDuration as a single entity
             builder.OwnsOne(ot => ot.EstimatedDuration, durationBuilder =>
             {
                 durationBuilder.Property(d => d.PatientPreparation)
                     .HasColumnName("PatientPreparationDuration")
                     .HasConversion(
-                        v => v,  // Store TimeOnly directly
-                        v => v); // Retrieve TimeOnly directly
+                        v => v,
+                        v => v);
 
                 durationBuilder.Property(d => d.Surgery)
                     .HasColumnName("SurgeryDuration")
                     .HasConversion(
-                        v => v,  // Store TimeOnly directly
-                        v => v); // Retrieve TimeOnly directly
+                        v => v,
+                        v => v);
 
                 durationBuilder.Property(d => d.Cleaning)
                     .HasColumnName("CleaningDuration")
                     .HasConversion(
-                        v => v,  // Store TimeOnly directly
-                        v => v); // Retrieve TimeOnly directly
+                        v => v,
+                        v => v);
             });
         }
     }

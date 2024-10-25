@@ -45,6 +45,9 @@ namespace DDDSample1.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationTypeDto>> Create(CreatingOperationTypeDto dto)
         {
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
+            {
+
             try
             {
                 var operationType = await _service.AddAsync(dto);
@@ -55,6 +58,8 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new {Message = ex.Message});
             }
+            }
+            return Forbid();
         }
 
         

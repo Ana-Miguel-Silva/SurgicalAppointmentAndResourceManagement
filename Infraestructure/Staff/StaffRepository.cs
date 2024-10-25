@@ -11,7 +11,6 @@ namespace DDDSample1.Infrastructure.Staff
         public StaffRepository(DDDSample1DbContext context) : base(context.StaffProfiles)
         {
             _context = context;
-
         }
 
         public async Task<List<StaffProfile>> GetByUsernameAsync(string email)

@@ -81,19 +81,25 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/OperationRequests/search
-        [HttpGet("{search}")]
+        [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFiltered(
             [FromQuery] string? patientId,
+            [FromQuery] string? patientname,
             [FromQuery] Guid? operationTypeId,
+            [FromQuery] string? operationTypeName,
             [FromQuery] string? priority,
             [FromQuery] bool? status)
         {
-            MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
-            OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
+            {
+                MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
+                OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-            var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority);
+                var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority, patientname, operationTypeName);
 
-            return operationRequests;
+                return operationRequests;
+            }
+            return Forbid();
         }
 
 
@@ -134,23 +140,10 @@ namespace DDDSample1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<OperationRequestDto>> SoftDelete(Guid id)
         {
-            var operationRequest = await _service.InactivateAsync(new OperationRequestId(id));
-
-            if (operationRequest == null)
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
-                return NotFound();
-            }
 
-            return Ok(operationRequest);
-        }
-
-        // DELETE: api/OperationRequests/5
-        [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
-        {
-            try
-            {
-                var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
+                var operationRequest = await _service.InactivateAsync(new OperationRequestId(id));
 
                 if (operationRequest == null)
                 {
@@ -158,11 +151,35 @@ namespace DDDSample1.Controllers
                 }
 
                 return Ok(operationRequest);
+
             }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            return Forbid();
         }
+
+        // DELETE: api/OperationRequests/5
+        [HttpDelete("{id}/hard")]
+        public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
+        {
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
+            {
+                try
+                {
+                    var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
+
+                    if (operationRequest == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return Ok(operationRequest);
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Forbid();
+        }
+
     }
 }

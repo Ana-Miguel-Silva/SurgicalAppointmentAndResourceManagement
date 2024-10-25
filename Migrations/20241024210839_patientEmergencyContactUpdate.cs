@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DDDNetCore.Migrations
 {
     /// <inheritdoc />
-    public partial class patientUpdate : Migration
+    public partial class patientEmergencyContactUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,21 +104,17 @@ namespace DDDNetCore.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     MedicalRecordNumber = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    gender = table.Column<string>(type: "longtext", nullable: false)
+                    Gender = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Allergies = table.Column<string>(type: "longtext", nullable: false)
+                    Allergies = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    AppointmentHistory = table.Column<string>(type: "longtext", nullable: false)
+                    AppointmentHistory = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmergencyContactFirstName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmergencyContact_Name_MiddleNames = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmergencyContactLastName = table.Column<string>(type: "longtext", nullable: false)
+                    EmergencyContactName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmergencyContactPhone = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmergencyContactEmail = table.Column<string>(type: "longtext", nullable: false)
+                    EmergencyContactEmail = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumber = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -157,6 +153,8 @@ namespace DDDNetCore.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    StaffId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     FirstName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     MiddleNames = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
@@ -165,14 +163,14 @@ namespace DDDNetCore.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Specialization = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumber = table.Column<string>(type: "varchar(9)", maxLength: 9, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Role = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    LicenseNumber = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                    LicenseNumber = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -259,9 +257,39 @@ namespace DDDNetCore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patients_EmergencyContactEmail",
+                table: "Patients",
+                column: "EmergencyContactEmail",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserEmail",
                 table: "Patients",
                 column: "UserEmail",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffProfiles_Email",
+                table: "StaffProfiles",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffProfiles_LicenseNumber",
+                table: "StaffProfiles",
+                column: "LicenseNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffProfiles_PhoneNumber",
+                table: "StaffProfiles",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffProfiles_StaffId",
+                table: "StaffProfiles",
+                column: "StaffId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

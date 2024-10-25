@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241023231703_OperationRequestUpdate")]
-    partial class OperationRequestUpdate
+    [Migration("20241024210839_patientEmergencyContactUpdate")]
+    partial class patientEmergencyContactUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,18 +65,26 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("Active");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("Deadline")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("Deadline");
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MedicalRecordNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OperationTypeId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Priority")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("Priority");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -106,19 +114,25 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Allergies")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("Allergies");
 
                     b.Property<string>("AppointmentHistory")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("AppointmentHistory");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("Gender");
+
+                    b.Property<string>("nameEmergency")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("EmergencyContactName");
 
                     b.HasKey("Id");
 
@@ -155,7 +169,6 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LicenseNumber")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
@@ -169,7 +182,17 @@ namespace DDDNetCore.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("StaffId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
+                    b.HasIndex("StaffId")
+                        .IsUnique();
 
                     b.ToTable("StaffProfiles");
                 });
@@ -194,72 +217,6 @@ namespace DDDNetCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("DDDSample1.Domain.OperationRequests.OperationRequest", b =>
-                {
-                    b.OwnsOne("DDDSample1.Domain.OperationTypes.OperationTypeId", "OperationTypeId", b1 =>
-                        {
-                            b1.Property<string>("OperationRequestId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("longtext")
-                                .HasColumnName("OperationTypeId");
-
-                            b1.HasKey("OperationRequestId");
-
-                            b1.ToTable("OperationRequests");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OperationRequestId");
-                        });
-
-                    b.OwnsOne("DDDSample1.Domain.Patients.PatientId", "MedicalRecordNumber", b1 =>
-                        {
-                            b1.Property<string>("OperationRequestId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("longtext")
-                                .HasColumnName("MedicalRecordNumber");
-
-                            b1.HasKey("OperationRequestId");
-
-                            b1.ToTable("OperationRequests");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OperationRequestId");
-                        });
-
-                    b.OwnsOne("DDDSample1.Domain.Staff.StaffId", "DoctorId", b1 =>
-                        {
-                            b1.Property<string>("OperationRequestId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("longtext")
-                                .HasColumnName("DoctorId");
-
-                            b1.HasKey("OperationRequestId");
-
-                            b1.ToTable("OperationRequests");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OperationRequestId");
-                        });
-
-                    b.Navigation("DoctorId")
-                        .IsRequired();
-
-                    b.Navigation("MedicalRecordNumber")
-                        .IsRequired();
-
-                    b.Navigation("OperationTypeId")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DDDSample1.Domain.OperationTypes.OperationType", b =>
@@ -330,92 +287,6 @@ namespace DDDNetCore.Migrations
 
             modelBuilder.Entity("DDDSample1.Domain.Patients.Patient", b =>
                 {
-                    b.OwnsOne("DDDSample1.Domain.Patients.EmergencyContact", "EmergencyContact", b1 =>
-                        {
-                            b1.Property<string>("PatientId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.HasKey("PatientId");
-
-                            b1.ToTable("Patients");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PatientId");
-
-                            b1.OwnsOne("DDDSample1.Domain.Shared.Email", "Email", b2 =>
-                                {
-                                    b2.Property<string>("EmergencyContactPatientId")
-                                        .HasColumnType("varchar(255)");
-
-                                    b2.Property<string>("FullEmail")
-                                        .IsRequired()
-                                        .HasColumnType("longtext")
-                                        .HasColumnName("EmergencyContactEmail");
-
-                                    b2.HasKey("EmergencyContactPatientId");
-
-                                    b2.ToTable("Patients");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("EmergencyContactPatientId");
-                                });
-
-                            b1.OwnsOne("DDDSample1.Domain.Shared.FullName", "Name", b2 =>
-                                {
-                                    b2.Property<string>("EmergencyContactPatientId")
-                                        .HasColumnType("varchar(255)");
-
-                                    b2.Property<string>("FirstName")
-                                        .IsRequired()
-                                        .HasColumnType("longtext")
-                                        .HasColumnName("EmergencyContactFirstName");
-
-                                    b2.Property<string>("LastName")
-                                        .IsRequired()
-                                        .HasColumnType("longtext")
-                                        .HasColumnName("EmergencyContactLastName");
-
-                                    b2.Property<string>("MiddleNames")
-                                        .IsRequired()
-                                        .HasColumnType("longtext");
-
-                                    b2.HasKey("EmergencyContactPatientId");
-
-                                    b2.ToTable("Patients");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("EmergencyContactPatientId");
-                                });
-
-                            b1.OwnsOne("DDDSample1.Domain.Shared.PhoneNumber", "Phone", b2 =>
-                                {
-                                    b2.Property<string>("EmergencyContactPatientId")
-                                        .HasColumnType("varchar(255)");
-
-                                    b2.Property<string>("Number")
-                                        .IsRequired()
-                                        .HasMaxLength(15)
-                                        .HasColumnType("varchar(15)")
-                                        .HasColumnName("EmergencyContactPhone");
-
-                                    b2.HasKey("EmergencyContactPatientId");
-
-                                    b2.ToTable("Patients");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("EmergencyContactPatientId");
-                                });
-
-                            b1.Navigation("Email")
-                                .IsRequired();
-
-                            b1.Navigation("Name")
-                                .IsRequired();
-
-                            b1.Navigation("Phone")
-                                .IsRequired();
-                        });
-
                     b.OwnsOne("DDDSample1.Domain.Shared.Email", "Email", b1 =>
                         {
                             b1.Property<string>("PatientId")
@@ -477,6 +348,27 @@ namespace DDDNetCore.Migrations
                                 .HasForeignKey("PatientId");
                         });
 
+                    b.OwnsOne("DDDSample1.Domain.Shared.Email", "emailEmergency", b1 =>
+                        {
+                            b1.Property<string>("PatientId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("FullEmail")
+                                .IsRequired()
+                                .HasColumnType("varchar(255)")
+                                .HasColumnName("EmergencyContactEmail");
+
+                            b1.HasKey("PatientId");
+
+                            b1.HasIndex("FullEmail")
+                                .IsUnique();
+
+                            b1.ToTable("Patients");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PatientId");
+                        });
+
                     b.OwnsOne("DDDSample1.Domain.Shared.FullName", "name", b1 =>
                         {
                             b1.Property<string>("PatientId")
@@ -508,6 +400,25 @@ namespace DDDNetCore.Migrations
                                 .HasForeignKey("PatientId");
                         });
 
+                    b.OwnsOne("DDDSample1.Domain.Shared.PhoneNumber", "phoneEmergency", b1 =>
+                        {
+                            b1.Property<string>("PatientId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Number")
+                                .IsRequired()
+                                .HasMaxLength(15)
+                                .HasColumnType("varchar(15)")
+                                .HasColumnName("EmergencyContactPhone");
+
+                            b1.HasKey("PatientId");
+
+                            b1.ToTable("Patients");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PatientId");
+                        });
+
                     b.OwnsOne("DDDSample1.Domain.Shared.MedicalRecordNumber", "medicalRecordNumber", b1 =>
                         {
                             b1.Property<string>("PatientId")
@@ -529,19 +440,22 @@ namespace DDDNetCore.Migrations
                     b.Navigation("Email")
                         .IsRequired();
 
-                    b.Navigation("EmergencyContact")
-                        .IsRequired();
-
                     b.Navigation("Phone")
                         .IsRequired();
 
                     b.Navigation("UserEmail")
                         .IsRequired();
 
+                    b.Navigation("emailEmergency")
+                        .IsRequired();
+
                     b.Navigation("medicalRecordNumber")
                         .IsRequired();
 
                     b.Navigation("name")
+                        .IsRequired();
+
+                    b.Navigation("phoneEmergency")
                         .IsRequired();
                 });
 
@@ -581,10 +495,13 @@ namespace DDDNetCore.Migrations
 
                             b1.Property<string>("FullEmail")
                                 .IsRequired()
-                                .HasColumnType("longtext")
+                                .HasColumnType("varchar(255)")
                                 .HasColumnName("Email");
 
                             b1.HasKey("StaffProfileId");
+
+                            b1.HasIndex("FullEmail")
+                                .IsUnique();
 
                             b1.ToTable("StaffProfiles");
 
@@ -635,6 +552,9 @@ namespace DDDNetCore.Migrations
                                 .HasColumnName("PhoneNumber");
 
                             b1.HasKey("StaffProfileId");
+
+                            b1.HasIndex("Number")
+                                .IsUnique();
 
                             b1.ToTable("StaffProfiles");
 

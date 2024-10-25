@@ -50,19 +50,22 @@ namespace DDDSample1.Controllers
         [HttpPost]
         public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
-            var result = await _service.AddAsync(dto);
+             if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+                var result = await _service.AddAsync(dto);
 
-            if (result == null)
-            {
-                return BadRequest("Wasn't possible to create the patient.");
-            }
+                if (result == null)
+                {
+                    return BadRequest("Wasn't possible to create the patient.");
+                }
 
-            /*return CreatedAtAction(nameof(GetById), new { id = result. }, new
-            {
-                Patient = result,
-            });*/
+                /*return CreatedAtAction(nameof(GetById), new { id = result. }, new
+                {
+                    Patient = result,
+                });*/
 
-            return result;
+                return result;
+             }
+             return Forbid();
         }
 
 
@@ -103,47 +106,42 @@ namespace DDDSample1.Controllers
         // PUT: api/Patients/5
         [HttpPut("{id}")]
         public async Task<ActionResult<PatientDto>> Update(Guid id, PatientDto dto)
-        {
-
-            Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+        {           
 
             //TODO: Testes e verificar se funciona sem ser com id
-            //_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result
-            if(true){
-            Console.Write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-                try
-                {
-                    if (id != dto.Id)
-                    {
-                        return BadRequest();
-                    }
-
-            Console.Write("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
+            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+                if(true){
+                
                     try
                     {
-                        var patientProfile = await _service.UpdateAsync(dto);
-                        
-            Console.Write("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-
-
-                        if (patientProfile == null)
+                        if (id != dto.Id)
                         {
-                            return NotFound();
+                            return BadRequest();
                         }
-                        return Ok(patientProfile);
+
+                        try
+                        {
+                            var patientProfile = await _service.UpdateAsync(dto);
+                            
+            
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+                            return Ok(patientProfile);
+                        }
+                        catch(BusinessRuleValidationException ex)
+                        {
+                            return BadRequest(new {Message = ex.Message});
+                        }
+
                     }
-                    catch(BusinessRuleValidationException ex)
+                        catch(BusinessRuleValidationException ex)
                     {
                         return BadRequest(new {Message = ex.Message});
                     }
-
-                }
-                    catch(BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new {Message = ex.Message});
-                }
+                }      
+                
             }
             return Forbid(); 
         }
@@ -231,11 +229,14 @@ namespace DDDSample1.Controllers
         
         // DELETE: api/User/5
         [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<PatientDto>> HardDelete(PatientId id)
+        
+        public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
+            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
             try
             {
-                var cat = await _service.DeleteAsync(id);
+                var patientId = new PatientId(Guid.Parse(id));  
+                var cat = await _service.DeleteAsync(patientId);
 
                 if (cat == null)
                 {
@@ -244,10 +245,14 @@ namespace DDDSample1.Controllers
 
                 return Ok(cat);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
+
+        return Forbid();
+        }
+
     }
 }
