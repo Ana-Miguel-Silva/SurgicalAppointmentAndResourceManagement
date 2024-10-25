@@ -3,6 +3,8 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Logging;
+using Newtonsoft.Json;
 
 
 namespace DDDSample1.Controllers
@@ -15,10 +17,13 @@ namespace DDDSample1.Controllers
 
         private readonly AuthorizationService _authService;
 
-        public OperationRequests(OperationRequestService service, AuthorizationService authService)
+        private readonly LogService _logService;
+
+        public OperationRequests(OperationRequestService service, AuthorizationService authService, LogService logService)
         {
             _authService = authService;
             _service = service;
+            _logService = logService;
         }
 
         // GET: api/OperationRequests
@@ -60,15 +65,14 @@ namespace DDDSample1.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
-
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
                 try
                 {
-
                     string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
-
                     var operationRequest = await _service.AddAsync(dto, userEmail);
+
+                    await _logService.LogAsync("OperationRequest", "Created", operationRequest.Id, JsonConvert.SerializeObject(dto));
 
                     return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
                 }
@@ -79,6 +83,7 @@ namespace DDDSample1.Controllers
             }
             return Forbid();
         }
+
 
         // GET: api/OperationRequests/search
         [HttpGet("search")]
@@ -108,10 +113,8 @@ namespace DDDSample1.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(Guid id, OperationRequestDto dto)
         {
-
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
-
                 if (id != dto.Id)
                 {
                     return BadRequest();
@@ -120,6 +123,8 @@ namespace DDDSample1.Controllers
                 try
                 {
                     var operationRequest = await _service.UpdateAsync(dto, _authService.GetUserEmail(Request.Headers["Authorization"]).Result);
+                    
+                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, JsonConvert.SerializeObject(operationRequest));
 
                     if (operationRequest == null)
                     {
@@ -131,7 +136,6 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-
             }
             return Forbid();
         }
@@ -165,6 +169,8 @@ namespace DDDSample1.Controllers
                 try
                 {
                     var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
+                    
+                    await _logService.LogAsync("OperationRequest", "Deleted", operationRequest.Id, JsonConvert.SerializeObject(operationRequest));
 
                     if (operationRequest == null)
                     {

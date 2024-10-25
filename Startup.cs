@@ -17,6 +17,7 @@ using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
+using DDDSample1.Domain.Logging;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Domain.OperationTypes;
@@ -27,6 +28,7 @@ using System.Text;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
+using DDDSample1.Infrastructure.Logging;
 
 
 namespace DDDSample1
@@ -56,7 +58,7 @@ namespace DDDSample1
 
             services.AddControllers().AddNewtonsoftJson();
 
-    
+
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
 
             services.AddAuthentication(options =>
@@ -94,7 +96,7 @@ namespace DDDSample1
 
             ConfigureMyServices(services);
 
-            
+
 
             /*var secretKey = Configuration["Jwt:Secret"];
             services.AddScoped<UserService>(provider => new UserService(
@@ -124,11 +126,11 @@ namespace DDDSample1
 
             app.UseAuthorization();
             app.UseAuthentication();
- 
+
 
             app.UseEndpoints(endpoints =>
             {
-                
+
                 endpoints.MapPost("/gmail", async (SendEmailRequest sendEmailRequest, IMailService mailService) =>
                 {
                     await mailService.SendEmailAsync(sendEmailRequest);
@@ -153,14 +155,14 @@ namespace DDDSample1
             services.AddTransient<AuthorizationService>();
 
 
-            services.AddTransient<IStaffRepository,StaffRepository>();
+            services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
 
-            services.AddTransient<IPatientRepository,PatientRepository>();
+            services.AddTransient<IPatientRepository, PatientRepository>();
             services.AddTransient<PatientService>();
 
 
-            services.AddTransient<IStaffRepository,StaffRepository>();
+            services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
 
 
@@ -175,6 +177,9 @@ namespace DDDSample1
 
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             services.AddTransient<OperationTypeService>();
+
+            services.AddTransient<ILogRepository, LogRepository>();
+            services.AddTransient<LogService>();
 
             services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
             services.AddScoped<IMailService, GmailService>();
@@ -198,7 +203,7 @@ namespace DDDSample1
 
                     await userService.AddAsync(adminDto);
                 }
-                
+
             }
         }
 

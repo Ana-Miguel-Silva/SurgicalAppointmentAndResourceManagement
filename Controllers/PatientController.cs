@@ -6,6 +6,11 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using DDDSample1.Domain.Patients;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using DDDSample1.Domain.Logging;
+using Newtonsoft.Json;
 using System.Threading.Tasks.Dataflow;
 
 namespace DDDSample1.Controllers
@@ -18,12 +23,15 @@ namespace DDDSample1.Controllers
 
         private readonly AuthorizationService _authService;
 
+         private readonly LogService _logService;
 
-        public PatientsController(PatientService service, AuthorizationService authService)
+
+        public PatientsController(PatientService service, AuthorizationService authService, LogService logService)
         {
             _service = service;
             _authService = authService;
-            
+            _logService = logService;
+
         }
 
         // GET: api/User
@@ -63,11 +71,58 @@ namespace DDDSample1.Controllers
                 {
                     Patient = result,
                 });*/
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result));
 
                 return result;
              }
              return Forbid();
         }
+
+        [HttpPost("ExternalIAM")]
+        public async Task<ActionResult<PatientDto>> RegisterExternalIAM()
+        {
+             ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
+
+                /*await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                    new AuthenticationProperties
+                    {
+                        RedirectUri = Url.Action("GoogleResponse")
+                    });*/
+
+
+                return Challenge(new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                }, GoogleDefaults.AuthenticationScheme);
+
+             //}
+             //return Forbid();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse()
+        {
+
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded || result.Principal == null)
+            {
+                return Redirect("/erro");
+            }
+
+            var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            }).ToList();
+
+            // Redireciona para uma URL específica, incluindo as claims caso necessário
+            var redirectUrl = "https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6?tab=body";
+            return Redirect(redirectUrl);
+        }
+
 
 
 
@@ -111,10 +166,11 @@ namespace DDDSample1.Controllers
 
             //TODO: Testes e verificar se funciona sem ser com id
             if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+                if(true){
                 
                     try
                     {
-                      
+
                         if (!(email.Equals(dto.Email.FullEmail)))
                         {
                             return BadRequest();
@@ -129,6 +185,8 @@ namespace DDDSample1.Controllers
                             {
                                 return NotFound();
                             }
+
+                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
                             return Ok(patientProfile);
                         }
                         catch(BusinessRuleValidationException ex)
@@ -140,7 +198,7 @@ namespace DDDSample1.Controllers
                         catch(BusinessRuleValidationException ex)
                     {
                         return BadRequest(new {Message = ex.Message});
-                    } 
+                    }
                 
             }
             return Forbid(); 
@@ -154,8 +212,8 @@ namespace DDDSample1.Controllers
             [FromQuery] string? medicalRecordNumber,
             [FromQuery] string? email,
             [FromQuery] List<string>? Allergies,
-            [FromQuery] List<string>? AppointmentHistory 
-            
+            [FromQuery] List<string>? AppointmentHistory
+
             )
             //[FromQuery] bool? status)
 
@@ -269,8 +327,12 @@ namespace DDDSample1.Controllers
                 if(user.Role.ToUpper().Equals(Role.PATIENT)){
                     isPatient = true;
                 }
-                var patientId = new PatientId(Guid.Parse(id));  
+
+                var patientId = new PatientId(Guid.Parse(id));
+
                 var cat = await _service.DeleteAsync(patientId, isPatient);
+
+                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(cat));
 
                 if (cat == null)
                 {

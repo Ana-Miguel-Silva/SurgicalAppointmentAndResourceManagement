@@ -115,6 +115,38 @@ namespace DDDSample1.Domain.OperationTypes
         }
 
 
+    public async Task<List<OperationTypeDto>> GetAllFilteredAsync(
+                string? name,
+                string? specialization,
+                bool? status
+                )
+            {
+
+            var operationType = await this._repo.GetAllAsync();
+
+
+            if (name != null)
+            {
+                operationType = operationType.Where(o => o.Name == name).ToList();
+            }
+
+                
+            if (specialization != null)
+            {
+                operationType = operationType.Where(o => o.RequiredStaff.Any(rs => rs.Specialization.Equals(specialization, StringComparison.OrdinalIgnoreCase))).ToList();
+            }
+               
+                
+            if (status.HasValue)
+            {
+                operationType = operationType.Where(o => o.Active == status.Value).ToList();
+            }
+
+            return operationType.ConvertAll<OperationTypeDto>(operationsTypes =>
+                new(operationsTypes.Id.AsGuid(), operationsTypes.Name, operationsTypes.RequiredStaff, operationsTypes.EstimatedDuration)).ToList();
+        }
+
+
 
     }
 }

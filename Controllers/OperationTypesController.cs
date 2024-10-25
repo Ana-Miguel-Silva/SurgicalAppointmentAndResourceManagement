@@ -136,5 +136,22 @@ namespace DDDSample1.Controllers
                return BadRequest(new {Message = ex.Message});
             }
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered(
+            [FromQuery] string? name,
+            [FromQuery] string? specialization,
+            [FromQuery] bool? status)
+        {
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
+            {
+
+                var operationTypes = await _service.GetAllFilteredAsync(name, specialization, status);
+
+                return operationTypes;
+            }
+            return Forbid();
+        }
+
     }
 }
