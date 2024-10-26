@@ -399,15 +399,20 @@ namespace DDDSample1.Controllers
                 try
                 {
 
-                    var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
-                    var action = _pendingActionsService.FindbyId(pendingActionsId);
+               var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
+               var action = await _pendingActionsService.FindbyId(pendingActionsId);
 
 
-                    var pendingActionExists = _pendingActionsService.TryRemove(pendingActionsId);
-                    if (pendingActionExists.ToString().Equals("true"))
-                    {
 
-                        var patientId = new PatientId(Guid.Parse(action.ToString()));
+               var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
+
+            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            Console.Write(pendingActionsId.AsString() + " ahahah \n");
+            Console.Write(pendingActionExists + " v2 ahahah \n");
+
+               if(pendingActionExists.ToString().Equals("True")){
+
+                    var patientId = new PatientId(Guid.Parse(action.ToString()));
 
                         var patientProfile = await _service.DeleteAsync(patientId);
 

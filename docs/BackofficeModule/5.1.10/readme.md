@@ -31,7 +31,7 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 **Input Data:**
 
 * Typed data:
-    * E-mail/Id
+    * Id
 
 
 **Output Data:**
@@ -39,9 +39,9 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+> **Question 1:**
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Answer 1:** 
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)
