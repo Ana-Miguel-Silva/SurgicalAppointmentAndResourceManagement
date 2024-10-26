@@ -124,7 +124,7 @@ namespace DDDSample1.Controllers
                 {
                     var operationRequest = await _service.UpdateAsync(dto, _authService.GetUserEmail(Request.Headers["Authorization"]).Result);
                     
-                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, JsonConvert.SerializeObject(operationRequest));
+                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, "old" + JsonConvert.SerializeObject(operationRequest) + "new" + JsonConvert.SerializeObject(dto));
 
                     if (operationRequest == null)
                     {
