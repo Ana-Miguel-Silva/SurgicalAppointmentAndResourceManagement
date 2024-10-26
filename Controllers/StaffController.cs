@@ -4,6 +4,8 @@ using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Users;
 using DDDSample1.ApplicationService.Staff;
 using DDDSample1.ApplicationService.Shared;
+using DDDSample1.ApplicationService.Logging;
+using Newtonsoft.Json;
 
 namespace DDDSample1.Controllers
 {
@@ -14,13 +16,16 @@ namespace DDDSample1.Controllers
 
         private readonly string RoleAdmin = "Admin";
         private readonly StaffService _service;
+        private readonly LogService _logService;
 
         private readonly AuthorizationService _authService;
 
-        public StaffController(StaffService service, AuthorizationService authService)
+        public StaffController(StaffService service, AuthorizationService authService, LogService logService)
         {
             _service = service;
             _authService = authService;
+            _logService = logService;
+
         }
 
         // GET: api/Staff?name=x&id=1&license=b&phone=999999999
@@ -94,7 +99,13 @@ namespace DDDSample1.Controllers
 
             try
             {
+                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+                var catOld = await _service.GetByStaffIDAsync(id);
+
                 var cat = await _service.UpdateAsync(dto);
+
+                await _logService.LogAsync("OperationRequest", "Deleted", cat.Id, "old" + JsonConvert.SerializeObject(catOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
 
                 if (cat == null)
                 {
@@ -130,7 +141,11 @@ namespace DDDSample1.Controllers
         {
             try
             {
+                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
                 var cat = await _service.DeleteAsync(id);
+
+                await _logService.LogAsync("OperationRequest", "Deleted", cat.Id, JsonConvert.SerializeObject(cat), userEmail);
 
                 if (cat == null)
                 {

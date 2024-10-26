@@ -9,13 +9,16 @@ namespace DDDSample1.Domain.Logging
         public Guid EntityId { get; set; }
         public string Changes { get; set; }
 
-        public LogEntry(string entity, string action, Guid entityId, string changes)
+        public string UserEmail { get; set; }
+
+        public LogEntry(string entity, string action, Guid entityId, string changes, string userEmail)
         {
             this.Id = new LogId(Guid.NewGuid());
             this.Entity = entity;
             this.Action = action;
             this.EntityId = entityId;
             this.Changes = changes;
+            this.UserEmail = userEmail;
         }
     }
 }

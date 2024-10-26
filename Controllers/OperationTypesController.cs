@@ -60,7 +60,10 @@ namespace DDDSample1.Controllers
                 {
                     var operationType = await _service.AddAsync(dto);
 
-                    await _logService.LogAsync("OperationRequest", "Created", operationType.Id, JsonConvert.SerializeObject(dto));
+                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+
+                    await _logService.LogAsync("OperationRequest", "Created", operationType.Id, JsonConvert.SerializeObject(dto), userEmail);
 
                     return CreatedAtAction(nameof(GetGetById), new { id = operationType.Id }, operationType);
                 }

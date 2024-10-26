@@ -74,7 +74,8 @@ namespace DDDSample1.Controllers
                     string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
                     var operationRequest = await _service.AddAsync(dto, userEmail);
 
-                    await _logService.LogAsync("OperationRequest", "Created", operationRequest.Id, JsonConvert.SerializeObject(dto));
+
+                    await _logService.LogAsync("OperationRequest", "Created", operationRequest.Id, JsonConvert.SerializeObject(dto), userEmail);
 
                     return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
                 }
@@ -124,9 +125,15 @@ namespace DDDSample1.Controllers
 
                 try
                 {
-                    var operationRequest = await _service.UpdateAsync(dto, _authService.GetUserEmail(Request.Headers["Authorization"]).Result);
-                    
-                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, "old" + JsonConvert.SerializeObject(operationRequest) + "new" + JsonConvert.SerializeObject(dto));
+                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+                    var operationRequestOld = await _service.GetByIdAsync(new OperationRequestId(id));
+
+                    var operationRequest = await _service.UpdateAsync(dto, userEmail);
+
+
+
+                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, "old" + JsonConvert.SerializeObject(operationRequestOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
 
                     if (operationRequest == null)
                     {
@@ -170,9 +177,11 @@ namespace DDDSample1.Controllers
             {
                 try
                 {
+                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
                     var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
-                    
-                    await _logService.LogAsync("OperationRequest", "Deleted", operationRequest.Id, JsonConvert.SerializeObject(operationRequest));
+
+                    await _logService.LogAsync("OperationRequest", "Deleted", operationRequest.Id, JsonConvert.SerializeObject(operationRequest), userEmail);
 
                     if (operationRequest == null)
                     {
