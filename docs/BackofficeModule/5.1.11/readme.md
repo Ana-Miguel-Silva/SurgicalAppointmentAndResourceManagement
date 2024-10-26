@@ -34,7 +34,10 @@ As an Admin, I want to list/search patient profiles by different attributes, so 
 **Input Data:**
 
 * Typed data:
-    * None
+    * Medical Record Number (Optional)
+    * Email (Optional)
+    * Name (Optional)
+    * Date of Birth (Optional)
 
 
 * Selected data:
@@ -47,9 +50,9 @@ As an Admin, I want to list/search patient profiles by different attributes, so 
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+> **Question 1:** 
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Answer 1:** 
 
 ### 3.1. Domain Model
 ![sub domain model](us1000-sub-domain-model.svg)
