@@ -5,7 +5,7 @@ skinparam shadowing false
 
 autonumber
 
-actor "Actor" as AD
+actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
@@ -14,11 +14,11 @@ participant "DM Backend" as BE <<component>>
 activate AD
 AD -> FE: access page
 activate FE
-FE -> BE: getItems()
+FE -> BE: GetAll(filters)
 activate BE
-BE --> FE: itemsDTOList
+BE --> FE: staffDTOList
 deactivate BE
-FE --> AD : list of items
+FE --> AD : list of staff profiles
 deactivate FE
 deactivate AD
 
