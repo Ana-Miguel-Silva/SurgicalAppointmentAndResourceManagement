@@ -113,6 +113,31 @@ namespace DDDSample1.ApplicationService.Patients
                 throw new BusinessRuleValidationException("Invalid Gender (Female/Male).");
         }
 
+        public async Task<int> VerifySensiveData(PatientDto dto, string email){
+            int sendEmail = 0;
+            var patient = await this._repo.GetByEmailAsync(email);
+
+            Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+            Console.Write(email);
+
+            if (patient == null)
+            {
+                sendEmail = -1; // Patient not found
+            }
+
+            if(!(patient.emailEmergency.Equals(dto.emailEmergency)) 
+            ||!(patient.Email.Equals(dto.Email))  
+            || !(patient.Phone.Equals(dto.Phone)) 
+            || !(patient.phoneEmergency.Equals(dto.phoneEmergency)) 
+            || !(patient.name.Equals(dto.name)) 
+            || !(patient.nameEmergency.Equals(dto.nameEmergency)) ){
+                sendEmail = 1;
+            }
+
+            return sendEmail;
+            
+        }
+
         public async Task<PatientDto> UpdateAsync(PatientDto dto)
         {
             //CheckGender(dto.gender);
@@ -129,6 +154,9 @@ namespace DDDSample1.ApplicationService.Patients
             //TODO: Se for dados sensiveis mandar email, logo fazer uma verificação para se algum deles for mudado ser mandado email
             // Update patient's name
             patient.ChangeName(new FullName(dto.name.GetFullName()));
+            patient.ChangeEmail(dto.Email);
+            patient.ChangePhone(dto.Phone);
+   
 
             // Update emergency contact
             patient.ChangeNameEmergency(dto.nameEmergency);
@@ -187,6 +215,29 @@ namespace DDDSample1.ApplicationService.Patients
                 var SendEmailRequest = new SendEmailRequest(
                     user.Email.FullEmail,
                     "Confirmation to delete Account",
+                    body
+                );
+
+                await _mailService.SendEmailAsync(SendEmailRequest);
+        }
+
+         public async Task SendConfirmationUpdateEmail(User user, string actionId)
+        {
+
+            //var token = GenerateToken(user);
+
+           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-f6979340-535c-4bfe-942d-fb426926bf87";
+
+                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/Confirmed";
+
+                var body = "You requested to update patient account Health App account.\r\n" +
+                        "<br>If you still wish to proced please click on the following link:\r\n\n" +
+                        $"{resetLink}<br>\r\n\n" +
+                        "\rThen in the Update header past this info" + $"{urlDelete}<br>\r\n\n";
+
+                var SendEmailRequest = new SendEmailRequest(
+                    user.Email.FullEmail,
+                    "Confirmation to update Account",
                     body
                 );
 
