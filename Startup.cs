@@ -18,6 +18,7 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Domain.Logging;
+using DDDSample1.Domain.PendingActions;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Domain.OperationTypes;
@@ -29,6 +30,7 @@ using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using DDDSample1.Infrastructure.Logging;
+using DDDSample1.Infrastructure.PendingActions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 
@@ -200,6 +202,10 @@ namespace DDDSample1
 
             services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<LogService>();
+
+             services.AddTransient<IPendingActionsRepository, PendingActionsRepository>();
+            services.AddTransient<PendingActionsService>();
+
 
             services.Configure<GmailOptions>(Configuration.GetSection("GmailOptions"));
             services.AddScoped<IMailService, GmailService>();

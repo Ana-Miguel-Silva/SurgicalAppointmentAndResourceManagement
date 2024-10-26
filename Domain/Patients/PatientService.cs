@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using System.Threading.Tasks.Dataflow;
+using DDDSample1.Domain.Users;
 
 
 
@@ -166,41 +167,40 @@ namespace DDDSample1.Domain.Patients
 
         }
 
-         private async Task SendConfirmationEmail(Patient patient)
+         public async Task SendConfirmationEmail(User user, string actionId)
         {
 
             //var token = GenerateToken(user);
 
-            var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/environment/38865574-80fc09d7-9602-4738-aa58-9685f2d733ed";
+           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/environment/38865574-80fc09d7-9602-4738-aa58-9685f2d733ed";
 
-            string urlDelete = $"https://localhost:5001/api/Patients/{patient.Id.AsString()}/hard";
+                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/deleteConfirmed";
 
-            var body = $"Hello {patient.name.GetFullName()},<br>\n" +
-                    "You requested to delete your account Health App account.\r\n" +
-                    "<br>If you still wish to proced please click on the following link:\r\n\n" +
-                    $"{resetLink}<br>\r\n\n" +
-                    "\rThen write true or false, if you with to autorize!\n\n\r" +
-                    "<\r>Then in the Delete header past this info" + $"{urlDelete}<br>\r\n\n";
+                var body = "You requested to delete patient account Health App account.\r\n" +
+                        "<br>If you still wish to proced please click on the following link:\r\n\n" +
+                        $"{resetLink}<br>\r\n\n" +
+                        "\rThen write true or false, if you with to autorize!\n\n\r" +
+                        "\rThen in the Delete header past this info" + $"{urlDelete}<br>\r\n\n";
 
-            var sendEmailRequest = new SendEmailRequest(
-                patient.Email.FullEmail, // Destinatário
-                "Health App - Confirmation to delete account", // Assunto
-                body // Corpo
-            );
+                var SendEmailRequest = new SendEmailRequest(
+                    user.Email.FullEmail,
+                    "Confirmation to delete Account",
+                    body
+                );
 
-            await _mailService.SendEmailAsync(sendEmailRequest);
+                await _mailService.SendEmailAsync(SendEmailRequest);
         }
 
-        public async Task<PatientDto> DeleteAsync(PatientId id, bool isPatient)
+        public async Task<PatientDto> DeleteAsync(PatientId id)
         {
             var prod = await this._repo.GetByIdAsync(id); 
 
             if (prod == null)
                 throw new BusinessRuleValidationException($"Patient is not registered in the database. ID not found: {id.AsString()}");
 
-            if(isPatient){
-                await SendConfirmationEmail(prod);
-            }
+            
+           
+            
 
 
             //if (Patient.Active)

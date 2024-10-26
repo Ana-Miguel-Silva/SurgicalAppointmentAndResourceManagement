@@ -16,6 +16,8 @@ using DDDSample1.Infrastructure.Patients;
 using DDDSample1.Domain.Logging;
 using DDDSample1.Infrastructure.Logging;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Infrastructure.PendingActions;
+using DDDSample1.Domain.PendingActions;
 
 namespace DDDSample1.Infrastructure
 {
@@ -30,6 +32,8 @@ namespace DDDSample1.Infrastructure
         public DbSet<OperationType> OperationTypes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
+
+        public DbSet<PendingActionsEntry> PendingActions { get; set; }
 
 
         public DDDSample1DbContext(DbContextOptions options) : base(options)
@@ -50,6 +54,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LogEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PendingActionsEntityTypeConfiguration());
         }
     }
 }
