@@ -8,7 +8,6 @@ namespace DDDSample1.Infrastructure.Logging
     {
         public void Configure(EntityTypeBuilder<LogEntry> builder)
         {
-
             builder.HasKey(b => b.Id);
 
             builder.Property(b => b.Entity)
@@ -26,7 +25,10 @@ namespace DDDSample1.Infrastructure.Logging
                 .IsRequired();
 
             builder.Property(b => b.UserEmail)
-            .IsRequired();
+                .IsRequired();
+
+            builder.Property(b => b.Date)
+                .IsRequired();
         }
     }
 }

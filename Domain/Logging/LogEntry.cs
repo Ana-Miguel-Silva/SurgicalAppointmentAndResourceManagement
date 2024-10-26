@@ -8,10 +8,10 @@ namespace DDDSample1.Domain.Logging
         public string Action { get; set; }
         public Guid EntityId { get; set; }
         public string Changes { get; set; }
-
         public string UserEmail { get; set; }
+        public DateTime Date { get; set; }
 
-        public LogEntry(string entity, string action, Guid entityId, string changes, string userEmail)
+        public LogEntry(string entity, string action, Guid entityId, string changes, string userEmail, DateTime date)
         {
             this.Id = new LogId(Guid.NewGuid());
             this.Entity = entity;
@@ -19,6 +19,7 @@ namespace DDDSample1.Domain.Logging
             this.EntityId = entityId;
             this.Changes = changes;
             this.UserEmail = userEmail;
+            this.Date = date;
         }
     }
 }
