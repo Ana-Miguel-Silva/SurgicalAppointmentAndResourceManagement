@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using DDDSample1.Domain.Logging;
+using DDDSample1.Domain.PendingActions;
 using Newtonsoft.Json;
 using System.Threading.Tasks.Dataflow;
 using System.Security.Claims;
@@ -27,15 +28,18 @@ namespace DDDSample1.Controllers
          private readonly LogService _logService;
 
          private readonly IMailService _mailService;
+
+         private readonly PendingActionsService _pendingActionsService;
          private readonly UserService _userService;
 
 
-        public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, UserService userService)
+        public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, PendingActionsService pendingActionsService, UserService userService)
         {
             _service = service;
             _authService = authService;
             _logService = logService;
             _mailService = mailService;
+            _pendingActionsService = pendingActionsService;
             _userService = userService;
 
         }
@@ -316,7 +320,7 @@ namespace DDDSample1.Controllers
 
                 var patientId = new PatientId(Guid.Parse(id));
 
-                var patientProfile = await _service.DeleteAsync(patientId, isPatient);
+                var patientProfile = await _service.DeleteAsync(patientId);
 
                 await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
 
@@ -335,6 +339,80 @@ namespace DDDSample1.Controllers
 
         return Forbid();
         }
+
+
+
+        //Delete with actions
+        [HttpDelete("{id}/delete")]
+        public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string id)
+        {
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+            try
+            {                
+
+                var patientId = new PatientId(Guid.Parse(id));                
+
+                var pendingAction = await _pendingActionsService.PendingActionsAsync(id);
+
+                
+                await _service.SendConfirmationEmail(user, pendingAction.Id.AsString());
+
+
+                return Ok("Please check your email to confirm this action");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        return Forbid();
+        }
+
+        [HttpDelete("{actionId}/deleteConfirmed")]
+        public async Task<ActionResult<PatientDto>> DeleteConfirmed(string actionId)
+        {
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+            try
+            {
+
+               var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
+               var action = _pendingActionsService.FindbyId(pendingActionsId);
+
+
+               var pendingActionExists = _pendingActionsService.TryRemove(pendingActionsId);
+               if(pendingActionExists.ToString().Equals("true")){
+
+                    var patientId = new PatientId(Guid.Parse(action.ToString()));
+
+                    var patientProfile = await _service.DeleteAsync(patientId);
+                        
+
+                    await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
+
+                     if (patientProfile == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(patientProfile);
+
+               }
+
+               return BadRequest("Was not possible to delete the patient.");
+               
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        return Forbid();
+        }
+
 
         }
     }

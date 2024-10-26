@@ -1,92 +1,82 @@
 # US 5.1.18
 
-
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary.
 
 ## 2. Requirements
 
-**US 5.1.18** 
+**US 5.1.19**
 
-**Acceptance Criteria:** 
+**Acceptance Criteria:**
 
-- 
+- Doctors can delete operation requests they created if the operation has not yet been scheduled.
+- A confirmation prompt is displayed before deletion.
+- Once deleted, the operation request is removed from the patient’s medical record and cannot be recovered.
+- The system notifies the Planning Module and updates any schedules that were relying on this request.
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
->
-> **Answer:** 
-
+> **Question: None**
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+**There are dependencies to USs 5.1.1.**
+
+* US 5.1.1 - There is the need to be logged and authenticated in the system in order to know the user executing this
+  functionality is a Doctor.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
+    * Id of the Operation Request
 
 * Selected data:
-    * User 
-    * Role
+    * None
 
+* Gotten from the system
+    * Id of the Doctor (from the logged doctor)
+
+* Generated data:
+    * None
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+
+* Display the success of the operation and the data of the deleted operation request
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
-
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+*?????*
 
 ## 4. Design
 
+**Domain Class/es:** OperationRequest, OperationRequestDto, OperationRequestId,
+IOperationRequestRepository, ILogRepository, IStaffRepository
 
-**Domain Class/es:** E-mail, SystemUser
+**Controller:** OperationRequestController
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**UI:**
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**Repository:** OperationRequestRepository, LogRepository, StaffRepository
 
-**Repository:**	UserRepository
-
-**Service:** UserManagementService, AuthorizationService
-
-
+**Service:** OperationRequestService, AuthorizationService, LogService
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Register Patient Level 1**
+![Register Operation Request](sequence-diagram-1.svg "Register Operation Request")
 
+**Register Patient Level 2**
+![Register Operation Request](sequence-diagram-2.svg "Register Operation Request")
 
-
-
-### 4.2. Class Diagram
-
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
+**Register Patient Level 3**
+![Register Operation Request](sequence-diagram-3.svg "Register Operation Request")
 
 ### 4.4. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
 
 **Before Tests** **Setup of Dummy Users**
 
@@ -113,7 +103,6 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 **Test 1:** *Verifies if Users are equals*
 
-
 ```
 @Test
 public void verifyIfUsersAreEquals() {
@@ -122,47 +111,3 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
-
-
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
-
-
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
-
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)
