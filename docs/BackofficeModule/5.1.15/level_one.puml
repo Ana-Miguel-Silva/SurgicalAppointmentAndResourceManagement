@@ -5,13 +5,13 @@ skinparam shadowing false
 
 autonumber
 
-actor "Actor" as AD
+actor "Admin" as AD
 participant "SAaRM System" as SYS <<system>>
 
 activate AD
 AD -> SYS: access page
 activate SYS
-SYS --> AD : list of items
+SYS --> AD : list of staff profiles
 
 deactivate SYS
 

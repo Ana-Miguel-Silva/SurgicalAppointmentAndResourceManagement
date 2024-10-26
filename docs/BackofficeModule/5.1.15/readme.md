@@ -3,20 +3,23 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement functionalities that let an Admin list all Staff Profiles. This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 5.1.14** 
+**US 5.1.15** 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search staff profiles by attributes such as name, email, or specialization.
+- The system displays search results in a list view with key staff information (name, email, specialization).
+- Admins can select a profile from the list to view, edit, or deactivate.
+- The search results are paginated, and filters are available for refining the search results.
+
 
 **Customer Specifications and Clarifications:**
 
-
-> **Question:** What types of filters can be applied when searching for profiles? 
+> **Question:** What types of filters can be applied when searching for profiles?
 >
 > **Answer:** Filters can include doctor specialization, name, or email to refine search results.
 
@@ -24,137 +27,91 @@ As part of the development of the software system, it is necessary to implement 
 >
 > **Answer:** If more than one search/filter parameter is used, the combination of filters should be considered as AND
 
-
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "5.1.12", since is necessary to have a Staff Profile in order to list it.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
+    * Filters:
+      * Name
+      * Email
 
 
 * Selected data:
-    * User 
-    * Role
+    * Filters:
+      * Specialization
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation and the list of Staff Profiles.
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
-
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
-
 ## 4. Design
 
+**Domain Class/es:** Staff
 
-**Domain Class/es:** E-mail, SystemUser
+**Controller:** StaffController
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**UI:** None
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**Repository:**	StaffRepository
 
-**Repository:**	UserRepository
-
-**Service:** UserManagementService, AuthorizationService
+**Service:** StaffService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Level One**
+
+![Level One](level_one.svg "Level One")
+
+**Level Two**
+
+![Level Two](level_two.svg "Level Two")
+
+**Level Three**
+
+![Level Three](level_three.svg "Level Three")
 
 
 
-
-### 4.2. Class Diagram
-
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.2. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
+
 
 
 
 **Before Tests** **Setup of Dummy Users**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
 
 ```
 
 **Test 1:** *Verifies if Users are equals*
 
-
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
+
 ````
 
 
 ## 5. Implementation
 
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in StaffController
+* **Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)**  this method receives the info from the API and redirects it to the Service
 
+### Methods in the StaffService
+* **Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization, string? role)** this method retrieves the list of Staff Profiles and then filters it.
 
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
+### Methods in the StaffRepository
+* **Task<List<StaffDto>> GetAllAsync()** this method retrieves from the database the list of all Staff Profiles
 
 
 ## 6. Integration/Demonstration
