@@ -1,0 +1,42 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "OperationTypeController" as CTRL <<component>>
+
+participant "OperationTypeService" as SERV <<component>>
+
+participant "OperationType" as DOM <<component>>
+participant "IOperationTypeRepository" as REPO <<component>>
+participant "OperationTypeDto" as dto <<component>>
+
+-> CTRL: Create(creatingOperationTypeDto)
+activate CTRL
+
+CTRL -> SERV: AddAsync(dto)
+activate SERV
+
+SERV -> DOM: create(Name, RequiredStaff, EstimatedDuration)
+activate DOM
+
+DOM --> SERV: operationType
+deactivate DOM
+
+SERV -> REPO: AddAsync(operationType)
+
+SERV -> dto: create(id, Name, RequiredStaff, EstimatedDuration)
+activate dto
+
+dto --> SERV: operationTypeDto
+deactivate dto
+
+SERV --> CTRL: operationTypeDto
+deactivate SERV
+
+<-- CTRL: success
+deactivate CTRL
+
+@enduml

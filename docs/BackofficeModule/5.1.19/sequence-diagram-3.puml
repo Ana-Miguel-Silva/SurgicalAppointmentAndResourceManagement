@@ -1,0 +1,47 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "OperationRequestController" as CTRL <<component>>
+participant "AuthenticationService" as Auth <<component>>
+
+participant "OperationRequestService" as SERV <<component>>
+
+participant "OperationRequestRepository" as REPO <<component>>
+participant "OperationRequestDto" as dto <<component>>
+
+
+-> CTRL: GetAllFiltered(patientId, patientname, operationTypeId, operationTypeName, priority, status)
+activate CTRL
+
+CTRL -> SERV: GetAllFilteredAsync(patientId, patientname, operationTypeId, operationTypeName, priority, status)
+activate SERV
+
+SERV -> REPO: GetAllAsync()
+activate REPO
+
+REPO --> SERV: operationRequests
+deactivate REPO
+
+SERV -> SERV: filter operationRequests
+activate SERV
+
+SERV --> SERV: operationRequests
+deactivate SERV
+
+SERV -> dto: ConvertAll<OperationRequestDto>(operationRequests)
+activate dto
+
+dto --> SERV: operationRequestsDto
+deactivate dto
+
+SERV --> CTRL: operationRequestsDto
+deactivate SERV
+
+<-- CTRL: operationRequestsDto and success
+deactivate CTRL
+
+@enduml
