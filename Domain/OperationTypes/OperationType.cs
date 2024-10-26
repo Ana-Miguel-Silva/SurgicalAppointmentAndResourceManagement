@@ -41,6 +41,22 @@ namespace DDDSample1.Domain.OperationTypes
             this.EstimatedDuration = newEstimatedDuration;
         }
 
+        public void ChangeRequiredStaff(List<RequiredStaff> requiredStaff){
+
+            if (requiredStaff == null)
+                throw new BusinessRuleValidationException("The new required Staff must be valid.");
+
+            this.RequiredStaff = requiredStaff;
+        }
+
+        public void ChangeName(string name){
+
+            if (Name == null)
+                throw new BusinessRuleValidationException("The new Name must be valid.");
+
+            this.Name = name;
+        }
+
         public List<string> GetAllSpecializations(List<RequiredStaff> staffList)
         {
             HashSet<string> specializations = new HashSet<string>();

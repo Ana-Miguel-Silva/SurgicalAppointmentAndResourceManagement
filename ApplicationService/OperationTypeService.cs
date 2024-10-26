@@ -63,6 +63,8 @@ namespace DDDSample1.ApplicationService.OperationTypes
             if (operationType == null)
                 return null;
 
+            operationType.ChangeName(dto.Name);
+            operationType.ChangeRequiredStaff(dto.RequiredStaff);
             operationType.ChangeEstimatedDuration(dto.EstimatedDuration);
 
             await this._unitOfWork.CommitAsync();
