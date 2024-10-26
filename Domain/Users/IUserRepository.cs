@@ -8,5 +8,7 @@ namespace DDDSample1.Domain.Users
         Task<List<User>> GetByUsernameAsync(string username);
 
         Task<User> GetAdminUserAsync();
+
+        Task<User> GeBbyEmailAsync(string email);
     }
 }

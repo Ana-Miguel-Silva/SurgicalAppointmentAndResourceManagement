@@ -229,6 +229,14 @@ namespace DDDSample1.Domain.Users
 
             return users.FirstOrDefault();            
         }
+
+        public async Task<UserDto> GeBbyEmailAsync(string email)
+        {
+            var user = await _repo.GeBbyEmailAsync(email);
+
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
+
+        }
     }
 
 

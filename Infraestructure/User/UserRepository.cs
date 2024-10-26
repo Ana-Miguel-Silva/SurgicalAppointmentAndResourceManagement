@@ -25,5 +25,11 @@ namespace DDDSample1.Infrastructure.Users
             var users = await GetAllAsync();
             return users.FirstOrDefault(user => user.Role == "Admin");
         }
+
+        public async Task<User> GeBbyEmailAsync(string email)
+        {
+            return await _context.Users
+        .FirstOrDefaultAsync(u => u.Email.FullEmail == email);
+        }
     }
 }

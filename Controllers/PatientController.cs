@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using DDDSample1.Domain.Logging;
 using Newtonsoft.Json;
 using System.Threading.Tasks.Dataflow;
+using System.Security.Claims;
 
 namespace DDDSample1.Controllers
 {
@@ -25,12 +26,17 @@ namespace DDDSample1.Controllers
 
          private readonly LogService _logService;
 
+         private readonly IMailService _mailService;
+         private readonly UserService _userService;
 
-        public PatientsController(PatientService service, AuthorizationService authService, LogService logService)
+
+        public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, UserService userService)
         {
             _service = service;
             _authService = authService;
             _logService = logService;
+            _mailService = mailService;
+            _userService = userService;
 
         }
 
@@ -41,7 +47,7 @@ namespace DDDSample1.Controllers
             return await _service.GetAllAsync();
         }
 
-        // GET: api/User/5
+        /*// GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientDto>> GetGetById(PatientId id)
         {
@@ -53,10 +59,10 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
-        }
+        }*/
 
         // POST: api/Patients
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
              if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
@@ -78,7 +84,7 @@ namespace DDDSample1.Controllers
              return Forbid();
         }
 
-        [HttpPost("ExternalIAM")]
+        [HttpGet("ExternalIAM")]
         public async Task<ActionResult<PatientDto>> RegisterExternalIAM()
         {
              ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
@@ -99,28 +105,45 @@ namespace DDDSample1.Controllers
              //return Forbid();
         }
 
-        [HttpGet]
+        [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleResponse()
         {
 
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+           var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (!result.Succeeded || result.Principal == null)
             {
-                return Redirect("/erro");
+                return Redirect("/error");
             }
 
-            var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
-            {
-                claim.Issuer,
-                claim.OriginalIssuer,
-                claim.Type,
-                claim.Value
-            }).ToList();
+            // Extract user information from claims
+            var emailClaim = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var nameClaim = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
 
-            // Redireciona para uma URL específica, incluindo as claims caso necessário
-            var redirectUrl = "https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6?tab=body";
-            return Redirect(redirectUrl);
+            
+            var patientRecord = await _service.GetPatientByEmailAsync(emailClaim); 
+
+            if (patientRecord == null)
+            {
+                var verificationLinkRegister =$"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
+
+                var emailRequestRegister = new SendEmailRequest(emailClaim, "Register in Medical Appointment Management", $"Please verify your register by clicking here: {verificationLinkRegister}");
+
+                await _mailService.SendEmailAsync(emailRequestRegister);
+
+                return  Ok("Registation email sent. Please check your inbox.");                       
+            }
+
+            UserDto user = await _userService.GeBbyEmailAsync(patientRecord.UserEmail.FullEmail);
+
+            if(user == null)  return BadRequest("The user email is not registed in the sistem.");
+            
+            var token = _authService.GenerateToken(user);
+
+            var redirectUrl = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/collection/38865574-d91a5651-b072-4ff8-b9ed-42c79b7c808c";
+
+            return Ok($"Token para autenticação: {token} \r\r Please copy the token and click here: " + redirectUrl);
+          
         }
 
 
@@ -260,43 +283,7 @@ namespace DDDSample1.Controllers
         }
         */
 
-        // POST: api/User/setPassword
-        
-        /*[HttpPost("setPassword")]
-        public async Task<ActionResult> SetUpPassword([FromBody] PasswordRequest passwordRequest)
-        {
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-
-            User user;    
-
-            try
-            {
-                (user) = await _authService.ValidateTokenAsync(authorizationHeader);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-
-    
-            if (user == null)
-            {
-                return Unauthorized("Invalid token.");
-            }
-
-            try
-            {
-                await _service.UpdatePassword(user, passwordRequest.Password);
-                return Ok("Password has been reset successfully.");
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions related to password update
-                return BadRequest($"Error updating password: {ex.Message}");
-            }
-        }
-        */
-
+  
         /*
         // Inactivate: api/User/5
         [HttpDelete("{id}")]
@@ -331,9 +318,9 @@ namespace DDDSample1.Controllers
 
                 var patientProfile = await _service.DeleteAsync(patientId, isPatient);
 
-                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(patientProfile));
+                await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
 
-                if (cat == null)
+                if (patientProfile == null)
                 {
                     return NotFound();
                 }

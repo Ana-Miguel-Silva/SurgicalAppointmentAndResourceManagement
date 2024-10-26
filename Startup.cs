@@ -29,6 +29,8 @@ using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using DDDSample1.Infrastructure.Logging;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 
 namespace DDDSample1
@@ -140,11 +142,29 @@ namespace DDDSample1
                 endpoints.MapControllers();
             });
 
+            
+
             SeedAdminUser(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
         {
+
+                services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = "557762914279-7d87s63jvf102v51i6gtn7pqe5qh5tl5.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+                options.CallbackPath = "/signin-google";
+            });
+
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<ICategoryRepository, CategoryRepository>();

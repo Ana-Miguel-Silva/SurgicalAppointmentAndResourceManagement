@@ -253,9 +253,21 @@ namespace DDDSample1.Domain.Patients
                  patients.phoneEmergency, patients.emailEmergency, patients.gender, patients.Allergies, patients.AppointmentHistory )).ToList();
         }
 
-        
-        
-    	/*
+        public async Task<Patient> GetPatientByEmailAsync(string? emailClaim)
+        {
+             var patient = await this._repo.GetByEmailAsync(emailClaim);
+
+            if (patient == null)
+            {
+                return null; // Patient not found
+            }
+
+            return patient;
+        }
+
+
+
+        /*
         private async Task checkCategoryIdAsync(CategoryId categoryId)
         {
            var category = await _repoCat.GetByIdAsync(categoryId);
