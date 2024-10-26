@@ -129,23 +129,6 @@ namespace DDDSample1.Controllers
             }
         }
 
-        // POST: api/User/setPassword
-        
-        [HttpPost("setPassword")]
-        public async Task<ActionResult> SetUpPassword([FromBody] PasswordRequest passwordRequest)
-        {                     
-
-            try
-            {
-                await _service.UpdatePassword(passwordRequest.Username, passwordRequest.Password);
-                return Ok("Password has been reset successfully.");
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions related to password update
-                return BadRequest($"Error updating password: {ex.Message}");
-            }
-        }
 
 
         /*
@@ -184,5 +167,37 @@ namespace DDDSample1.Controllers
                return BadRequest(new {Message = ex.Message});
             }
         }
+
+        [HttpPost("recover")]
+        public async Task<ActionResult> recoverPassword([FromBody] string Email) {
+            UserDto user = await _userService.GeBbyEmailAsync(Email);
+
+            if (user == null) return BadRequest("The user email is not registered in the system.");
+
+            var token = _authService.GenerateToken(user);
+
+            var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
+            var emailRequestRegister = new SendEmailRequest(Email, "Recover your Password in Medical Appointment Management", $"Token para autenticação: {token}\r\rPlease copy the token and recover your Password by clicking here: {verificationLinkRegister}");
+            await _mailService.SendEmailAsync(emailRequestRegister);
+
+                return Ok("Recovery email sent. Please check your inbox.");
+
+        }
+        // POST: api/User/setPassword
+        [HttpPost("setPassword")]
+        public async Task<ActionResult> ResetPassword([FromBody] string Password) {
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            try
+            {
+                await _service.UpdatePassword(user.Username, Password);
+                return Ok("Password has been reset successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions related to password update
+                return BadRequest($"Error updating password: {ex.Message}");
+            }
+        }
+
     }
 }
