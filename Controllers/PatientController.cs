@@ -19,6 +19,7 @@ using DDDSample1.ApplicationService.Patients;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.Shared;
 using DDDSample1.ApplicationService.PendingActions;
+using Newtonsoft.Json;
 
 namespace DDDSample1.Controllers
 {
@@ -201,33 +202,92 @@ namespace DDDSample1.Controllers
         {
 
             //TODO: Testes e verificar se funciona sem ser com id
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
+            {
+                try
+                {                  
+
+                    try
+                    {
+                        var sendEmail = _service.VerifySensiveData(dto, email);
+
+                        if(sendEmail.Equals(1)){
+
+                            var pendingAction = await _pendingActionsService.PendingActionsAsync(JsonConvert.SerializeObject(dto));
+
+                            await _service.SendConfirmationUpdateEmail(user, pendingAction.Id.AsString());
+
+                            return Ok("Please check your email to confirm this action");
+
+                        } else if(sendEmail.Equals(0)){
+
+                            var patientProfile = await _service.UpdateAsync(dto);
+
+                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
+
+                            return Ok(patientProfile);
+                        }
+                        return BadRequest("The patient was not found");
+
+                                               
+                    }
+                    catch (BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new { Message = ex.Message });
+                    }
+
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
+            }
+            return Forbid();
+        }
+
+
+        [HttpPut("{actionId}/Confirmed")]
+        public async Task<ActionResult<PatientDto>> UpdateConfirmed(string actionId, PatientDto dto)
+        {
+
+            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
 
                 try
                 {
-
-                    if (!(email.Equals(dto.Email.FullEmail)))
-                    {
-                        return BadRequest();
-                    }
-
                     try
                     {
-                        var patientProfileOld = await _service.GetPatientByEmailAsync(email);
+                        var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
+                        var action = await _pendingActionsService.FindbyId(pendingActionsId);
 
-                        var patientProfile = await _service.UpdateAsync(dto);
+                        var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
+                             
+                        
+                        if(pendingActionExists.ToString().Equals("True")){
 
-                        if (patientProfile == null)
-                        {
-                            return NotFound();
+                           
+                            var patientProfile = await _service.UpdateAsync(dto);
+
+                            string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+
+                            await _logService.LogAsync("Patient", "Update", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+
+                            return Ok(patientProfile);
+
                         }
 
-                        string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                        return BadRequest("Was not possible to update the patient.");
 
-
-                        await _logService.LogAsync("Patient", "Deleted", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), userEmail);
-                        return Ok(patientProfile);
+                
                     }
                     catch (BusinessRuleValidationException ex)
                     {

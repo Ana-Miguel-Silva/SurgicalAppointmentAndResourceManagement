@@ -112,9 +112,19 @@ namespace DDDSample1.Domain.Patients
             this.phoneEmergency = phone;
         }
 
+        public void ChangePhone(PhoneNumber phone)
+        {            
+            this.Phone = phone;
+        }
+
         public void ChangeEmailEmergency(Email email)
         {            
             this.emailEmergency = email;
+        }
+
+        public void ChangeEmail(Email email)
+        {            
+            this.Email = email;
         }
 
         public void ChangeGender(string gender)
