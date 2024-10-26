@@ -169,27 +169,31 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPost("recover")]
-        public async Task<ActionResult> recoverPassword([FromBody] string Email) {
-            UserDto user = await _service.GeBbyEmailAsync(Email);
+        public async Task<ActionResult> recoverPassword([FromBody] RecoverPasswordRequest Email) {
+            UserDto user = await _service.GeBbyEmailAsync(Email.Text);
 
             if (user == null) return BadRequest("The user email is not registered in the system.");
 
             var token = _authService.GenerateToken(user);
 
             var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
-            var emailRequestRegister = new SendEmailRequest(Email, "Recover your Password in Medical Appointment Management", $"Token para autenticação: {token}\r\rPlease copy the token and recover your Password by clicking here: {verificationLinkRegister}");
+            var emailRequestRegister = new SendEmailRequest(Email.Text, "Recover your Password in Medical Appointment Management", $"Token para autenticação: {token}\r\rPlease copy the token and recover your Password by clicking here: {verificationLinkRegister}");
             await _mailService.SendEmailAsync(emailRequestRegister);
 
                 return Ok("Recovery email sent. Please check your inbox.");
 
         }
+        public class RecoverPasswordRequest
+        {
+            public string Text { get; set; }
+        }
         // POST: api/User/setPassword
         [HttpPost("setPassword")]
-        public async Task<ActionResult> ResetPassword([FromBody] string Password) {
+        public async Task<ActionResult> ResetPassword([FromBody] RecoverPasswordRequest Password) {
             User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
             try
             {
-                await _service.UpdatePassword(user.Username, Password);
+                await _service.UpdatePassword(user.Username, Password.Text);
                 return Ok("Password has been reset successfully.");
             }
             catch (Exception ex)
