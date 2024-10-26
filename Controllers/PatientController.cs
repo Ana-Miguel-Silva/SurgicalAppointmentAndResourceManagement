@@ -30,12 +30,12 @@ namespace DDDSample1.Controllers
 
         private readonly AuthorizationService _authService;
 
-         private readonly LogService _logService;
+        private readonly LogService _logService;
 
-         private readonly IMailService _mailService;
+        private readonly IMailService _mailService;
 
-         private readonly PendingActionsService _pendingActionsService;
-         private readonly UserService _userService;
+        private readonly PendingActionsService _pendingActionsService;
+        private readonly UserService _userService;
 
 
         public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, PendingActionsService pendingActionsService, UserService userService)
@@ -74,7 +74,8 @@ namespace DDDSample1.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
-             if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
+            {
                 var result = await _service.AddAsync(dto);
 
                 if (result == null)
@@ -86,39 +87,42 @@ namespace DDDSample1.Controllers
                 {
                     Patient = result,
                 });*/
-                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result));
+
+                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), userEmail);
 
                 return result;
-             }
-             return Forbid();
+            }
+            return Forbid();
         }
 
         [HttpGet("ExternalIAM")]
         public async Task<ActionResult<PatientDto>> RegisterExternalIAM()
         {
-             ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
+            ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
 
-                /*await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
-                    new AuthenticationProperties
-                    {
-                        RedirectUri = Url.Action("GoogleResponse")
-                    });*/
-
-
-                return Challenge(new AuthenticationProperties
+            /*await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
                 {
                     RedirectUri = Url.Action("GoogleResponse")
-                }, GoogleDefaults.AuthenticationScheme);
+                });*/
 
-             //}
-             //return Forbid();
+
+            return Challenge(new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            }, GoogleDefaults.AuthenticationScheme);
+
+            //}
+            //return Forbid();
         }
 
         [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleResponse()
         {
 
-           var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (!result.Succeeded || result.Principal == null)
             {
@@ -129,30 +133,30 @@ namespace DDDSample1.Controllers
             var emailClaim = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
             var nameClaim = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
 
-            
-            var patientRecord = await _service.GetPatientByEmailAsync(emailClaim); 
+
+            var patientRecord = await _service.GetPatientByEmailAsync(emailClaim);
 
             if (patientRecord == null)
             {
-                var verificationLinkRegister =$"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
+                var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
 
                 var emailRequestRegister = new SendEmailRequest(emailClaim, "Register in Medical Appointment Management", $"Please verify your register by clicking here: {verificationLinkRegister}");
 
                 await _mailService.SendEmailAsync(emailRequestRegister);
 
-                return  Ok("Registation email sent. Please check your inbox.");                       
+                return Ok("Registation email sent. Please check your inbox.");
             }
 
             UserDto user = await _userService.GeBbyEmailAsync(patientRecord.UserEmail.FullEmail);
 
-            if(user == null)  return BadRequest("The user email is not registed in the sistem.");
-            
+            if (user == null) return BadRequest("The user email is not registed in the sistem.");
+
             var token = _authService.GenerateToken(user);
 
             var redirectUrl = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/collection/38865574-d91a5651-b072-4ff8-b9ed-42c79b7c808c";
 
             return Ok($"Token para autenticação: {token} \r\r Please copy the token and click here: " + redirectUrl);
-          
+
         }
 
 
@@ -194,45 +198,50 @@ namespace DDDSample1.Controllers
         // PUT: api/Patients/5
         [HttpPut("{email}")]
         public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)
-        {           
+        {
 
             //TODO: Testes e verificar se funciona sem ser com id
-            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
-                
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
+            {
+
+                try
+                {
+
+                    if (!(email.Equals(dto.Email.FullEmail)))
+                    {
+                        return BadRequest();
+                    }
+
                     try
                     {
+                        var patientProfileOld = await _service.GetPatientByEmailAsync(email);
 
-                        if (!(email.Equals(dto.Email.FullEmail)))
+                        var patientProfile = await _service.UpdateAsync(dto);
+
+                        if (patientProfile == null)
                         {
-                            return BadRequest();
+                            return NotFound();
                         }
 
-                        try
-                        {
-                            var patientProfile = await _service.UpdateAsync(dto);
-                            
-            
-                            if (patientProfile == null)
-                            {
-                                return NotFound();
-                            }
+                        string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
 
-                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
-                            return Ok(patientProfile);
-                        }
-                        catch(BusinessRuleValidationException ex)
-                        {
-                            return BadRequest(new {Message = ex.Message});
-                        }
 
+                        await _logService.LogAsync("Patient", "Deleted", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), userEmail);
+                        return Ok(patientProfile);
                     }
-                        catch(BusinessRuleValidationException ex)
+                    catch (BusinessRuleValidationException ex)
                     {
-                        return BadRequest(new {Message = ex.Message});
+                        return BadRequest(new { Message = ex.Message });
                     }
-                
+
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
             }
-            return Forbid(); 
+            return Forbid();
         }
 
         // GET: api/Patients/search
@@ -246,10 +255,10 @@ namespace DDDSample1.Controllers
             [FromQuery] List<string>? AppointmentHistory
 
             )
-            //[FromQuery] bool? status)
+        //[FromQuery] bool? status)
 
-            
-            
+
+
         {
 
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
@@ -257,7 +266,7 @@ namespace DDDSample1.Controllers
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-                var operationRequests = await _service.GetAllFilteredAsync(name,email,DateOfBirth,Allergies,medicalRecordNumber,AppointmentHistory);
+                var operationRequests = await _service.GetAllFilteredAsync(name, email, DateOfBirth, Allergies, medicalRecordNumber, AppointmentHistory);
 
                 return operationRequests;
             }
@@ -292,7 +301,7 @@ namespace DDDSample1.Controllers
         }
         */
 
-  
+
         /*
         // Inactivate: api/User/5
         [HttpDelete("{id}")]
@@ -308,41 +317,46 @@ namespace DDDSample1.Controllers
             return Ok(cat);
         }
         */
-        
+
         // DELETE: api/User/5
         [HttpDelete("{id}/hard")]
-        
+
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
             User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
-            try
+            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
-                bool isPatient = false;
-                if(user.Role.ToUpper().Equals(Role.PATIENT)){
-                    isPatient = true;
-                }
-
-                var patientId = new PatientId(Guid.Parse(id));
-
-                var patientProfile = await _service.DeleteAsync(patientId);
-
-                await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
-
-                if (patientProfile == null)
+                try
                 {
-                    return NotFound();
+                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+
+                    bool isPatient = false;
+                    if (user.Role.ToUpper().Equals(Role.PATIENT))
+                    {
+                        isPatient = true;
+                    }
+
+                    var patientId = new PatientId(Guid.Parse(id));
+
+                    var patientProfile = await _service.DeleteAsync(patientId);
+
+                    await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                    if (patientProfile == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return Ok(patientProfile);
                 }
-
-                return Ok(patientProfile);
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
             }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
 
-        return Forbid();
+            return Forbid();
         }
 
 
@@ -352,72 +366,77 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string id)
         {
             User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
-            try
-            {                
-
-                var patientId = new PatientId(Guid.Parse(id));                
-
-                var pendingAction = await _pendingActionsService.PendingActionsAsync(id);
-
-                
-                await _service.SendConfirmationEmail(user, pendingAction.Id.AsString());
-
-
-                return Ok("Please check your email to confirm this action");
-            }
-            catch (BusinessRuleValidationException ex)
+            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
+                try
+                {
 
-        return Forbid();
+                    var patientId = new PatientId(Guid.Parse(id));
+
+                    var pendingAction = await _pendingActionsService.PendingActionsAsync(id);
+
+
+                    await _service.SendConfirmationEmail(user, pendingAction.Id.AsString());
+
+
+                    return Ok("Please check your email to confirm this action");
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Forbid();
         }
 
         [HttpDelete("{actionId}/deleteConfirmed")]
         public async Task<ActionResult<PatientDto>> DeleteConfirmed(string actionId)
         {
             User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if(user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result){
-            try
+            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
-
-               var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
-               var action = _pendingActionsService.FindbyId(pendingActionsId);
-
-
-               var pendingActionExists = _pendingActionsService.TryRemove(pendingActionsId);
-               if(pendingActionExists.ToString().Equals("true")){
-
-                    var patientId = new PatientId(Guid.Parse(action.ToString()));
-
-                    var patientProfile = await _service.DeleteAsync(patientId);
-                        
-
-                    await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
-
-                     if (patientProfile == null)
+                try
                 {
-                    return NotFound();
+
+                    var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
+                    var action = _pendingActionsService.FindbyId(pendingActionsId);
+
+
+                    var pendingActionExists = _pendingActionsService.TryRemove(pendingActionsId);
+                    if (pendingActionExists.ToString().Equals("true"))
+                    {
+
+                        var patientId = new PatientId(Guid.Parse(action.ToString()));
+
+                        var patientProfile = await _service.DeleteAsync(patientId);
+
+                        string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+
+
+                        await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                        if (patientProfile == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return Ok(patientProfile);
+
+                    }
+
+                    return BadRequest("Was not possible to delete the patient.");
+
                 }
-
-                return Ok(patientProfile);
-
-               }
-
-               return BadRequest("Was not possible to delete the patient.");
-               
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
             }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
 
-        return Forbid();
+            return Forbid();
         }
 
 
-        }
     }
+}

@@ -1,5 +1,6 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Staff;
 
 
 namespace DDDSample1.ApplicationService.OperationTypes
@@ -101,7 +102,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
         private static void CheckName(string name)
         {
-            if (name == null || name.Length == 0)
+            if (!Specialization.IsValid(name.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid OperationType Name.");
         }
         private static void CheckEstimatedTime(EstimatedDuration estimatedTime)

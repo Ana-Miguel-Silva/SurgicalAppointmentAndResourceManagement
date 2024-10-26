@@ -24,6 +24,9 @@ namespace DDDSample1.Infrastructure.Logging
 
             builder.Property(b => b.Changes)
                 .IsRequired();
+
+            builder.Property(b => b.UserEmail)
+            .IsRequired();
         }
     }
 }
