@@ -35,6 +35,7 @@ namespace DDDSample1.Infrastructure.Patients
                     .HasColumnName("PhoneNumber")
                     .IsRequired()
                     .HasMaxLength(15); 
+                phoneBuilder.HasIndex(pn => pn.Number).IsUnique();
             });
 
 
@@ -42,7 +43,8 @@ namespace DDDSample1.Infrastructure.Patients
             {
                 medicalRecordNumberBuilder.Property(pn => pn.number)
                     .HasColumnName("MedicalRecordNumber")
-                    .IsRequired();                    
+                    .IsRequired();   
+                medicalRecordNumberBuilder.HasIndex(pn => pn.number).IsUnique();           
             });
 
     
@@ -56,6 +58,7 @@ namespace DDDSample1.Infrastructure.Patients
                     .HasColumnName("EmergencyContactPhone")
                     .IsRequired()
                     .HasMaxLength(15); 
+                phoneBuilder.HasIndex(pn => pn.Number).IsUnique();
             });
 
             builder.OwnsOne(u => u.emailEmergency, emailBuilder =>
