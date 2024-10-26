@@ -1,0 +1,29 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+
+-> CTRL: Create(CreatingStaffDto dto)
+activate CTRL
+CTRL -> SERV: AddAsync(dto)
+activate SERV
+SERV -> DOM**: create(fullName, email, phoneNumber, Role, Specialization, )
+SERV -> REPO: AddAsync(staff)
+activate REPO
+REPO --> SERV: success
+deactivate REPO
+SERV --> CTRL: success
+deactivate SERV
+<--- CTRL : success
+deactivate CTRL
+
+
+
+@enduml

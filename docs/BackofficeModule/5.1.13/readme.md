@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement functinality that allows administrators to edit existing Staff Profiles. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement functionality that allows administrators to edit existing Staff Profiles. This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
@@ -18,21 +18,20 @@ As part of the development of the software system, it is necessary to implement 
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+> **Question:** In us 5.1.12, it is mentioned that the admin can only enter the first name, last name, contact information and specialization. However, in us 5.1.13, it is mentioned that the admin can edit the contact information, availability slots and specialization. Should the admin only be able to edit the parameters he entered or does it make sense to be able to edit the availability slots? [Translated]
 >
-> **Answer:** 
+> **Answer:** Consider editing availability slots as a separate operation and outside the scope of this requirement [Translated]
 
 
 **Dependencies/References:**
 
-* There is a dependency to "XX:  XXXX, since it is necessary to be able to Sign Up as admin to edit a Staff Profile.
+* There is a dependency to "5.1.12", since it is necessary to have a a Staff Profile in order to edit it.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * Availability Slots
     * Contact Information
         * E-mail
         * Phone number
@@ -54,101 +53,78 @@ As part of the development of the software system, it is necessary to implement 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Staff, Role, Specialization
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** StaffController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** None
 
-**Repository:**	UserRepository
+**Repository:**	StaffRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** StaffService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Level One**
+
+![Level One](level_one.svg "Level One")
+
+**Level Two**
+
+![Level Two](level_two.svg "Level Two")
+
+**Level Three**
+
+![Level Three](level_three.svg "Level Three")
 
 
 
 
-### 4.2. Class Diagram
+[//]: # (### 4.2. Class Diagram)
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
-### 4.3. Applied Patterns
+[//]: # (### 4.3. Applied Patterns)
 
-### 4.4. Tests
+### 4.2. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
 
 
 **Before Tests** **Setup of Dummy Users**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
 
 ```
 
 **Test 1:** *Verifies if Users are equals*
 
-
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
+
 ````
 
 
 ## 5. Implementation
 
+### Methods in StaffController
+* **Task<ActionResult<StaffDto>> Update(string id, StaffDto dto)**  this method receives the info from the API and redirects it to the Service
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in the StaffService
+* **Task<StaffDto> UpdateAsync(StaffDto dto)** this method updates a Staff Profile's information
 
+### Methods in the StaffRepository
+* **Task<StaffProfile> GetByStaffIDAsync(id)** this method retrieves a Staff Profile from the database by its ID
 
+### Methods in the StaffProfile
 
-### Methods in the AddUsersController
+[//]: # (* **void ChangeLicenseNumber&#40;string licenseNumber&#41;&#41;** this method updates the StaffProfile's License Number attribute)
+* **void ChangePhone(PhoneNumber phone)** this method updates the StaffProfile's Phone Number attribute
+* **void ChangeEmail(Email email)** this method updates the StaffProfile's Email attribute
+* **void UpdateSpecialization(string specialization)** this method updates the StaffProfile's Specialization attribute
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
+[//]: # (* **void UpdateSlots&#40;List<Slot> slots&#41;** this method updates the StaffProfile's active attribute)
 
 ## 6. Integration/Demonstration
 

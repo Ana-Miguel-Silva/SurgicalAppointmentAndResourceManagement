@@ -31,7 +31,7 @@ namespace DDDSample1.Domain.Staff
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
                 new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber));
             if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
-            //if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
+            if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
             if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
@@ -110,7 +110,7 @@ namespace DDDSample1.Domain.Staff
             //}
             //if(!flag) return null;
             //staff.UpdateSlots(converted);
-            staff.ChangeLicenseNumber(dto.LicenseNumber);
+//            staff.ChangeLicenseNumber(dto.LicenseNumber);
             CheckSpecialization(dto.Specialization);
             staff.UpdateSpecialization(dto.Specialization);
 

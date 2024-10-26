@@ -5,7 +5,7 @@ skinparam shadowing false
 
 autonumber
 
-actor "Actor" as AD
+actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
@@ -14,19 +14,19 @@ participant "DM Backend" as BE <<component>>
 activate AD
 AD -> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getStaffEditForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+FE --> AD : staff data edit input
 deactivate FE
-AD -> FE : info to create item
+AD -> FE : edit info of Staff Profile
 activate FE
-FE -> BE : createItem()
+FE -> BE : Update(string id, StaffDto dto)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
+FE --> AD : success of operation and edited data
 deactivate FE
 deactivate AD
 

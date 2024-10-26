@@ -1,0 +1,26 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Admin" as AD
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+activate AD
+AD -> FE: access page
+activate FE
+FE -> BE : SoftDelete(string id)
+activate BE
+BE --> FE: success
+deactivate BE
+FE --> AD : success of operation
+deactivate FE
+deactivate AD
+
+
+@enduml

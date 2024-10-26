@@ -1,4 +1,4 @@
-# US 5.1.14
+# US 5.1.15
 
 
 ## 1. Context
@@ -15,9 +15,14 @@ As part of the development of the software system, it is necessary to implement 
 
 **Customer Specifications and Clarifications:**
 
-> **Question 23:**
+
+> **Question:** What types of filters can be applied when searching for profiles? 
 >
-> **Answer:** 
+> **Answer:** Filters can include doctor specialization, name, or email to refine search results.
+
+> **Question:** The filters are And or OR. For example, if I filter for a Patient named John and Age 24, do you want every John who is 24 years old or every Patient who is called John or is 24 years old
+>
+> **Answer:** If more than one search/filter parameter is used, the combination of filters should be considered as AND
 
 
 **Dependencies/References:**

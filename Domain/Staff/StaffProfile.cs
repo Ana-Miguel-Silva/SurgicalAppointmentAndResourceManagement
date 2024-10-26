@@ -34,7 +34,7 @@ namespace DDDSample1.Domain.Staff
             this.Role = role;
             this.Specialization = specialization;
             this.AvailabilitySlots = slots;
-             this.Active = true;
+            this.Active = true;
         }
 
 
