@@ -1,22 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using DDDSample1.Infrastructure;
-using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Users;
 using DDDSample1.Infrastructure.Staff;
-using DDDSample1.Infrastructure.Products;
-using DDDSample1.Infrastructure.Families;
 using DDDSample1.Infrastructure.Shared;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Users;
-using DDDSample1.Domain.Products;
-using DDDSample1.Domain.Families;
 using DDDSample1.Domain.Logging;
 using DDDSample1.Domain.PendingActions;
 using DDDSample1.Domain.OperationRequests;
@@ -33,6 +22,14 @@ using DDDSample1.Infrastructure.Logging;
 using DDDSample1.Infrastructure.PendingActions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using DDDSample1.ApplicationService.Users;
+using DDDSample1.ApplicationService.Staff;
+using DDDSample1.ApplicationService.Patients;
+using DDDSample1.ApplicationService.OperationRequests;
+using DDDSample1.ApplicationService.OperationTypes;
+using DDDSample1.ApplicationService.Logging;
+using DDDSample1.ApplicationService.PendingActions;
+using DDDSample1.ApplicationService.Shared;
 
 
 namespace DDDSample1
@@ -169,9 +166,6 @@ namespace DDDSample1
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
-            services.AddTransient<CategoryService>();
-
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserService>();
             services.AddTransient<AuthorizationService>();
@@ -183,16 +177,8 @@ namespace DDDSample1
             services.AddTransient<IPatientRepository, PatientRepository>();
             services.AddTransient<PatientService>();
 
-
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
-
-
-            services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<ProductService>();
-
-            services.AddTransient<IFamilyRepository, FamilyRepository>();
-            services.AddTransient<FamilyService>();
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();

@@ -1,11 +1,9 @@
 using DDDSample1.Domain.Shared;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
+using DDDSample1.Domain.Users;
 
-namespace DDDSample1.Domain.Users
+
+namespace DDDSample1.ApplicationService.Users
 {
     public class UserService
     {

@@ -3,8 +3,10 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.OperationTypes;
-using DDDSample1.Domain.Logging;
 using Newtonsoft.Json;
+using DDDSample1.ApplicationService.OperationRequests;
+using DDDSample1.ApplicationService.Logging;
+using DDDSample1.ApplicationService.Shared;
 
 
 namespace DDDSample1.Controllers

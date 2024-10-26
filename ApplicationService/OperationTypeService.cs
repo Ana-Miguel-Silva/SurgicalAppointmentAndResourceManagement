@@ -1,6 +1,8 @@
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.OperationTypes;
 
-namespace DDDSample1.Domain.OperationTypes
+
+namespace DDDSample1.ApplicationService.OperationTypes
 {
     public class OperationTypeService
     {

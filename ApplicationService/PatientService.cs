@@ -2,11 +2,13 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using System.Threading.Tasks.Dataflow;
+using DDDSample1.Domain.Patients;
+
 using DDDSample1.Domain.Users;
 
 
 
-namespace DDDSample1.Domain.Patients
+namespace DDDSample1.ApplicationService.Patients
 {
     public class PatientService
     {

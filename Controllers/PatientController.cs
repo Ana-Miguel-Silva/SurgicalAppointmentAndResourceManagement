@@ -14,6 +14,11 @@ using DDDSample1.Domain.PendingActions;
 using Newtonsoft.Json;
 using System.Threading.Tasks.Dataflow;
 using System.Security.Claims;
+using DDDSample1.ApplicationService.Users;
+using DDDSample1.ApplicationService.Patients;
+using DDDSample1.ApplicationService.Logging;
+using DDDSample1.ApplicationService.Shared;
+using DDDSample1.ApplicationService.PendingActions;
 
 namespace DDDSample1.Controllers
 {

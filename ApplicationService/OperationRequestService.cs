@@ -4,8 +4,10 @@ using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Logging;
 using System.Text.Json;
+using DDDSample1.Domain.OperationRequests;
 
-namespace DDDSample1.Domain.OperationRequests
+
+namespace DDDSample1.ApplicationService.OperationRequests
 {
     public class OperationRequestService
     {

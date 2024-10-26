@@ -1,6 +1,5 @@
 using System;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
 
 
 namespace DDDSample1.Domain.Patients

@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.PendingActions;
 
-namespace DDDSample1.Domain.PendingActions
+
+namespace DDDSample1.ApplicationService.PendingActions
 {
     public class PendingActionsService
     {

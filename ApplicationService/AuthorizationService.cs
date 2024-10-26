@@ -7,9 +7,11 @@ using Microsoft.VisualBasic;
 using DDDSample1.Domain.Shared;
 using System.Security.Claims;
 using System.Text;
+using DDDSample1.Domain.Shared;
 
 
-namespace DDDSample1.Domain.Shared;
+
+namespace DDDSample1.ApplicationService.Shared;
 
 public class AuthorizationService
 {

@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Logging;
 
 
-namespace DDDSample1.Domain.Logging
+
+namespace DDDSample1.ApplicationService.Logging
 {
     public class LogService
     {

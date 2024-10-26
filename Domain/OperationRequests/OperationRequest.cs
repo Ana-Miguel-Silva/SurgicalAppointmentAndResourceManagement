@@ -1,5 +1,4 @@
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;

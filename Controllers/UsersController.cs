@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
-using Microsoft.AspNetCore.Authorization;
+using DDDSample1.ApplicationService.Users;
+using DDDSample1.ApplicationService.Shared;
 
 namespace DDDSample1.Controllers
 {
