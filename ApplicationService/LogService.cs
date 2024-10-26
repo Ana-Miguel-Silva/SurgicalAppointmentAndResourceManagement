@@ -21,7 +21,7 @@ namespace DDDSample1.ApplicationService.Logging
 
         public async Task LogAsync(string entity, string action, Guid entityId, string changes, string userEmail)
         {
-            var logEntry = new LogEntry(entity, action, entityId, changes, userEmail);
+            var logEntry = new LogEntry(entity, action, entityId, changes, userEmail, DateTime.Now);
 
             await this._repo.AddAsync(logEntry);
             await this._unitOfWork.CommitAsync();

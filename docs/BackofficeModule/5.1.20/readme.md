@@ -2,84 +2,80 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement Operation Requests management functionalities within the Staff interface. These functionalities are essential to allow doctors to update in the system requests of an operation.
+As an Admin, I want to add new types of operations, so that I can reflect on the available medical procedures in the
+system.
 
 ## 2. Requirements
 
-**US 5.1.16**
+**US 5.1.20**
 
 **Acceptance Criteria:**
 
-- Doctors can create an operation request by selecting the patient, operation type, priority, and suggested deadline.
-- The system validates that the operation type matches the doctor’s specialization.
-- The operation request includes:
-- Patient ID
-- Doctor ID
-- Operation Type
-- Deadline
-- Priority
-- The system confirms successful submission of the operation request and logs the request in
-  the patient’s medical history
+- Admins can add new operation types with attributes like:
+- Operation Name
+- Required Staff by Specialization
+- Estimated Duration
+- The system validates that the operation name is unique.
+- The system logs the creation of new operation types and makes them available for scheduling
+  immediately.
 
 **Customer Specifications and Clarifications:**
 
-> **Question: In the project document it mentions that each operation has a priority. How is a operation's priority defined? Do they have priority levels defined? Is it a scale? Or any other system?**
+> **Question:In the document with the surgeries, they all have 3 phases and respective duration:-Anesthesia/patient
+preparation -Surgery -Cleaning Can we assume while creating a new operation type, that the surgery must always have this
+3 phases?**
 >
-> **Answer: Elective Surgery: A planned procedure that is not life-threatening and can be scheduled at a convenient time (e.g., joint replacement, cataract surgery).
-Urgent Surgery: Needs to be done sooner but is not an immediate emergency. Typically within days (e.g., certain types of cancer surgeries).
-Emergency Surgery: Needs immediate intervention to save life, limb, or function. Typically performed within hours (e.g., ruptured aneurysm, trauma).**
-
+> **Answer:yes**
+> **Question:Na criação de um novo tipo de operação, Temos um nome , 3 fases temporal da Cirurgia, lista "requeridas"
+> de (especialidades, quantidade ). Esse novo tipo de operação não deve ter uma especialidade para alem das requeridas
+> de
+> modo segundo 5.1.16 AC2 um médico só pode marcar Cirurgia da sua especialidade? O processo é criar o novo tipo de
+> operação e depois adicionar a lista de especialidades requeridas?
+>
+> **Answer: sim. o tipo de operação está associado com uma dada especialidade. a lista de especialidaes faz parte
+integrante do tipo de operação. a criação é efetuada num único passo e não em dois passos como sugeres**
 
 **Dependencies/References:**
 
-**There are dependencies to USs 5.1.20, 5.1.12, 5.1.8 and 5.1.1.**
+**There are dependencies to 5.1.1.**
 
-* US 5.1.1 - There is the need to be logged and authenticated in the system in order to know the Doctor who created the Operation Request.
-* US 5.1.8 - There is the need for the existence of patients profiles in the system so I can get one to get the Id for the Operation Request.
-* US 5.1.12 - There is the need for the existence of staff profiles in the system so I can get the Id of the Doctor fo the Operation Request.
-* US 5.1.20 - There is the need for the existence of operations types in the system so I can get the Id of one for the Operation Request.
+* US 5.1.1 - There is the need to be logged and authenticated in the system in order to know it is an Admin.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-  * Id of the Operation Type
-  * Id of the Patient
-  * Deadline
-  * Priority
+    * Name
+    * Required Staff
+    * Estimated Duration
 
 * Selected data:
-  * none
-
-* Gotten from the system
-  * Id of the Doctor (from the logged doctor)
+    * none
 
 * Generated data:
-  * Operation Request Id
+    * Operation Type Id
 
 **Output Data:**
-* Display the success of the operation and the data of the created operation request
+
+* Display the success of the operation and the data of the created operation type
 
 ## 3. Analysis
 
 *?????*
 
-
 ## 4. Design
 
+**Domain Class/es:** OperationType, OperationTypeDto, OperationTypeDto, OperationTypeId,
+IOperationTypeRepository, ILogRepository, IOperationTypeRepository, EstimatedDuration, RequiredStaff
 
-**Domain Class/es:** Priority, OperationRequest, OperationRequestDto, OperationRequestDto, OperationRequestId, IOperationRequestRepository, ILogRepository, IStaffRepository, IPatientRepository, IOperationTypeRepository
-
-**Controller:** OperationRequestController
+**Controller:** OperationTypeController
 
 **UI:**
 
-**Repository:**	OperationRequestRepository, LogRepository, StaffRepository, PatientRepository, OperationTypeRepository
+**Repository:**    OperationTypeRepository, LogRepository, OperationTypeRepository
 
-**Service:** OperationRequestService, AuthorizationService, LogService
-
-
+**Service:** OperationTypeService, AuthorizationService, LogService
 
 ### 4.1. Sequence Diagram
 
@@ -92,7 +88,6 @@ Emergency Surgery: Needs immediate intervention to save life, limb, or function.
 **Register Patient Level 3**
 ![Register Operation Request](sequence-diagram-3.svg "Register Operation Request")
 
-
 ### 4.2. Class Diagram
 
 ![a class diagram](us1000-class-diagram.svg "A Class Diagram")
@@ -102,8 +97,6 @@ Emergency Surgery: Needs immediate intervention to save life, limb, or function.
 ### 4.4. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
 
 **Before Tests** **Setup of Dummy Users**
 
@@ -129,7 +122,6 @@ Include here the main tests used to validate the functionality. Focus on how the
 ```
 
 **Test 1:** *Verifies if Users are equals*
-
 
 ```
 @Test
