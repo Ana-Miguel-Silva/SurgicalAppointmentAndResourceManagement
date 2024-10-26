@@ -11,7 +11,10 @@ As part of the development of the software system, it is necessary to implement 
 
 **Acceptance Criteria:** 
 
-- 
+- Admins can search for and mark operation types as inactive (rather than deleting them) to preserve historical records.
+- Inactive operation types are no longer available for future scheduling but remain in historical data.
+- A confirmation prompt is shown before deactivating an operation type.
+
 
 **Customer Specifications and Clarifications:**
 

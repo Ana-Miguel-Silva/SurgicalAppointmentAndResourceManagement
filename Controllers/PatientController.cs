@@ -99,7 +99,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpGet("ExternalIAM")]
-        public async Task<ActionResult<PatientDto>> RegisterExternalIAM()
+        public async Task<ActionResult<PatientDto>> ExternalIAM()
         {
             ///if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.PATIENT}).Result){
 
@@ -117,6 +117,21 @@ namespace DDDSample1.Controllers
 
             //}
             //return Forbid();
+        }
+
+        [HttpPost("ExternalIAMRegister")]
+        public async Task<ActionResult<PatientDto>> ExternalIAMRegister(CreatingPatientDto dto)
+        {
+                var result = await _service.AddAsync(dto);
+
+                if (result == null)
+                {
+                    return BadRequest("Wasn't possible to create the patient.");
+                }
+
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), result.UserEmail.FullEmail);
+
+                return result;
         }
 
         [HttpGet("signin-google")]
@@ -148,9 +163,12 @@ namespace DDDSample1.Controllers
                 return Ok("Registation email sent. Please check your inbox.");
             }
 
+            //TODO: Erro é aqui, como buscar o token ? ou criar outro 
             UserDto user = await _userService.GeBbyEmailAsync(patientRecord.UserEmail.FullEmail);
 
             if (user == null) return BadRequest("The user email is not registed in the sistem.");
+
+            if(user.Role.ToUpper() != Role.PATIENT) return BadRequest("The user email is not associated to a Patient");
 
             var token = _authService.GenerateToken(user);
 
@@ -323,6 +341,8 @@ namespace DDDSample1.Controllers
 
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
             {
+            Console.Write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
@@ -330,6 +350,9 @@ namespace DDDSample1.Controllers
 
                 return operationRequests;
             }
+
+            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXdDDDDDdDDD");
+
             return Forbid();
         }
 
