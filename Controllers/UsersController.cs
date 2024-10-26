@@ -11,8 +11,8 @@ namespace DDDSample1.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _service;
-
         private readonly AuthorizationService _authService;
+        private readonly IMailService _mailService;
 
 
         public UsersController(UserService service, AuthorizationService authService)
@@ -170,7 +170,7 @@ namespace DDDSample1.Controllers
 
         [HttpPost("recover")]
         public async Task<ActionResult> recoverPassword([FromBody] string Email) {
-            UserDto user = await _userService.GeBbyEmailAsync(Email);
+            UserDto user = await _service.GeBbyEmailAsync(Email);
 
             if (user == null) return BadRequest("The user email is not registered in the system.");
 
