@@ -46,68 +46,44 @@ As part of the development of the software system, it is necessary to implement 
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
->
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
-
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** OperationType
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** OperationTypeController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** None
 
-**Repository:**	UserRepository
+**Repository:**	OperationTypeRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** OperationTypeService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Level One**
 
+![Level One](level_one.svg "Level One")
 
+**Level Two**
 
+![Level Two](level_two.svg "Level Two")
 
-### 4.2. Class Diagram
+**Level Three**
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+![Level Three](level_three.svg "Level Three")
 
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.2. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
 
 
 **Before Tests** **Setup of Dummy Users**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
 
 ```
 
@@ -115,41 +91,24 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
-````
+
+```
 
 
 ## 5. Implementation
 
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in OperationTypeController
+* **Task<ActionResult<StaffDto>> SoftDelete(string id)**  this method receives the info from the API and redirects it to the Service
 
+### Methods in the OperationTypeService
+* **Task<StaffDto> InactivateAsync(string id)** this method deactivates a Staff Profile
 
+### Methods in the OperationTypeRepository
+* **Task<StaffProfile> GetByIDAsync(id)** this method retrieves a Staff Profile from the database by its ID
 
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
+### Methods in the OperationType
+* **void MarkAsInative()** this method updates the OperationType's active attribute
 
 
 ## 6. Integration/Demonstration
