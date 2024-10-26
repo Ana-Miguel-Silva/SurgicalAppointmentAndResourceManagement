@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Users;
+using DDDSample1.Domain.Logging;
+using Newtonsoft.Json;
 
 
 namespace DDDSample1.Controllers
@@ -12,12 +14,16 @@ namespace DDDSample1.Controllers
     {
         private readonly OperationTypeService _service;
         private readonly AuthorizationService _authService;
+        private readonly LogService _logService;
 
 
-        public OperationTypes(OperationTypeService service,AuthorizationService authService)
+
+        public OperationTypes(OperationTypeService service, AuthorizationService authService, LogService logService)
         {
             _authService = authService;
             _service = service;
+            _logService = logService;
+
         }
 
         // GET: api/OperationTypes
@@ -48,26 +54,29 @@ namespace DDDSample1.Controllers
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
             {
 
-            try
-            {
-                var operationType = await _service.AddAsync(dto);
+                try
+                {
+                    var operationType = await _service.AddAsync(dto);
 
-                return CreatedAtAction(nameof(GetGetById), new { id = operationType.Id }, operationType);
-            }
-            catch(BusinessRuleValidationException ex)
-            {
-                return BadRequest(new {Message = ex.Message});
-            }
+                    await _logService.LogAsync("OperationRequest", "Created", operationType.Id, JsonConvert.SerializeObject(dto));
+
+                    return CreatedAtAction(nameof(GetGetById), new { id = operationType.Id }, operationType);
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
             }
             return Forbid();
         }
 
-        
+
         // PUT: api/OperationTypes/5
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationTypeDto>> Update(Guid id, OperationTypeDto dto)
         {
-            if(_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN}).Result){
+            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
+            {
 
                 try
                 {
@@ -79,25 +88,25 @@ namespace DDDSample1.Controllers
                     try
                     {
                         var operationType = await _service.UpdateAsync(dto);
-                        
+
                         if (operationType == null)
                         {
                             return NotFound();
                         }
                         return Ok(operationType);
                     }
-                    catch(BusinessRuleValidationException ex)
+                    catch (BusinessRuleValidationException ex)
                     {
-                        return BadRequest(new {Message = ex.Message});
+                        return BadRequest(new { Message = ex.Message });
                     }
 
                 }
-                    catch(BusinessRuleValidationException ex)
+                catch (BusinessRuleValidationException ex)
                 {
-                    return BadRequest(new {Message = ex.Message});
+                    return BadRequest(new { Message = ex.Message });
                 }
             }
-            return Forbid(); 
+            return Forbid();
         }
 
 
@@ -115,7 +124,7 @@ namespace DDDSample1.Controllers
 
             return Ok(operationType);
         }
-        
+
         // DELETE: api/OperationTypes/5
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<OperationTypeDto>> HardDelete(Guid id)
@@ -131,9 +140,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(operationType);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 

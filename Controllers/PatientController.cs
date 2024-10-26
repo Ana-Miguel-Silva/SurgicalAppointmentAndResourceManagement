@@ -331,9 +331,9 @@ namespace DDDSample1.Controllers
 
                 var patientProfile = await _service.DeleteAsync(patientId, isPatient);
 
-                await _logService.LogAsync("Patient", "Delete", cat.Id, JsonConvert.SerializeObject(patientProfile));
+                await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile));
 
-                if (cat == null)
+                if (patientProfile == null)
                 {
                     return NotFound();
                 }
