@@ -61,7 +61,7 @@ As part of the development of the software system, it is necessary to implement 
 
 **Repository:**	StaffRepository
 
-**Service:** StaffService
+**Service:** StaffService, AuthorizationService
 
 
 

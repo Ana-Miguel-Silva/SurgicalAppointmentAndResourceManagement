@@ -14,7 +14,7 @@ participant "DM Backend" as BE <<component>>
 activate AD
 AD -> FE: access page
 activate FE
-FE -> BE : SoftDelete(string id)
+FE -> BE : SoftDelete(id)
 activate BE
 BE --> FE: success
 deactivate BE

@@ -3,7 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system.
+As part of the development of the software system, it is necessary to implement a functionality that lets a user reset their password.
 This is the first time this task has been assigned for development.
 
 
@@ -13,56 +13,47 @@ This is the first time this task has been assigned for development.
 
 **Acceptance Criteria:** 
 
-- 
-
-**Customer Specifications and Clarifications:**
-
-> **Question 23:**
->
-> **Answer:** 
-
+- Backoffice users can request a password reset by providing their email.
+- The system sends a password reset link via email.
+- The reset link expires after a predefined period (e.g., 24 hours) for security.
+- Users must provide a new password that meets the system’s password complexity rules.
 
 **Dependencies/References:**
 
-* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
+* There is a dependency to "5.1.1", since is necessary to have a User Account to be able to change its password.
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
-* Selected data:
-    * User 
-    * Role
+    * Email
+    * Password
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the sending an Email to the user.
+* Display the success of updating the Password after filling the form in the link provided via email.
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+> **Question:** What are the system's password requirements?
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Answer:** At least 10 characters long, at least a digit, a capital letter and a special character
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** E-mail, User
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** UserController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** None
 
 **Repository:**	UserRepository
 
@@ -72,44 +63,34 @@ This is the first time this task has been assigned for development.
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Level One**
+
+![Level One](level_one.svg "Level One")
+
+**Level Two**
+
+![Level Two](level_two.svg "Level Two")
+
+**Level Three**
+
+![Level Three](level_three.svg "Level Three")
 
 
 
 
-### 4.2. Class Diagram
+[//]: # (### 4.2. Class Diagram)
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
+[//]: # ()
+[//]: # (### 4.3. Applied Patterns)
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.2. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
 
 **Before Tests** **Setup of Dummy Users**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
 
 ```
 
@@ -117,41 +98,11 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
-````
+
+```
 
 
 ## 5. Implementation
-
-
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
-
-
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
 
 
 ## 6. Integration/Demonstration
