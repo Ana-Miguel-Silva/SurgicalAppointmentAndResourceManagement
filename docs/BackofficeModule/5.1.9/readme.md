@@ -72,8 +72,6 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 ## 4. Design
 
-[//]: # (TODO: Devido à sensative data fazer algo a mais  ?)
-
 **Domain Class/es:** Email, Patient, PatientDto, PhoneNumber, MedicalRecordNumber
 
 **Controller:** PatientController

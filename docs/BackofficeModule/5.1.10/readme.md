@@ -17,8 +17,6 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 
 **Customer Specifications and Clarifications:**
 
-[//]: # (TODO: Ir buscar as perguntas)
-
 > **Question 1: When generating the audit record to log the deletion of patient profiles what patient information (if any) are we allowed to keep in the log for identification purposes? If none are the logs then only a record of deletion operations and not actually tied to the deletion of a specific patient?**
 >
 > **Answer 1: The ERS (health regulator) issued an opinion on the retention of health data in which it established a minimum retention period of 5 years, after which the data can be deleted. You may wish to keep some of the information anonymised for statistical purposes only, limiting yourself to, for example, gender and type of surgery.** 

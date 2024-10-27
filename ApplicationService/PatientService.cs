@@ -164,7 +164,6 @@ namespace DDDSample1.ApplicationService.Patients
             }
 
 
-            //TODO: Se for dados sensiveis mandar email, logo fazer uma verificação para se algum deles for mudado ser mandado email
             // Update patient's name
             patient.ChangeName(new FullName(dto.name.GetFullName()));
             patient.ChangeEmail(dto.Email);

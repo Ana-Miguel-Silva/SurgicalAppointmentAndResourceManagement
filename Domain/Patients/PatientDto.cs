@@ -33,7 +33,7 @@ namespace DDDSample1.Domain.Patients
                    PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
 
-        //TODO:Validação para se não forem nulls
+        //TODO:Validação para se não forem nulls (fazer a validação com os checks)
         this.Id = Id;
         this.medicalRecordNumber = medicalRecordNumber;
         this.name = new FullName(name);
