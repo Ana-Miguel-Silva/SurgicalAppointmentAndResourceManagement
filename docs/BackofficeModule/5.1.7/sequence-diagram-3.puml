@@ -16,10 +16,23 @@ participant "Repository" as REPO <<component>>
 
 -> CTRL: Login Get Request
 activate CTRL
+CTRL -> SERV: Call GetPatientByEmailAsync method
+activate SERV
+
+SERV -> REPO: Get Patient through ClaimedEmail
+activate REPO
+
+REPO --> SERV: Return Patient
+deactivate REPO
+
+SERV --> CTRL: Return Patient
+deactivate SERV
+
+
 CTRL -> SERV: Call GeBbyEmailAsync method
 activate SERV
 
-SERV -> REPO: Get User through UserEmail
+SERV -> REPO: Get User through PatientUserEmail
 activate REPO
 
 REPO --> SERV: Return UserDTO

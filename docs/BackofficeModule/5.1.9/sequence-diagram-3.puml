@@ -23,7 +23,7 @@ activate REPO
 
 REPO --> SERV: Return Patient
 deactivate REPO
-'TODO: Fazer algo referente à informação sensivel (?)
+
 SERV -> DOM: Update Patient with PatientDTO Info
 activate DOM
 
