@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>bd63db96-a1d3-4d02-b56c-5234ac99abf9</UserSecretsId>
     <DisableStaticWebAssets>true</DisableStaticWebAssets> 
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
+    
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    
+
   </ItemGroup>
 
 </Project>
