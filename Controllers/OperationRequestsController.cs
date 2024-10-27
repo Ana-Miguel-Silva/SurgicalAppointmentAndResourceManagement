@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using DDDSample1.ApplicationService.OperationRequests;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.Shared;
+using DDDSample1.Domain.Patients;
 
 
 namespace DDDSample1.Controllers
@@ -100,7 +101,7 @@ namespace DDDSample1.Controllers
         {
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
             {
-                MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
+                PatientId? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new PatientId(patientId) : null;
                 OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
                 var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority, patientname, operationTypeName);
