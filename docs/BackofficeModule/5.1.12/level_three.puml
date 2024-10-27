@@ -10,7 +10,7 @@ participant "Service" as SERV <<component>>
 participant "Domain" as DOM <<component>>
 participant "Repository" as REPO <<component>>
 
--> CTRL: Create(CreatingStaffDto dto)
+-> CTRL: Create(dto)
 activate CTRL
 CTRL -> SERV: AddAsync(dto)
 activate SERV
