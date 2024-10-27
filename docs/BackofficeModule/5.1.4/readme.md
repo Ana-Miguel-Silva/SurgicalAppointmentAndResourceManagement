@@ -227,16 +227,19 @@ pm.test("Response matches expected structure", function () {
 
 ````
 
+[//]: # ()
+[//]: # (## 5. Implementation)
 
-## 5. Implementation
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
+[//]: # (* **public async Task<ActionResult<PatientDto>> Update&#40;string email, PatientDto dto&#41;**  this method updates the patient info)
 
-### Methods in the ListUsersController
-* **public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)**  this method updates the patient info
-
-
-
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

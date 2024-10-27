@@ -239,16 +239,20 @@ pm.test("Response matches expected structure", function () {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the PatientController)
 
-### Methods in the PatientController
-* **public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)**  this method creates the patient with the info fullName,email, phone, gender, dateOfBirth, userEmail
+[//]: # (* **public async Task<ActionResult<PatientDto>> Create&#40;CreatingPatientDto dto&#41;**  this method creates the patient with the info fullName,email, phone, gender, dateOfBirth, userEmail)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
-
-## 6. Integration/Demonstration
-
+[//]: # ()
 
 
 [//]: # (## 7. Observations)
