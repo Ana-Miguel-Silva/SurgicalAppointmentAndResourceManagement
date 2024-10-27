@@ -31,12 +31,13 @@ namespace DDDSample1.ApplicationService.Staff
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
                 new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active));
+            if (id != null) listDto = listDto.Where(x => x.StaffId.Equals(id)).ToList();
             if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
             if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
             if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
-            if (role != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList();}
+            if (active != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList();}
             //else{listDto = listDto.Where(x => x.Active.Equals(true)).ToList();}
             return listDto;
         }
