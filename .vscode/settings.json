@@ -1,2 +1,11 @@
 {
+    "testing.alwaysRevealTestOnStateChange": true,
+    "testing.countBadge": "passed",
+    "dotnet.testWindow.useTestingPlatformProtocol": true,
+    "testing.coverageBarThresholds": {
+        "red": 0,
+        "yellow": 60,
+        "green": 90
+    },
+    "debug.javascript.debugByLinkOptions": "on"
 }
