@@ -1,0 +1,23 @@
+@startuml 5.1.7
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Patient" as AD
+participant "SAaRM System" as SYS <<system>>
+
+activate AD
+AD -> SYS: access page
+
+activate SYS
+SYS --> AD : success and token to login
+
+deactivate SYS
+
+deactivate AD
+
+
+
+@enduml

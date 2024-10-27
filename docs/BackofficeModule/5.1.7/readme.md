@@ -3,8 +3,7 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-
+As a Patient, I want to log in to the healthcare system using my external IAM credentials, so that I can access my appointments, medical records, and other features securely.
 ## 2. Requirements
 
 **US 5.1.7** 
