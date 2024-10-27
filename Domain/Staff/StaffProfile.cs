@@ -31,8 +31,8 @@ namespace DDDSample1.Domain.Staff
             this.Name = name;
             this.Email = email;
             this.PhoneNumber = phone;
-            this.Role = role;
-            this.Specialization = specialization;
+            this.Role = role.ToUpper();
+            this.Specialization = specialization.ToUpper();
             this.AvailabilitySlots = slots;
             this.Active = true;
         }
@@ -62,7 +62,7 @@ namespace DDDSample1.Domain.Staff
         }
         public void UpdateSpecialization(string specialization)
         {
-            Specialization = specialization;
+            Specialization = specialization.ToUpper();
         }
 
         public void MarkAsInative()
