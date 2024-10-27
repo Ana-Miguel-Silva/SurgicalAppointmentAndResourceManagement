@@ -122,37 +122,50 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
 
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
 
-### Methods in the AddUsersController
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
 
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
 
-* **String generatePassword()** this method automatically generate a password for the User. 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
 
-### Methods in the DeactivateUsersController
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
 
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
 
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

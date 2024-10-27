@@ -93,8 +93,11 @@ namespace DDDSample1.ApplicationService.Patients
 
             if(user.Role.ToUpper() == Role.ADMIN ){
 
-                Patient.ChangeAllergies(dto.Allergies);
+                //Patient.ChangeAllergies(dto.Allergies);
                 Patient.ChangeAppointmentHistory(dto.AppointmentHistory);
+                Patient.ChangeEmailEmergency(dto.emailEmergency);
+                Patient.ChangeNameEmergency(dto.nameEmergency);
+                Patient.ChangePhoneEmergency(dto.phoneEmergency);
 
             }
 

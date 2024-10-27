@@ -17,14 +17,27 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 
 **Customer Specifications and Clarifications:**
 
-> **Question 1:**
->
-> **Answer 1:** 
+[//]: # (TODO: Ir buscar as perguntas)
 
+> **Question 1: When generating the audit record to log the deletion of patient profiles what patient information (if any) are we allowed to keep in the log for identification purposes? If none are the logs then only a record of deletion operations and not actually tied to the deletion of a specific patient?**
+>
+> **Answer 1: The ERS (health regulator) issued an opinion on the retention of health data in which it established a minimum retention period of 5 years, after which the data can be deleted. You may wish to keep some of the information anonymised for statistical purposes only, limiting yourself to, for example, gender and type of surgery.** 
+
+> **Question 2: Gostávamos de perguntar se na funcionalidade que pretende que envolve remover o perfil de pacientes que já não se encontram a receber ajuda ou tratamento da entidade hospitalar (5.1.10) se quando é mencionado "(...)all patient data is permanently removed from the system within a predefined time frame." se o tempo predefinido é do sistema em si ou se é definido pelo admin que apaga os dados.**
+>
+> **Answer 2: Faz parte das vossas responsabilidades no âmbito do módulo de proteçãod e dados e de acordo com a politica que venham a definir**
+
+> **Question 3:**
+>
+> **Answer 3:**
 
 **Dependencies/References:**
 
-[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
+
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+* There is a dependency to "US 5.1.8 - As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history."
 
 **Input and Output Data**
 
@@ -43,21 +56,22 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 >
 > **Answer 1:** 
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** PatientController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:**
 
-**Repository:**	UserRepository
+**Repository:**	PatientRepository, LogsRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** PatientService, AuthorizationService, LogsService, GmailService
 
 
 
@@ -79,6 +93,7 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 
 
 
+[//]: # (TODO: Necessario fazer algo ?)
 
 ### 4.2. Applied Patterns
 
@@ -122,37 +137,50 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
 
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
 
-### Methods in the AddUsersController
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
 
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
 
-* **String generatePassword()** this method automatically generate a password for the User. 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
 
-### Methods in the DeactivateUsersController
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
 
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
 
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

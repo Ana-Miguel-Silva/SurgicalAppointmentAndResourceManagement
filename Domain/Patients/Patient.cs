@@ -32,7 +32,7 @@ namespace DDDSample1.Domain.Patients
 
         public bool Active { get; private set; }
 
-        //public DateTime? ExpirationDate { get; private set; }
+        public DateTime? ExpirationDate { get;  set; }
 
 
 
@@ -56,7 +56,7 @@ namespace DDDSample1.Domain.Patients
         this.phoneEmergency = phoneEmergency;
         this.emailEmergency = emailEmergency;
         this.Active = true;  
-        //this.ExpirationDate = null;
+        this.ExpirationDate = null;
         }
 
         protected Patient() { }
@@ -77,7 +77,7 @@ namespace DDDSample1.Domain.Patients
             this.phoneEmergency = new PhoneNumber("999999999");
             this.emailEmergency = new Email("default@gmail.com");
             this.Active = true;     
-            //this.ExpirationDate = null
+            this.ExpirationDate = null;
 
         
         }

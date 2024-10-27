@@ -22,24 +22,37 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 > 
 > **Answer 1: If the email is changed, the notification should be sent to the "old" email** 
 
-> **Question 2:**
+> **Question 2: No caderno de encargos, nos critérios de aceitação da us 5.1.9 está escrito o seguinte: "Editable fields include name, contact information, medical history, and allergies.". Sendo assim, este critério de aceitação não deveria ser apenas os parâmetros que ele próprio inseriu?**
 >
-> **Answer 2:**
+> **Answer 2: Sim. devem considerar como critério de aceitação: Editable fields are first name, last name, date of birth and contact information**
 
+> **Question 3:**
+>
+> **Answer 3:** 
 
 **Dependencies/References:**
 
-[//]: # (* There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.)
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
+
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+* There is a dependency to "US 5.1.8 - As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history."
+
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
+  * Full Name
   * E-mail
   * Phone
-  * Date of Birth
-  * Medical Conditions (?)
+  * Gender
+  * AppointmentHistory
+  * Emergency Contact
+  * Allergies
+
 
 **Output Data:**
 * Display the success of the operation and the data of the updated patient (Update Patient)
@@ -47,21 +60,29 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 ## 3. Analysis
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+
+> **Question 1: In this US an admin can edit a user profile. Does the system display a list of all users or the admin searchs by ID? Or both?**
+>
+> **Answer 1: This requirement is for the editing of the user profile. from a usability point of view, the user should be able to start this feature either by searching for a specific user or listing all users and selecting one. note that we are not doing the user interface of the system in this sprint.**
+
+
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
+[//]: # (TODO: Devido à sensative data fazer algo a mais  ?)
 
-**Domain Class/es:** Patient
+**Domain Class/es:** Email, Patient, PatientDto, PhoneNumber, MedicalRecordNumber
 
 **Controller:** PatientController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:**
 
-**Repository:**	UserRepository
+**Repository:**	PatientRepository, LogRepository
 
-**Service:** PatientService, AuthorizationService
+**Service:** PatientService, AuthorizationService, LogService
 
 
 
@@ -81,6 +102,8 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 ![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit Patient Profile")
 
+
+[//]: # (TODO: Necessario fazer algo ?)
 ### 4.2. Applied Patterns
 
 ### 4.3. Tests
@@ -123,37 +146,50 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
 
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
 
-### Methods in the AddUsersController
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
 
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
 
-* **String generatePassword()** this method automatically generate a password for the User. 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
 
-### Methods in the DeactivateUsersController
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
 
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
 
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

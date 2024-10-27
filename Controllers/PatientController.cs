@@ -167,7 +167,6 @@ namespace DDDSample1.Controllers
                 return Ok("Registation email sent. Please check your inbox.");
             }
 
-            //TODO: Erro é aqui, como buscar o token ? ou criar outro 
             UserDto user = await _userService.GeBbyEmailAsync(patientRecord.UserEmail.FullEmail);
 
             if (user == null) return BadRequest("The user email is not registed in the sistem.");

@@ -107,9 +107,10 @@ namespace DDDSample1.Infrastructure.Patients
                 .IsRequired()
                 .HasDefaultValue(1);
 
-            /*builder.Property(u => u.DateOfBirth)
+            builder.Property(u => u.ExpirationDate)
+                .HasColumnType("datetime") 
                 .IsRequired(false) // Permite nulo
-                .HasDefaultValue(null); // Valor padrão como null*/
+                .HasDefaultValue(null); // Valor padrão como null
 
 
             

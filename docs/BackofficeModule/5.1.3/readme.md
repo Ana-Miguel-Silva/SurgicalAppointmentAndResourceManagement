@@ -85,7 +85,7 @@ backoffice system with appropriate permissions."
 ## 4. Design
 
 
-**Domain Class/es:** Email, Patient, PatientDto, CreatingPatientDto
+**Domain Class/es:** Email, Patient, PatientDto, CreatingPatientDto, PhoneNumber, MedicalRecordNumber
 
 **Controller:** PatientController
 
@@ -93,7 +93,7 @@ backoffice system with appropriate permissions."
 
 **Repository:**	PatientRepository, LogRepository
 
-**Service:** PatienttService, AuthorizationService, LogService
+**Service:** PatientService, AuthorizationService, LogService
 
 
 

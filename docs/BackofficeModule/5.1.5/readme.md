@@ -43,7 +43,7 @@ backoffice system with appropriate permissions."
 **Input Data:**
 
 * Typed data:
-    * id
+    * Id
     * Confirmation of the delete operation. 
 
 
