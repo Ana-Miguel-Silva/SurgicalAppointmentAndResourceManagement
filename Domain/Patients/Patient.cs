@@ -7,7 +7,8 @@ namespace DDDSample1.Domain.Patients
     public class Patient : Entity<PatientId>, IAggregateRoot
     {
         public FullName name { get; private set; }
-    
+
+
         public DateTime DateOfBirth { get;  private set; }
 
         public MedicalRecordNumber medicalRecordNumber { get;  private set; }

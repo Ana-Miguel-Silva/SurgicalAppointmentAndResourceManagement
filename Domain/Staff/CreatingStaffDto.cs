@@ -3,7 +3,7 @@ using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Staff
 {
-    public class CreatingStaffDto
+    public partial class CreatingStaffDto
     {
         public string Name { get; set; }
         public string Specialization { get; private set; }
@@ -21,11 +21,6 @@ namespace DDDSample1.Domain.Staff
             this.Specialization = specialization;
             this.Slots = slots;
 
-        }
-
-        public class DateDTO {
-            public string Start{ get; set; }
-            public string End{ get; set; }
         }
     }
 }
