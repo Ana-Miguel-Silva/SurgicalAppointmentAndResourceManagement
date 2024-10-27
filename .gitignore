@@ -1,5 +1,5 @@
 /obj/Debug
-<<<<<<< HEAD
+
 bin/Debug/net8.0/DDDNetCore.dll
 bin/Debug/net8.0/DDDNetCore.exe
 bin/Debug/net8.0/DDDNetCore.pdb
@@ -11,17 +11,15 @@ obj/DDDNetCore.csproj.nuget.dgspec.json
 obj/DDDNetCore.csproj.nuget.g.props
 obj/project.assets.json
 obj/project.nuget.cache
-=======
+TestsU/bin/Debug/net8.0/DDDNetCore.dll
+TestsU/bin/Debug/net8.0/DDDNetCore.exe
+TestsU/bin/Debug/net8.0/DDDNetCore.pdb
+TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
+TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
+TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
+TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
+TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
+TestsU/obj/DDDNetCore.csproj.nuget.g.props
+TestsU/obj/project.assets.json
+TestsU/obj/project.nuget.cache
 /.idea
->>>>>>> 06e0e54cd5c0a071e82673bb506bb1cb4147dfb4
-bin/Debug/net8.0/DDDNetCore.dll
-bin/Debug/net8.0/DDDNetCore.exe
-bin/Debug/net8.0/DDDNetCore.pdb
-obj/DDDNetCore.csproj.nuget.dgspec.json
-obj/DDDNetCore.csproj.nuget.g.props
-bin/Debug/net8.0/DDDNetCore.dll
-bin/Debug/net8.0/DDDNetCore.exe
-bin/Debug/net8.0/DDDNetCore.pdb
-bin/Debug/net8.0/DDDNetCore.dll
-bin/Debug/net8.0/DDDNetCore.exe
-bin/Debug/net8.0/DDDNetCore.pdb
