@@ -65,6 +65,11 @@
                 Email = email;
             }
 
+            public void ChangeUsername(string username)
+            {
+                Username = username;
+            }
+
             /*private void SetRole(string role)
             {
                 if (!Enum.TryParse<Role>(role, out var roleParsed))

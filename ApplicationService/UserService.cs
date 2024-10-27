@@ -179,6 +179,8 @@ namespace DDDSample1.ApplicationService.Users
 
             // change deadline and priority
             user.ChangeEmail(dto.Email);
+            user.ChangeUsername(dto.Username);
+
 
             await this._unitOfWork.CommitAsync();
 
