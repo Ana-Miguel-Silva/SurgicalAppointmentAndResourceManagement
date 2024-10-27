@@ -121,37 +121,53 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 
-**Before Tests** **Setup of Dummy Users**
+**Json**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
+    {
+  "name": "Pedro Doouu",
+  "dateOfBirth": "1985-05-20",
+  "phone": "932385677",
+  "email":"gago3@gmail.com",
+  "userEmail": "gago@isep.ipp.pt",
 
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
+  "emergencyContact": {
+    "name": "Jane Doeaeae",
+    "phone": "987654321",
+    "email":  "janedoe123@example.com"
+  },
 
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
-
-```
-
-**Test 1:** *Verifies if Users are equals*
-
-
-```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
+  "gender": "Female",
+  "allergies": [],
+  "appointmentHistory": ["2021-09-15", "2022-10-10"]
 }
+
+```
+
+**Test 1:** 
+
+
+```
+// Check that the response status code is 201 (Created)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Parse the response body as JSON
+const responseJson = pm.response.json();
+
+// Check if the response contains the 'id' field
+pm.test("Response contains ID", function () {
+    pm.expect(responseJson).to.have.property("id");
+});
+
+// Save the 'id' from the response to an environment variable
+pm.environment.set("patientId", responseJson.id);
+
+pm.environment.set("patientEmail", responseJson.email.fullEmail);
+pm.environment.set("patientMedicalRecordNumber", responseJson.medicalRecordNumber.number);
+
+
 ````
 
 

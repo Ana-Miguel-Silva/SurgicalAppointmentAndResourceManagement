@@ -36,6 +36,9 @@ namespace DDDNetCore.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Entity")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -110,6 +113,11 @@ namespace DDDNetCore.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Allergies")
                         .HasColumnType("longtext")
                         .HasColumnName("Allergies");
@@ -120,6 +128,9 @@ namespace DDDNetCore.Migrations
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("gender")
                         .IsRequired()
@@ -143,8 +154,7 @@ namespace DDDNetCore.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -323,6 +333,9 @@ namespace DDDNetCore.Migrations
 
                             b1.HasKey("PatientId");
 
+                            b1.HasIndex("Number")
+                                .IsUnique();
+
                             b1.ToTable("Patients");
 
                             b1.WithOwner()
@@ -414,6 +427,8 @@ namespace DDDNetCore.Migrations
 
                             b1.HasKey("PatientId");
 
+                            b1.HasIndex("Number");
+
                             b1.ToTable("Patients");
 
                             b1.WithOwner()
@@ -427,10 +442,13 @@ namespace DDDNetCore.Migrations
 
                             b1.Property<string>("number")
                                 .IsRequired()
-                                .HasColumnType("longtext")
+                                .HasColumnType("varchar(255)")
                                 .HasColumnName("MedicalRecordNumber");
 
                             b1.HasKey("PatientId");
+
+                            b1.HasIndex("number")
+                                .IsUnique();
 
                             b1.ToTable("Patients");
 

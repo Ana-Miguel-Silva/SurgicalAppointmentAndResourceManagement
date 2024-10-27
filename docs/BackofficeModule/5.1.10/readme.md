@@ -103,37 +103,27 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 
-**Before Tests** **Setup of Dummy Users**
+**HTTPDEL**
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
+https://localhost:5001/api/Patients/{{patientId}}/delete
 
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
+https://localhost:5001/api/Patients/___/deleteConfirmed
 
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
+https://localhost:5001/api/Patients/{{patientId}}/hard
 
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
+
 
 ```
 
-**Test 1:** *Verifies if Users are equals*
+**Test 1:** 
 
 
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 ````
 
 
