@@ -32,7 +32,24 @@ namespace DDDSample1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)
         {
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            User user;
+            try
+            {
+                user = await _authService.ValidateTokenAsync(authorizationHeader);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
+
+            if (isAuthoraze)
+            {
             return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role);
+            }
+            return Forbid();
         }
 
         public class GetStaffQueryObject
@@ -49,6 +66,21 @@ namespace DDDSample1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetGetById(string id)
         {
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            User user;
+            try
+            {
+                user = await _authService.ValidateTokenAsync(authorizationHeader);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
+
+            if (isAuthoraze)
+            {
             var cat = await _service.GetByStaffIDAsync(id);
 
             if (cat == null)
@@ -57,6 +89,8 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
+            }
+            return Forbid();
         }
 
         // POST: api/Staff
@@ -89,10 +123,12 @@ namespace DDDSample1.Controllers
 
         // PUT: api/Staff/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<StaffDto>> Update(string id, StaffDto dto)
+        public async Task<ActionResult<StaffDto>> Update(string id, UpdateStaffDto dto)
         {
-            Console.Write(dto.Name);
-            if (id != dto.StaffId)
+            var catOld = await _service.GetByStaffIDAsync(id);
+
+            Console.Write(catOld.Name);
+            if (id != catOld.StaffId)
             {
                 return BadRequest();
             }
@@ -101,9 +137,9 @@ namespace DDDSample1.Controllers
             {
                 string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
 
-                var catOld = await _service.GetByStaffIDAsync(id);
+                
 
-                var cat = await _service.UpdateAsync(dto);
+                var cat = await _service.UpdateAsync(id, dto);
 
                 await _logService.LogAsync("OperationRequest", "Deleted", cat.Id, "old" + JsonConvert.SerializeObject(catOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
 
