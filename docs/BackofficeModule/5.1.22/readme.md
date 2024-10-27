@@ -16,13 +16,6 @@ As part of the development of the software system, it is necessary to implement 
 - A confirmation prompt is shown before deactivating an operation type.
 
 
-**Customer Specifications and Clarifications:**
-
-> **Question 23:**
->
-> **Answer:** 
-
-
 **Dependencies/References:**
 
 * There is a dependency to "USG007:  "As a Project Manager, I want the system to support and apply authentication and authorization for all its users and functionalities.", since is necessary to be able to Sign Up as admin to create others Users.
@@ -79,24 +72,6 @@ As part of the development of the software system, it is necessary to implement 
 
 ![Level Three](level_three.svg "Level Three")
 
-### 4.2. Tests
-
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
-**Before Tests** **Setup of Dummy Users**
-
-```
-
-```
-
-**Test 1:** *Verifies if Users are equals*
-
-
-```
-
-```
-
 
 ## 5. Implementation
 
@@ -113,18 +88,3 @@ Include here the main tests used to validate the functionality. Focus on how the
 ### Methods in the OperationType
 * **void MarkAsInative()** this method updates the OperationType's active attribute
 
-
-## 6. Integration/Demonstration
-
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)

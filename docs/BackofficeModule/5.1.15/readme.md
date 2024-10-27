@@ -81,24 +81,6 @@ As part of the development of the software system, it is necessary to implement 
 
 
 
-### 4.2. Tests
-
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
-
-
-**Before Tests** **Setup of Dummy Users**
-
-```
-
-```
-
-**Test 1:** *Verifies if Users are equals*
-
-```
-
-````
 
 
 ## 5. Implementation
@@ -112,19 +94,3 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 ### Methods in the StaffRepository
 * **Task<List<StaffDto>> GetAllAsync()** this method retrieves from the database the list of all Staff Profiles
-
-
-## 6. Integration/Demonstration
-
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)

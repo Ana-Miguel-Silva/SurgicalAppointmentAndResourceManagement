@@ -42,10 +42,6 @@ This is the first time this task has been assigned for development.
 > **Answer:** At least 10 characters long, at least a digit, a capital letter and a special character
 
 
-[//]: # (### 3.1. Domain Model)
-
-[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
-
 ## 4. Design
 
 
@@ -73,49 +69,7 @@ This is the first time this task has been assigned for development.
 
 **Level Three**
 
-![Level Three](level_three.svg "Level Three")
+![Level Three A](level_three_a.svg "Level Three A")
+![Level Three B](level_three_b.svg "Level Three B")
 
 
-
-
-[//]: # (### 4.2. Class Diagram)
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
-
-### 4.2. Tests
-
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-**Before Tests** **Setup of Dummy Users**
-
-```
-
-```
-
-**Test 1:** *Verifies if Users are equals*
-
-
-```
-
-```
-
-
-## 5. Implementation
-
-
-## 6. Integration/Demonstration
-
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)

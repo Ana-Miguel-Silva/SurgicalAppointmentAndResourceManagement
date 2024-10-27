@@ -38,7 +38,7 @@ FE --> AD : new password data input
 deactivate FE
 AD -> FE : new password
 activate FE
-FE -> BE : updatePassword(password)
+FE -> BE : ResetPassword(password)
 activate BE
 BE --> FE: success
 deactivate BE

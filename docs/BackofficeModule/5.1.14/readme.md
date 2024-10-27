@@ -15,14 +15,6 @@ As part of the development of the software system, it is necessary to implement 
 - Deactivating a staff profile removes them from the active roster, but their historical data (e.g., appointments) remains accessible.
 - The system confirms deactivation and records the action for audit purposes.
 
-[//]: # (**Customer Specifications and Clarifications:**)
-
-[//]: # ()
-[//]: # (> **Question:** )
-
-[//]: # (>)
-
-[//]: # (> **Answer:** )
 
 
 **Dependencies/References:**
@@ -41,9 +33,6 @@ As part of the development of the software system, it is necessary to implement 
 * Display the success of the operation.
 
 ## 3. Analysis
-
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
 
 ## 4. Design
 
@@ -77,31 +66,6 @@ As part of the development of the software system, it is necessary to implement 
 
 
 
-[//]: # (### 4.2. Class Diagram)
-
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-
-[//]: # (### 4.3. Applied Patterns)
-
-### 4.2. Tests
-
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-
-
-**Before Tests** **Setup of Dummy Users**
-
-```
-
-```
-
-**Test 1:** *Verifies if Users are equals*
-
-```
-
-````
-
-
 ## 5. Implementation
 
 
@@ -117,18 +81,3 @@ Include here the main tests used to validate the functionality. Focus on how the
 ### Methods in the StaffProfile
 * **void MarkAsInative()** this method updates the StaffProfile's active attribute
 
-
-## 6. Integration/Demonstration
-
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)
