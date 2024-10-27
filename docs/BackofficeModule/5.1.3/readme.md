@@ -130,25 +130,112 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 
-**Before Tests** **Setup of Dummy Users**
+**Test 1:** *Postman Test to create a Patient*
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
+        // Check that the response status code is 201 (Created)
+        pm.test("Status code is 200", function () {
+            pm.response.to.have.status(200);
+        });
+
+        // Parse the response body as JSON
+        const responseJson = pm.response.json();
+
+        // Check if the response contains the 'id' field
+        pm.test("Response contains ID", function () {
+            pm.expect(responseJson).to.have.property("id");
+        });
+
+        // Save the 'id' from the response to an environment variable
+        pm.environment.set("patientId", responseJson.id);
+
+        pm.environment.set("patientEmail", responseJson.email.fullEmail);
+        pm.environment.set("patientMedicalRecordNumber", responseJson.medicalRecordNumber.number);
 
 
-```
 
-**Test 1:** *Verifies if Users are equals*
+{
+  "name": "Pedro Doouu",
+  "dateOfBirth": "1985-05-20",
+  "phone": "932385677",
+  "email":"gago3@gmail.com",
+  "userEmail": "gago@isep.ipp.pt",
 
+  "emergencyContact": {
+    "name": "Jane Doeaeae",
+    "phone": "987654321",
+    "email":  "janedoe123@example.com"
+  },
 
-```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
+  "gender": "Female",
+  "allergies": [],
+  "appointmentHistory": ["2021-09-15", "2022-10-10"]
 }
+
+```
+
+**Test 2:** *Verifies if Patient was created*
+
+
+```
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Parse the response body as JSON
+const responseJson = pm.response.json();
+
+// Remove o array e seleciona o primeiro objeto dentro dele
+const actualResponse = Array.isArray(responseJson) ? responseJson[0] : responseJson;
+
+const expectedPostResponse = {
+    name: {
+        "firstName": "Pedro",
+        "middleNames": "",
+        "lastName": "Doouu"
+    },
+    id: pm.environment.get("patientId"), // Use the generated ID from the response
+    dateOfBirth: "1985-05-20T00:00:00",
+    medicalRecordNumber: {
+        number: pm.environment.get("patientMedicalRecordNumber") // Example; will be dynamically checked
+    },
+    gender: "Female",
+    allergies: [],
+    appointmentHistory: [
+        "2021-09-15",
+        "2022-10-10"
+    ],
+    nameEmergency: "default dd",
+    phoneEmergency: {
+        number: "999999999"
+    },
+    emailEmergency: {
+        fullEmail: "default@gmail.com"
+    },
+    phone: {
+        number: "932385677"
+    },
+    email: {
+        fullEmail: "gago3@gmail.com"
+    },
+    userEmail: {
+        fullEmail: "gago@isep.ipp.pt"
+    }
+};
+
+// Validate that the retrieved response matches the expected structure
+pm.test("Response matches expected structure", function () {
+    pm.expect(actualResponse).to.deep.equal(expectedPostResponse);
+});
+
+````
+
+
+
+
+
+
+
 ````
 
 

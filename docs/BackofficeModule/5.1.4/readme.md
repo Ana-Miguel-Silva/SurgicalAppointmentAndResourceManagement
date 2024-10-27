@@ -124,38 +124,107 @@ backoffice system with appropriate permissions."
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
 
+**Test 1:** *Edits a Patient*
 
-**Before Tests** **Setup of Dummy Users**
+````
 
-```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
-
-```
-
-**Test 1:** *Verifies if Users are equals*
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 
 
-```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
+
+{
+    "Id": "{{patientId}}",
+    "name": "Pedro Doouu",
+    "dateOfBirth": "1985-05-20T00:00:00",
+    "medicalRecordNumber": {
+        "number": "{{patientMedicalRecordNumber}}"
+    },
+        "gender": "Female",
+        "allergies": ["Orange"],
+        "appointmentHistory": [
+            "2021-09-15",
+            "2022-10-10"
+        ],
+        "nameEmergency": "default dd",
+        "phoneEmergency": {
+            "number": "999999999"
+        },
+        "emailEmergency": {
+            "fullEmail": "default@gmail.com"
+        },
+        "phone": {
+            "number": "932385677"
+        },
+        "email": {
+            "fullEmail": "gago3@gmail.com"
+        },
+        "userEmail": {
+            "fullEmail": "gago@isep.ipp.pt"
+        }
 }
+````
+
+**Test 2:** *Check if the edit worked a Patient*
+
+
+````
+
+
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Parse the response body as JSON
+const responseJson = pm.response.json();
+const actualResponse = Array.isArray(responseJson) ? responseJson[0] : responseJson;
+
+
+const expectedGetResponse = {
+    id: pm.environment.get("patientId"),
+    name: {
+        firstName: "Pedro",
+        middleNames: "",
+        lastName: "Doouu"
+    },
+    dateOfBirth: "1985-05-20T00:00:00",
+    medicalRecordNumber: {
+        number: pm.environment.get("patientMedicalRecordNumber")
+    },
+    gender: "Female",
+    allergies: ["Orange"],
+    appointmentHistory: [
+        "2021-09-15",
+        "2022-10-10"
+    ],
+    nameEmergency: "default dd",
+    phoneEmergency: {
+        number: "999999999"
+    },
+    emailEmergency: {
+        fullEmail: "default@gmail.com"
+    },
+    phone: {
+        number: "932385677"
+    },
+    email: {
+        fullEmail: "gago3@gmail.com"
+    },
+    userEmail: {
+        fullEmail: "gago@isep.ipp.pt"
+    }
+};
+
+pm.test("Response matches expected structure", function () {
+    pm.expect(actualResponse).to.deep.equal(expectedGetResponse);
+});
+
+
+
+
 ````
 
 
