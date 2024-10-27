@@ -47,7 +47,7 @@ namespace DDDSample1.Controllers
 
             if (isAuthoraze)
             {
-            return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role);
+            return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role, request.active);
             }
             return Forbid();
         }
@@ -60,6 +60,7 @@ namespace DDDSample1.Controllers
             public string? phone { get; set; }
             public string? specialization { get; set; }
             public string? role { get; set; }
+            public string? active {get; set;}
         }
 
         // GET: api/Staff/5

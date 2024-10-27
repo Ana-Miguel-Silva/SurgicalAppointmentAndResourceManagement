@@ -6,7 +6,7 @@ namespace DDDSample1.Domain.Staff
     public class StaffDto
     {
         public Guid Id { get; set; }
-        public string LicenseNumber { get; set; }
+        public string? LicenseNumber { get; set; }
         public string StaffId { get; set; }
 
         public FullName Name { get; set; }
@@ -18,8 +18,9 @@ namespace DDDSample1.Domain.Staff
         public PhoneNumber PhoneNumber { get; set; }
 
         public List<Slot> Slots { get; set; }
+        public bool Active { get; private set; }
 
-        public StaffDto(Guid Id, FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots, string staffid, string? licenseNumber)
+        public StaffDto(Guid Id, FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots, string staffid, string? licenseNumber, bool active)
         {
             this.Id = Id;
             this.StaffId = staffid;
@@ -30,6 +31,7 @@ namespace DDDSample1.Domain.Staff
             this.Specialization = specialization;
             this.Slots = slots;
             this.LicenseNumber = licenseNumber;
+            this.Active = active;
         }
 
     }

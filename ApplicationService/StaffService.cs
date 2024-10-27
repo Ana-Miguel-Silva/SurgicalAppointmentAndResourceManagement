@@ -21,21 +21,23 @@ namespace DDDSample1.ApplicationService.Staff
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber));
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active));
 
             return listDto;
         }
-        public async Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization, string? role)
+        public async Task<List<StaffDto>> GetAllFilteredAsync(string? id, string? name, string? license, string? phone, string? specialization, string? role, string? active)
         {
             var list = await this._repo.GetAllAsync();
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
-                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber));
+                new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active));
             if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
             if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
             if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
+            if (role != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList();}
+            //else{listDto = listDto.Where(x => x.Active.Equals(true)).ToList();}
             return listDto;
         }
 
@@ -46,7 +48,7 @@ namespace DDDSample1.ApplicationService.Staff
             if (staff == null)
                 return null;
     
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
         public async Task<StaffDto> GetByStaffIDAsync(string id)
         {
@@ -55,7 +57,7 @@ namespace DDDSample1.ApplicationService.Staff
             if (staff == null)
                 return null;
     
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
@@ -74,7 +76,7 @@ namespace DDDSample1.ApplicationService.Staff
             CheckRole(dto.Role);
             CheckSpecialization(dto.Specialization);
 
-            int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role).Result.Count();
+            int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role, null).Result.Count();
             char roleId = dto.Role[0];
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
@@ -88,7 +90,7 @@ namespace DDDSample1.ApplicationService.Staff
             if (staff == null)
                 return null;
                 
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted, staff.StaffId, staff.LicenseNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
         public async Task<StaffDto> UpdateAsync(string id, UpdateStaffDto dto)
@@ -124,7 +126,7 @@ namespace DDDSample1.ApplicationService.Staff
             await this._unitOfWork.CommitAsync();
 
             //return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId);
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
         public async Task<StaffDto> InactivateAsync(string id)
@@ -138,7 +140,7 @@ namespace DDDSample1.ApplicationService.Staff
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
         public async Task<StaffDto> DeleteAsync(string id)
@@ -154,7 +156,7 @@ namespace DDDSample1.ApplicationService.Staff
             this._repo.Remove(staff);
             await this._unitOfWork.CommitAsync();
 
-             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber);
+             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
         private static void CheckRole(String role)
         {
