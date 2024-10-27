@@ -17,9 +17,9 @@ BE --> FE: form
 deactivate BE
 <-- FE   : data input
 deactivate FE
--> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth,(?))
+-> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth, emailUser, gender, emailContact)
 activate FE
-FE -> BE : createPatientProfile(fullName,email, phone, gender, dateOfBirth,(?))
+FE -> BE : createPatientProfile(fullName,email, phone, gender, dateOfBirth, emailUser, gender, emailContact)
 activate BE
 BE --> FE: success
 deactivate BE

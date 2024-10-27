@@ -1,4 +1,4 @@
-@startuml 5.1.8
+@startuml 5.1.21
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -12,22 +12,25 @@ participant "Repository" as REPO <<component>>
 participant "MySql DB" as BDD <<component>>
 
 
-' -> CTRL: getCreateForm()
-'activate CTRL
-'<-- CTRL  : form
-'deactivate CTRL
-
--> CTRL: Patient Profile Post Request
+-> CTRL: Submit Operation Type Put Request
 activate CTRL
-CTRL -> SERV: Call AddAsync method
+
+CTRL -> SERV: Call UpdateAsync method
 activate SERV
-SERV -> DOM: Create Patient through CreatingPatientDTO
+
+SERV -> REPO: Get OperationType through DTO Id
+activate REPO
+
+REPO --> SERV: Return OperationType
+deactivate REPO
+
+SERV -> DOM: Update OperationType with OperationTypeDTO Info
 activate DOM
 
-DOM --> SERV: Return Patient
+DOM --> SERV: Return OperationType
 deactivate DOM
 
-SERV -> REPO : Save new Patient
+SERV -> REPO : Save updated Operation Type
 activate REPO
 
 REPO -> BDD : Save Entity
@@ -39,19 +42,17 @@ deactivate BDD
 REPO --> SERV : Return Success
 deactivate REPO
 
-SERV -> DOM : Create PatientDTO
+SERV -> DOM : Create OperationTypeDTO
 activate DOM
 
-DOM --> SERV : Return DTO
+DOM --> SERV : Return Updated DTO
 deactivate DOM
 
-SERV --> CTRL : Return DTO
+SERV --> CTRL : Return Updated DTO
 deactivate SERV
 
-<-- CTRL  : Return DTO
+<-- CTRL  : Return Updated DTO
 deactivate CTRL
-
-
 
 
 @enduml

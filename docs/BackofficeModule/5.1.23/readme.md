@@ -90,9 +90,9 @@ This is the first time this task has been assigned for development.
 [//]: # ()
 [//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
-### 4.3. Applied Patterns
+### 4.2. Applied Patterns
 
-### 4.4. Tests
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
@@ -132,19 +132,25 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the OperationTypesController)
 
-### Methods in the OperationTypesController
-* **public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered(
-  [FromQuery] string? name,
-  [FromQuery] string? specialization,
-  [FromQuery] bool? status)**  this method filters to list all operationtypes
+[//]: # (* **public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered&#40;)
 
+[//]: # (  [FromQuery] string? name,)
 
+[//]: # (  [FromQuery] string? specialization,)
 
+[//]: # (  [FromQuery] bool? status&#41;**  this method filters to list all operationtypes)
 
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

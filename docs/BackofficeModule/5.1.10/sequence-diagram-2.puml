@@ -1,4 +1,4 @@
-@startuml 5.1.3
+@startuml 5.1.10
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -22,9 +22,9 @@ deactivate BE
 
 deactivate FE
 
--> FE : confirmation to delete account(email)
+-> FE : confirmation to delete patient Profile(id)
 activate FE
-FE -> BE: deleteAccount(email)
+FE -> BE: delete patient Profile(id)
 activate BE
 BE --> FE: success
 deactivate BE

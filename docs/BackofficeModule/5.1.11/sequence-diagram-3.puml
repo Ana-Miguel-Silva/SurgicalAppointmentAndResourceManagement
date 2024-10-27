@@ -1,26 +1,44 @@
-@startuml
+@startuml 5.1.11
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "PatientController" as CTRL <<component>>
-participant "PatientService" as SERV <<component>>
-participant "PatientRepository" as REPO <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
- -> CTRL: getPatients()
+-> CTRL: Submit Patient Get Request
 activate CTRL
-CTRL -> SERV: getPatients()
+
+CTRL -> SERV: Call GetAllFilteredAsync method
 activate SERV
-SERV -> REPO: getPatients()
+
+SERV -> REPO: Get All Patients
 activate REPO
-REPO --> SERV: PatientsList
+
+REPO --> SERV: Patient List
 deactivate REPO
-SERV --> CTRL: PatientsList
+
+SERV -> SERV: Filter List
+activate SERV
+
+SERV --> SERV: Filtered List
 deactivate SERV
-<-- CTRL : PatientsDTOList
 
+SERV -> DOM : Converts List into PatientDTO List
+activate DOM
 
+DOM --> SERV : Return DTO List
+deactivate DOM
+
+SERV --> CTRL : Return DTO List
+deactivate SERV
+
+<-- CTRL  : Return DTO List
+deactivate CTRL
 
 @enduml

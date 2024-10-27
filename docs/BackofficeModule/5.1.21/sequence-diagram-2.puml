@@ -1,4 +1,4 @@
-@startuml 5.1.9
+@startuml 5.1.21
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -12,13 +12,13 @@ participant "DM Backend" as BE <<component>>
 activate FE
 FE -> BE: getEditForm(ID)
 activate BE
-BE --> FE: PatientDto
+BE --> FE: OperationTypeDto
 deactivate BE
 <-- FE : provide edit form
 deactivate FE
--> FE : edit info of Patient
+-> FE : edit info of OperationType
 activate FE
-FE -> BE: updatePatient(Full Name, Gender, Phone, Email, Allergies, AppointmentHistory, EmergencyContact)
+FE -> BE: updateOperationType(Name, RequiredStaff, EstimatedDuration)
 activate BE
 
 BE --> FE: success

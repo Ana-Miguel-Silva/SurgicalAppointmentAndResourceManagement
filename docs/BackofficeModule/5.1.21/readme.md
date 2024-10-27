@@ -30,7 +30,6 @@ information.
 > **Answer:** It means that if an operation type is changed we need to keep track of its changes. For instance,Operation Type "A" is defined as taking 30 minutes preparation, 1h surgery and 30 minutes cleaning with a team of 1 doctor with specialization X and one nurse with specialization Y some operations are requested, scheduled and performed based on this definition after sometime, the hospital changes its procedures and defines the operation type "A" as needing 30 min prep, 30 min. surgery and 30 min. cleaning, with a team of 3 doctors and one nurse.New operations will be requested, scheduled and performed using this new definition, however, we need to keep historical data, so that if the admin wants to know the details of an operation in the past, the system must show the operation type as it was defined at the time of the operation request.
 
 
-
 > **Question:** If the operation type already has a specialization associated, how can we have staff with different specializations?
 >What do you understand by specialization? Is it cardiology/orthopedics? Or anaesthesist/circulating/...
 >
@@ -39,23 +38,30 @@ information.
 >The circulating technician is a different type of medical professional. for now the system doesn't need to support technicians
 
 
+
+
+
+
 **Dependencies/References:**
 
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
 backoffice system with appropriate permissions."
+
+* There is a dependency to "5.1.20 As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures in the system."
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * Password
-    * E-mail
+    * Name
+    * RequiredStaff
+    * EstimatedDuration
 
 
 * Selected data:
-    * Operation 
-    * Operation Type
+    
 
 
 **Output Data:**
@@ -63,43 +69,52 @@ backoffice system with appropriate permissions."
 
 ## 3. Analysis
 
-> **Question 97:** US1000 – Regarding user registration, should these all be considered "enable" by default or should there be an option to "enable/disable" users during the registration process?
+> **Question 1:**
 >
-> **Answer:** In the context of the US1000 it should be possible to activate and deactivate users. I suppose they should be active by default.
+> **Answer 1:**
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** OperationTypes
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:**
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** 
 
-**Repository:**	UserRepository
+**Repository:**	OperationTypesRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** OperationTypesService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+#### Edit OperationType
+
+**Sequence Diagram Level 1**
+
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
+
+**Sequence Diagram Level 2**
+
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
+
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit OperationType")
 
 
 
 
-### 4.2. Class Diagram
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+### 4.2. Applied Patterns
 
-### 4.3. Applied Patterns
-
-### 4.4. Tests
+### 4.3. Tests
 
 Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
@@ -139,37 +154,50 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
 
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
 
-### Methods in the AddUsersController
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
 
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
 
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
 
-* **String generatePassword()** this method automatically generate a password for the User. 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
 
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
 
-### Methods in the DeactivateUsersController
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
 
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
 
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
 
 

@@ -1,41 +1,50 @@
-@startuml 5.1.3
+@startuml 5.1.10
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "PatientController" as CTRL <<component>>
-participant "PatientService" as SERV <<component>>
-'participant "PatientProfile" as DOM <<component>>
-participant "UserRepository" as UREPO <<component>>
-participant "PatientRepository" as REPO <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
-
-
- -> CTRL: getCreateForm()
+-> CTRL: Submit Patient Delete Request
 activate CTRL
-<-- CTRL  : form
-deactivate CTRL
 
- -> CTRL: deleteAccount(email)
-activate CTRL
-CTRL -> SERV: deleteAccount(email)
+CTRL -> SERV: Call DeleteAsync method
 activate SERV
 
-SERV -> UREPO: delete(email)
-activate UREPO
-UREPO --> SERV: success
-deactivate UREPO
-SERV -> REPO: delete(email)
+SERV -> REPO: Get Patient through Id
 activate REPO
-REPO --> SERV: success
+
+REPO --> SERV: Patient
 deactivate REPO
-SERV --> CTRL: success
+
+SERV -> REPO : Remove Patient
+activate REPO
+
+REPO -> BDD : Remove Entity
+activate BDD
+
+BDD --> REPO : Confirm Removal
+deactivate BDD
+
+REPO --> SERV : Return Success
+deactivate REPO
+
+SERV -> DOM : Create PatientDTO
+activate DOM
+
+DOM --> SERV : Return DTO
+deactivate DOM
+
+SERV --> CTRL : Return DTO
 deactivate SERV
-<-- CTRL: success
+
+<-- CTRL  : Return DTO
 deactivate CTRL
-
-
 
 @enduml
