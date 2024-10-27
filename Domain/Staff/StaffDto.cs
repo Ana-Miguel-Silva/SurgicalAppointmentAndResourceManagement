@@ -6,7 +6,7 @@ namespace DDDSample1.Domain.Staff
     public class StaffDto
     {
         public Guid Id { get; set; }
-        public string? LicenseNumber { get; set; }
+        public string LicenseNumber { get; set; }
         public string StaffId { get; set; }
 
         public FullName Name { get; set; }
