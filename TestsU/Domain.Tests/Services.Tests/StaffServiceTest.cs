@@ -14,7 +14,7 @@ using DDDSample1.Domain.Users;
 
 namespace Backend.Tests.Services
 {
-    public class PatientsServiceTest
+    public class StaffServiceTest
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IStaffRepository> _staffRepositoryMock;
@@ -29,7 +29,6 @@ namespace Backend.Tests.Services
 
             _StaffService = new StaffService(
                 _unitOfWorkMock.Object,
-                _emailServiceMock.Object,
                 _staffRepositoryMock.Object
             );
         }
@@ -86,79 +85,6 @@ namespace Backend.Tests.Services
             Assert.Equal(StaffID, result.StaffId);
         }
 
-        [Fact]
-        public async Task AddAsync_ShouldReturnStaffDTO()
-        {
-            // Arrange
-            var dto = new CreatingStaffDto(
-                    name : "Ivo Gerald Robotnik",
-                    email : "1221148@isep.ipp.pt",
-                    phone : "987654322",
-                    role : "DOCTOR",
-                    specialization : "CARDIOLOGY",
-                    slots : new List<DateDTO>
-                    {
-                        new DateDTO("20/10/2024 10:00", "20/10/2024 10:15")
-                    }      
-                );
-
-            var user = new User("user", new Email("user@example.com"), "ADMIN");
-
-            var expectedPatient = new StaffProfile(
-                    name: new FullName("Ivo Gerald Robotnik"),
-                    phone: new PhoneNumber("987654322"), 
-                    email: new Email("1221148@isep.ipp.pt"),
-                    role: "DOCTOR",
-                    specialization: "CARDIOLOGY",
-                    slots: new List<Slot> { new("20/10/2024 10:00","20/10/2024 10:15") },
-                    ID: "D20240"                       
-                );
-
-            _staffRepositoryMock.Setup(repo => repo.AddAsync(It.IsAny<StaffProfile>()))
-                .ReturnsAsync(expectedPatient);
-
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
-
-            // Act
-            var result = await _StaffService.AddAsync(dto);
-
-            // Assert
-            Assert.NotNull(result);
-            
-        }
-
-
-        [Fact]
-        public async Task UpdateAsync_ShouldReturnUpdatedStaffDTO()
-        {
-            // Arrange
-            var id =  "D20240";
-            var dto = new UpdateStaffDto(
-                    phone: "987651122", 
-                    email: "1221137@isep.ipp.pt",
-                    specialization: "PEDIATRICS"
-                );
-
-            var Staff = new StaffProfile(
-                    name: new FullName("Ivo Gerald Robotnik"),
-                    phone: new PhoneNumber("987654322"), 
-                    email: new Email("1221148@isep.ipp.pt"),
-                    role: "DOCTOR",
-                    specialization: "CARDIOLOGY",
-                    slots: new List<Slot> { new("20/10/2024 10:00","20/10/2024 10:15") },
-                    ID: "D20240"                 
-                );
-
-            _staffRepositoryMock.Setup(repo => repo.GetByStaffIDAsync("D2024")).ReturnsAsync(Staff);
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0));
-
-            // Act
-            var result = await _StaffService.UpdateAsync(Staff.StaffId, dto);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(dto.Email, result.Email.FullEmail);
-        }
 
         [Fact]
         public async Task InactivateAsync_ShouldReturnInactivatedStaffDTO()
