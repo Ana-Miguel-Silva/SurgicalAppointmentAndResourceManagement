@@ -1,5 +1,6 @@
 /obj/Debug
-
+/.idea
+bin/Debug/net8.0
 bin/Debug/net8.0/DDDNetCore.dll
 bin/Debug/net8.0/DDDNetCore.exe
 bin/Debug/net8.0/DDDNetCore.pdb
@@ -22,4 +23,8 @@ TestsU/obj/DDDNetCore.csproj.nuget.dgspec.json
 TestsU/obj/DDDNetCore.csproj.nuget.g.props
 TestsU/obj/project.assets.json
 TestsU/obj/project.nuget.cache
-/.idea
+TestsU/obj/Debug
+TestsU/bin/Debug
+Testes/bin/Debug/net8.0
+/bin/Debug/net8.0/TestsU/bin/Debug/net8.0/TestsU/bin/Debug/net8.0/
+/bin/Debug/net8.0/TestsU/bin/Debug/net8.0/
