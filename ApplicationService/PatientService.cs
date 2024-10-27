@@ -138,12 +138,14 @@ namespace DDDSample1.ApplicationService.Patients
                 sendEmail = -1; // Patient not found
             }
 
-            if(!(patient.emailEmergency.Equals(dto.emailEmergency)) 
-            ||!(patient.Email.Equals(dto.Email))  
-            || !(patient.Phone.Equals(dto.Phone)) 
-            || !(patient.phoneEmergency.Equals(dto.phoneEmergency)) 
-            || !(patient.name.Equals(dto.name)) 
+            if(!(patient.emailEmergency.FullEmail.Equals(dto.emailEmergency.FullEmail)) 
+            ||!(patient.Email.FullEmail.Equals(dto.Email.FullEmail))  
+            || !(patient.Phone.Number.Equals(dto.Phone.Number)) 
+            || !(patient.phoneEmergency.Number.Equals(dto.phoneEmergency.Number)) 
+            || !(patient.name.GetFullName().Equals(dto.name.GetFullName())) 
             || !(patient.nameEmergency.Equals(dto.nameEmergency)) ){
+            
+
                 sendEmail = 1;
             }
 
@@ -285,7 +287,7 @@ namespace DDDSample1.ApplicationService.Patients
            
             //if (Patient.Active)
             //    throw new BusinessRuleValidationException("It is not possible to delete an active Patient.");
-            if (prod.Active.Equals("True"))
+            if (prod.Active.Equals(true))
             {
                 prod.Deactivate();
 

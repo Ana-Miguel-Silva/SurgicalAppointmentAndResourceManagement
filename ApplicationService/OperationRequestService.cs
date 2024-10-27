@@ -37,7 +37,7 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return listDto;
         }
 
-        public async Task<List<OperationRequestDto>> GetAllFilteredAsync(MedicalRecordNumber? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
+        public async Task<List<OperationRequestDto>> GetAllFilteredAsync(PatientId? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
         {
             var operationRequests = await this._repo.GetAllAsync();
 
