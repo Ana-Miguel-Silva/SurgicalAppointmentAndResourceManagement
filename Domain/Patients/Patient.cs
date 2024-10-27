@@ -152,7 +152,11 @@ namespace DDDSample1.Domain.Patients
             this.AppointmentHistory = AppointmentHistoryList;
         }
 
-
+        public void Deactivate()
+        {            
+            this.Active = false;
+            this.ExpirationDate = DateTime.Now.AddDays(30.0);
+        }
 
 
     }

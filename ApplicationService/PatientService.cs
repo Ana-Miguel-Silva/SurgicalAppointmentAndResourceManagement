@@ -6,6 +6,7 @@ using DDDSample1.Domain.Patients;
 
 using DDDSample1.Domain.Users;
 using DDDSample1.ApplicationService.Shared;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 
@@ -222,7 +223,7 @@ namespace DDDSample1.ApplicationService.Patients
                         "<br>If you still wish to proced please click on the following link:\r\n\n" +
                         $"{resetLink}<br>\r\n\n" +
                         "\rThen write true or false, if you with to autorize!\n\n\r" +
-                        "\rThen in the Delete header past this info" + $"{urlDelete}<br>\r\n\n";
+                        "\rThen in the Delete header past this info " + $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
                     user.Email.FullEmail,
@@ -263,11 +264,7 @@ namespace DDDSample1.ApplicationService.Patients
             if (prod == null)
                 throw new BusinessRuleValidationException($"Patient is not registered in the database. ID not found: {id.AsString()}");
 
-            
            
-            
-
-
             //if (Patient.Active)
             //    throw new BusinessRuleValidationException("It is not possible to delete an active Patient.");
             
@@ -278,6 +275,39 @@ namespace DDDSample1.ApplicationService.Patients
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory);
 
         }
+
+        public async Task<PatientDto> DeactiveAsync(PatientId id)
+        {
+            var prod = await this._repo.GetByIdAsync(id); 
+
+            if (prod == null)
+                throw new BusinessRuleValidationException($"Patient is not registered in the database. ID not found: {id.AsString()}");
+
+           
+            //if (Patient.Active)
+            //    throw new BusinessRuleValidationException("It is not possible to delete an active Patient.");
+            if (prod.Active.Equals("True"))
+            {
+                prod.Deactivate();
+
+                if(prod.ExpirationDate <= DateTime.Now)
+                {
+                    this._repo.Remove(prod);
+                }
+                       
+                await this._unitOfWork.CommitAsync();
+
+                return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
+                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory);
+
+            }                    
+
+            return null;
+
+        }
+
+
+
 
         public async Task<List<PatientDto>> GetAllFilteredAsync(
             Guid? id,

@@ -524,19 +524,23 @@ namespace DDDSample1.Controllers
 
                     var patientId = new PatientId(Guid.Parse(action.ToString()));
 
-                        var patientProfile = await _service.DeleteAsync(patientId);
+                        var patientProfile = await _service.DeactiveAsync(patientId);
 
-                        string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                        if (patientProfile != null){
+                            string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
 
 
-                        await _logService.LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
+                            await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
 
-                        if (patientProfile == null)
-                        {
-                            return NotFound();
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+
+                            return Ok(patientProfile);
                         }
 
-                        return Ok(patientProfile);
+                       return BadRequest("The patient is already deactivated.");
 
                     }
 
