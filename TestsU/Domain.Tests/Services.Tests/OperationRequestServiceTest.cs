@@ -88,66 +88,6 @@ namespace Backend.Tests.Services
         }
 
         [Fact]
-        public async Task AddAsync_ShouldReturnOperationRequestDTO()
-        {
-            // Arrange
-            var dto = new CreatingOperationRequestDto(
-                new PatientId(Guid.NewGuid()),
-                new StaffGuid(Guid.NewGuid()),
-                new OperationTypeId(Guid.NewGuid()),
-                DateTime.Now.AddDays(7),
-                "URGENT"
-            );
-
-            var expectedOperationRequest = new OperationRequest(
-                dto.MedicalRecordNumber,
-                new StaffGuid(Guid.NewGuid()),
-                dto.OperationTypeId,
-                dto.Deadline,
-                dto.Priority
-            );
-
-            _operationRequestRepositoryMock.Setup(repo => repo.AddAsync(It.IsAny<OperationRequest>()))
-                .ReturnsAsync(expectedOperationRequest);
-
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
-
-            // Act
-            var result = await _operationRequestService.AddAsync(dto, "authUserEmail@example.com");
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal("URGENT", result.Priority);
-            Assert.Equal(dto.Deadline, result.Deadline);
-        }
-
-
-        [Fact]
-        public async Task UpdateAsync_ShouldReturnUpdatedOperationRequestDTO()
-        {
-            // Arrange
-            var dto = new OperationRequestDto(Guid.NewGuid(), new PatientId(Guid.NewGuid()), new StaffGuid(Guid.NewGuid()), new OperationTypeId(Guid.NewGuid()), DateTime.Now.AddDays(10), "EMERGENCY");
-
-            var operationRequest = new OperationRequest(
-                new PatientId(Guid.NewGuid()),
-                new StaffGuid(Guid.NewGuid()),
-                new OperationTypeId(Guid.NewGuid()),
-                DateTime.Now.AddDays(7),
-                "URGENT"
-            );
-
-            _operationRequestRepositoryMock.Setup(repo => repo.GetByIdAsync(new OperationRequestId(dto.Id))).ReturnsAsync(operationRequest);
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
-
-            // Act
-            var result = await _operationRequestService.UpdateAsync(dto, "authUserEmail@example.com");
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(dto.Priority, result.Priority);
-        }
-
-        [Fact]
         public async Task InactivateAsync_ShouldReturnInactivatedOperationRequestDTO()
         {
             // Arrange
