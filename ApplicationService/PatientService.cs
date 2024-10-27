@@ -200,7 +200,8 @@ namespace DDDSample1.ApplicationService.Patients
                 return null;   
 
             //Patient.MarkAsInative();
-            
+            prod.Deactivate();
+
             await this._unitOfWork.CommitAsync();
 
             /*return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 

@@ -115,37 +115,36 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 
-**Before Tests** **Setup of Dummy Users**
+**Test 1:** *Delete/deactivate Patient*
 
 ```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
+   // Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 
 ```
 
-**Test 1:** *Verifies if Users are equals*
+**Test 2:** *Confirmation of soft delete (deactivate)*
 
 
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+````
+
+
+
+**Test 3:** *Hard delete Patient*
+
+
+```
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 ````
 
 
