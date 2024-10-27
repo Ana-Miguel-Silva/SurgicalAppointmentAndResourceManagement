@@ -77,10 +77,9 @@ in the backoffice data.
 * Typed data:
     * E-mail
     * Username
-
-
-* Selected data: 
     * Role
+
+
 
 
 **Output Data:**
@@ -95,35 +94,42 @@ in the backoffice data.
 
 
 
-### 3.1. Domain Model
-![sub domain model](us1000-sub-domain-model.svg)
+[//]: # (### 3.1. Domain Model)
+
+[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** E-mail, SystemUser
+**Domain Class/es:** Email, User, UserDto, Role
 
-**Controller:** DeactivateUserController, AddUserController, ListUserController
+**Controller:** UserController
 
-**UI:** DeactivateUserUI, AddUserUI, ListUserUI
+**UI:** 
 
 **Repository:**	UserRepository
 
-**Service:** UserManagementService, AuthorizationService
+**Service:** UserService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User**
-![Register User](us1000-sequence-diagram-register.svg "Register User")
+**Register User Level 1**
+![Register User](sequence-diagram-1.svg "Register User")
+
+**Register User Level 2**
+![Register User](sequence-diagram-2.svg "Register User")
+
+**Register User Level 3**
+![Register User](sequence-diagram-3.svg "Register User")
 
 
 
+[//]: # (### 4.2. Class Diagram)
 
-### 4.2. Class Diagram
-
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
 ### 4.3. Applied Patterns
 
@@ -170,31 +176,9 @@ public void verifyIfUsersAreEquals() {
 ## 5. Implementation
 
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+### Methods in the UsersController
+* **public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)**  this method creates a user
 
-
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
 
 
 ## 6. Integration/Demonstration

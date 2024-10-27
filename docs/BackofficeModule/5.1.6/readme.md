@@ -90,70 +90,101 @@ backoffice system with appropriate permissions."
 ![Login Patient](sequence-diagram-2.svg "Login Patient")
 
 **Login Patient Level 3**
+
 ![Login Patient](sequence-diagram-3.svg "Login Patient")
 
+[//]: # (![Login Patient]&#40;sequence-diagram-4.svg "Login Patient"&#41;)
 
 
 
-### 4.2. Class Diagram
+[//]: # ()
+[//]: # (### 4.2. Class Diagram)
 
-![a class diagram](us1000-class-diagram.svg "A Class Diagram")
+[//]: # ()
+[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
 
-### 4.3. Applied Patterns
+[//]: # (### 4.3. Applied Patterns)
 
-### 4.4. Tests
+[//]: # ()
+[//]: # (### 4.4. Tests)
 
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
+[//]: # ()
+[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (**Before Tests** **Setup of Dummy Users**)
 
+[//]: # ()
+[//]: # (```)
 
-**Before Tests** **Setup of Dummy Users**
+[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
 
-```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
+[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
 
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
+[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
 
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
+[//]: # (    })
 
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
+[//]: # ()
+[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
 
-```
+[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
 
-**Test 1:** *Verifies if Users are equals*
+[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
 
+[//]: # (    })
 
-```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
-}
-````
+[//]: # ()
+[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
+
+[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
+
+[//]: # (    })
+
+[//]: # ()
+[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
+
+[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
+
+[//]: # (    })
+
+[//]: # ()
+[//]: # (```)
+
+[//]: # ()
+[//]: # (**Test 1:** *Verifies if Users are equals*)
+
+[//]: # ()
+[//]: # ()
+[//]: # (```)
+
+[//]: # (@Test)
+
+[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
+
+[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
+
+[//]: # (})
+
+[//]: # (````)
 
 
 ## 5. Implementation
 
 
 ### Methods in the tUsersController
-* **Login([FromBody] LoginRequest login)**  this method verifies the username and password from a user
+* **Login(LoginRequest login)**  this method verifies the username and password from a user
 
 
 
 
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
-
-## 6. Integration/Demonstration
-
+[//]: # ()
 
 
 [//]: # (## 7. Observations)

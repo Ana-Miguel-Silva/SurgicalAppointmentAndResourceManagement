@@ -1,0 +1,56 @@
+@startuml 5.1.3
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "PatientController" as CTRL <<component>>
+participant "AuthorizationService" as ASERV <<component>>
+participant "PatientService" as SERV <<component>>
+participant "LogService" as LSERV <<component>>
+participant "GmailService" as GSERV <<component>>
+participant "PatientRepository" as REPO <<component>>
+participant "LogRepository" as LREPO <<component>>
+
+
+
+
+
+ -> CTRL: HardDelete(id)
+activate CTRL
+CTRL -> ASERV: ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result
+activate ASERV
+ASERV -> CTRL : true
+deactivate ASERV
+CTRL -> SERV: DeleteAsync(PatientId id, bool isPatient)
+activate SERV
+
+SERV -> REPO: GetByIdAsync(id)
+activate REPO
+REPO --> SERV: prod
+deactivate REPO
+SERV -> GSERV: SendEmailAsync(sendEmailRequest)
+activate GSERV
+deactivate GSERV
+SERV --> REPO : Remove(prod)
+activate REPO
+deactivate REPO
+
+SERV --> CTRL: patientProfile
+deactivate SERV
+CTRL -> LSERV: LogAsync("Patient", "Delete", patientProfile.Id, JsonConvert.SerializeObject(patientProfile))
+activate LSERV
+LSERV -> LREPO : AddAsync(logEntry)
+activate LREPO
+deactivate LREPO
+deactivate LSERV
+
+
+
+<-- CTRL: patientProfile
+deactivate CTRL
+
+
+
+@enduml

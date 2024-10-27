@@ -11,12 +11,8 @@ participant "SAaRM System" as SYS <<system>>
 activate AD
 AD -> SYS: access page
 activate SYS
-SYS --> AD: provide filters form
-deactivate SYS
-AD -> SYS : filters
-activate SYS
+SYS --> AD: list of OperationTypes
 
-SYS --> AD : success and data
 
 deactivate SYS
 

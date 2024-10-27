@@ -1,4 +1,4 @@
-@startuml 5.1.10
+@startuml 5.1.1
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -11,43 +11,48 @@ participant "Domain" as DOM <<component>>
 participant "Repository" as REPO <<component>>
 participant "MySql DB" as BDD <<component>>
 
--> CTRL: Submit Patient Delete Request
+
+
+ -> CTRL : Create Post Request
 activate CTRL
+CTRL -> SERV: Call AddAsync method
 
-CTRL -> SERV: Call DeactivateAsync method
 activate SERV
+SERV -> DOM: create User through CreatingUserDto
 
-SERV -> REPO: Get Patient through Id
+activate DOM
+DOM --> SERV : UserDTO
+deactivate DOM
+
+SERV -> REPO : Save new User
 activate REPO
 
-REPO --> SERV: Patient
-deactivate REPO
-
-SERV -> DOM : Deactivate Patient
-
-
-SERV -> REPO : Remove Patient
-activate REPO
-
-REPO -> BDD : Remove Entity
+REPO -> BDD : Save Entity
 activate BDD
 
-BDD --> REPO : Confirm Removal
+BDD --> REPO : Confirm Save
 deactivate BDD
 
 REPO --> SERV : Return Success
 deactivate REPO
 
-SERV -> DOM : Create PatientDTO
+SERV -> SERV : Call SendPasswordSetupEmail
+
+SERV -> DOM : Create UserDTO
 activate DOM
 
-DOM --> SERV : Return DTO
+DOM --> SERV : Return UserDTO
 deactivate DOM
+SERV --> CTRL : Return UserDTO
 
-SERV --> CTRL : Return DTO
+
 deactivate SERV
+<-- CTRL : success
 
-<-- CTRL  : Return DTO
 deactivate CTRL
+
+
+
+
 
 @enduml

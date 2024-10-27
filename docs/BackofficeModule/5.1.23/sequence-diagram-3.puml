@@ -1,42 +1,44 @@
-@startuml 5.1.4
+@startuml 5.1.11
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "OperationTypesController" as CTRL <<component>>
-participant "AuthorizationService" as ASERV <<component>>
-participant "OperationTypesService" as SERV <<component>>
-participant "OperationTypeRepository" as REPO <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
-
-
-
-
-
- -> CTRL: GetAllFiltered(name, specialization, status)
+-> CTRL: Submit OperationTypes Get Request
 activate CTRL
-CTRL -> ASERV: ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result
-activate ASERV
-ASERV -> CTRL : true
-deactivate ASERV
-CTRL -> SERV: GetAllFilteredAsync(name, specialization, status)
+
+CTRL -> SERV: Call GetAllFilteredAsync method
 activate SERV
-SERV -> REPO: GetAllAsync();
+
+SERV -> REPO: Get All OperationTypes
 activate REPO
-REPO --> SERV: operationTypes
-deactivate REPO
-SERV -> SERV : filter by each filter
 
-
+REPO --> SERV: OperationTypes List
 deactivate REPO
-SERV-> CTRL : operationTypes
+
+SERV -> SERV: Filter List
+activate SERV
+
+SERV --> SERV: Filtered List
 deactivate SERV
 
+SERV -> DOM : Converts List into OperationTypesDTO List
+activate DOM
+
+DOM --> SERV : Return OperationTypesDTOList
+deactivate DOM
+
+SERV --> CTRL : Return OperationTypesDTOList
 deactivate SERV
-<-- CTRL  : operationTypes
 
-
+<-- CTRL  : Return OperationTypesDTOList
+deactivate CTRL
 
 @enduml

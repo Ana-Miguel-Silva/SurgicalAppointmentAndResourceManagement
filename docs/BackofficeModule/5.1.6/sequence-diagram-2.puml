@@ -8,14 +8,16 @@ autonumber
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
--> FE: access page
+ -> FE: access page
 activate FE
-FE -> BE: getEditForm(ID)
+FE -> BE : login with internal IAM credentials
 activate BE
-BE --> FE: token
+
+
+BE --> FE: success and token to login
 deactivate BE
-<-- FE : token
-deactivate FE
+
+<-- FE   : success and token to login
 
 
 deactivate FE

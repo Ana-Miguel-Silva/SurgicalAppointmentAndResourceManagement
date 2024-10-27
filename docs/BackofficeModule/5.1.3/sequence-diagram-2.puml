@@ -9,17 +9,10 @@ participant "DM Backend" as BE <<component>>
 
 
 
- -> FE: access page
+
+-> FE : Register with external IAM credentials
 activate FE
-FE -> BE: getCreateForm()
-activate BE
-BE --> FE: form
-deactivate BE
-<-- FE   : data input
-deactivate FE
--> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth,userEmail)
-activate FE
-FE -> BE : createPatientProfile(fullName,email, phone, gender, dateOfBirth,userEmail)
+FE -> BE : Register with external IAM credentials
 activate BE
 BE --> FE: success
 deactivate BE

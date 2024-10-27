@@ -107,7 +107,12 @@ backoffice system with appropriate permissions."
 ![Register Patient](sequence-diagram-2.svg "Register Patient")
 
 **Register Patient Level 3**
+
 ![Register Patient](sequence-diagram-3.svg "Register Patient")
+
+![Register Patient](sequence-diagram-3-register.svg "Register Patient")
+
+[//]: # (![Register Patient]&#40;sequence-diagram-4.svg "Register Patient"&#41;)
 
 
 

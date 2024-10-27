@@ -82,6 +82,8 @@ This is the first time this task has been assigned for development.
 
 ![Filter OperationTypes](sequence-diagram-3.svg "Filter OperationTypes")
 
+[//]: # (![Filter OperationTypes]&#40;sequence-diagram-4.svg "Filter OperationTypes"&#41;)
+
 
 
 

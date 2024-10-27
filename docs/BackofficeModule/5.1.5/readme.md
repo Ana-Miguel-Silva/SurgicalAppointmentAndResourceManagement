@@ -37,6 +37,10 @@ information is erased.
 * There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
 backoffice system with appropriate permissions."
 
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+* There is a dependency to "US 5.1.8 - As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history."
+
 
 **Input and Output Data**
 
@@ -44,7 +48,7 @@ backoffice system with appropriate permissions."
 
 * Typed data:
     * Id
-    * Confirmation of the delete operation. 
+
 
 
 **Output Data:**
@@ -71,9 +75,9 @@ backoffice system with appropriate permissions."
 
 **UI:**
 
-**Repository:**	PatientRepository, LogsRepository
+**Repository:**	PatientRepository, LogRepository
 
-**Service:** PatientService, AuthorizationService, LogsService, GmailService
+**Service:** PatientService, AuthorizationService, LogService, GmailService
 
 
 
@@ -90,7 +94,11 @@ backoffice system with appropriate permissions."
 
 **Update Patient Level 3**
 
-![Delete Patient](sequence-diagram-3.svg "Delete Patient")
+![Sequence Diagram Level 3](sequence-diagram-3-mail.svg "Email Delete Confirmation Patient Profile")
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Delete Patient Profile")
+
+[//]: # (![Delete Patient]&#40;sequence-diagram-4.svg "Delete Patient"&#41;)
 
 [//]: # ()
 [//]: # ()
@@ -141,38 +149,19 @@ public void verifyIfUsersAreEquals() {
 ````
 
 
-## 5. Implementation
+[//]: # (## 5. Implementation)
 
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the ListUsersController)
 
-### Methods in the ListUsersController
-* **Iterable<SystemUser> filteredUsersOfBackOffice()**  this method filters to list all backoffice users
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
+[//]: # ()
+[//]: # ()
+[//]: # (## 6. Integration/Demonstration)
 
-
-### Methods in the AddUsersController
-
-* **Role[] getRoleTypes()** this method list the roles to choose for the User
-
-* **SystemUser addUser(final String email, final String password, final String firstName,
-  final String lastName, final Set<Role> roles, final Calendar createdOn)**  this method send the information to create the User.
-
-* **String generatePassword()** this method automatically generate a password for the User. 
-
-
-
-### Methods in the DeactivateUsersController
-
-* **Iterable<SystemUser> activeUsers()** this method list all the activated Users. 
-
-* **Iterable<SystemUser> deactiveUsers()** this method list all the deactivated Users.
-
-* **SystemUser activateUser(final SystemUser user)** this method activate the chosen User.
-
-* **SystemUser deactivateUser(final SystemUser user)** this method deactivate the chosen User. 
-
-
-## 6. Integration/Demonstration
-
+[//]: # ()
 
 
 [//]: # (## 7. Observations)

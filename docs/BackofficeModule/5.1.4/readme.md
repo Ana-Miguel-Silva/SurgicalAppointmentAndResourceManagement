@@ -58,8 +58,7 @@ backoffice system with appropriate permissions."
   * UserEmail
   * Date of Birth
   * Gender
-  * Allergies
-  * Appoitment History 
+
 
 
 **Output Data:**
@@ -79,15 +78,15 @@ backoffice system with appropriate permissions."
 ## 4. Design
 
 
-**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber
+**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber, PatientDto
 
 **Controller:** PatientController
 
 **UI:** 
 
-**Repository:**	PatientRepository, LogsRepository
+**Repository:**	PatientRepository, LogRepository
 
-**Service:** PatientService, AuthorizationService, LogsService, GmailService
+**Service:** PatientService, AuthorizationService, LogService, GmailService
 
 
 
@@ -104,7 +103,11 @@ backoffice system with appropriate permissions."
 
 **Update Patient Level 3**
 
-![Update Patient](sequence-diagram-3.svg "Update Patient")
+![Sequence Diagram Level 3](sequence-diagram-3-mail.svg "Sensitive Data Patient Profile")
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit Patient Profile")
+
+[//]: # (![Update Patient]&#40;sequence-diagram-4.svg "Update Patient"&#41;)
 
 
 

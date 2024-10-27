@@ -1,45 +1,52 @@
-@startuml 5.1.3
+@startuml 5.1.1
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "UserController" as CTRL <<component>>
-participant "AuthorizationService" as ASERV <<component>>
-participant "UserService" as SERV <<component>>
-participant "LogService" as LSERV <<component>>
-participant "GmailService" as GSERV <<component>>
-participant "UserRepository" as REPO <<component>>
-participant "LogRepository" as LREPO <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
 
 
-
-
- -> CTRL: Login(LoginRequest logi)
+ -> CTRL : Login Post Request
 activate CTRL
-CTRL -> SERV : Login(login.Username, login.Password)
+CTRL -> SERV: Call Login method
+
 activate SERV
 
-SERV -> REPO: GetByUsernameAsync(username)
+SERV -> REPO: Get User through Username
 activate REPO
-REPO --> SERV: user
-deactivate REPO
+
+REPO --> SERV: Return UserDTO
 
 deactivate REPO
 
-SERV --> CTRL: UserDto
+SERV -> DOM : CheckPassword
+activate DOM
+DOM --> SERV : sucess
+
+deactivate DOM
+
+SERV --> CTRL: Return UserDTO
 deactivate SERV
-CTRL -> ASERV: GenerateToken(UserDto)
-activate ASERV
-ASERV -> CTRL : token
-deactivate ASERV
 
 
+CTRL -> SERV: Call GenerateToken method
+activate SERV
 
-<-- CTRL: token
+SERV --> CTRL: Token to login
+deactivate SERV
+
+
+<-- CTRL  : Success and Token to login
 deactivate CTRL
+
+
 
 
 

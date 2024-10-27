@@ -22,6 +22,7 @@ deactivate FE
 AD -> FE : info to create info to create user (email, username, role)
 activate FE
 FE -> BE : createUser(email, username, role)
+activate BE
 BE --> FE: success
 deactivate BE
 FE --> AD : success and data

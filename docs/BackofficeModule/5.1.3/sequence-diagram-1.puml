@@ -9,11 +9,7 @@ actor "Patient" as AD
 participant "SAaRM System" as SYS <<system>>
 
 activate AD
-AD -> SYS: access page
-activate SYS
-SYS --> AD : data input
-deactivate SYS
-AD -> SYS : info to create Patient (fullName,email, phone, gender, dateOfBirth, userEmail)
+AD -> SYS : Register with external IAM credentials
 activate SYS
 SYS --> AD : success and data
 

@@ -12,12 +12,11 @@ participant "SAaRM System" as SYS <<system>>
 
 activate AD
 
+activate AD
 AD -> SYS: access page
 
 activate SYS
-
-SYS --> AD: token
-
+SYS --> AD : success and token to login
 
 deactivate SYS
 

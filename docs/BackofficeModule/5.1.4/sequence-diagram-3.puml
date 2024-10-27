@@ -1,53 +1,58 @@
-@startuml 5.1.4
+@startuml 5.1.9
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "PatientController" as CTRL <<component>>
-participant "AuthorizationService" as ASERV <<component>>
-participant "PatientService" as SERV <<component>>
-participant "LogService" as LSERV <<component>>
-participant "GmailService" as GSERV <<component>>
-participant "PatientRepository" as REPO <<component>>
-participant "LogRepository" as LREPO <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
 
-
-
-
- -> CTRL: update(string email, PatientDto dto)
+-> CTRL: Submit Patient Put Request
 activate CTRL
-CTRL -> ASERV: ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result
-activate ASERV
-ASERV -> CTRL : true
-deactivate ASERV
-CTRL -> SERV: UpdateAsync(dto)
+
+CTRL -> SERV: Call UpdateAsync method
 activate SERV
-SERV -> REPO: GetByEmailAsync(dto.Email.FullEmail)
+
+SERV -> REPO: Get Patient through DTO Email
 activate REPO
-REPO --> SERV: patient
+
+REPO --> SERV: Return Patient
 deactivate REPO
-SERV -> REPO: UpdateInfo(info)
+'TODO: Fazer algo referente à informação sensivel (?)
+SERV -> DOM: Update Patient with PatientDTO Info
+activate DOM
+
+DOM --> SERV: Return Patient
+deactivate DOM
+
+SERV -> REPO : Save updated Patient
 activate REPO
-REPO --> SERV: sucess
+
+REPO -> BDD : Save Entity
+activate BDD
+
+BDD --> REPO : Confirm Save
+deactivate BDD
+
+REPO --> SERV : Return Success
 deactivate REPO
 
-SERV -> GSERV: SendConfirmationEmail(patient)
-activate GSERV
-deactivate GSERV
-SERV-> CTRL : patientProfile
-deactivate SERV
-CTRL -> LSERV: LogAsync("Patient", "Updated", patientProfile.Id, JsonConvert.SerializeObject(patientProfile))
-activate LSERV
-LSERV -> LREPO : AddAsync(logEntry)
-activate LREPO
-deactivate LREPO
-deactivate LSERV
-deactivate SERV
-<-- CTRL  : patientProfile
+SERV -> DOM : Create PatientDTO
+activate DOM
 
+DOM --> SERV : Return Updated DTO
+deactivate DOM
+
+SERV --> CTRL : Return Updated DTO
+deactivate SERV
+
+<-- CTRL  : Return Updated DTO
+deactivate CTRL
 
 
 @enduml
