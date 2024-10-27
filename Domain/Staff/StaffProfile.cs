@@ -26,6 +26,9 @@ namespace DDDSample1.Domain.Staff
 
         public StaffProfile(FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots, string ID)
         {
+            if (name == null || email == null || phone == null || role == null || specialization == null || slots == null || ID == null)
+                throw new BusinessRuleValidationException("One of the Staff parameters was not valid");
+
             this.Id = new StaffGuid(Guid.NewGuid());
             this.StaffId = ID;
             this.Name = name;
@@ -41,16 +44,29 @@ namespace DDDSample1.Domain.Staff
 
         public void ChangeEmail(Email email)
         {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the Email of an inactive Staff.");
+
+            if (email == null)
+                throw new BusinessRuleValidationException("The new Email must be valid.");
             Email = email;
         }
 
         public void ChangePhone(PhoneNumber phone)
         {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the Phone Number of an inactive Staff.");
+
+            if (phone == null)
+                throw new BusinessRuleValidationException("The new Phone Number must be valid.");
             PhoneNumber = phone;
         }
 
         public void UpdateSlots(List<Slot> slots)
         {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the Slots of an inactive Staff.");
+                
             AvailabilitySlots = slots;
         }
 
@@ -58,10 +74,20 @@ namespace DDDSample1.Domain.Staff
 
         public void ChangeLicenseNumber(string licenseNumber)
         {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the License Number of an inactive Staff.");
+
+            if (licenseNumber == null)
+                throw new BusinessRuleValidationException("The new License Number must be valid.");
             LicenseNumber = licenseNumber;
         }
         public void UpdateSpecialization(string specialization)
         {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the Specialization of an inactive Staff.");
+
+            if (specialization == null)
+                throw new BusinessRuleValidationException("The new Specialization must be valid.");
             Specialization = specialization.ToUpper();
         }
 

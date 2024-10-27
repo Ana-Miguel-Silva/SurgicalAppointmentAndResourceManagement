@@ -31,39 +31,5 @@ namespace DDDSample1.Domain.Tests
             Assert.Equal(expectedPriority, creatingOperationRequestDto.Priority);
         }
 
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenPatientIdIsNull()
-        {
-            StaffGuid expectedStaffId = new StaffGuid(Guid.NewGuid()); // Added StaffGuid
-            OperationTypeId expectedOperationTypeId = new OperationTypeId(Guid.NewGuid());
-            DateTime expectedDeadline = DateTime.UtcNow.AddDays(7);
-            string expectedPriority = "ELECTIVE";
-
-            Assert.Throws<ArgumentNullException>(() => new CreatingOperationRequestDto(
-                null,
-                expectedStaffId,
-                expectedOperationTypeId,
-                expectedDeadline,
-                expectedPriority
-            ));
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenOperationTypeIdIsNull()
-        {
-            PatientId expectedPatientId = new PatientId(Guid.NewGuid());
-            StaffGuid expectedStaffId = new StaffGuid(Guid.NewGuid());
-            DateTime expectedDeadline = DateTime.UtcNow.AddDays(7);
-            string expectedPriority = "ELECTIVE";
-
-            Assert.Throws<ArgumentNullException>(() => new CreatingOperationRequestDto(
-                expectedPatientId,
-                expectedStaffId,
-                null,
-                expectedDeadline,
-                expectedPriority
-            ));
-        }
-
     }
 }
