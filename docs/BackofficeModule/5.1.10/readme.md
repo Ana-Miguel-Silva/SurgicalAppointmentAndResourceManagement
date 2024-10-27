@@ -89,6 +89,8 @@ As an Admin, I want to delete a patient profile, so that I can remove patients w
 
 **Sequence Diagram Level 3**
 
+![Sequence Diagram Level 3](sequence-diagram-3-mail.svg "Email Delete Confirmation Patient Profile")
+
 ![Sequence Diagram Level 3](sequence-diagram-3.svg "Delete Patient Profile")
 
 

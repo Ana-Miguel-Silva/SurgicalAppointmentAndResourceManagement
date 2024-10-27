@@ -100,6 +100,8 @@ As an Admin, I want to edit an existing patient profile, so that I can update th
 
 **Sequence Diagram Level 3**
 
+![Sequence Diagram Level 3](sequence-diagram-3-mail.svg "Sensitive Data Patient Profile")
+
 ![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit Patient Profile")
 
 

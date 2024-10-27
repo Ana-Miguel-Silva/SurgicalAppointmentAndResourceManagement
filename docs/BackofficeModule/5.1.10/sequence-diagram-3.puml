@@ -14,7 +14,7 @@ participant "MySql DB" as BDD <<component>>
 -> CTRL: Submit Patient Delete Request
 activate CTRL
 
-CTRL -> SERV: Call DeleteAsync method
+CTRL -> SERV: Call DeactivateAsync method
 activate SERV
 
 SERV -> REPO: Get Patient through Id
@@ -22,6 +22,9 @@ activate REPO
 
 REPO --> SERV: Patient
 deactivate REPO
+
+SERV -> DOM : Deactivate Patient
+
 
 SERV -> REPO : Remove Patient
 activate REPO

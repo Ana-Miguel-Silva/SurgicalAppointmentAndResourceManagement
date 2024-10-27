@@ -1,0 +1,25 @@
+@startuml 5.1.10
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+
+-> CTRL: Submit Patient Delete Request
+activate CTRL
+
+CTRL -> SERV: Call SendConfirmationEmail method
+activate SERV
+
+
+
+SERV --> CTRL : Sending email with success
+deactivate SERV
+
+<-- CTRL  : Sending email with success
+deactivate CTRL
+
+@enduml
