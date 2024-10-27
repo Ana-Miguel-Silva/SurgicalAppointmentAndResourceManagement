@@ -178,6 +178,7 @@ namespace DDDSample1.Controllers
 
             var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
             var emailRequestRegister = new SendEmailRequest(Email.Text, "Recover your Password in Medical Appointment Management", $"Token para autenticação: {token}\r\rPlease copy the token and recover your Password by clicking here: {verificationLinkRegister}");
+            
             await _mailService.SendEmailAsync(emailRequestRegister);
 
                 return Ok("Recovery email sent. Please check your inbox.");

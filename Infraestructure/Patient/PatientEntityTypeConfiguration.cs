@@ -58,7 +58,7 @@ namespace DDDSample1.Infrastructure.Patients
                     .HasColumnName("EmergencyContactPhone")
                     .IsRequired()
                     .HasMaxLength(15); 
-                phoneBuilder.HasIndex(pn => pn.Number).IsUnique();
+                phoneBuilder.HasIndex(pn => pn.Number);
             });
 
             builder.OwnsOne(u => u.emailEmergency, emailBuilder =>

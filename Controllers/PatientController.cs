@@ -77,7 +77,8 @@ namespace DDDSample1.Controllers
         {
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
-                var result = await _service.AddAsync(dto);
+                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                var result = await _service.AddAsync(dto,user);
 
                 if (result == null)
                 {
@@ -122,7 +123,10 @@ namespace DDDSample1.Controllers
         [HttpPost("ExternalIAMRegister")]
         public async Task<ActionResult<PatientDto>> ExternalIAMRegister(CreatingPatientDto dto)
         {
-                var result = await _service.AddAsync(dto);
+
+                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+
+                var result = await _service.AddAsync(dto,user);
 
                 if (result == null)
                 {
@@ -220,27 +224,50 @@ namespace DDDSample1.Controllers
         {
 
             //TODO: Testes e verificar se funciona sem ser com id
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
                 try
-                {                  
+                { 
+
+                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                
 
                     try
                     {
-                        var sendEmail = _service.VerifySensiveData(dto, email);
+                        var sendEmail = await _service.VerifySensiveData(dto, email);
 
-                        if(sendEmail.Equals(1)){
+                        if(sendEmail.ToString().Equals("1")){
 
-                            var pendingAction = await _pendingActionsService.PendingActionsAsync(JsonConvert.SerializeObject(dto));
+                            // Monta o nome completo como uma string
+                            string fullName = $"{dto.name.FirstName} {dto.name.MiddleNames} {dto.name.LastName}";
 
-                            await _service.SendConfirmationUpdateEmail(user, pendingAction.Id.AsString());
+                            var transformedDto = new
+                            {
+                                name = fullName,
+                                Id = dto.Id,
+                                DateOfBirth = dto.DateOfBirth,
+                                medicalRecordNumber = dto.medicalRecordNumber,
+                                gender = dto.gender,
+                                Allergies = dto.Allergies,
+                                AppointmentHistory = dto.AppointmentHistory,
+                                nameEmergency = dto.nameEmergency,
+                                phoneEmergency = dto.phoneEmergency,
+                                emailEmergency = dto.emailEmergency,
+                                Phone = dto.Phone,
+                                Email = dto.Email,
+                                UserEmail = dto.UserEmail
+                            };
+
+                            var pendingAction = await _pendingActionsService.PendingActionsAsync(JsonConvert.SerializeObject(transformedDto));
+
+                            await _service.SendConfirmationUpdateEmail(email, pendingAction.Id.AsString());
 
                             return Ok("Please check your email to confirm this action");
 
-                        } else if(sendEmail.Equals(0)){
+                        } else if(sendEmail.ToString().Equals("0")){
 
-                            var patientProfile = await _service.UpdateAsync(dto);
+                            var patientProfile = await _service.UpdateAsync(dto,email);
 
                             await _logService.LogAsync("Patient", "Updated", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
 
@@ -267,7 +294,7 @@ namespace DDDSample1.Controllers
 
 
         [HttpPut("{actionId}/Confirmed")]
-        public async Task<ActionResult<PatientDto>> UpdateConfirmed(string actionId, PatientDto dto)
+        public async Task<ActionResult<PatientDto>> UpdateConfirmed(string actionId)
         {
 
             User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
@@ -281,13 +308,18 @@ namespace DDDSample1.Controllers
                         var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
                         var action = await _pendingActionsService.FindbyId(pendingActionsId);
 
+                        //string replace = action.Replace("{\"FirstName\":", "").Replace("\",\"MiddleNames\":\""," ").Replace("\",\"LastName\":\""," ").Replace("},\"Id\":", ",\"Id\":");
+                        
+                        PatientDto patientDto = JsonConvert.DeserializeObject<PatientDto>(action);
+
                         var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
-                             
+                                                     
                         
                         if(pendingActionExists.ToString().Equals("True")){
 
+
                            
-                            var patientProfile = await _service.UpdateAsync(dto);
+                            var patientProfile = await _service.UpdateAsync(patientDto,user.Email.FullEmail);
 
                             string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
 
@@ -341,7 +373,6 @@ namespace DDDSample1.Controllers
 
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
             {
-            Console.Write("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
@@ -351,7 +382,6 @@ namespace DDDSample1.Controllers
                 return operationRequests;
             }
 
-            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXdDDDDDdDDD");
 
             return Forbid();
         }
@@ -489,9 +519,6 @@ namespace DDDSample1.Controllers
 
                var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
 
-            Console.Write("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-            Console.Write(pendingActionsId.AsString() + " ahahah \n");
-            Console.Write(pendingActionExists + " v2 ahahah \n");
 
                if(pendingActionExists.ToString().Equals("True")){
 
