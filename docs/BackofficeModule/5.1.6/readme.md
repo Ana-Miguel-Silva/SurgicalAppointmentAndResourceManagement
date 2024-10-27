@@ -170,13 +170,16 @@ backoffice system with appropriate permissions."
 
 [//]: # (````)
 
+[//]: # ()
+[//]: # (## 5. Implementation)
 
-## 5. Implementation
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the tUsersController)
 
+[//]: # (* **Login&#40;LoginRequest login&#41;**  this method verifies the username and password from a user)
 
-### Methods in the tUsersController
-* **Login(LoginRequest login)**  this method verifies the username and password from a user
-
+[//]: # ()
 
 
 
