@@ -69,10 +69,13 @@ IOperationRequestRepository, ILogRepository, IStaffRepository
 ### 3.1. Sequence Diagram
 
 **Register Patient Level 1**
+
 ![Register Operation Request](sequence-diagram-1.svg "Register Operation Request")
 
 **Register Patient Level 2**
+
 ![Register Operation Request](sequence-diagram-2.svg "Register Operation Request")
 
 **Register Patient Level 3**
+
 ![Register Operation Request](sequence-diagram-3.svg "Register Operation Request")
