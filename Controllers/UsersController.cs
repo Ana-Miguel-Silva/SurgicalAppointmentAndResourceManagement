@@ -15,10 +15,11 @@ namespace DDDSample1.Controllers
         private readonly IMailService _mailService;
 
 
-        public UsersController(UserService service, AuthorizationService authService)
+        public UsersController(UserService service, AuthorizationService authService, IMailService mailService)
         {
             _service = service;
             _authService = authService;
+            _mailService = mailService;
             
         }
 
@@ -170,6 +171,7 @@ namespace DDDSample1.Controllers
 
         [HttpPost("recover")]
         public async Task<ActionResult> recoverPassword([FromBody] RecoverPasswordRequest Email) {
+
             UserDto user = await _service.GeBbyEmailAsync(Email.Text);
 
             if (user == null) return BadRequest("The user email is not registered in the system.");
@@ -178,9 +180,10 @@ namespace DDDSample1.Controllers
 
             var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
             var emailRequestRegister = new SendEmailRequest(Email.Text, "Recover your Password in Medical Appointment Management", $"Token para autenticação: {token}\r\rPlease copy the token and recover your Password by clicking here: {verificationLinkRegister}");
+            
             await _mailService.SendEmailAsync(emailRequestRegister);
 
-                return Ok("Recovery email sent. Please check your inbox.");
+            return Ok("Recovery email sent. Please check your inbox.");
 
         }
         public class RecoverPasswordRequest
