@@ -30,6 +30,9 @@ namespace DDDSample1.Domain.Patients
 
          public Email UserEmail { get;  private set; }
 
+        public bool Active { get; private set; }
+
+
 
 
         public Patient(string name, DateTime dateOfBirth, 
@@ -49,7 +52,8 @@ namespace DDDSample1.Domain.Patients
         this.gender = gender; 
         this.nameEmergency = nameEmergency;
         this.phoneEmergency = phoneEmergency;
-        this.emailEmergency = emailEmergency;     
+        this.emailEmergency = emailEmergency;
+        this.Active = true;  
         }
 
         protected Patient() { }
@@ -68,7 +72,8 @@ namespace DDDSample1.Domain.Patients
             this.AppointmentHistory = new List<string>();
             this.nameEmergency = "default dd";
             this.phoneEmergency = new PhoneNumber("999999999");
-            this.emailEmergency = new Email("default@gmail.com");     
+            this.emailEmergency = new Email("default@gmail.com");
+            this.Active = true;     
         
         }
 

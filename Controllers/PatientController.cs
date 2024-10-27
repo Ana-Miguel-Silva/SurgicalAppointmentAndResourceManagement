@@ -57,7 +57,7 @@ namespace DDDSample1.Controllers
             return await _service.GetAllAsync();
         }
 
-        /*// GET: api/User/5
+        // GET: api/Patients/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientDto>> GetGetById(PatientId id)
         {
@@ -69,7 +69,7 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
-        }*/
+        }
 
         // POST: api/Patients
         [HttpPost("register")]
