@@ -1,94 +1,56 @@
-@startuml 5.1.1
+@startuml 5.1.17
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "OperationRequestController" as CTRL <<component>>
-participant "AuthenticationService" as Auth <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
-participant "OperationRequestService" as SERV <<component>>
-
-participant "IStaffRepository" as StaffRep <<component>>
-
-participant "OperationRequestRepository" as REPO <<component>>
-participant "OperationRequest" as DOM <<component>>
-''participant "IUnitOfWork" as unit <<component>>
-participant "OperationRequestDto" as dto <<component>>
-
-''participant "LogService" as Log <<component>>
-''participant "LogEntry" as LogEntry <<component>>
-''participant "ILogRepository" as LogRep <<component>>
-
--> CTRL: Update(id, operationRequestDto)
+-> CTRL: Submit Operation Request Update Request
 activate CTRL
 
-''CTRL -> Auth: ValidateUserRole(authorizationHeader, Role)
-''activate Auth
-
-''Auth --> CTRL : true
-''deactivate Auth
-
-CTRL -> Auth: GetUserEmail(authorizationHeader)
-activate Auth
-
-Auth --> CTRL: doctorEmail
-deactivate Auth
-
-CTRL -> SERV: UpdateAsync(operationRequestDto, doctorEmail)
+CTRL -> SERV: Call UpdateAsync method
 activate SERV
 
-''SERV -> SERV : CheckDoctorAsync(doctorEmail)
-''activate SERV
-
-SERV -> StaffRep : GetByUsernameAsync(email)
-activate StaffRep
-
-StaffRep --> SERV : doctor
-deactivate StaffRep
-
-''SERV --> SERV : doctor
-''deactivate SERV
-
-''SERV -> SERV : CheckDate(dto.Deadline)
-
-''SERV -> SERV : CheckPriority(dto.Priority)
-
-SERV -> REPO : GetByIdAsync(dto.Id)
+SERV -> REPO: Get OperationRequest through DTO Id
 activate REPO
 
-REPO --> SERV : operationRequest
+REPO --> SERV: Return OperationRequest
 deactivate REPO
 
-SERV -> DOM : ChangeDeadline(dto.Deadline)
+SERV -> DOM: Update OperationRequest with OperationRequestDTO Info
+activate DOM
 
-SERV -> DOM : ChangePriority(dto.Priority)
+DOM --> SERV: Return OperationRequest
+deactivate DOM
 
-''SERV -> unit : CommitAsync()
+SERV -> REPO : Save updated Operation Request
+activate REPO
 
-SERV -> dto: create(id, patId, docId, opTypeId, deadline, priority)
-activate dto
-dto --> SERV: operationRequestDto
-deactivate dto
-SERV --> CTRL: operationRequestDto
+REPO -> BDD : Save Entity
+activate BDD
+
+BDD --> REPO : Confirm Save
+deactivate BDD
+
+REPO --> SERV : Return Success
+deactivate REPO
+
+SERV -> DOM : Create OperationRequestDTO
+activate DOM
+
+DOM --> SERV : Return Updated DTO
+deactivate DOM
+
+SERV --> CTRL : Return Updated DTO
 deactivate SERV
 
-''CTRL --> Log : LogAsync(entity, action, operationRequestDto.Id, changes)
-''activate Log
-
-''Log -> LogEntry : create(entity, action, operationRequestDto.Id, changes)
-''activate LogEntry
-
-''LogEntry --> Log : logEntry
-''deactivate LogEntry
-
-''Log -> LogRep : AddAsync(logEntry)
-
-''Log --> CTRL
-''deactivate Log
-
-<-- CTRL: success
+<-- CTRL  : Return Updated DTO
 deactivate CTRL
 
 @enduml

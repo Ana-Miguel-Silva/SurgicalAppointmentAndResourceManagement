@@ -1,47 +1,44 @@
-@startuml 5.1.1
+@startuml 5.1.19
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "OperationRequestController" as CTRL <<component>>
-participant "AuthenticationService" as Auth <<component>>
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
 
-participant "OperationRequestService" as SERV <<component>>
-
-participant "OperationRequestRepository" as REPO <<component>>
-participant "OperationRequestDto" as dto <<component>>
-
-
--> CTRL: GetAllFiltered(patientId, patientname, operationTypeId, operationTypeName, priority, status)
+-> CTRL: Submit Operation Request List Request
 activate CTRL
 
-CTRL -> SERV: GetAllFilteredAsync(patientId, patientname, operationTypeId, operationTypeName, priority, status)
+CTRL -> SERV: Call GetALLFilteredAsync method
 activate SERV
 
-SERV -> REPO: GetAllAsync()
+SERV -> REPO: Get All OperationRequests
 activate REPO
 
-REPO --> SERV: operationRequests
+REPO --> SERV: Operation Request List
 deactivate REPO
 
-SERV -> SERV: filter operationRequests
+SERV -> SERV: Filter List
 activate SERV
 
-SERV --> SERV: operationRequests
+SERV --> SERV: Filtered List
 deactivate SERV
 
-SERV -> dto: ConvertAll<OperationRequestDto>(operationRequests)
-activate dto
+SERV -> DOM : Converts List into OperationRequestDTO List
+activate DOM
 
-dto --> SERV: operationRequestsDto
-deactivate dto
+DOM --> SERV : Return DTO List
+deactivate DOM
 
-SERV --> CTRL: operationRequestsDto
+SERV --> CTRL : Return DTO List
 deactivate SERV
 
-<-- CTRL: operationRequestsDto and success
+<-- CTRL  : Return DTO List
 deactivate CTRL
 
 @enduml

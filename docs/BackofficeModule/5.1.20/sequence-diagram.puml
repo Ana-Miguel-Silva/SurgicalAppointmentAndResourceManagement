@@ -1,4 +1,4 @@
-@startuml 5.1.18
+@startuml 5.1.20
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -11,31 +11,31 @@ participant "Domain" as DOM <<component>>
 participant "Repository" as REPO <<component>>
 participant "MySql DB" as BDD <<component>>
 
--> CTRL: Submit Operation Request Delete Request
+-> CTRL: Submit Operation Type Post Type
 activate CTRL
 
-CTRL -> SERV: Call DeleteAsync method
+CTRL -> SERV: Call AddAsync method
 activate SERV
 
-SERV -> REPO: Get OperationRequest through Id
+SERV -> DOM: Create OperationType through CreatingOperationTypeDTO
+activate DOM
+
+DOM --> SERV: Return OperationType
+deactivate DOM
+
+SERV -> REPO : Save new Operation Type
 activate REPO
 
-REPO --> SERV: Operation Request
-deactivate REPO
-
-SERV -> REPO : Remove Operation Request
-activate REPO
-
-REPO -> BDD : Remove Entity
+REPO -> BDD : Save Entity
 activate BDD
 
-BDD --> REPO : Confirm Removal
+BDD --> REPO : Confirm Save
 deactivate BDD
 
 REPO --> SERV : Return Success
 deactivate REPO
 
-SERV -> DOM : Create OperationRequestDTO
+SERV -> DOM : Create OperationTypeDTO
 activate DOM
 
 DOM --> SERV : Return DTO
@@ -45,6 +45,5 @@ SERV --> CTRL : Return DTO
 deactivate SERV
 
 <-- CTRL  : Return DTO
-deactivate CTRL
 
 @enduml
