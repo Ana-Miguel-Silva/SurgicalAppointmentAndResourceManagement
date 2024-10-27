@@ -102,6 +102,18 @@ namespace DDDSample1.Infrastructure.Patients
                     .IsRequired();
                 userEmailBuilder.HasIndex(e => e.FullEmail).IsUnique();
             });
+
+            builder.Property(u => u.Active)
+                .IsRequired()
+                .HasDefaultValue(1);
+
+            /*builder.Property(u => u.DateOfBirth)
+                .IsRequired(false) // Permite nulo
+                .HasDefaultValue(null); // Valor padrão como null*/
+
+
+            
+
         }
     }
 }

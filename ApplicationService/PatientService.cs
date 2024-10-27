@@ -277,6 +277,7 @@ namespace DDDSample1.ApplicationService.Patients
         }
 
         public async Task<List<PatientDto>> GetAllFilteredAsync(
+            Guid? id,
             string? nameFull,
             string? email,
             DateTime? DateOfBirth,
@@ -289,6 +290,10 @@ namespace DDDSample1.ApplicationService.Patients
             var patientsProfile = await this._repo.GetAllAsync();
 
         // Filtros aplicados conforme cada critério
+
+        if (id != null)
+            patientsProfile = patientsProfile.Where(o => o.Id.AsGuid().Equals(id)).ToList();
+
         if (!string.IsNullOrEmpty(nameFull))
             patientsProfile = patientsProfile.Where(o => o.name.toName().Equals(nameFull)).ToList();
 

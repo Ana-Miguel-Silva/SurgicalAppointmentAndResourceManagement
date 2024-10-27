@@ -58,7 +58,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Patients/5
-        [HttpGet("{id}")]
+        /*[HttpGet("{id}")]
         public async Task<ActionResult<PatientDto>> GetGetById(PatientId id)
         {
             var cat = await _service.GetByIdAsync(id);
@@ -69,7 +69,7 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
-        }
+        }*/
 
         // POST: api/Patients
         [HttpPost("register")]
@@ -358,6 +358,7 @@ namespace DDDSample1.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllFiltered(
             [FromQuery] string? name,
+            [FromQuery] Guid? id,
             [FromQuery] DateTime? DateOfBirth,
             [FromQuery] string? medicalRecordNumber,
             [FromQuery] string? email,
@@ -377,7 +378,7 @@ namespace DDDSample1.Controllers
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-                var operationRequests = await _service.GetAllFilteredAsync(name, email, DateOfBirth, Allergies, medicalRecordNumber, AppointmentHistory);
+                var operationRequests = await _service.GetAllFilteredAsync(id,name, email, DateOfBirth, Allergies, medicalRecordNumber, AppointmentHistory);
 
                 return operationRequests;
             }
