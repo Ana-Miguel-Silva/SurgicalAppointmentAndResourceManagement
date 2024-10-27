@@ -222,6 +222,8 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)
         {
 
+
+
             //TODO: Testes e verificar se funciona sem ser com id
             
             if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
@@ -237,6 +239,7 @@ namespace DDDSample1.Controllers
                         var sendEmail = await _service.VerifySensiveData(dto, email);
 
                         if(sendEmail.ToString().Equals("1")){
+
 
                             // Monta o nome completo como uma string
                             string fullName = $"{dto.name.FirstName} {dto.name.MiddleNames} {dto.name.LastName}";
@@ -265,6 +268,7 @@ namespace DDDSample1.Controllers
                             return Ok("Please check your email to confirm this action");
 
                         } else if(sendEmail.ToString().Equals("0")){
+
 
                             var patientProfile = await _service.UpdateAsync(dto,email);
 
@@ -519,12 +523,13 @@ namespace DDDSample1.Controllers
 
                var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
 
-
                if(pendingActionExists.ToString().Equals("True")){
+
 
                     var patientId = new PatientId(Guid.Parse(action.ToString()));
 
                         var patientProfile = await _service.DeactiveAsync(patientId);
+
 
                         if (patientProfile != null){
                             string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();

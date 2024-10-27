@@ -102,36 +102,60 @@ Include here the main tests used to validate the functionality. Focus on how the
 
 
 
-**Before Tests** **Setup of Dummy Users**
-
-```
-    public static SystemUser dummyUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "duMMy1", "dummy", "dummy", email).build();
-    }
-
-    public static SystemUser crocodileUser(final String email, final Role... roles) {
-        final SystemUserBuilder userBuilder = new SystemUserBuilder(new NilPasswordPolicy(), new PlainTextEncoder());
-        return userBuilder.with(email, "CroC1_", "Crocodile", "SandTomb", email).withRoles(roles).build();
-    }
-
-    private SystemUser getNewUserFirst() {
-        return dummyUser("dummy@gmail.com", Roles.ADMIN);
-    }
-
-    private SystemUser getNewUserSecond() {
-        return crocodileUser("crocodile@gmail.com", Roles.OPERATOR);
-    }
-
-```
-
-**Test 1:** *Verifies if Users are equals*
+**Test 1:**
 
 
 ```
-@Test
-public void verifyIfUsersAreEquals() {
-    assertTrue(getNewUserFirst().equals(getNewUserFirst()));
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Parse the response body as JSON
+const responseJson = pm.response.json();
+
+// Remove o array e seleciona o primeiro objeto dentro dele
+const actualResponse = Array.isArray(responseJson) ? responseJson[0] : responseJson;
+
+const expectedPostResponse = {
+    name: {
+        "firstName": "Pedro",
+        "middleNames": "",
+        "lastName": "Doouu"
+    },
+    id: pm.environment.get("patientId"), // Use the generated ID from the response
+    dateOfBirth: "1985-05-20T00:00:00",
+    medicalRecordNumber: {
+        number: pm.environment.get("patientMedicalRecordNumber") // Example; will be dynamically checked
+    },
+    gender: "Female",
+    allergies: [],
+    appointmentHistory: [
+        "2021-09-15",
+        "2022-10-10"
+    ],
+    nameEmergency: "default dd",
+    phoneEmergency: {
+        number: "999999999"
+    },
+    emailEmergency: {
+        fullEmail: "default@gmail.com"
+    },
+    phone: {
+        number: "932385677"
+    },
+    email: {
+        fullEmail: "gago3@gmail.com"
+    },
+    userEmail: {
+        fullEmail: "gago@isep.ipp.pt"
+    }
+};
+
+// Validate that the retrieved response matches the expected structure
+pm.test("Response matches expected structure", function () {
+    pm.expect(actualResponse).to.deep.equal(expectedPostResponse);
+});
+
 }
 ````
 

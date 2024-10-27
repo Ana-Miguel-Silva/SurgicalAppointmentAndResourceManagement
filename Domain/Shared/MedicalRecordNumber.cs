@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace DDDSample1.Domain.Shared
 {
-    public class MedicalRecordNumber : EntityId
+    public class MedicalRecordNumber
     {
         public string number { get; private set; }
 
         private static int sequentialNumber = 0; // Static variable to keep track of the sequential number
 
-        public MedicalRecordNumber() : base(GenerateMedicalRecordNumber(DateTime.Now))
+        public MedicalRecordNumber() 
         
         {
             this.number = GenerateMedicalRecordNumber(DateTime.Now);
         }
 
-         public MedicalRecordNumber(string number) : base(number)
+         public MedicalRecordNumber(string number)
         {
             this.number = number;
         }
@@ -38,15 +38,6 @@ namespace DDDSample1.Domain.Shared
         }
 
 
-        protected override object createFromString(string text)
-        {
-            return text;
-        }
-
-        public override string AsString()
-        {
-            return this.number;  // Return the medical record number as a string.
-        }
 
     }
 }
