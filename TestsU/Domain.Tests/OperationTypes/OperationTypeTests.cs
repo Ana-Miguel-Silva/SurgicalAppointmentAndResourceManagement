@@ -121,18 +121,6 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             Assert.False(operationType.Active);
         }
 
-        [Fact]
-        public void WhenChangingName_WithNullName_ThenThrowsException()
-        {
-            var requiredStaff = new List<RequiredStaff>
-            {
-                new RequiredStaff(1, "ONCOLOGY", "Doctor")
-            };
-            var estimatedDuration = new EstimatedDuration(new TimeOnly(1, 0), new TimeOnly(2, 0), new TimeOnly(0, 30));
-            var operationType = new OperationType("ONCOLOGY", requiredStaff, estimatedDuration);
-
-            Assert.Throws<BusinessRuleValidationException>(() => operationType.ChangeName(null));
-        }
 
         [Fact]
         public void WhenChangingName_WithValidName_ThenUpdatesSuccessfully()

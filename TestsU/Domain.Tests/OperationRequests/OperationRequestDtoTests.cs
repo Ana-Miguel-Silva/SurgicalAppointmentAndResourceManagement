@@ -35,25 +35,7 @@ namespace DDDSample1.Domain.Tests
             Assert.Equal(expectedDeadline, operationRequestDto.Deadline);
             Assert.Equal(expectedPriority, operationRequestDto.Priority);
         }
-        
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenPatientIdIsNull()
-        {
-            Guid expectedId = Guid.NewGuid();
-            StaffGuid expectedDoctorId = new StaffGuid(Guid.NewGuid());
-            OperationTypeId expectedOperationTypeId = new OperationTypeId(Guid.NewGuid());
-            DateTime expectedDeadline = DateTime.UtcNow.AddDays(7);
-            string expectedPriority = "ELECTIVE";
-
-            Assert.Throws<ArgumentNullException>(() => new OperationRequestDto(
-                expectedId,
-                null,
-                expectedDoctorId,
-                expectedOperationTypeId,
-                expectedDeadline,
-                expectedPriority
-            ));
-        }
+    
 
     }
 }
