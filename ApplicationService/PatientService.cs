@@ -5,6 +5,7 @@ using System.Threading.Tasks.Dataflow;
 using DDDSample1.Domain.Patients;
 
 using DDDSample1.Domain.Users;
+using DDDSample1.ApplicationService.Shared;
 
 
 
@@ -73,10 +74,13 @@ namespace DDDSample1.ApplicationService.Patients
                    Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
         }*/
 
-        public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
+        public async Task<PatientDto> AddAsync(CreatingPatientDto dto, User user)
         {
 
+            //TODO: Mais checks ?
             CheckGender(dto.gender);
+
+            
 
             var emailObject = new Email(dto.Email);
             var emailUserObject = new Email(dto.UserEmail);
@@ -86,6 +90,13 @@ namespace DDDSample1.ApplicationService.Patients
 
             var Patient = new Patient(dto.Name, dto.DateOfBirth, 
                    phoneNumberObject, emailObject, emailUserObject, dto.gender);
+
+            if(user.Role.ToUpper() == Role.ADMIN ){
+
+                Patient.ChangeAllergies(dto.Allergies);
+                Patient.ChangeAppointmentHistory(dto.AppointmentHistory);
+
+            }
 
             await this._repo.AddAsync(Patient);
 
@@ -115,10 +126,8 @@ namespace DDDSample1.ApplicationService.Patients
 
         public async Task<int> VerifySensiveData(PatientDto dto, string email){
             int sendEmail = 0;
-            var patient = await this._repo.GetByEmailAsync(email);
 
-            Console.Write("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-            Console.Write(email);
+            var patient = await this._repo.GetByEmailAsync(email);
 
             if (patient == null)
             {
@@ -138,12 +147,12 @@ namespace DDDSample1.ApplicationService.Patients
             
         }
 
-        public async Task<PatientDto> UpdateAsync(PatientDto dto)
+        public async Task<PatientDto> UpdateAsync(PatientDto dto, string email)
         {
             //CheckGender(dto.gender);
             //await checkCategoryIdAsync(dto.CategoryId);
            
-            var patient = await this._repo.GetByEmailAsync(dto.Email.FullEmail);
+            var patient = await this._repo.GetByEmailAsync(email);
 
             if (patient == null)
             {
@@ -221,22 +230,22 @@ namespace DDDSample1.ApplicationService.Patients
                 await _mailService.SendEmailAsync(SendEmailRequest);
         }
 
-         public async Task SendConfirmationUpdateEmail(User user, string actionId)
+         public async Task SendConfirmationUpdateEmail(string email, string actionId)
         {
 
             //var token = GenerateToken(user);
 
-           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-f6979340-535c-4bfe-942d-fb426926bf87";
+           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-6786a3d6-0033-4d0f-8821-a1bfa8bd26ee";
 
                 string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/Confirmed";
 
                 var body = "You requested to update patient account Health App account.\r\n" +
                         "<br>If you still wish to proced please click on the following link:\r\n\n" +
                         $"{resetLink}<br>\r\n\n" +
-                        "\rThen in the Update header past this info" + $"{urlDelete}<br>\r\n\n";
+                        "\rThen in the Update header past this info " + $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
-                    user.Email.FullEmail,
+                    email,
                     "Confirmation to update Account",
                     body
                 );

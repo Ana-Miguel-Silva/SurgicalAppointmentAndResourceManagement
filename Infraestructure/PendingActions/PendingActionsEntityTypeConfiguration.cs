@@ -14,7 +14,7 @@ namespace DDDSample1.Infrastructure.PendingActions
 
             builder.Property(b => b.Action)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasColumnType("text");
 
 
 
