@@ -1,0 +1,58 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
+
+
+
+ -> CTRL : Create Post Request
+activate CTRL
+CTRL -> SERV: Call AddAsync method
+
+activate SERV
+SERV -> DOM: create User through CreatingUserDto
+
+activate DOM
+DOM --> SERV : UserDTO
+deactivate DOM
+
+SERV -> REPO : Save new User
+activate REPO
+
+REPO -> BDD : Save Entity
+activate BDD
+
+BDD --> REPO : Confirm Save
+deactivate BDD
+
+REPO --> SERV : Return Success
+deactivate REPO
+
+SERV -> SERV : Call SendPasswordSetupEmail
+
+SERV -> DOM : Create UserDTO
+activate DOM
+
+DOM --> SERV : Return UserDTO
+deactivate DOM
+SERV --> CTRL : Return UserDTO
+
+
+deactivate SERV
+<-- CTRL : success
+
+deactivate CTRL
+
+
+
+
+
+@enduml
