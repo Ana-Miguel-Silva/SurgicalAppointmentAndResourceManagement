@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj": {}
+    "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
+    "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+        "projectUniqueName": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
         "projectName": "DDDNetCore",
-        "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-        "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
+        "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+        "packagesPath": "C:\\Users\\avlis\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -131,21 +131,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj": {
+    "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
+        "projectUniqueName": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
         "projectName": "TestsU",
-        "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
-        "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\obj\\",
+        "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
+        "packagesPath": "C:\\Users\\avlis\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -157,8 +157,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
-                "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj"
+              "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
+                "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj"
               }
             }
           }
@@ -211,7 +211,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

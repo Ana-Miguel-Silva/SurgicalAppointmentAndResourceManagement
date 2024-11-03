@@ -69,7 +69,7 @@ namespace DDDSample1.Controllers
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginRequest login)
+        public async Task<ActionResult> Login([FromBody] LoginRequest login)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace DDDSample1.Controllers
                 var token = _authService.GenerateToken(user);
 
                 
-                return Ok($"Token para autenticação: {token}");
+                return Ok(new { token = token });
             }
             catch (Exception ex)
             {

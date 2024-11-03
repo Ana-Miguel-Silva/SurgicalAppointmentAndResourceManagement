@@ -45,7 +45,7 @@ backoffice system with appropriate permissions."
 * There is a dependency to "5.1.6 As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
 
 
-* There is a dependency to "As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online."
+* There is a dependency to "5.1.3 As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online."
 
 **Input and Output Data**
 

@@ -1,26 +1,21 @@
-# US 6.2.4
+# US 6.3.2
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow on-authenticated users to log in to the system.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface.
+These functionalities are essential to allow administrators to now till what dimension in terms of number of surgeries is possible to ask for the better solution.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 6.2.4** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
-
+**US 6.3.2** As an Admin, I want to know till what dimension in terms of number of surgeries is possible to ask for the better solution
 
 **Acceptance Criteria:** 
 
-- Backoffice users log in using their username and password.
+-  Perform a complexity analysis of the problem to understand to which dimension it is feasible to
+ask for the better solution. Document your results and findings.
 
-- Role-based access control ensures that users only have access to features appropriate to their
-role (e.g., doctors can manage appointments, admins can manage users and settings).
-
-- After five failed login attempts, the user account is temporarily locked, and a notification is
-sent to the admin.
-
-- Login sessions expire after a period of inactivity to ensure security.
 
 
 **Customer Specifications and Clarifications:**
@@ -32,12 +27,9 @@ sent to the admin.
 **Dependencies/References:**
 
 
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions."
+* There is a dependency to "6.3.1 As an Admin, I want to obtain the better scheduling of a set of operations (surgeries) in a certain operation room in a specific day"
 
-
-
-* There is a dependency to "US 5.1.6- As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+* There is a dependency to "6.3.3 As an Admin, I want to obtain a good schedule, not necessarily the better, in useful time to be adopted."
 
 
 **Input and Output Data**
@@ -45,15 +37,13 @@ backoffice system with appropriate permissions."
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Password
+
 
 
 
 
 **Output Data:**
 * Display the success of the operation
-
 
 ## 3. Analysis
 

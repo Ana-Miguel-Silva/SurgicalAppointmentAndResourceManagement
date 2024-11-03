@@ -1,26 +1,20 @@
-# US 6.2.4
+# US 6.1.1
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow on-authenticated users to log in to the system.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. 
+These functionalities are essential to allow staff to see the 3D model hospital floor illmunated.
+This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 6.2.4** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
+**US 6.5.3** As a healthcare staff member, I want to see the hospital/clinic floor illuminated with ambient and directional light.
 
 
 **Acceptance Criteria:** 
 
-- Backoffice users log in using their username and password.
-
-- Role-based access control ensures that users only have access to features appropriate to their
-role (e.g., doctors can manage appointments, admins can manage users and settings).
-
-- After five failed login attempts, the user account is temporarily locked, and a notification is
-sent to the admin.
-
-- Login sessions expire after a period of inactivity to ensure security.
+- 
 
 
 **Customer Specifications and Clarifications:**
@@ -29,15 +23,11 @@ sent to the admin.
 >
 >**Answer:** 
 
+
 **Dependencies/References:**
 
+* There is a dependency to "6.5.1 As a healthcare staff member, I want to see a 3D representation of the hospital/clinic floor."
 
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions."
-
-
-
-* There is a dependency to "US 5.1.6- As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
 
 
 **Input and Output Data**
@@ -45,14 +35,13 @@ backoffice system with appropriate permissions."
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Password
+
 
 
 
 
 **Output Data:**
-* Display the success of the operation
+* Display the success of the operation 
 
 
 ## 3. Analysis

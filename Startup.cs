@@ -57,6 +57,15 @@ namespace DDDSample1
                     new MySqlServerVersion(new Version(8, 0, 0))
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost4200",
+                    builder => builder.WithOrigins("http://localhost:4200")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader());
+            });
+
             services.AddControllers().AddNewtonsoftJson();
 
 
@@ -122,6 +131,8 @@ namespace DDDSample1
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowLocalhost4200");
 
             app.UseRouting();
 
