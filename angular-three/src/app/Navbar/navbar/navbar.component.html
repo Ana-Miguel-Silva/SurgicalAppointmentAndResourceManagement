@@ -1,0 +1,10 @@
+<p>navbar works!</p>
+
+<nav>
+  <ul>
+    <li><a routerLink="/home">Home</a></li>
+    <li *ngIf="isAdmin"><a routerLink="/admin">Admin Dashboard</a></li>
+    <li *ngIf="isDoctor"><a routerLink="/doctor">Doctor Dashboard</a></li>
+    <li><a (click)="logout()">Logout</a></li>
+  </ul>
+</nav>

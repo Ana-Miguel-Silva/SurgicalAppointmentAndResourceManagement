@@ -41,10 +41,14 @@ don’t need to switch between application urls"
 
 ## 3. Analysis
 
+> **Question:** Gostaríamos de saber se a US 6.1.2 possui algum tipo de critério de aceitação ou se fica a cargo do grupo a implementação e características de cada menu.
+>
+>**Answer:** podem escolher livremente a implementação do menu e a sua estrutura
+
+
 > **Question:** 
 >
 >**Answer:** 
-
 
 
 [//]: # (### 3.1. Domain Model)
