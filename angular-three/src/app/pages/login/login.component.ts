@@ -34,6 +34,8 @@ export class LoginComponent {
         console.log(response);
         alert("Login Success!");
         this.authService.setToken(response.token);
+        if(this.authService.isAdmin()) console.log("yes sire");
+
         //localStorage.setItem('token', response.token)
       },
       error: error => {

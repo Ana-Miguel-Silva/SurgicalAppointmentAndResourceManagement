@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'; 
-import * as jwt_decode from 'jwt-decode';
-
+import {jwtDecode, JwtPayload } from 'jwt-decode'
 
 @Injectable({
   providedIn: 'root'
@@ -19,19 +18,21 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  getRoles(): string[] {
+  getRoles(): string {
     const token = this.getToken();
     if (token) {
       try {
-       // const decodedToken = jwt_decode<string>(token);
-       // return decodedToken.roles;
-       return [];
+      
+        const decodedToken = jwtDecode<JwtPayload & { [key: string]: any }>(token || '');
+        const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        return role ? role : '';  
+
       } catch (error) {
         console.error("Invalid token", error);
-        return [];
+        return '';
       }
     }
-    return [];
+    return '';
   }
 
   isAdmin(): boolean {
