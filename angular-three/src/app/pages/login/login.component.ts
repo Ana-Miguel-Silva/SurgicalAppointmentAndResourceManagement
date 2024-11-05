@@ -34,7 +34,7 @@ export class LoginComponent {
         console.log(response);
         alert("Login Success!");
         this.authService.setToken(response.token);
-        if(this.authService.isAdmin()) console.log("yes sire");
+        if(this.authService.isAdmin()) this.router.navigate(['/admin']);
 
         //localStorage.setItem('token', response.token)
       },

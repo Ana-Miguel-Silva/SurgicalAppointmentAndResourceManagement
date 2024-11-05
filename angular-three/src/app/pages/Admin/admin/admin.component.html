@@ -1,1 +1,126 @@
-<p>admin works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Div Bonita com Botão</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+
+            body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #f0f8ff, #87cefa);
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container-lg {
+            display:inline-flexbox;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            background-color: #f0f8ff;
+            border: 2px solid #87cefa;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            padding-top: 20px;
+            max-width: 600px;
+        }
+
+        button {
+            background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 37%, rgba(0,212,255,1) 100%);
+            color: white;
+            border: 50px;
+            border-color: black;
+            padding: 10px 20px;
+            border-radius: 16px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: rgb(2,0,36);
+            background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 37%, rgba(0,212,255,1) 100%);
+            transform: scale(1.2);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .title{
+
+            text-align: center;
+
+        }
+
+        .center{
+           
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container-xxl">
+
+        <h1 class="h1 title" style="padding: 1cm"> Admin </h1>
+
+        <div class="row row-cols-3">
+            <div class="container-lg col">
+                <div class="form-floating mb-3">
+                    <h3 class="title" >Add User</h3>
+                </div>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="username">
+                    <label for="floatingInput">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+
+                <div class="form-floating center">
+                    <button onclick="alert('Botão clicado!')">Clique aqui</button>
+                </div>
+                
+            </div>
+
+            <div class="container-lg col">
+                <div class="form-floating mb-3">
+                    <h3 class="title" >Add User</h3>
+                </div>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="username">
+                    <label for="floatingInput">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+                <div class="form-floating mb-3 ">
+                    <button onclick="alert('Botão clicado!')">Clique aqui</button>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    
+
+</body>
+</html>
