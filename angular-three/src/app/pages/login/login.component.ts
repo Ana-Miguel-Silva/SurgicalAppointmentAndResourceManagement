@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../Services/auth.service';
 
 interface LoginResponse {
   token: string;
@@ -24,14 +25,16 @@ export class LoginComponent {
 
   http = inject(HttpClient);
   router = inject(Router);
+  authService = inject(AuthService);
 
   onLogin(){
-    debugger;
+    
     this.http.post<LoginResponse>("https://localhost:5001/api/Users/login", this.loginObj).subscribe({
       next: response => {
         console.log(response);
         alert("Login Success!");
-        localStorage.setItem('token', response.token)
+        this.authService.setToken(response.token);
+        //localStorage.setItem('token', response.token)
       },
       error: error => {
         console.error(error);
