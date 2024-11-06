@@ -21,14 +21,14 @@ export class LoginComponent {
   loginObj : any = {
     "username" : "",
     "password" : ""
-  } 
+  }
 
   http = inject(HttpClient);
   router = inject(Router);
   authService = inject(AuthService);
 
   onLogin(){
-    
+
     this.http.post<LoginResponse>("https://localhost:5001/api/Users/login", this.loginObj).subscribe({
       next: response => {
         console.log(response);
@@ -36,7 +36,9 @@ export class LoginComponent {
         this.authService.setToken(response.token);
         if(this.authService.isAdmin()) this.router.navigate(['/admin']);
 
-        //localStorage.setItem('token', response.token)
+        localStorage.setItem('token', response.token);
+        this.router.navigate(['/admin']);
+
       },
       error: error => {
         console.error(error);
