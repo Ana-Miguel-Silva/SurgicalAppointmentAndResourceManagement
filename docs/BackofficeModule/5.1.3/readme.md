@@ -100,10 +100,12 @@ backoffice system with appropriate permissions."
 ### 4.1. Sequence Diagram
 
 **Register Patient Level 1**
+
 ![Register Patient](sequence-diagram-1.svg "Register Patient")
 
 
 **Register Patient Level 2**
+
 ![Register Patient](sequence-diagram-2.svg "Register Patient")
 
 **Register Patient Level 3**
@@ -236,7 +238,7 @@ pm.test("Response matches expected structure", function () {
 
 
 
-````
+
 
 
 [//]: # (## 5. Implementation)

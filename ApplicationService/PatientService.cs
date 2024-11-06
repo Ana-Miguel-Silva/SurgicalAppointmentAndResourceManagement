@@ -75,7 +75,7 @@ namespace DDDSample1.ApplicationService.Patients
                    Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
         }*/
 
-        public async Task<PatientDto> AddAsync(CreatingPatientDto dto, User user)
+        public async Task<PatientDto> AddAsync(CreatingPatientDto dto, string userRole)
         {
 
             //TODO: Mais checks ?
@@ -92,7 +92,7 @@ namespace DDDSample1.ApplicationService.Patients
             var Patient = new Patient(dto.Name, dto.DateOfBirth, 
                    phoneNumberObject, emailObject, emailUserObject, dto.gender);
 
-            if(user.Role.ToUpper() == Role.ADMIN ){
+            if(userRole.ToUpper() == Role.ADMIN ){
 
                 //Patient.ChangeAllergies(dto.Allergies);
                 Patient.ChangeAppointmentHistory(dto.AppointmentHistory);
@@ -212,7 +212,7 @@ namespace DDDSample1.ApplicationService.Patients
 
         }
 
-         public async Task SendConfirmationEmail(User user, string actionId)
+         public async Task SendConfirmationEmail(string userEmail, string actionId)
         {
 
             //var token = GenerateToken(user);
@@ -228,7 +228,7 @@ namespace DDDSample1.ApplicationService.Patients
                         "\rThen in the Delete header past this info " + $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
-                    user.Email.FullEmail,
+                    userEmail,
                     "Confirmation to delete Account",
                     body
                 );

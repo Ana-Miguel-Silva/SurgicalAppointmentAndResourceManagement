@@ -20,6 +20,7 @@ using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.Shared;
 using DDDSample1.ApplicationService.PendingActions;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DDDSample1.Controllers
 {
@@ -72,13 +73,16 @@ namespace DDDSample1.Controllers
         }*/
 
         // POST: api/Patients
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+
         [HttpPost("register")]
+
         public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
-            {
-                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-                var result = await _service.AddAsync(dto,user);
+
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userService.GetByIdAsync(new UserId(userId));
+                var result = await _service.AddAsync(dto,user.Role.ToString());
 
                 if (result == null)
                 {
@@ -90,13 +94,12 @@ namespace DDDSample1.Controllers
                     Patient = result,
                 });*/
 
-                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
                 await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), userEmail);
 
                 return result;
-            }
-            return Forbid();
+           
         }
 
         [HttpGet("ExternalIAM")]
@@ -124,9 +127,13 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDto>> ExternalIAMRegister(CreatingPatientDto dto)
         {
 
-                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                //var result = await _service.AddAsync(dto,user);
 
-                var result = await _service.AddAsync(dto,user);
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userService.GetByIdAsync(new UserId(userId));
+                var result = await _service.AddAsync(dto,user.Role.ToString());
+               
 
                 if (result == null)
                 {
@@ -218,6 +225,8 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/Patients/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+
         [HttpPut("{email}")]
         public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)
         {
@@ -226,13 +235,14 @@ namespace DDDSample1.Controllers
 
             //TODO: Testes e verificar se funciona sem ser com id
             
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
+           // if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
                 try
                 { 
 
-                User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-                
+                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userService.GetByIdAsync(new UserId(userId));
 
                     try
                     {
@@ -295,13 +305,16 @@ namespace DDDSample1.Controllers
             return Forbid();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
 
         [HttpPut("{actionId}/Confirmed")]
         public async Task<ActionResult<PatientDto>> UpdateConfirmed(string actionId)
         {
 
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            //if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
 
                 try
@@ -358,6 +371,8 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Patients/search
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllFiltered(
             [FromQuery] string? name,
@@ -375,7 +390,7 @@ namespace DDDSample1.Controllers
 
         {
 
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
+            //if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
             {
 
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
@@ -436,13 +451,15 @@ namespace DDDSample1.Controllers
         */
 
         // DELETE: api/User/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+
         [HttpDelete("{id}/hard")]
 
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
-            {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+        
                 try
                 {
                     string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
@@ -471,20 +488,20 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-
-            return Forbid();
+           
         }
 
 
 
         //Delete with actions
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+
         [HttpDelete("{id}/delete")]
         public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string id)
         {
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
-            {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+            
                 try
                 {
 
@@ -493,7 +510,7 @@ namespace DDDSample1.Controllers
                     var pendingAction = await _pendingActionsService.PendingActionsAsync(id);
 
 
-                    await _service.SendConfirmationEmail(user, pendingAction.Id.AsString());
+                    await _service.SendConfirmationEmail(user.Email.FullEmail, pendingAction.Id.AsString());
 
 
                     return Ok("Please check your email to confirm this action");
@@ -502,17 +519,20 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
+            
 
-            return Forbid();
+            
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+
 
         [HttpDelete("{actionId}/deleteConfirmed")]
         public async Task<ActionResult<PatientDto>> DeleteConfirmed(string actionId)
         {
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            if (user != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
-            {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+            
                 try
                 {
 
@@ -556,9 +576,7 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-
-            return Forbid();
+           
         }
 
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'; 
+import { Injectable } from '@angular/core';
 import {jwtDecode, JwtPayload } from 'jwt-decode'
 
 @Injectable({
@@ -7,7 +7,7 @@ import {jwtDecode, JwtPayload } from 'jwt-decode'
 export class AuthService {
 
   constructor() { }
-  
+
   private tokenKey = 'auth_token';
 
   setToken(token: string): void {
@@ -15,17 +15,20 @@ export class AuthService {
   }
 
   getToken(): string | null {
+    if (typeof window !== 'undefined') {
     return localStorage.getItem(this.tokenKey);
   }
+  return null;
+}
 
   getRoles(): string {
     const token = this.getToken();
     if (token) {
       try {
-      
+
         const decodedToken = jwtDecode<JwtPayload & { [key: string]: any }>(token || '');
         const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-        return role ? role : '';  
+        return role ? role : '';
 
       } catch (error) {
         console.error("Invalid token", error);
@@ -41,6 +44,11 @@ export class AuthService {
 
   isDoctor(): boolean {
     return this.getRoles().includes('Doctor');
+  }
+
+
+  isPatient(): boolean {
+    return this.getRoles().includes('Patient');
   }
 
   isLoggedIn(): boolean {

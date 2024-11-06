@@ -129,7 +129,7 @@ namespace Backend.Tests.Services
             _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
 
             // Act
-            var result = await _PatientService.AddAsync(dto, user);
+            var result = await _PatientService.AddAsync(dto, user.Role.ToString());
 
             // Assert
             Assert.NotNull(result);

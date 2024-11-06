@@ -30,6 +30,7 @@ using DDDSample1.ApplicationService.OperationTypes;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.PendingActions;
 using DDDSample1.ApplicationService.Shared;
+using System.Security.Claims;
 
 
 namespace DDDSample1
@@ -102,7 +103,30 @@ namespace DDDSample1
                         }
                     };
 
+                     options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var identity = context.Principal.Identity as ClaimsIdentity;
+                            if (identity != null)
+                            {
+                                var roleClaim = identity.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                                if (roleClaim != null)
+                                {
+                                    identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim.Value));
+                                }
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+              
+
+
                 });
+
+            services.AddAuthorization();
+
+            
 
             ConfigureMyServices(services);
 
