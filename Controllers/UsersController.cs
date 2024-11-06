@@ -80,7 +80,7 @@ namespace DDDSample1.Controllers
                 var token = _authService.GenerateToken(user);
 
                 
-                return Ok(new { token = token });
+                return Ok(token);
             }
             catch (Exception ex)
             {
