@@ -41,28 +41,18 @@ namespace DDDSample1.ApplicationService.Users
         }
 
         public async Task<UserDto> AddAsync(CreatingUserDto dto)
-        {
-            
-
+        {           
             var emailObject = new Email(dto.Email);
             CheckRole(dto.Role);
-            var user = new User(dto.Username, emailObject, dto.Role);
+            var user = new User(dto.Username, emailObject, dto.Role.ToUpper());
 
             await _repo.AddAsync(user);
             await _unitOfWork.CommitAsync();
 
-            // Gera o token e calcula os tempos
-            /*
-            var token = GenerateToken(user);
-            var currentTime = DateTime.UtcNow;
-            double time = _jwtSettings.TokenExpiryInMinutes;
-            var expirationTime = currentTime.AddMinutes(_jwtSettings.TokenExpiryInMinutes);
-            */
-
             await SendPasswordSetupEmail(user);
 
             // Retorna as informações como uma tupla
-            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
+            return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role.ToUpper());
         }
 
 

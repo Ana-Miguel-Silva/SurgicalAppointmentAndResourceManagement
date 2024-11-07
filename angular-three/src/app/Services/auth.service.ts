@@ -39,16 +39,16 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.getRoles().includes('Admin');
+    return this.getRoles().includes('ADMIN');
   }
 
   isDoctor(): boolean {
-    return this.getRoles().includes('Doctor');
+    return this.getRoles().includes('DOCTOR');
   }
 
 
   isPatient(): boolean {
-    return this.getRoles().includes('Patient');
+    return this.getRoles().includes('PATIENT');
   }
 
   isLoggedIn(): boolean {

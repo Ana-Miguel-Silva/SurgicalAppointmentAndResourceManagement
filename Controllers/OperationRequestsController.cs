@@ -8,6 +8,9 @@ using DDDSample1.ApplicationService.OperationRequests;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.Shared;
 using DDDSample1.Domain.Patients;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 
 namespace DDDSample1.Controllers
@@ -30,24 +33,19 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/OperationRequests
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAll()
-        {
-
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
+        {           
+            try
             {
-
-                try
-                {
-                    return await _service.GetAllAsync();
-                }
-                catch (BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
+                return await _service.GetAllAsync();
             }
-            return Forbid();
-
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            
         }
 
         // GET: api/OperationRequests/5
@@ -65,14 +63,14 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/OperationRequests
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
-            {
+           
                 try
                 {
-                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
                     var operationRequest = await _service.AddAsync(dto, userEmail);
 
 
@@ -84,12 +82,12 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-            return Forbid();
+           
         }
 
 
         // GET: api/OperationRequests/search
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFiltered(
             [FromQuery] string? patientId,
@@ -99,26 +97,23 @@ namespace DDDSample1.Controllers
             [FromQuery] string? priority,
             [FromQuery] bool? status)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
-            {
                 PatientId? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new PatientId(patientId) : null;
                 OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
                 var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority, patientname, operationTypeName);
 
                 return operationRequests;
-            }
-            return Forbid();
+            
         }
 
 
 
         // PUT: api/OperationRequests/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(Guid id, OperationRequestDto dto)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
-            {
+           
                 if (id != dto.Id)
                 {
                     return BadRequest();
@@ -126,7 +121,7 @@ namespace DDDSample1.Controllers
 
                 try
                 {
-                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
                     var operationRequestOld = await _service.GetByIdAsync(new OperationRequestId(id));
 
@@ -146,16 +141,15 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-            return Forbid();
+           
         }
 
         // Inactivate: api/OperationRequests/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<OperationRequestDto>> SoftDelete(Guid id)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
-            {
+          
 
                 var operationRequest = await _service.InactivateAsync(new OperationRequestId(id));
 
@@ -166,19 +160,17 @@ namespace DDDSample1.Controllers
 
                 return Ok(operationRequest);
 
-            }
-            return Forbid();
+            
         }
 
         // DELETE: api/OperationRequests/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.DOCTOR }).Result)
-            {
-                try
+               try
                 {
-                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                    string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
                     var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
 
@@ -195,8 +187,7 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-            return Forbid();
+           
         }
 
     }

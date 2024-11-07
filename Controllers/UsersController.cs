@@ -3,6 +3,9 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using DDDSample1.ApplicationService.Users;
 using DDDSample1.ApplicationService.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace DDDSample1.Controllers
 {
@@ -45,11 +48,12 @@ namespace DDDSample1.Controllers
         }*/
 
         // POST: api/Users
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPost]
         public async Task<ActionResult<UserDto>> Create(CreatingUserDto dto)
         {
 
-            if(dto != null && _authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN}).Result){
+           
                 var result = await _service.AddAsync(dto);
 
                 if (result == null)
@@ -59,10 +63,7 @@ namespace DDDSample1.Controllers
                
                 return result;
 
-            }
-
-            return Forbid();
-
+            
             
         }
 
@@ -190,10 +191,17 @@ namespace DDDSample1.Controllers
         {
             public string Text { get; set; }
         }
+
+
         // POST: api/User/setPassword
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         [HttpPost("setPassword")]
         public async Task<ActionResult> ResetPassword([FromBody] RecoverPasswordRequest Password) {
-            User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+            var userID = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            UserDto user = await _service.GetByIdAsync(new UserId(userID));
+                       
+            
             try
             {
                 await _service.UpdatePassword(user.Username, Password.Text);

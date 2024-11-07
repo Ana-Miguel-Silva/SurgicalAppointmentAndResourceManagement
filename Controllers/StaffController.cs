@@ -6,6 +6,10 @@ using DDDSample1.ApplicationService.Staff;
 using DDDSample1.ApplicationService.Shared;
 using DDDSample1.ApplicationService.Logging;
 using Newtonsoft.Json;
+using DDDSample1.ApplicationService.Users;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace DDDSample1.Controllers
 {
@@ -20,36 +24,27 @@ namespace DDDSample1.Controllers
 
         private readonly AuthorizationService _authService;
 
-        public StaffController(StaffService service, AuthorizationService authService, LogService logService)
+        private readonly UserService _userService;
+
+        public StaffController(StaffService service, AuthorizationService authService, LogService logService, UserService userService)
         {
             _service = service;
             _authService = authService;
             _logService = logService;
+            _userService = userService;
 
         }
 
         // GET: api/Staff?name=x&id=1&license=b&phone=999999999
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)
         {
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-            User user;
-            try
-            {
-                user = await _authService.ValidateTokenAsync(authorizationHeader);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-
-            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
-
-            if (isAuthoraze)
-            {
+            //var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var user = await _userService.GetByIdAsync(new UserId(userId));           
+        
             return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role, request.active);
-            }
-            return Forbid();
+            
         }
 
         public class GetStaffQueryObject
@@ -64,24 +59,11 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Staff/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetGetById(string id)
         {
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-            User user;
-            try
-            {
-                user = await _authService.ValidateTokenAsync(authorizationHeader);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
 
-            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
-
-            if (isAuthoraze)
-            {
             var cat = await _service.GetByStaffIDAsync(id);
 
             if (cat == null)
@@ -90,39 +72,25 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
-            }
-            return Forbid();
+            
         }
 
         // POST: api/Staff
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPost]
 
         public async Task<ActionResult<StaffDto>> Create(CreatingStaffDto dto)
         {
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-            User user;
-            try
-            {
-                user = await _authService.ValidateTokenAsync(authorizationHeader);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-
-            bool isAuthoraze = await _authService.ValidateUserRole(user, new List<string> {Role.ADMIN});
-
-            if (isAuthoraze)
-            {
+           
                 var cat = await _service.AddAsync(dto);
 
                 return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
-            }
-            return Forbid();
+           
         }
 
 
         // PUT: api/Staff/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPut("{id}")]
         public async Task<ActionResult<StaffDto>> Update(string id, UpdateStaffDto dto)
         {
@@ -136,9 +104,8 @@ namespace DDDSample1.Controllers
 
             try
             {
-                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
-
-                
+                string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+               
 
                 var cat = await _service.UpdateAsync(id, dto);
 
@@ -158,6 +125,7 @@ namespace DDDSample1.Controllers
 
         
         // Inactivate: api/Staff/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<StaffDto>> SoftDelete(string id)
         {
@@ -173,12 +141,13 @@ namespace DDDSample1.Controllers
         
 
         // DELETE: api/Staff/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<StaffDto>> HardDelete(string id)
         {
             try
             {
-                string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
                 var cat = await _service.DeleteAsync(id);
 

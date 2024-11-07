@@ -73,7 +73,8 @@ namespace DDDSample1.Controllers
         }*/
 
         // POST: api/Patients
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
+
 
         [HttpPost("register")]
 
@@ -225,7 +226,7 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/Patients/5
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpPut("{email}")]
         public async Task<ActionResult<PatientDto>> Update(string email, PatientDto dto)
@@ -305,7 +306,7 @@ namespace DDDSample1.Controllers
             return Forbid();
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpPut("{actionId}/Confirmed")]
         public async Task<ActionResult<PatientDto>> UpdateConfirmed(string actionId)
@@ -337,7 +338,7 @@ namespace DDDSample1.Controllers
                            
                             var patientProfile = await _service.UpdateAsync(patientDto,user.Email.FullEmail);
 
-                            string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                            string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
 
                             await _logService.LogAsync("Patient", "Update", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
@@ -371,8 +372,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Patients/search
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-
+       [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllFiltered(
             [FromQuery] string? name,
@@ -451,7 +451,7 @@ namespace DDDSample1.Controllers
         */
 
         // DELETE: api/User/5
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpDelete("{id}/hard")]
 
@@ -462,7 +462,7 @@ namespace DDDSample1.Controllers
         
                 try
                 {
-                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
 
                     bool isPatient = false;
@@ -494,7 +494,7 @@ namespace DDDSample1.Controllers
 
 
         //Delete with actions
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpDelete("{id}/delete")]
         public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string id)
@@ -524,7 +524,7 @@ namespace DDDSample1.Controllers
             
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
 
         [HttpDelete("{actionId}/deleteConfirmed")]
@@ -552,7 +552,7 @@ namespace DDDSample1.Controllers
 
 
                         if (patientProfile != null){
-                            string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                           string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
 
                             await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);

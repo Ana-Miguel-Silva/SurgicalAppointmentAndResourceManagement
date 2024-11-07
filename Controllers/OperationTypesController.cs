@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using DDDSample1.ApplicationService.OperationTypes;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.Shared;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace DDDSample1.Controllers
@@ -50,17 +53,16 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/OperationTypes
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPost]
         public async Task<ActionResult<OperationTypeDto>> Create(CreatingOperationTypeDto dto)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
-            {
-
+            
                 try
                 {
                     var operationType = await _service.AddAsync(dto);
 
-                    string userEmail = _authService.GetUserEmail(Request.Headers["Authorization"]).Result.ToString();
+                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
 
                     await _logService.LogAsync("OperationRequest", "Created", operationType.Id, JsonConvert.SerializeObject(dto), userEmail);
@@ -71,18 +73,16 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-            return Forbid();
+            
         }
 
 
         // PUT: api/OperationTypes/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationTypeDto>> Update(Guid id, OperationTypeDto dto)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
-            {
-
+           
                 try
                 {
                     if (id != dto.Id)
@@ -110,8 +110,7 @@ namespace DDDSample1.Controllers
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
-            }
-            return Forbid();
+            
         }
 
 
@@ -151,20 +150,20 @@ namespace DDDSample1.Controllers
             }
         }
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered(
             [FromQuery] string? name,
             [FromQuery] string? specialization,
             [FromQuery] bool? status)
         {
-            if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result)
-            {
+           
 
                 var operationTypes = await _service.GetAllFilteredAsync(name, specialization, status);
 
                 return operationTypes;
-            }
-            return Forbid();
+           
         }
 
     }
