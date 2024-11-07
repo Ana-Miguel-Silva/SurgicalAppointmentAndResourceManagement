@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 
-interface LoginResponse {
-  token: string;
-}
+
 
 
 
@@ -29,15 +27,15 @@ export class LoginComponent {
 
   onLogin(){
 
-    this.http.post<LoginResponse>("https://localhost:5001/api/Users/login", this.loginObj).subscribe({
-      next: response => {
-        console.log(response);
-        alert("Login Success!");
-        this.authService.setToken(response.token);
-        if(this.authService.isAdmin()) this.router.navigate(['/admin']);
+    this.http.post<string>("https://localhost:5001/api/Users/login", this.loginObj, { responseType: 'text' as 'json' }).subscribe({
+      next: token => {
+        console.log(token);
+        alert('Login Success!');
+        this.authService.setToken(token);
 
-        //localStorage.setItem('token', response.token);
-        this.router.navigate(['/admin']);
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin']);
+        }        
 
       },
       error: error => {
