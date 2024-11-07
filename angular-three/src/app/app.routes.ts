@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { AdminComponent } from './pages/Admin/admin/admin.component';
 //import { PatientComponent } from './pages/Patient/patient/patient.component';
 import { AuthGuard } from './Guard/AuthGuard';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},

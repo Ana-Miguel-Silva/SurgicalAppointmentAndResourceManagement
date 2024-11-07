@@ -33,9 +33,8 @@ export class LoginComponent {
         alert('Login Success!');
         this.authService.setToken(token);
 
-        if (this.authService.isAdmin()) {
-          this.router.navigate(['/admin']);
-        }        
+        if (this.authService.isAdmin()) this.router.navigate(['/admin']);
+        
 
       },
       error: error => {
