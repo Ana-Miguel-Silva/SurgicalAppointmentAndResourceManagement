@@ -105,8 +105,6 @@ C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\appsettings.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\package-lock.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\package.json
-C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
-C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\obj\Debug\net8.0\TestsU.sourcelink.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\obj\project.assets.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\obj\TestsU.csproj.nuget.dgspec.json
@@ -147,8 +145,8 @@ C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\DDDNetCore.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package-lock.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package.json
-C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
-C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.runtimeconfig.json
+C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
+C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\Debug\net8.0\TestsU.sourcelink.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\project.assets.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\TestsU.csproj.nuget.dgspec.json
@@ -158,7 +156,8 @@ C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\DDDNetCore.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package-lock.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package.json
-C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
+C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
+C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\Debug\net8.0\TestsU.sourcelink.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\project.assets.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\TestsU.csproj.nuget.dgspec.json
@@ -168,6 +167,7 @@ C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\DDDNetCore.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package-lock.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\package.json
+C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.deps.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU.runtimeconfig.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\Debug\net8.0\TestsU.sourcelink.json
 C:\Users\dmopm\IdeaProjects\SurgicalAppointmentAndResourceManagement\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\bin\Debug\net8.0\TestsU\obj\project.assets.json
