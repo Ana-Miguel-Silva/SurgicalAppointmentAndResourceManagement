@@ -179,6 +179,8 @@ namespace DDDSample1
             
 
             SeedAdminUser(app.ApplicationServices);
+            SeedPatientUser(app.ApplicationServices);
+            SeedPatient(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -249,6 +251,56 @@ namespace DDDSample1
                     var adminDto = new CreatingUserDto(adminUsername, adminEmail.FullEmail, adminRole);
 
                     await userService.AddAsync(adminDto);
+                }
+
+            }
+        }
+
+        public async Task SeedPatientUser(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+                var adminUsername = "patient";
+                var adminEmail = new Email("avlismana@gmail.com");
+                var adminRole = "Patient";
+
+                User existingAdmin = await userService.GetByUsernameAsync(adminUsername);
+
+                if (existingAdmin == null)
+                {
+                    var adminDto = new CreatingUserDto(adminUsername, adminEmail.FullEmail, adminRole);
+
+                    await userService.AddAsync(adminDto);
+                }
+
+            }
+        }
+
+        public async Task SeedPatient(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var patientService = scope.ServiceProvider.GetRequiredService<PatientService>();
+
+                var patientUsername = "patient";
+                var patientUserEmail = "1221133@isep.ipp.pt";
+                var patientEmail = "avlismana@gmail.com";
+                var patientRole = "Patient";
+                DateTime dateOfBirth = DateTime.Now.AddYears(-30);
+                var phoneNumberObject = "966783435";
+                var patientGender = "Female";
+                
+  
+
+                Patient existingAdmin = await patientService.GetPatientByEmailAsync(patientEmail);
+
+                if (existingAdmin == null)
+                {
+                    var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientUserEmail,patientEmail, patientGender);
+
+                    await patientService.AddAsync(patientDto, patientRole);
                 }
 
             }

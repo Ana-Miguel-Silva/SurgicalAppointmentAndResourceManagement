@@ -166,7 +166,7 @@ namespace DDDSample1.Controllers
 
             if (patientRecord == null)
             {
-                var verificationLinkRegister = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-0cea8e40-90a8-416b-8731-d2aefb7713b6";
+                var verificationLinkRegister = $"http://localhost:4200/patient";
 
                 var emailRequestRegister = new SendEmailRequest(emailClaim, "Register in Medical Appointment Management", $"Please verify your register by clicking here: {verificationLinkRegister}");
 
@@ -183,34 +183,11 @@ namespace DDDSample1.Controllers
 
             var token = _authService.GenerateToken(user);
 
-            var redirectUrl = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/collection/38865574-d91a5651-b072-4ff8-b9ed-42c79b7c808c";
+            var redirectUrl = $"http://localhost:4200/patient";
 
             return Ok($"Token para autenticação: {token} \r\r Please copy the token and click here: " + redirectUrl);
 
         }
-
-
-
-
-        /*[HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginRequest login)
-        {
-            try
-            {
-                Console.WriteLine($"Username: {login.Username}, Password: {login.Password}");
-
-                var result = await _service.Login(login.Username, login.Password);
-
-                
-                return Ok($"Token para autenticação: {result}");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }*/
-
-
 
 
         [HttpGet("{id}")]

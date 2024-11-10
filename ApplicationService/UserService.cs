@@ -223,6 +223,11 @@ namespace DDDSample1.ApplicationService.Users
         public async Task<UserDto> GeBbyEmailAsync(string email)
         {
             var user = await _repo.GeBbyEmailAsync(email);
+              if (user == null)
+            {
+                // Lidar com o caso de usuário não encontrado
+                throw new Exception("Usuário não encontrado.");
+            }
 
             return new UserDto(user.Id.AsGuid(), user.Username, user.Email, user.Role);
 
