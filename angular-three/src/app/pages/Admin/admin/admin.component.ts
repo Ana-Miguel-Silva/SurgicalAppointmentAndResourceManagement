@@ -1,18 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ModalService } from './modal.service';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { AuthService } from '../../../Services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,FormsModule ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
 
-  constructor(private fb: FormBuilder, private modalService: ModalService) {
+  constructor(private fb: FormBuilder, private modalService: ModalService, 
+    private http: HttpClient, private authService: AuthService) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -26,7 +30,14 @@ export class AdminComponent {
     });
   }
 
-    
+  
+  myForm: FormGroup;
+  tags: string[] = [];  // Array para armazenar as tags
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
+  patientsProfiles: any[] = [];
+  searchTerm: string = '';
+  filterField: string = '';
  
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
@@ -44,9 +55,6 @@ export class AdminComponent {
     return this.modalService.isModalOpen(modalId);
   }
  
-
-  myForm: FormGroup;
-  tags: string[] = [];  // Array para armazenar as tags
 
 
   // Método para submeter o formulário
@@ -84,6 +92,49 @@ export class AdminComponent {
     this.tags.splice(index, 1);  // Remove a tag do array pelo índice
   }
 
+
+  
+  ngOnInit() {
+    this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
+  }
+
+  // Novo método para atualizar a lista ao mudar o filtro
+  onFilterChange() {
+    this.getAllpatientsProfiles();
+  }
+
+  // Method to fetch all patients profiles
+  getAllpatientsProfiles() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+  .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
+, this.searchTerm || '');
+
+    
+  
+    this.http.get<any[]>('https://localhost:5001/api/Patients/search', { headers, params })  
+      .subscribe({
+        next: (response) => {
+          this.patientsProfiles = response;
+          console.log(response);
+          console.log(params);
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+  }
 
   
 

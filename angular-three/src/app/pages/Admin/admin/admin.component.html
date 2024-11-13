@@ -197,28 +197,54 @@
       <span (click)="closeModal('listPatientModal')" class="close">&times;</span>
       <div>
 
-      <form  [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
-          <div class="col-md-3">
+      <form  class="row g-3 needs-validation" novalidate="">
+          <div class="col-md-2"></div>
 
-          </div>
-
-          <div class="col-md-5">
+          <div class="col-md-6">
             <label for="validationCustom01" class="form-label">Search</label>
-            <input type="text" class="form-control" id="validationCustom01" placeHolder="Search" required="">
+            <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
+            
           </div>
           <div class="col-md-2">
             <label for="validationCustom01" class="form-label">Filter</label>
-            <select class="form-select" id="validationCustom1" required="">
+            <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
               <option selected="" disabled="" value="">Choose...</option>
-              <option>Name</option>
+              <option>Name (WIP)</option>
               <option>Id</option>
-              <option>Birth</option>
+              <option>Medical Record Number</option>
+              <option>Email</option>
             </select>
+            
           </div>
 
-          <div class="col-md-2">
-
+          <div class="col-md-2"></div>
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <div style="margin-top:30px">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Medical Number</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Priority</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of patientsProfiles">
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.medicalRecordNumber.number }}</td>
+                    <td>{{ request.name.firstName }}</td>
+                    <td>{{ request.name.lastName }}</td> <!-- Use 'date' pipe -->
+                    <td>{{ request.priority }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+          <div class="col-md-2"></div>
+
 
           <!--<div class="col-12">
             <button class="btn btn-primary" type="submit">Submit form</button>
