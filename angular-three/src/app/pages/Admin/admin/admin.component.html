@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin US's</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
 <body>
@@ -217,33 +218,52 @@
             
           </div>
 
-          <div class="col-md-2"></div>
-          <div class="col-md-2"></div>
-          <div class="col-md-8">
-            <div style="margin-top:30px">
-              <table>
+          <div class="col-md-12">
+            <div class="table-wrapper" >
+              <div class="table-title">
+              <table class="table table-striped table-hover">
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>ID</th>
                     <th>Medical Number</th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Priority</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Active</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let request of patientsProfiles">
+                  <tr *ngFor="let request of patientsProfiles; let i = index">
+                    <td>{{ i + 1 }}</td>
                     <td>{{ request.id }}</td>
                     <td>{{ request.medicalRecordNumber.number }}</td>
                     <td>{{ request.name.firstName }}</td>
-                    <td>{{ request.name.lastName }}</td> <!-- Use 'date' pipe -->
-                    <td>{{ request.priority }}</td>
+                    <td>{{ request.name.lastName }}</td>
+                    <td>{{ request.email.fullEmail }}</td>
+                    <td>{{ request.phone.number }}</td>
+                    <td>{{ request.gender }}</td>
+                    <td>{{ request.dateOfBirth }}</td> <!-- Use 'date' pipe -->
+                    <td>{{ request.active }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-          <div class="col-md-2"></div>
+        </div>
+
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <button class="btn btn-warning">Edit <i style="color:rgb(250, 223, 164)" class="bi bi-pencil-square"></i></button>
+            <button class="btn btn-danger">Delete <i style="color:rgb(255, 204, 204)" class="bi bi-trash-fill"></i></button>
+          </div>
+
+
+
+
 
 
           <!--<div class="col-12">
