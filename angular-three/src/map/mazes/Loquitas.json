@@ -1,0 +1,28 @@
+{
+    "groundTextureUrl": "./textures/ground.jpg",
+    "wallTextureUrl": "./textures/wall.jpg",
+    "size": { "width": 4, "height": 5 },
+    "room_number": 2 ,
+    "rooms_per_row": 2,
+    "map": [
+        [3, 2, 2, 2, 1,0],
+        [1, 0, 0, 0, 1,0],
+        [1, 6, 0, 0, 4,0],
+        [1, 0, 0, 0, 1,0],
+        [1, 0, 0, 0, 1,0],
+        [2, 2, 2, 2, 0,0],
+        [0, 0, 0, 0, 0,0]
+    ],
+    "lobby": [
+        [3, 5, 2, 2, 8, 2, 5, 2, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 2, 2, 5, 5, 2, 2, 2, 0]
+    ],
+
+    "initialPosition": [3, 3],
+    "initialDirection": 0.0,
+    "exitLocation": [-0.5, 6]
+}
