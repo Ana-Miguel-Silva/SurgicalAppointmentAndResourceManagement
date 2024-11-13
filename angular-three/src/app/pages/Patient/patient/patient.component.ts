@@ -29,6 +29,8 @@ export class PatientComponent {
     this.isModalOpen = false;
   }
 
+
+
   constructor(private fb: FormBuilder) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({

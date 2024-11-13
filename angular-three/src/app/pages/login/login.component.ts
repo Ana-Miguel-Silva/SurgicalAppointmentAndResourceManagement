@@ -34,7 +34,8 @@ export class LoginComponent {
         this.authService.setToken(token);
 
         if (this.authService.isAdmin()) this.router.navigate(['/admin']);
-        
+        else if (this.authService.isPatient()) this.router.navigate(['/patient']);
+
 
       },
       error: error => {

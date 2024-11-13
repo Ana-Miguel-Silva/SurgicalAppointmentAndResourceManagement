@@ -294,9 +294,10 @@ namespace DDDSample1
                 
   
 
-                Patient existingAdmin = await patientService.GetPatientByEmailAsync(patientEmail);
+                Patient existingPatientByUserEmail = await patientService.GetPatientByEmailAsync(patientUserEmail);
+                Patient existingPatientByEmail = await patientService.GetPatientByEmailAsync(patientEmail);
 
-                if (existingAdmin == null)
+                if (existingPatientByEmail == null && existingPatientByUserEmail == null)
                 {
                     var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientUserEmail,patientEmail, patientGender);
 

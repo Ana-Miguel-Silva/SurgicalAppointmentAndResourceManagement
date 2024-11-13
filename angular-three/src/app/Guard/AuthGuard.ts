@@ -14,12 +14,12 @@ export class AuthGuard implements CanActivate {
 
     if ((expectedRole === 'Admin' && this.authService.isAdmin()) ||
         (expectedRole === 'Doctor' && this.authService.isDoctor()) ||
-        (expectedRole === 'Patient' && this.authService.isDoctor())) {
+        (expectedRole === 'Patient' && this.authService.isPatient())) {
       return true;
     }
 
     // Redireciona para uma página de acesso negado ou login se o papel não corresponder
-    this.router.navigate(['/login']);
+   // this.router.navigate(['/login']);
     return false;
   }
 }

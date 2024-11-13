@@ -159,6 +159,27 @@ namespace DDDSample1.Domain.Patients
             this.ExpirationDate = DateTime.Now.AddDays(30.0);
         }
 
+        public PatientDto ConvertToDto()
+        {
+            return new PatientDto
+            (
+                this.Id.AsGuid(),
+                this.name.GetFullName(),
+                this.medicalRecordNumber,
+                this.DateOfBirth,
+                this.Phone,
+                this.Email,
+                this.UserEmail,
+                this.nameEmergency,
+                this.phoneEmergency,
+                this.emailEmergency,
+                this.gender,
+                this.Allergies,
+                this.AppointmentHistory
+            );
+        }
+
+
 
     }
 }

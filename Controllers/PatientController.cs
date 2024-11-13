@@ -21,6 +21,7 @@ using DDDSample1.ApplicationService.Shared;
 using DDDSample1.ApplicationService.PendingActions;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace DDDSample1.Controllers
 {
@@ -282,6 +283,83 @@ namespace DDDSample1.Controllers
             }
             return Forbid();
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
+
+        [HttpPatch("{email}")]
+        public async Task<ActionResult<PatientDto>> UpdatePatch(string email, PatientDto dto)
+        {
+
+                try
+                { 
+
+                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userService.GetByIdAsync(new UserId(userId));
+
+                    try
+                    {
+                        var sendEmail = await _service.VerifySensiveData(dto, email);
+
+                        if(sendEmail.ToString().Equals("1")){
+
+
+                            // Monta o nome completo como uma string
+                            string fullName = $"{dto.name.FirstName} {dto.name.MiddleNames} {dto.name.LastName}";
+
+                            var transformedDto = new
+                            {
+                                name = fullName,
+                                Id = dto.Id,
+                                DateOfBirth = dto.DateOfBirth,
+                                medicalRecordNumber = dto.medicalRecordNumber,
+                                gender = dto.gender,
+                                Allergies = dto.Allergies,
+                                AppointmentHistory = dto.AppointmentHistory,
+                                nameEmergency = dto.nameEmergency,
+                                phoneEmergency = dto.phoneEmergency,
+                                emailEmergency = dto.emailEmergency,
+                                Phone = dto.Phone,
+                                Email = dto.Email,
+                                UserEmail = dto.UserEmail
+                            };
+
+                            var pendingAction = await _pendingActionsService.PendingActionsAsync(JsonConvert.SerializeObject(transformedDto));
+
+                            await _service.SendConfirmationUpdateEmail(email, pendingAction.Id.AsString());
+
+                            return Ok("Please check your email to confirm this action");
+
+                        } else if(sendEmail.ToString().Equals("0")){
+
+
+                            var patientProfile = await _service.UpdateAsync(dto,email);
+
+                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
+
+                            return Ok(patientProfile);
+                        }
+                        return BadRequest("The patient was not found");
+
+                                               
+                    }
+                    catch (BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new { Message = ex.Message });
+                    }
+
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
+          
+        }
+
+
+
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
