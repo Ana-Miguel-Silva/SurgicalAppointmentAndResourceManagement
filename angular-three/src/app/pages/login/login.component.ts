@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
+import e from 'express';
 
 
 
@@ -35,7 +36,7 @@ export class LoginComponent {
 
         if (this.authService.isAdmin()) this.router.navigate(['/admin']);
         else if (this.authService.isPatient()) this.router.navigate(['/patient']);
-
+        else if (this.authService.isDoctor()) this.router.navigate(['/doctor']);
 
       },
       error: error => {

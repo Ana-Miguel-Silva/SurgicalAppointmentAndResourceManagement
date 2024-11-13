@@ -1,0 +1,52 @@
+<div class="container">
+  <h2>Create Operation Request</h2>
+  <form (ngSubmit)="onSubmit()">
+    <label for="medicalRecordNumber">Medical Record Number:</label>
+    <input type="text" id="medicalRecordNumber" [(ngModel)]="operationRequest.medicalRecordNumber.value" name="medicalRecordNumber" required />
+
+    <label for="operationTypeId">Operation Type ID:</label>
+    <input type="text" id="operationTypeId" [(ngModel)]="operationRequest.operationTypeId.value" name="operationTypeId" required />
+
+    <label for="deadline">Deadline:</label>
+    <input type="datetime-local" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
+
+    <label for="priority">Priority:</label>
+    <select id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
+        <option value="Urgent">Urgent</option>
+        <option value="Elective">Elective</option>
+        <option value="Emergency">Emergency</option>
+    </select>
+
+    <button type="submit">Create Request</button>
+  </form>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <h2>Existing Operation Requests</h2>
+  <div *ngIf="operationRequests.length > 0; else noRequests">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient ID</th>
+          <th>Operation Type</th>
+          <th>Deadline</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of operationRequests">
+          <td>{{ request.id }}</td>
+          <td>{{ request.medicalRecordNumber.value }}</td>
+          <td>{{ request.operationTypeId.value }}</td>
+          <td>{{ request.deadline | date:'medium' }}</td> <!-- Use 'date' pipe -->
+          <td>{{ request.priority }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #noRequests>
+    <p>No operation requests found.</p>
+  </ng-template>
+</div>
