@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin US's</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
- 
+
 </head>
 <body>
 
-    <div class="container-xxl">
+    <div class="container-xxl ">
 
         <h1 class="h1 title glow" style="padding: 1cm; color:white"> Admin </h1>
         <!--TODO: Alterar o formato de como esta a organização/divisão das divs par aficar de forma mas dinamica-->
-        <div class="row row-cols-3">
-            <div class="container-lg col selectionDiv" (click)="openModal()">
-                <div class="form-floating mb-3">
-                    <h3 class="title" >Register Patient Profile</h3>
-                </div>
-                
+        <div class="row g-3">
+          <div class="container col-md-4">
+            <div class="container-lg  selectionDiv" (click)="openModal('registerPatientModal')">
+              <div class="form-floating mb-3">
+                  <h3 class="title" >Register Patient Profile</h3>
+              </div>
+            </div>
+
+
                 <!--<div class="form-floating mb-3">
                     <input type="text" class="form-control" id="floatingInput" placeholder="username">
                     <label for="floatingInput">Username</label>
@@ -31,37 +34,33 @@
                 <!--<div class="form-floating center">
                     <button (click)="openModal()" class="btn btnBl btn-primary">Clique aqui</button>
                 </div>-->
-                
+
             </div>
 
-            <div class="container-lg col">
-                <div class="form-floating mb-3">
-                    <h3 class="title" >Add User</h3>
-                </div>
-                
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput2" placeholder="username">
-                    <label for="floatingInput">Username</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword2" placeholder="Password">
-                    <label for="floatingPassword">Password</label>
-                </div>
-                <div class="form-floating mb-3 ">
-                    <button class="btnBl" onclick="alert('Botão clicado!')">Clique aqui</button>
-                </div>
+
+            <div class="container col-md-4">
+              <div class="container-lg selectionDiv" (click)="openModal('listPatientModal')">
+              <div class="form-floating mb-3">
+                  <h3 class="title" >List Patient Profile</h3>
+              </div>
             </div>
+          </div>
+
+
+
+
+
+
         </div>
-
-        
-
 </div>
+
+
 
 <!-- The Modal -->
  <!-- (click)="onBackdropClick($event)" -->
-<div  [id]="modalId" [ngStyle]="{'display': isModalOpen ? 'block' : 'none'}" class="modal" >
+<div [ngStyle]="{'display': isModalOpen('registerPatientModal') ? 'block' : 'none'}" id="registerPatientModal"  class="modal" >
     <div class="modal-content">
-        <span (click)="closeModal()" class="close">&times;</span>
+        <span (click)="closeModal('registerPatientModal')" class="close">&times;</span>
         <div>
 
         <form  [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
@@ -131,9 +130,9 @@
                             <button class="delete-button" (click)="removeTag(i)">X</button>
                           </li>
                     </ul>
-                    <input type="text" id="input-tag" 
+                    <input type="text" id="input-tag"
                     formControlName="inputTag"
-                    (keydown)="addTag($event)" 
+                    (keydown)="addTag($event)"
                         placeholder="Enter allergies name" />
                 </div>
               </div>
@@ -192,9 +191,48 @@
 </div>
 
 
+
+<div  [ngStyle]="{'display': isModalOpen('listPatientModal') ? 'block' : 'none'}" id="listPatientModal" class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('listPatientModal')" class="close">&times;</span>
+      <div>
+
+      <form  [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
+          <div class="col-md-3">
+
+          </div>
+
+          <div class="col-md-5">
+            <label for="validationCustom01" class="form-label">Search</label>
+            <input type="text" class="form-control" id="validationCustom01" placeHolder="Search" required="">
+          </div>
+          <div class="col-md-2">
+            <label for="validationCustom01" class="form-label">Filter</label>
+            <select class="form-select" id="validationCustom1" required="">
+              <option selected="" disabled="" value="">Choose...</option>
+              <option>Name</option>
+              <option>Id</option>
+              <option>Birth</option>
+            </select>
+          </div>
+
+          <div class="col-md-2">
+
+          </div>
+
+          <!--<div class="col-12">
+            <button class="btn btn-primary" type="submit">Submit form</button>
+          </div>-->
+        </form>
+      </div>
+
+  </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    
+
 
 </body>
 

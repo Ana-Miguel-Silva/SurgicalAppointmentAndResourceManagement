@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ModalService } from './modal.service';
 
 @Component({
   selector: 'app-admin',
@@ -10,24 +11,8 @@ import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } f
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
-  
-  isModalOpen: boolean = false;
-  modalId: string = 'modalId'; 
 
-  openModal() {
-    this.isModalOpen = true;
-  }
-
-  closeModal() {
-    this.isModalOpen = false;
-  }
-
-  /*onBackdropClick(event: MouseEvent) {
-    this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
-  }*/
-
-
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private modalService: ModalService) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -40,6 +25,25 @@ export class AdminComponent {
       inputTag: new FormControl('')  
     });
   }
+
+    
+ 
+  /*onBackdropClick(event: MouseEvent) {
+    this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
+  }*/
+
+  openModal(modalId: string): void {
+    this.modalService.openModal(modalId);
+  }
+
+  closeModal(modalId: string): void {
+    this.modalService.closeModal(modalId);
+  }
+
+  isModalOpen(modalId: string): boolean {
+    return this.modalService.isModalOpen(modalId);
+  }
+ 
 
   myForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
@@ -79,4 +83,10 @@ export class AdminComponent {
   removeTag(index: number) {
     this.tags.splice(index, 1);  // Remove a tag do array pelo índice
   }
+
+
+  
+
+
+
 }

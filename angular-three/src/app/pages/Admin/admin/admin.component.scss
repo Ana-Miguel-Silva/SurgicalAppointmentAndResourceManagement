@@ -2,12 +2,14 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
     background: linear-gradient(135deg, #f0f8ff, #87cefa);
-    background-size: cover;
+    background-size:cover;
     font-family: Arial, sans-serif;
     justify-content: center;
     align-items: center;
+    height: 100vh; //TODO: TROCAR TIRAR ISTO PARA APARECER TUDO, ESTA TEMPORARIAMENTE
+
+    //background-attachment: scroll!important;
 }
 
 .container-lg {
@@ -48,9 +50,10 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    opacity: 80%;
+    opacity: 60%;
     background: rgb(185,243,252);
     background: linear-gradient(180deg, rgba(185,243,252,1) 0%, rgba(147,198,231,1) 45%, rgba(120,157,188,1) 87%);
+    z-index: 0!important;
 }
 
 .selectionDiv .title{
@@ -62,7 +65,8 @@ body {
     transform: scale(1.2);
     transition: transform 0.5s, background-color 0.5s;
     opacity: 100%;
-    
+    z-index: 999!important;
+
 }
 
 .title{
@@ -72,12 +76,12 @@ body {
 }
 
 .center{
-   
+
     margin-left: auto;
     margin-right: auto;
     display: flex;
     align-items: center;
-    justify-content: center 
+    justify-content: center
 }
 
 
@@ -185,10 +189,10 @@ cursor: pointer;
     -moz-animation: glow 2s ease-in-out infinite alternate;
     animation: glow 2s ease-in-out infinite alternate;
     text-shadow: 1.5px 1.5px 1px black;
-  
+
   }
-  
-  
+
+
   @-webkit-keyframes glow {
     from {
         text-shadow: 0 0 5px #eeeeee, 0 0 10px rgba(0,230,255,1), 0 0 15px rgba(0,230,255,1), 0 0 20px rgba(0,230,255,1),
