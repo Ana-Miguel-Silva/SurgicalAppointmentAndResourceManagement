@@ -15,8 +15,10 @@ import { Router } from '@angular/router';
 })
 export class AdminComponent {
 
+  private staffUrl = "https://localhost:5001/api/Staff";
+
   constructor(private fb: FormBuilder, private modalService: ModalService, 
-    private http: HttpClient, private authService: AuthService) {
+    private http: HttpClient, private authService: AuthService, private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -28,14 +30,23 @@ export class AdminComponent {
       agree: [false, Validators.requiredTrue],
       inputTag: new FormControl('')  
     });
+    this.staffForm = this.fb.group({});
   }
 
-  
+  selectedStaffId: number | null = null;
+
+  selectStaff(id: number) {
+    this.selectedStaffId = this.selectedStaffId === id ? null : id;
+  }
+
+
   myForm: FormGroup;
+  staffForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
+  staffsProfiles: any[] = [];
   searchTerm: string = '';
   filterField: string = '';
  
@@ -63,6 +74,35 @@ export class AdminComponent {
       console.log('Form Submitted!', this.myForm.value);
     } else {
       this.myForm.markAllAsTouched();  // Marca todos os campos para mostrar feedback de validação
+    }
+  }
+  onSubmitStaff(){}
+  deactivateStaff(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedStaffId === null) {
+      window.alert("Please select a staff member to deactivate.");
+    } else {
+      console.log(`Deactivating staff ID: ${this.selectedStaffId}`);
+      this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })  
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          console.error('Error deactivating staff:', error);
+          this.errorMessage = 'Failed to deactivate staff profiles!';
+        }
+      });
+      this.getAllstaffsProfiles();
     }
   }
 
@@ -95,14 +135,24 @@ export class AdminComponent {
 
   
   ngOnInit() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.log("abc");
+      this.errorMessage = 'You are not logged in!';
+      this.router.navigate(['/']);
+    }
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
+    this.getAllstaffsProfiles(); // Fetch all profiles on component initialization
   }
 
   // Novo método para atualizar a lista ao mudar o filtro
   onFilterChange() {
     this.getAllpatientsProfiles();
   }
-
+  onFilter2Change() {
+    this.getAllstaffsProfiles();
+  }
   // Method to fetch all patients profiles
   getAllpatientsProfiles() {
     const token = this.authService.getToken();
@@ -136,7 +186,37 @@ export class AdminComponent {
       });
   }
 
+  getAllstaffsProfiles() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+  .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
+, this.searchTerm || '');
+
+    
   
+    this.http.get<any[]>(`${this.staffUrl}`, { headers, params })  
+      .subscribe({
+        next: (response) => {
+          this.staffsProfiles = response;
+          console.log(response);
+          console.log(params);
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch staffs profiles!';
+        }
+      });
+  }
 
 
 
