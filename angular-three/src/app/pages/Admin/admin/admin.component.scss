@@ -7,7 +7,7 @@ body {
     font-family: Arial, sans-serif;
     justify-content: center;
     align-items: center;
-    height: 100vh; //TODO: TROCAR TIRAR ISTO PARA APARECER TUDO, ESTA TEMPORARIAMENTE
+    //height: 100vh; //TODO: TROCAR TIRAR ISTO PARA APARECER TUDO, ESTA TEMPORARIAMENTE
 
     //background-attachment: scroll!important;
 }
@@ -16,7 +16,7 @@ body {
     display:inline-flexbox;
     justify-content: center;
     align-items: center;
-    height: 300px;
+    height: 32vh;
     background-color: #f0f8ff;
     border: 2px solid #0e79a3;
     border-radius: 15px;
@@ -210,7 +210,7 @@ cursor: pointer;
     background: #fff;
     padding: 20px 30px 5px;
     margin: 30px auto;
-    box-shadow: 0 0 1px 0 rgba(0,0,0,.25);
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.25);
     //border: 1px solid #5a5a5a;
     //overflow-x:scroll;
 }
@@ -261,12 +261,20 @@ table.table td .btn.manage {
     border-radius: 2px;
 }
 table.table td .btn.manage:hover {
-    background: #2e9c81;		
+    background: #2e9c81;
 }
 
 
 .selected-row {
     position: relative;
-    z-index: 1;
-    box-shadow: 0 0 0 .25rem rgba(17, 134, 23, 0.5);
-  }
+    z-index: 3;
+    box-shadow: 0 0 0 .325rem rgba(9,67,121,0.5);
+
+
+}
+
+.table-over{
+    display: block; 
+    height: 50vh; 
+    overflow-y: scroll;
+}
