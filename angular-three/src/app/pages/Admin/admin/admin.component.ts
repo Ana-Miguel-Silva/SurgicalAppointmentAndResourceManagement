@@ -105,6 +105,34 @@ export class AdminComponent {
       this.getAllstaffsProfiles();
     }
   }
+  
+  viewStaff(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedStaffId === null) {
+      window.alert("Please select a staff member to view.");
+    } else {
+      console.log(`Viewing staff ID: ${this.selectedStaffId}`);
+      this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })  
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          console.error('Error viewing staff:', error);
+          this.errorMessage = 'Failed to view staff profiles!';
+        }
+      });
+    }
+  }
 
 
   
