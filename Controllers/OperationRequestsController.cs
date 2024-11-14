@@ -36,7 +36,7 @@ namespace DDDSample1.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAll()
-        {           
+        {
             try
             {
                 return await _service.GetAllAsync();
@@ -45,7 +45,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
-            
+
         }
 
         // GET: api/OperationRequests/5
@@ -67,22 +67,22 @@ namespace DDDSample1.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
-           
-                try
-                {
-                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-                    var operationRequest = await _service.AddAsync(dto, userEmail);
+
+            try
+            {
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+                var operationRequest = await _service.AddAsync(dto, userEmail);
 
 
-                    await _logService.LogAsync("OperationRequest", "Created", operationRequest.Id, JsonConvert.SerializeObject(dto), userEmail);
+                await _logService.LogAsync("OperationRequest", "Created", operationRequest.Id, JsonConvert.SerializeObject(dto), userEmail);
 
-                    return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
-                }
-                catch (BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
-           
+                return CreatedAtAction(nameof(GetGetById), new { id = operationRequest.Id }, operationRequest);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+
         }
 
 
@@ -97,61 +97,84 @@ namespace DDDSample1.Controllers
             [FromQuery] string? priority,
             [FromQuery] bool? status)
         {
-                PatientId? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new PatientId(patientId) : null;
-                OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
+            PatientId? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new PatientId(patientId) : null;
+            OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-                var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority, patientname, operationTypeName);
+            var operationRequests = await _service.GetAllFilteredAsync(medicalRecordNumber, opTypeId, status, priority, patientname, operationTypeName);
 
-                return operationRequests;
-            
+            return operationRequests;
+
         }
 
 
 
-        // PUT: api/OperationRequests/5
+        // PATCH: api/OperationRequests/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OperationRequestDto>> Update(Guid id, OperationRequestDto dto)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<OperationRequestDto>> Update(Guid id, UpdateOperationRequestDto dto)
         {
-           
-                if (id != dto.Id)
+
+            if (id != dto.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+                var operationRequestOld = await _service.GetByIdAsync(new OperationRequestId(id));
+
+                var operationRequest = await _service.UpdateAsync(dto, userEmail);
+
+
+
+                await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, "old" + JsonConvert.SerializeObject(operationRequestOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
+
+                if (operationRequest == null)
                 {
-                    return BadRequest();
+                    return NotFound();
                 }
+                return Ok(operationRequest);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
 
-                try
-                {
-                    string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
-                    var operationRequestOld = await _service.GetByIdAsync(new OperationRequestId(id));
-
-                    var operationRequest = await _service.UpdateAsync(dto, userEmail);
-
-
-
-                    await _logService.LogAsync("OperationRequest", "Updated", operationRequest.Id, "old" + JsonConvert.SerializeObject(operationRequestOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
-
-                    if (operationRequest == null)
-                    {
-                        return NotFound();
-                    }
-                    return Ok(operationRequest);
-                }
-                catch (BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
-           
         }
 
-        // Inactivate: api/OperationRequests/5
+        // Inactivate: api/OperationRequests/5/soft
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/soft")]
         public async Task<ActionResult<OperationRequestDto>> SoftDelete(Guid id)
         {
-          
 
-                var operationRequest = await _service.InactivateAsync(new OperationRequestId(id));
+
+            var operationRequest = await _service.InactivateAsync(new OperationRequestId(id));
+
+            if (operationRequest == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(operationRequest);
+
+
+        }
+
+        // DELETE: api/OperationRequests/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
+        {
+            try
+            {
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+                var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
+
+                await _logService.LogAsync("OperationRequest", "Deleted", operationRequest.Id, JsonConvert.SerializeObject(operationRequest), userEmail);
 
                 if (operationRequest == null)
                 {
@@ -159,35 +182,12 @@ namespace DDDSample1.Controllers
                 }
 
                 return Ok(operationRequest);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
 
-            
-        }
-
-        // DELETE: api/OperationRequests/5
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
-        [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<OperationRequestDto>> HardDelete(Guid id)
-        {
-               try
-                {
-                    string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
-                    var operationRequest = await _service.DeleteAsync(new OperationRequestId(id));
-
-                    await _logService.LogAsync("OperationRequest", "Deleted", operationRequest.Id, JsonConvert.SerializeObject(operationRequest), userEmail);
-
-                    if (operationRequest == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return Ok(operationRequest);
-                }
-                catch (BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
-           
         }
 
     }

@@ -106,13 +106,11 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto, string authUserEmail)
+        public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto, string authUserEmail)
         {
 
             var doctor = await CheckDoctorAsync(authUserEmail);
 
-            CheckDate(dto.Deadline);
-            CheckPriority(dto.Priority);
 
             var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
@@ -122,8 +120,17 @@ namespace DDDSample1.ApplicationService.OperationRequests
             if (operationRequest == null)
                 return null;
 
-            operationRequest.ChangeDeadline(dto.Deadline);
-            operationRequest.ChangePriority(dto.Priority);
+            if (dto.Deadline.HasValue)
+            {
+                CheckDate(dto.Deadline.Value);
+                operationRequest.ChangeDeadline(dto.Deadline.Value);
+            }
+
+            if (!string.IsNullOrEmpty(dto.Priority))
+            {
+                CheckPriority(dto.Priority);
+                operationRequest.ChangePriority(dto.Priority);
+            }
 
             await this._unitOfWork.CommitAsync();
 
@@ -150,9 +157,6 @@ namespace DDDSample1.ApplicationService.OperationRequests
 
             if (operationRequest == null)
                 return null;
-
-            if (operationRequest.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active operation request.");
 
             this._repo.Remove(operationRequest);
             await this._unitOfWork.CommitAsync();
