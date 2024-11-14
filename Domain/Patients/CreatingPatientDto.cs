@@ -16,6 +16,7 @@ namespace DDDSample1.Domain.Patients
         public string nameEmergency { get;   set; }
         public PhoneNumber phoneEmergency { get;   set; }
         public Email emailEmergency { get;   set; }
+        public bool Active { get; private set; }
 
         //public EmergencyContact? EmergencyContact { get; set; } 
 
@@ -47,6 +48,7 @@ namespace DDDSample1.Domain.Patients
             this.nameEmergency = "default dd";
             this.phoneEmergency = new PhoneNumber("999999999");
             this.emailEmergency = new Email("default@gmail.com");
+            this.Active = true;
         }
 
     }

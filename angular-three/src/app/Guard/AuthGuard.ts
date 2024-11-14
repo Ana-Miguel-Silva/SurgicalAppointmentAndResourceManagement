@@ -12,14 +12,14 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data['role'];
 
+
     if ((expectedRole === 'Admin' && this.authService.isAdmin()) ||
         (expectedRole === 'Doctor' && this.authService.isDoctor()) ||
         (expectedRole === 'Patient' && this.authService.isPatient())) {
       return true;
     }
 
-    // Redireciona para uma página de acesso negado ou login se o papel não corresponder
-   // this.router.navigate(['/login']);
+    this.router.navigate([''], { queryParams: { message: 'Access denied' } });
     return false;
   }
 }
