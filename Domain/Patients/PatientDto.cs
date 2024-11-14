@@ -29,6 +29,8 @@ namespace DDDSample1.Domain.Patients
 
          public Email UserEmail { get;   set; }
 
+         public bool Active { get; private set; }
+
         public PatientDto(Guid Id, string name, MedicalRecordNumber medicalRecordNumber, DateTime dateOfBirth, 
                    PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
         {
@@ -47,6 +49,7 @@ namespace DDDSample1.Domain.Patients
         this.nameEmergency = nameEmergency;
         this.phoneEmergency = phoneEmergency;
         this.emailEmergency = emailEmergency; 
+        this.Active = true;
         }
 
         /*public PatientDto(Guid Id,string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)

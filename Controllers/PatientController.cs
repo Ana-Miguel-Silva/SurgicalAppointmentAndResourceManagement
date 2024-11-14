@@ -192,9 +192,9 @@ namespace DDDSample1.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDto>> GetById(PatientId id)
+        public async Task<ActionResult<PatientDto>> GetById(string id)
         {
-            var user = await _service.GetByIdAsync(id);
+            var user = await _service.GetByIdAsync(new PatientId(id));
             if (user == null)
             {
                 return NotFound();

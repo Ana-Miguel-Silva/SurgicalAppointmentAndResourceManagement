@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef,Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
+import { PatientService } from '../../../Services/patient.service';
+import { Patient } from '../patient/patient.model';
 import { NgModule } from '@angular/core';
 import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -20,6 +22,8 @@ import { CommonModule } from '@angular/common';
 export class PatientComponent {
   isModalOpen: boolean = false;
   modalId: string = 'modalId';
+  myForm!: FormGroup;
+
 
   openModal() {
     this.isModalOpen = true;
@@ -31,21 +35,58 @@ export class PatientComponent {
 
 
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private patientService: PatientService, private cdr: ChangeDetectorRef) {}
     // Define os controles do formulário com validações
-    this.myForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      username: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zip: ['', Validators.required],
-      agree: [false, Validators.requiredTrue],
-      inputTag: new FormControl('')
-    });
-  }
+    ngOnInit(): void {
+      this.myForm = this.fb.group({
+        id: [''],
+        name: [''],
+        dateOfBirth: [''],
+        medicalRecordNumber: [''],
+        email: [''],
+        phone: [''],
+        gender: [''],
+        allergies: [[]],
+        inputTag: [''],
+        emergencyContact: this.fb.group({
+          name: [''],
+          email: [''],
+          phone: ['']
+        })
+      });
+  
+      this.loadPatientData('87557716-193c-4f53-964f-825e27cabe0b'); // Passe o ID do paciente
+    }
 
-  myForm: FormGroup;
+    loadPatientData(id: string): void {
+      this.patientService.getPatientById(id).subscribe(
+        (patient: Patient) => {
+          console.log('Dados do paciente:', patient);
+          this.myForm.patchValue({
+            id: patient.id,
+            name: patient.name,
+            dateOfBirth: patient.dateOfBirth,
+            medicalRecordNumber: patient.medicalRecordNumber,
+            email: patient.email,
+            phone: patient.phone,
+            gender: patient.gender,
+            allergies: patient.allergies,
+            emergencyContact: {
+              name: patient.emergencyContactName,
+              email: patient.emergencyContactEmail,
+              phone: patient.emergencyContactPhone
+            }   
+          });
+
+          this.openModal();
+          this.cdr.detectChanges();
+        },
+        (error) => {
+          console.error('Erro ao carregar os dados do paciente', error);
+        }
+      );
+    }
+
   tags: string[] = [];  // Array para armazenar as tags
 
 
@@ -57,9 +98,6 @@ export class PatientComponent {
       this.myForm.markAllAsTouched();  // Marca todos os campos para mostrar feedback de validação
     }
   }
-
-
-
 
   // Método para adicionar uma tag ao array
   addTag(event: KeyboardEvent) {
@@ -76,13 +114,13 @@ export class PatientComponent {
       inputTagControl?.setValue('');  // Limpa o campo de input usando setValue
     }
   }
-
-
-
   // Método para remover uma tag pelo índice
   removeTag(index: number) {
     this.tags.splice(index, 1);  // Remove a tag do array pelo índice
   }
+
+
+
 }
 
 
