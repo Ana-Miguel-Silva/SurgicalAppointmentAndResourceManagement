@@ -35,8 +35,17 @@ export class AdminComponent {
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       agree: [false, Validators.requiredTrue]
     });
-    
+
     this.staffForm = this.fb.group({});
+    this.staffCreationForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      role: ['', Validators.required],
+      specialization: ['', Validators.required],
+      inputTag: new FormControl('')
+    });
     this.patientForm = this.fb.group({});
   }
 
@@ -57,6 +66,7 @@ export class AdminComponent {
   myForm: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
+  staffCreationForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -168,7 +178,7 @@ export class AdminComponent {
       console.log("Formulário inválido");
     }
   }
-  
+
   */
 
   onSubmitPatient(){}
@@ -201,13 +211,13 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.getAllstaffsProfiles();
         },
         error: (error) => {
           console.error('Error deactivating staff:', error);
           this.errorMessage = 'Failed to deactivate staff profiles!';
         }
       });
-      this.getAllstaffsProfiles();
     }
   }
 
