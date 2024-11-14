@@ -39,7 +39,28 @@ export default class UserInteraction {
         ambientLightFolder.addColor(ambientColor, "color").onChange(color => colorCallback(ambientLight, color));
         ambientLightFolder.add(lights.object.ambientLight, "intensity", 0.0, 1.0, 0.01);
 
-        // Create point light #1 folder
+             
+        const directionalLightFolder = lightsFolder.addFolder("Directional Light");
+        const directionalLight = lights.object.directionalLight; // Acessa a luz direcional corretamente
+
+        // Configura as propriedades da luz direcional
+        const directionalColor = { color: "#" + new THREE.Color(directionalLight.color).getHexString() };
+        directionalLightFolder.addColor(directionalColor, "color").onChange(color => colorCallback(directionalLight, color));
+        directionalLightFolder.add(directionalLight, "intensity", 0.0, 5.0, 0.1);
+
+        // Ajusta a posição da luz direcional
+        directionalLightFolder.add(directionalLight.position, "x", -20, 20, 0.1);
+        directionalLightFolder.add(directionalLight.position, "y", -20, 20, 0.1);
+        directionalLightFolder.add(directionalLight.position, "z", -20, 20, 0.1);
+
+        // Ativa ou desativa o castShadow e atualiza o renderer
+        directionalLightFolder.add(directionalLight, "castShadow").onChange(enabled => {
+            directionalLight.castShadow = enabled;
+            renderer.shadowMap.needsUpdate = true;
+        });
+
+
+        /*// Create point light #1 folder
         const pointLight1Folder = lightsFolder.addFolder("Point light #1");
         const pointLight1 = lights.object.pointLight1;
         const pointColor1 = { color: "#" + new THREE.Color(pointLight1.color).getHexString() };
@@ -59,7 +80,7 @@ export default class UserInteraction {
         pointLight2Folder.add(lights.object.pointLight2, "distance", 0.0, 20.0, 0.01);
         pointLight2Folder.add(lights.object.pointLight2.position, "x", -10.0, 10.0, 0.01);
         pointLight2Folder.add(lights.object.pointLight2.position, "y", 0.0, 20.0, 0.01);
-        pointLight2Folder.add(lights.object.pointLight2.position, "z", -10.0, 10.0, 0.01);
+        pointLight2Folder.add(lights.object.pointLight2.position, "z", -10.0, 10.0, 0.01);*/
 
         // Create the shadows folder
         const shadowsFolder = this.gui.addFolder("Shadows");
