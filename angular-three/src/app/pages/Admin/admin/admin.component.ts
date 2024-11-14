@@ -31,6 +31,15 @@ export class AdminComponent {
       inputTag: new FormControl('')  
     });
     this.staffForm = this.fb.group({});
+    this.staffCreationForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      role: ['', Validators.required],
+      specialization: ['', Validators.required],
+      inputTag: new FormControl('')  
+    });
   }
 
   selectedStaffId: number | null = null;
@@ -42,6 +51,7 @@ export class AdminComponent {
 
   myForm: FormGroup;
   staffForm: FormGroup;
+  staffCreationForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -96,13 +106,13 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.getAllstaffsProfiles();
         },
         error: (error) => {
           console.error('Error deactivating staff:', error);
           this.errorMessage = 'Failed to deactivate staff profiles!';
         }
       });
-      this.getAllstaffsProfiles();
     }
   }
   
