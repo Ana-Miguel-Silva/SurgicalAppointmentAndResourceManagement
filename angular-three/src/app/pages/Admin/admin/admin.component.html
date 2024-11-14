@@ -298,6 +298,7 @@
       <div>
 
       <form  class="row g-3 needs-validation" novalidate="">
+        <div class="col-md-12"></div>
           <div class="col-md-2"></div>
 
           <div class="col-md-6">
@@ -310,7 +311,7 @@
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span>
             <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
-              <option selected="" disabled="" value="">Choose Filter</option>
+              <option selected="" disabled="" value="" hidden>Filters</option>
               <option>Name (WIP)</option>
               <option>Id</option>
               <option>Medical Record Number</option>
@@ -383,6 +384,105 @@
 
   </div>
 </div>
+<div [ngStyle]="{'display': isModalOpen('registerStaffModal') ? 'block' : 'none'}" id="registerStaffModal"  class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('registerStaffModal')" class="close">&times;</span>
+      <div>
+
+      <form  [formGroup]="staffCreationForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
+        <div class="col-md-12"></div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" id="validationStaffName" placeHolder="Name" required="">
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
+              <input type="text" class="form-control" id="validationStaffEmail" aria-describedby="inputGroupPrepend" required="" placeholder="Email">
+              <div class="invalid-feedback">
+                Please choose a email.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+              <!--oninput="this.value = this.value.slice(0, 9)"-->
+              <input type="number" class="form-control" id="validationStaffPhone" min="0" max="999999999" placeholder="Phone Number" >
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <div class="col-md-3"></div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <select class="form-select" id="validationRole" required="">
+                <option selected="" disabled="" value="" hidden>Role</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="NURSE">Nurse</option>
+                <option value="TECHNICIAN">Technician</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid state.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <select class="form-select" id="validationSpecialization" required="">
+                <option selected="" disabled="" value="" hidden>Specialization</option>
+                <option value="PEDIATRICS">Pediatrics</option>
+                <option value="SURGERY">Surgery</option>
+                <option value="CARDIOLOGY">Cardiology</option>
+                <option value="ORTHOPEDICS">Orthopedics</option>
+                <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
+                <option value="NEUROLOGY">Neurology</option>
+                <option value="ONCOLOGY">Oncology</option>
+                <option value="GYNECOLOGY">Gynecology</option>
+                <option value="OBSTETRICS">Obstetrics</option>
+                <option value="RADIOLOGY">Radiology</option>
+                <option value="UROLOGY">Urology</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid state.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <hr>
+          <div class="col-md-12"></div>
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart">
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd">
+              <span class="input-group-text" id="add"><i class="bi bi-plus-lg"></i></span>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="fs-5 btn btn-outline-primary" type="submit">Add Staff Profile <i class="bi bi-plus-square-fill"></i></button>
+          </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

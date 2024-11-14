@@ -20,7 +20,7 @@ export default class Ground {
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         const geometry = new THREE.PlaneGeometry(this.width, this.height);
-        const material = new THREE.MeshPhongMaterial({ color: 0xffffff  , map: texture  });
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff  , map: texture  });
         this.object = new THREE.Mesh(geometry, material);
         this.object.rotation.x = -Math.PI / 2.0;
         this.object.castShadow = false;

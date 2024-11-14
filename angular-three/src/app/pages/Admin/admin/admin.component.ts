@@ -36,8 +36,17 @@ export class AdminComponent {
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       agree: [false, Validators.requiredTrue]
     });
-    
+
     this.staffForm = this.fb.group({});
+    this.staffCreationForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      role: ['', Validators.required],
+      specialization: ['', Validators.required],
+      inputTag: new FormControl('')
+    });
     this.patientForm = this.fb.group({});
   }
 
@@ -58,6 +67,7 @@ export class AdminComponent {
   myForm: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
+  staffCreationForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -89,29 +99,29 @@ export class AdminComponent {
   // Método para submeter o formulário
   onSubmit() {
     const token = this.authService.getToken();
-  
+
     if (!token) {
       alert('You are not logged in!');
       return;
     }
-  
+
     if (this.myForm.valid) {
       const headers = new HttpHeaders({
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       });
-  
+
       // Define o campo allergies como um array com as tags
       //this.myForm.patchValue({ allergies: this.tags });
 
       //const formattedAllergies = JSON.stringify(this.tags);
       //this.myForm.patchValue({ allergies: this.tags });
       this.myForm.patchValue({ appointmentHistory: this.appointmentHistory });
-  
+
       // Obtém os valores do formulário
       const formData = this.myForm.value;
       const apiUrl = 'https://localhost:5001/api/Patients/register';
-      
+
       //TODO: Adicionar opção de historico de appointments
       // Enviar os dados diretamente com HttpClient
       this.http.post(apiUrl, formData, { headers })
@@ -137,7 +147,7 @@ export class AdminComponent {
       console.log("Formulário inválido");
     }
   }
-  
+
   onSubmitPatient(){}
 
   onSubmitStaff(){}
@@ -160,13 +170,13 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.getAllstaffsProfiles();
         },
         error: (error) => {
           console.error('Error deactivating staff:', error);
           this.errorMessage = 'Failed to deactivate staff profiles!';
         }
       });
-      this.getAllstaffsProfiles();
     }
   }
 
