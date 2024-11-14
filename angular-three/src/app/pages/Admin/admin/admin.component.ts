@@ -29,7 +29,8 @@ export class AdminComponent {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       gender: ['', Validators.required],
-      inputTag: [''], // Controlador para o campo de "Allergies"
+      appointmentHistory: [''],
+      //allergies: [''], // Controlador para o campo de "Allergies"
       emergencyContactName: ['', Validators.required],
       emergencyContactEmail: ['', [Validators.required, Validators.email]],
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
@@ -64,6 +65,8 @@ export class AdminComponent {
   staffsProfiles: any[] = [];
   searchTerm: string = '';
   filterField: string = '';
+  appointmentHistory: string[] = [];
+
 
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
@@ -85,101 +88,57 @@ export class AdminComponent {
 
   // Método para submeter o formulário
   onSubmit() {
-
-
     const token = this.authService.getToken();
-
-
+  
     if (!token) {
       alert('You are not logged in!');
       return;
     }
-
+  
     if (this.myForm.valid) {
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+  
+      // Define o campo allergies como um array com as tags
+      //this.myForm.patchValue({ allergies: this.tags });
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-      this.myForm.patchValue({ inputTag: this.tags });
-
+      //const formattedAllergies = JSON.stringify(this.tags);
+      //this.myForm.patchValue({ allergies: this.tags });
+      this.myForm.patchValue({ appointmentHistory: this.appointmentHistory });
+  
       // Obtém os valores do formulário
       const formData = this.myForm.value;
-      const apiUrl = 'https://localhost:5001/api/Patients/register'; // URL da sua API
-
+      const apiUrl = 'https://localhost:5001/api/Patients/register';
+      
+      //TODO: Adicionar opção de historico de appointments
       // Enviar os dados diretamente com HttpClient
-      this.http.post(apiUrl, formData,{ headers })
-      .subscribe(
-        response => {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Formulário submetido com sucesso"
-          });
-          // Redefinir o formulário após o envio, se desejado
-          this.myForm.reset();
-        },
-        error => {
-          console.error("Erro ao submeter o formulário", error);
-        }
-      );
-
+      this.http.post(apiUrl, formData, { headers })
+        .subscribe(
+          response => {
+            Swal.fire({
+              icon: "success",
+              title: "Formulário submetido com sucesso",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false
+            });
+            this.myForm.reset(); // Redefinir o formulário após o envio
+            this.tags = []; // Limpar o array de tags após o envio
+          },
+          error => {
+            console.error("Erro ao submeter o formulário", error);
+          }
+        );
     } else {
-      // Marque todos os campos como tocados para exibir as mensagens de erro
-      this.myForm.markAllAsTouched();
-      console.log("Formulário inválido");
-    }
-
-  }
-
-  /*
-  onSubmit() {
-    if (this.myForm.valid) {
-      // Obtém os valores do formulário
-      const formData = this.myForm.value;
-      const apiUrl = 'https://sua-api.com/endpoint'; // URL da sua API
-
-      // Enviar os dados diretamente com HttpClient
-      this.http.post(apiUrl, formData).subscribe(
-        response => {
-          console.log("Formulário submetido com sucesso", response);
-          // Redefinir o formulário após o envio, se desejado
-          this.myForm.reset();
-        },
-        error => {
-          console.error("Erro ao submeter o formulário", error);
-        }
-      );
-
-    } else {
-      // Marque todos os campos como tocados para exibir as mensagens de erro
       this.myForm.markAllAsTouched();
       console.log("Formulário inválido");
     }
   }
   
-  */
-
   onSubmitPatient(){}
-
-
-
-
-
-
-
-
 
   onSubmitStaff(){}
   deactivateStaff(){
@@ -241,20 +200,38 @@ export class AdminComponent {
 
 
 
+  // Método para adicionar uma data ao array
+  addDate(event: Event) {
+    const formData = this.myForm.value;
+    console.log(formData);
+    const input = event.target as HTMLInputElement;
+    const selectedDate = input.value;
+    if (selectedDate) {
+      this.appointmentHistory.push(selectedDate);  // Adiciona a data ao array
+      input.value = '';  // Limpa o campo de input
+    }
+  }
+
+  // Método para remover uma data pelo índice
+  removeDate(index: number) {
+    this.appointmentHistory.splice(index, 1);  // Remove a data do array pelo índice
+  }
+
+
 
   // Método para adicionar uma tag ao array
   addTag(event: KeyboardEvent) {
-    const inputTagControl = this.myForm.get('inputTag');
-    const inputTag = inputTagControl?.value.trim(); // Obtém o valor atual do input
-    console.log(inputTagControl);
-    console.log(inputTag);
+    const allergiesControl = this.myForm.get('allergies');
+    const allergies = allergiesControl?.value.trim(); // Obtém o valor atual do input
+    console.log(allergiesControl);
+    console.log(allergies);
 
 
 
-    if (event.key === 'Enter' && inputTag) {
+    if (event.key === 'Enter' && allergies) {
       event.preventDefault();  // Evita o envio do formulário
-      this.tags.push(inputTag);  // Adiciona a tag ao array se o valor não estiver vazio
-      inputTagControl?.setValue('');  // Limpa o campo de input usando setValue
+      this.tags.push(allergies);  // Adiciona a tag ao array se o valor não estiver vazio
+      allergiesControl?.setValue('');  // Limpa o campo de input usando setValue
     }
   }
 

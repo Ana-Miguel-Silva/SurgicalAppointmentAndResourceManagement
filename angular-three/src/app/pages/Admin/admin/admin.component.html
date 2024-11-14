@@ -133,8 +133,21 @@
                 Please select a valid state.
               </div>
             </div>
-          
+
             <div class="col-md-6">
+              <label for="appointmentHistory" class="form-label">Appointment History</label>
+              <div class="dates-input">
+                <ul id="dates">
+                  <li *ngFor="let date of appointmentHistory; let i = index" class="date">
+                    {{ date }}
+                    <button class="delete-button" (click)="removeDate(i)">X</button>
+                  </li>
+                </ul>
+                <input type="date" id="input-date" (change)="addDate($event)" placeholder="Add appointment date" />
+              </div>
+            </div>
+          
+            <!--<div class="col-md-6">
               <label for="validationCustom06" class="form-label">Allergies</label>
               <div class="tags-input">
                 <ul id="tags">
@@ -143,9 +156,9 @@
                     <button class="delete-button" (click)="removeTag(i)">X</button>
                   </li>
                 </ul>
-                <input type="text" id="input-tag" formControlName="inputTag" (keydown)="addTag($event)" placeholder="Enter allergies name" />
+                <input type="text" id="input-tag" formControlName="allergies" (keydown)="addTag($event)" placeholder="Enter allergies name" />
               </div>
-            </div>
+            </div>-->
           
             <h5 style="margin-top:1cm" class="form-label">Emergency Contact</h5>
           
