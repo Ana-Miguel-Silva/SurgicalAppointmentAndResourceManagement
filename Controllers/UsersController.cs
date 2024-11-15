@@ -6,6 +6,10 @@ using DDDSample1.ApplicationService.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
+using DDDSample1.Domain.Patients;
+using DDDSample1.ApplicationService.Patients;
+using Newtonsoft.Json;
+using DDDSample1.ApplicationService.Logging;
 
 namespace DDDSample1.Controllers
 {
@@ -14,15 +18,19 @@ namespace DDDSample1.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly PatientService _patientService;
         private readonly AuthorizationService _authService;
         private readonly IMailService _mailService;
+        private readonly LogService _logService;
 
 
-        public UsersController(UserService service, AuthorizationService authService, IMailService mailService)
+        public UsersController(UserService service, AuthorizationService authService, IMailService mailService, PatientService patientService, LogService logService)
         {
             _service = service;
             _authService = authService;
             _mailService = mailService;
+            _patientService = patientService;
+             _logService = logService;
             
         }
 
@@ -87,6 +95,25 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
+        }
+
+        
+
+        [HttpPost("registerPatient")]
+
+        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto, string userEmail)
+        {
+              
+                var result = await _patientService.AddAsync(dto, Role.PATIENT);
+
+                if (result == null)
+                {
+                    return BadRequest("Wasn't possible to create the patient.");
+                }
+
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), userEmail);
+
+                return result;           
         }
 
 

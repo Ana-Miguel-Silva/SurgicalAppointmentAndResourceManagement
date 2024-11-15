@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class PatientService {
-  private apiUrl = 'https://localhost:5001/api/Patients'; // Altere para a URL do seu backend
+  private apiUrl = 'https://localhost:5001/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -21,6 +21,9 @@ export class PatientService {
 
     return this.http.get<Patient>(`https://localhost:5001/api/Patients/${id}`,{ headers });
   }
+
+
+  
 
 
 }
