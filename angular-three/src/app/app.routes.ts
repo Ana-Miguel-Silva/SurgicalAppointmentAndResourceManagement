@@ -5,7 +5,7 @@ import { PatientComponent } from './pages/Patient/patient/patient.component';
 import { AuthGuard } from './Guard/AuthGuard';
 import { DoctorComponent } from './pages/Doctor/doctor/doctor.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UserComponent } from './pages/user/user.component';
+import { UserComponent } from './pages/Utilizador/user.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
