@@ -83,7 +83,7 @@
                 Looks good!
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="validationCustom02" class="form-label">Date of Birth</label>
               <input type="date" class="form-control" id="validationCustom02" formControlName="dateOfBirth" required="">
@@ -91,7 +91,7 @@
                 Looks good!
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="validationCustomUsername" class="form-label">User Email</label>
               <div class="input-group has-validation">
@@ -102,7 +102,7 @@
                 </div>
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="validationCustomUsername" class="form-label">Email</label>
               <div class="input-group has-validation">
@@ -113,7 +113,7 @@
                 </div>
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="validationCustom02" class="form-label">Phone</label>
               <input type="number" class="form-control" id="validationCustom02" formControlName="phone" min="0" max="999999999" required="">
@@ -121,7 +121,7 @@
                 Looks good!
               </div>
             </div>
-          
+
             <div class="col-md-3">
               <label for="validationCustom04" class="form-label">Gender</label>
               <select class="form-select" id="validationCustom04" formControlName="gender" required="">
@@ -146,7 +146,7 @@
                 <input type="date" id="input-date" (change)="addDate($event)" placeholder="Add appointment date" />
               </div>
             </div>
-          
+
             <!--<div class="col-md-6">
               <label for="validationCustom06" class="form-label">Allergies</label>
               <div class="tags-input">
@@ -159,9 +159,9 @@
                 <input type="text" id="input-tag" formControlName="allergies" (keydown)="addTag($event)" placeholder="Enter allergies name" />
               </div>
             </div>-->
-          
+
             <h5 style="margin-top:1cm" class="form-label">Emergency Contact</h5>
-          
+
             <div class="col-md-4">
               <label for="emergencyContactName" class="form-label">Name</label>
               <input type="text" class="form-control" id="emergencyContactName" formControlName="emergencyContactName" required="">
@@ -169,7 +169,7 @@
                 Looks good!
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="emergencyContactEmail" class="form-label">Email</label>
               <input type="email" class="form-control" id="emergencyContactEmail" formControlName="emergencyContactEmail" required="">
@@ -177,7 +177,7 @@
                 Please choose a valid email.
               </div>
             </div>
-          
+
             <div class="col-md-4">
               <label for="emergencyContactPhone" class="form-label">Phone</label>
               <input type="number" class="form-control" id="emergencyContactPhone" formControlName="emergencyContactPhone" min="0" max="999999999" required="">
@@ -185,7 +185,7 @@
                 Looks good!
               </div>
             </div>
-          
+
             <div class="col-12">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="invalidCheck" formControlName="agree" required="">
@@ -197,7 +197,7 @@
                 </div>
               </div>
             </div>
-          
+
             <div class="col-12">
               <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid">Submit form</button>
             </div>
@@ -304,13 +304,13 @@
           <div class="col-md-6">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
+              <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilter2Change()">
             </div>
           </div>
           <div class="col-md-2">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span>
-            <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
+            <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilter2Change()" required>
               <option selected="" disabled="" value="" hidden>Filters</option>
               <option>Name (WIP)</option>
               <option>Id</option>
@@ -355,7 +355,7 @@
                       <td>{{ request.specialization }}</td>
                       <td>{{ request.email.fullEmail }}</td>
                       <td>{{ request.phoneNumber.number }}</td>
-                      <td>{{ request.active }}</td>
+                      <td id="active_{{ request.staffId }}">{{ request.active }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -367,7 +367,7 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <button class="fs-5 btn btn-outline-info" (click)="viewStaff()">View <i class="bi bi-info-square-fill"></i></button>
-            <button class="fs-5 btn btn-outline-warning">Edit <i class="bi bi-pencil-square"></i></button>
+            <button class="fs-5 btn btn-outline-warning" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
             <button class="fs-5 btn btn-outline-danger" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
           </div>
 
@@ -389,12 +389,12 @@
       <span (click)="closeModal('registerStaffModal')" class="close">&times;</span>
       <div>
 
-      <form  [formGroup]="staffCreationForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
+      <form  [formGroup]="staffCreationForm" (ngSubmit)="createStaff()" class="row g-3 needs-validation" novalidate="">
         <div class="col-md-12"></div>
           <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
-              <input type="text" class="form-control" id="validationStaffName" placeHolder="Name" required="">
+              <input type="text" class="form-control" id="validationStaffName" formControlName="name" placeHolder="Name" required="">
               <div class="valid-feedback">
                 Looks good!
               </div>
@@ -403,7 +403,7 @@
           <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
-              <input type="text" class="form-control" id="validationStaffEmail" aria-describedby="inputGroupPrepend" required="" placeholder="Email">
+              <input type="text" class="form-control" id="validationStaffEmail" formControlName="email" aria-describedby="inputGroupPrepend" required="" placeholder="Email">
               <div class="invalid-feedback">
                 Please choose a email.
               </div>
@@ -413,7 +413,7 @@
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
               <!--oninput="this.value = this.value.slice(0, 9)"-->
-              <input type="number" class="form-control" id="validationStaffPhone" min="0" max="999999999" placeholder="Phone Number" >
+              <input type="number" class="form-control" id="validationStaffPhone" formControlName="phoneNumber" min="0" max="999999999" placeholder="Phone Number" >
               <div class="valid-feedback">
                 Looks good!
               </div>
@@ -425,7 +425,7 @@
           <div class="col-md-3">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-              <select class="form-select" id="validationRole" required="">
+              <select class="form-select" id="validationRole" formControlName="role" required="">
                 <option selected="" disabled="" value="" hidden>Role</option>
                 <option value="DOCTOR">Doctor</option>
                 <option value="NURSE">Nurse</option>
@@ -440,7 +440,7 @@
           <div class="col-md-3">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-              <select class="form-select" id="validationSpecialization" required="">
+              <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
                 <option selected="" disabled="" value="" hidden>Specialization</option>
                 <option value="PEDIATRICS">Pediatrics</option>
                 <option value="SURGERY">Surgery</option>

@@ -5,7 +5,8 @@ import { ModalService } from './modal.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+
 
 // or via CommonJS
 @Component({
@@ -39,13 +40,14 @@ export class AdminComponent {
 
     this.staffForm = this.fb.group({});
     this.staffCreationForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      //firstName: ['', Validators.required],
+      //lastName: ['', Validators.required],
+      name: ['', Validators.required],
       email: ['', Validators.required],
-      phone: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
-      inputTag: new FormControl('')
+      slots: [''],
     });
     this.patientForm = this.fb.group({});
   }
@@ -76,6 +78,7 @@ export class AdminComponent {
   searchTerm: string = '';
   filterField: string = '';
   appointmentHistory: string[] = [];
+  slots: string[] = [];
 
 
   /*onBackdropClick(event: MouseEvent) {
@@ -155,6 +158,14 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -163,20 +174,68 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      window.alert("Please select a staff member to deactivate.");
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um membro de Staff.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
     } else {
-      console.log(`Deactivating staff ID: ${this.selectedStaffId}`);
-      this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-          this.getAllstaffsProfiles();
-        },
-        error: (error) => {
-          console.error('Error deactivating staff:', error);
-          this.errorMessage = 'Failed to deactivate staff profiles!';
+      if (document.getElementById("active_"+this.selectedStaffId)?.innerText == "false"){
+        Swal.fire({
+          icon: "error",
+          title: "Perfil já está desativado.",
+          toast: true,
+          position: "bottom-right",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return
+      }
+      Swal.fire({
+        title: "Desativar este Perfil?",
+        text: "Não é possível reverter esta decisão.",
+        showCancelButton: true,
+        confirmButtonText: "Desativar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          console.log(`Deactivating staff ID: ${this.selectedStaffId}`);
+          this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+          .subscribe({
+            next: (response) => {
+              console.log(response);
+              this.getAllstaffsProfiles();
+              Swal.fire({
+                icon: "success",
+                title: "Perfil desativado com sucesso",
+                toast: true,
+                position: "top-end",
+                timer: 3000,
+                showConfirmButton: false
+              });
+            },
+            error: (error) => {
+              console.error('Error deactivating staff:', error);
+              this.errorMessage = 'Failed to deactivate staff profiles!';
+              Swal.fire({
+                icon: "error",
+                title: "Não foi possível desativar o perfil",
+                toast: true,
+                position: "top-end",
+                timer: 3000,
+                showConfirmButton: false
+              });
+            }
+          });
+        } else if (result.isDenied) {
         }
       });
+      
     }
   }
 
@@ -184,6 +243,14 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -192,7 +259,14 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      window.alert("Please select a staff member to view.");
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um membro de Staff.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
       this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -208,6 +282,38 @@ export class AdminComponent {
     }
   }
 
+  editStaff(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedStaffId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um membro de Staff.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      
+    }
+  }
 
 
   // Método para adicionar uma data ao array
@@ -339,5 +445,59 @@ export class AdminComponent {
   }
 
 
+  createStaff(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    console.log(`Creating new staff ID`);
+
+    /*this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+    .subscribe({
+      next: (response) => {
+        console.log(response);
+        this.getAllstaffsProfiles();
+      },
+      error: (error) => {
+        console.error('Error deactivating staff:', error);
+        this.errorMessage = 'Failed to deactivate staff profiles!';
+      }
+    });*/
+    this.staffCreationForm.patchValue({ slots: this.slots });
+    const formData = this.staffCreationForm.value;
+    console.log(formData);
+    console.log(JSON.stringify(formData));
+    this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Staff Profile Created!';
+          this.errorMessage = null;
+          Swal.fire({
+            icon: "success",
+            title: "Formulário submetido com sucesso",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.myForm.reset();
+          this.getAllstaffsProfiles(); // Refresh the list after creation
+        },
+        error: (error) => {
+          console.error('Error creating staff:', error);
+          this.errorMessage = 'Failed to create staff!';
+          this.successMessage = null;
+        }
+      });
+  }
 
 }
