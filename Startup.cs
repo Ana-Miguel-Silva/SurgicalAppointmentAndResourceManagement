@@ -285,7 +285,7 @@ namespace DDDSample1
                 var patientService = scope.ServiceProvider.GetRequiredService<PatientService>();
 
                 var patientUsername = "patient";
-                var patientUserEmail = "1221133@isep.ipp.pt";
+                
                 var patientEmail = "avlismana@gmail.com";
                 var patientRole = "Patient";
                 DateTime dateOfBirth = DateTime.Now.AddYears(-30);
@@ -294,12 +294,12 @@ namespace DDDSample1
                 
   
 
-                Patient existingPatientByUserEmail = await patientService.GetPatientByEmailAsync(patientUserEmail);
+                Patient existingPatientByUserEmail = await patientService.GetPatientByEmailAsync(patientEmail);
                 Patient existingPatientByEmail = await patientService.GetPatientByEmailAsync(patientEmail);
 
                 if (existingPatientByEmail == null && existingPatientByUserEmail == null)
                 {
-                    var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientUserEmail,patientEmail, patientGender);
+                    var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientEmail,patientEmail, patientGender);
 
                     await patientService.AddAsync(patientDto, patientRole);
                 }

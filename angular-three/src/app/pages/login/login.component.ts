@@ -33,11 +33,9 @@ export class LoginComponent {
         console.log(token);
         alert('Login Success!');
         this.authService.setToken(token);
+        this.navigateToRoleBasedPage();
 
-        if (this.authService.isAdmin()) this.router.navigate(['/admin']);
-        else if (this.authService.isPatient()) this.router.navigate(['/patient']);
-        else if (this.authService.isDoctor()) this.router.navigate(['/doctor']);
-
+       
       },
       error: error => {
         console.error(error);
@@ -47,5 +45,18 @@ export class LoginComponent {
         console.log('Request completed');
       }
     });
+
+  }
+
+  private navigateToRoleBasedPage() {
+    if (this.authService.isAdmin()) this.router.navigate(['/admin']);
+    else if (this.authService.isPatient()) this.router.navigate(['/patient']);
+    else if (this.authService.isDoctor()) this.router.navigate(['/doctor']);
+  }
+
+  // Login pelo Google
+  onGoogleLogin() {
+    // Redireciona para o backend Google OAuth endpoint
+    window.location.href = 'https://localhost:5001/api/Patients/ExternalIAM';
   }
 }

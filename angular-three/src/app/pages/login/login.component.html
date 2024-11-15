@@ -121,6 +121,7 @@ body {
 	border-bottom-color: #6A679E;
 }
 
+.google-login-btn,
 .login__submit {
 	background: #fff;
 	font-size: 14px;
@@ -196,6 +197,10 @@ body {
 				<button class="button login__submit" (click)="onLogin()">
 					<span class="button__text">Log In</span>
 					<i class="button__icon fas fa-chevron-right"></i>
+				</button>
+
+				<button (click)="onGoogleLogin()" class="google-login-btn">
+					Login with Google
 				</button>
 			</form>
 		</div>

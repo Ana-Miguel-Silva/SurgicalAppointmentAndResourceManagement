@@ -164,6 +164,7 @@ namespace DDDSample1.Controllers
 
 
             var patientRecord = await _service.GetPatientByEmailAsync(emailClaim);
+     
 
             if (patientRecord == null)
             {
@@ -183,10 +184,9 @@ namespace DDDSample1.Controllers
             if(user.Role.ToUpper() != Role.PATIENT) return BadRequest("The user email is not associated to a Patient");
 
             var token = _authService.GenerateToken(user);
+            var redirectUrl = $"http://localhost:4200/patient?token={token}";
 
-            var redirectUrl = $"http://localhost:4200/patient";
-
-            return Ok($"Token para autenticação: {token} \r\r Please copy the token and click here: " + redirectUrl);
+            return Redirect(redirectUrl);
 
         }
 

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Patient } from '../pages/Patient/patient/patient.model'; // Crie um modelo de paciente conforme sua estrutura de dados
-
+import { Patient } from '../pages/Patient/patient/patient.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +13,13 @@ import { Patient } from '../pages/Patient/patient/patient.model'; // Crie um mod
 export class PatientService {
   private apiUrl = 'https://localhost:5001/api/Patients'; // Altere para a URL do seu backend
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getPatientById(id: string): Observable<Patient> {
-    return this.http.get<Patient>(`https://localhost:5001/api/Patients/${id}`);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<Patient>(`https://localhost:5001/api/Patients/${id}`,{ headers });
   }
 
 
