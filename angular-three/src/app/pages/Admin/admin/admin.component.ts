@@ -49,6 +49,12 @@ export class AdminComponent {
       specialization: ['', Validators.required],
       slots: [''],
     });
+    this.staffEditionForm = this.fb.group({
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      specialization: ['', Validators.required],
+      slots: [''],
+    });
     this.patientForm = this.fb.group({});
   }
 
@@ -70,11 +76,14 @@ export class AdminComponent {
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
+  staffEditionForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
   staffsProfiles: any[] = [];
+  staffProfileSingle: any = null;
+  availabilitySlots: any[] = [];
   searchTerm: string = '';
   filterField: string = '';
   appointmentHistory: string[] = [];
@@ -273,6 +282,9 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.staffProfileSingle = response;
+          this.availabilitySlots = this.staffProfileSingle.slots;
+          this.openModal('viewStaffModal');
         },
         error: (error) => {
           console.error('Error viewing staff:', error);
@@ -311,8 +323,74 @@ export class AdminComponent {
         showConfirmButton: false
       });
     } else {
-      
+      console.log(`Viewing staff ID: ${this.selectedStaffId}`);
+      this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.staffProfileSingle = response;
+          this.availabilitySlots = this.staffProfileSingle.slots;
+          this.staffEditionForm.get('email')?.setValue(this.staffProfileSingle.email.fullEmail);
+          this.staffEditionForm.get('phone')?.setValue(this.staffProfileSingle.phoneNumber.number);
+          this.staffEditionForm.get('specialization')?.setValue(this.staffProfileSingle.specialization);
+          this.openModal('editStaffModal');
+        },
+        error: (error) => {
+          console.error('Error viewing staff:', error);
+          this.errorMessage = 'Failed to view staff profiles!';
+        }
+      });
     }
+  }
+
+  editStaffPost(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    console.log(`Editing Staff`);
+    const formData = this.staffEditionForm.value;
+    console.log(formData);
+    console.log(JSON.stringify(formData));
+    this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Staff Profile Edited!';
+          this.errorMessage = null;
+          Swal.fire({
+            icon: "success",
+            title: "Perfil Editado com sucesso",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllstaffsProfiles(); // Refresh the list after creation
+        },
+        error: (error) => {
+          console.error('Error editing staff:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível editar o Perfil",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit staff!';
+          this.successMessage = null;
+        }
+      });
+
   }
 
 
@@ -489,11 +567,19 @@ export class AdminComponent {
             timer: 3000,
             showConfirmButton: false
           });
-          this.myForm.reset();
+          this.staffCreationForm.reset();
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
         error: (error) => {
           console.error('Error creating staff:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível criar o Perfil",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
           this.errorMessage = 'Failed to create staff!';
           this.successMessage = null;
         }

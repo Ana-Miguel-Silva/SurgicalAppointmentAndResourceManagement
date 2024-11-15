@@ -475,7 +475,173 @@
             </div>
           </div>
           <div class="col-12">
-            <button class="fs-5 btn btn-outline-primary" type="submit">Add Staff Profile <i class="bi bi-plus-square-fill"></i></button>
+            <button class="fs-5 btn btn-outline-primary" type="submit" [disabled]="staffCreationForm.invalid">Add Staff Profile <i class="bi bi-plus-square-fill"></i></button>
+          </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+
+
+
+
+<div [ngStyle]="{'display': isModalOpen('viewStaffModal') ? 'block' : 'none'}" id="viewStaffModal"  class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('viewStaffModal')" class="close">&times;</span>
+      <div *ngIf="staffProfileSingle">
+        <div  class="row g-3 needs-validation">
+        <div class="col-md-12"></div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" disabled="" value="{{ staffProfileSingle.name.firstName }} {{staffProfileSingle.name.middleNames}} {{staffProfileSingle.name.lastName}}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
+              <input type="text" class="form-control"aria-describedby="inputGroupPrepend" disabled="" value="{{ staffProfileSingle.email.fullEmail }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+              <input type="text" class="form-control"  value="{{ staffProfileSingle.phoneNumber.number }}" disabled>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <div class="col-md-3"></div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ staffProfileSingle.role }}" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ staffProfileSingle.specialization }}" disabled>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <hr>
+          <div class="col-md-12"></div>
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <span class="input-group-text" id="add">Availlability Slots</span>
+            </div>
+            <table class="table table-striped table-hover table-over">
+              <thead>
+                <tr>
+                  <tr>
+                    <th>#</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of availabilitySlots; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ request.startTime }}</td>
+                    <td>{{ request.endTime }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+
+<div [ngStyle]="{'display': isModalOpen('editStaffModal') ? 'block' : 'none'}" id="editStaffModal"  class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('editStaffModal')" class="close">&times;</span>
+      <div>
+
+      <form *ngIf="staffProfileSingle" [formGroup]="staffEditionForm" (ngSubmit)="editStaffPost()" class="row g-3 needs-validation" novalidate="">
+        <div class="col-md-12"></div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" disabled="" value="{{ staffProfileSingle.name.firstName }} {{staffProfileSingle.name.middleNames}} {{staffProfileSingle.name.lastName}}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
+              <input type="text" class="form-control" id="validationEditStaffEmail" formControlName="email" aria-describedby="inputGroupPrepend" required="">
+              <div class="invalid-feedback">
+                Please choose a email.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+              <!--oninput="this.value = this.value.slice(0, 9)"-->
+              <input type="number" class="form-control" id="validationEditStaffPhone" formControlName="phone" min="0" max="999999999" >
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <div class="col-md-3"></div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ staffProfileSingle.role }}" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
+                <option selected="" disabled="" value="" hidden>Specialization</option>
+                <option value="PEDIATRICS">Pediatrics</option>
+                <option value="SURGERY">Surgery</option>
+                <option value="CARDIOLOGY">Cardiology</option>
+                <option value="ORTHOPEDICS">Orthopedics</option>
+                <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
+                <option value="NEUROLOGY">Neurology</option>
+                <option value="ONCOLOGY">Oncology</option>
+                <option value="GYNECOLOGY">Gynecology</option>
+                <option value="OBSTETRICS">Obstetrics</option>
+                <option value="RADIOLOGY">Radiology</option>
+                <option value="UROLOGY">Urology</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid state.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12"></div>
+          <hr>
+          <div class="col-md-12"></div>
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart">
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd">
+              <span class="input-group-text" id="add"><i class="bi bi-plus-lg"></i></span>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="fs-5 btn btn-outline-warning" type="submit" [disabled]="staffEditionForm.invalid">Update Staff Profile <i class="bi bi-plus-square-fill"></i></button>
           </div>
         </form>
       </div>
