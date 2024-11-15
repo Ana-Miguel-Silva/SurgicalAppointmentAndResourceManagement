@@ -1,52 +1,204 @@
-<div class="container">
-  <h2>Create Operation Request</h2>
-  <form (ngSubmit)="onSubmit()">
-    <label for="medicalRecordNumber">Medical Record Number:</label>
-    <input type="text" id="medicalRecordNumber" [(ngModel)]="operationRequest.medicalRecordNumber.value" name="medicalRecordNumber" required />
+<!DOCTYPE html>
+<html lang="en">
 
-    <label for="operationTypeId">Operation Type ID:</label>
-    <input type="text" id="operationTypeId" [(ngModel)]="operationRequest.operationTypeId.value" name="operationTypeId" required />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin US's</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 
-    <label for="deadline">Deadline:</label>
-    <input type="datetime-local" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
+<body>
+    <h1 class="h1 title glow" style="padding: 1cm; color:white">Doctor</h1>
 
-    <label for="priority">Priority:</label>
-    <select id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
-        <option value="Urgent">Urgent</option>
-        <option value="Elective">Elective</option>
-        <option value="Emergency">Emergency</option>
-    </select>
+    <div class="container">
 
-    <button type="submit">Create Request</button>
-  </form>
+        <div class="table-wrapper">
+            <!-- Action Buttons Section -->
+            <div class="table-title">
+                <h2>Operation Requests</h2>
+                <div class="action-buttons">
+                    <button (click)="openModal('createRequestModal')">
+                        <i class="bi bi-plus"></i> Insert
+                    </button>
+                    <button (click)="openModal('filterRequestModal')">
+                        <i class="bi bi-filter"></i> Filter Requests
+                    </button>
+                </div>
+            </div>
 
-  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient ID</th>
+                        <th>Operation Type ID</th>
+                        <th>Deadline</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let request of filteredRequests">
+                        <td>{{ request.id }}</td>
+                        <td>{{ request.medicalRecordNumber.value }}</td>
+                        <td>{{ request.operationTypeId.value }}</td>
+                        <td>{{ request.deadline | date:'mediumDate' }}</td>
+                        <td>{{ request.priority }}</td>
+                        <td>
+                            <div class="d-flex">
+                                <button class="btn btn-warning" (click)="setUpdateRequest(request)" style="margin-right: 5px;">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-  <h2>Existing Operation Requests</h2>
-  <div *ngIf="operationRequests.length > 0; else noRequests">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Patient ID</th>
-          <th>Operation Type</th>
-          <th>Deadline</th>
-          <th>Priority</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let request of operationRequests">
-          <td>{{ request.id }}</td>
-          <td>{{ request.medicalRecordNumber.value }}</td>
-          <td>{{ request.operationTypeId.value }}</td>
-          <td>{{ request.deadline | date:'medium' }}</td> <!-- Use 'date' pipe -->
-          <td>{{ request.priority }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <ng-template #noRequests>
-    <p>No operation requests found.</p>
-  </ng-template>
-</div>
+    <!-- Create Operation Request Modal -->
+    <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
+        <div class="modal-content">
+            <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
+            <form (ngSubmit)="onCreateRequest()" class="row g-3 needs-validation" novalidate>
+                <h3 class="text-center">Insert New Operation Request</h3>
+
+                <!-- Medical Record Number -->
+                <div class="col-md-6">
+                    <label for="medicalRecordNumber" class="form-label">Medical Record Number</label>
+                    <input type="text" class="form-control" id="medicalRecordNumber" [(ngModel)]="operationRequest.medicalRecordNumber.value" name="medicalRecordNumber" required />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Operation Type ID -->
+                <div class="col-md-6">
+                    <label for="operationTypeId" class="form-label">Operation Type ID</label>
+                    <input type="text" class="form-control" id="operationTypeId" [(ngModel)]="operationRequest.operationTypeId.value" name="operationTypeId" required />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Deadline -->
+                <div class="col-md-6">
+                    <label for="deadline" class="form-label">Deadline</label>
+                    <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-6">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
+                        <option value="Urgent">Urgent</option>
+                        <option value="Elective">Elective</option>
+                        <option value="Emergency">Emergency</option>
+                    </select>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Create Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Filter Operation Requests Modal -->
+    <div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
+        <div class="modal-content">
+            <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
+            <form (ngSubmit)="onFilterRequests()">
+                <h3 class="text-center">Filter Operation Requests</h3>
+
+                <!-- Filter by Operation Type -->
+                <div class="mb-3">
+                    <label for="filterOperationType" class="form-label">Operation Type ID:</label>
+                    <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeId" name="filterOperationType" class="form-control" />
+                </div>
+
+                <!-- Filter by Patient ID (Medical Record Number) -->
+                <div class="mb-3">
+                    <label for="filterMedicalRecordNumber" class="form-label">Patient ID (Medical Record Number):</label>
+                    <input type="text" id="filterMedicalRecordNumber" [(ngModel)]="filter.medicalRecordNumber" name="filterMedicalRecordNumber" class="form-control" />
+                </div>
+
+                <!-- Filter by Patient Name -->
+                <div class="mb-3">
+                    <label for="filterPatientName" class="form-label">Patient Name:</label>
+                    <input type="text" id="filterPatientName" [(ngModel)]="filter.patientName" name="filterPatientName" class="form-control" />
+                </div>
+
+                <!-- Filter by Type Name -->
+                <div class="mb-3">
+                    <label for="filterRequestName" class="form-label">Operation Type Name:</label>
+                    <input type="text" id="filterRequestName" [(ngModel)]="filter.requestName" name="filterRequestName" class="form-control" />
+                </div>
+
+                <!-- Filter by Priority -->
+                <div class="mb-3">
+                    <label for="filterPriority" class="form-label">Priority:</label>
+                    <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select">
+                        <option value="">All</option>
+                        <option value="Urgent">Urgent</option>
+                        <option value="Elective">Elective</option>
+                        <option value="Emergency">Emergency</option>
+                    </select>
+                </div>
+
+                <!-- Filter Button -->
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Operation Request Modal -->
+    <div [ngStyle]="{'display': isModalOpen('updateRequestModal') ? 'block' : 'none'}" id="updateRequestModal" class="modal">
+        <div class="modal-content">
+            <span (click)="closeModal('updateRequestModal')" class="close">&times;</span>
+            <form (ngSubmit)="onUpdateRequest()">
+                <h3 class="text-center">Update Operation Request</h3>
+
+                <!-- Deadline -->
+                <div class="mb-3">
+                    <label for="updateDeadline" class="form-label">Deadline:</label>
+                    <input type="date" id="updateDeadline" [(ngModel)]="updateRequest.deadline" name="updateDeadline" class="form-control" required />
+                </div>
+
+                <!-- Priority -->
+                <div class="mb-3">
+                    <label for="updatePriority" class="form-label">Priority:</label>
+                    <select id="updatePriority" [(ngModel)]="updateRequest.priority" name="updatePriority" class="form-select" required>
+                        <option value="Urgent">Urgent</option>
+                        <option value="Elective">Elective</option>
+                        <option value="Emergency">Emergency</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div [ngStyle]="{'display': isModalOpen('deleteModal') ? 'block' : 'none'}" id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span (click)="closeModal('deleteModal')" class="close">&times;</span>
+            <div>
+                <h3 class="text-center">Confirm Delete</h3>
+                <p style="font-size: 20px;">Are you sure you want to delete this operation request?</p>
+                <button class="btn btn-danger" (click)="onDeleteRequest(updateRequest.id)" style="margin-right: 5px;">Yes, Delete</button>
+                <button class="btn btn-secondary" (click)="closeModal('deleteModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

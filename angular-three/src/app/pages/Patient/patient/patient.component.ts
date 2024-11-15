@@ -1,12 +1,11 @@
 import { ChangeDetectorRef,Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
 import { PatientService } from '../../../Services/patient.service';
 import { Patient } from '../patient/patient.model';
 import { NgModule } from '@angular/core';
 import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -35,9 +34,10 @@ export class PatientComponent {
 
 
 
-  constructor(private fb: FormBuilder, private patientService: PatientService, private cdr: ChangeDetectorRef) {}
+  constructor(  private route: ActivatedRoute,  private authService: AuthService,  private router: Router, private fb: FormBuilder, private patientService: PatientService, private cdr: ChangeDetectorRef) {}
     // Define os controles do formulário com validações
     ngOnInit(): void {
+     
       this.myForm = this.fb.group({
         id: [''],
         name: [''],
@@ -54,9 +54,20 @@ export class PatientComponent {
           phone: ['']
         })
       });
-  
-      this.loadPatientData('87557716-193c-4f53-964f-825e27cabe0b'); // Passe o ID do paciente
+
+       
+     
+    
+      // Valida o papel e carrega os dados do paciente
+      if (this.authService.isPatient()) {
+        this.loadPatientData('87557716-193c-4f53-964f-825e27cabe0b');
+      } else {
+        alert('Access denied. You are not a patient.');
+        this.router.navigate(['/login']);
+      }
     }
+
+    
 
     loadPatientData(id: string): void {
       this.patientService.getPatientById(id).subscribe(
@@ -75,7 +86,7 @@ export class PatientComponent {
               name: patient.emergencyContactName,
               email: patient.emergencyContactEmail,
               phone: patient.emergencyContactPhone
-            }   
+            }
           });
 
           this.openModal();

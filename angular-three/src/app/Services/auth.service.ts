@@ -58,4 +58,18 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
   }
+
+  isTokenValid(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+  
+    try {
+      const decodedToken:any= jwtDecode<JwtPayload & { [key: string]: any }>(token);
+      const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
+      return decodedToken.exp > currentTime; // Verifica se o token não expirou
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return false;
+    }
+  }
 }
