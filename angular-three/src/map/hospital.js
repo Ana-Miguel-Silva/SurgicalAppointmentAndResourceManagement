@@ -426,61 +426,40 @@ export default class ThumbRaiser {
     }
 
     mouseDown(event) {
-        if (event.buttons == 1 || event.buttons == 2) { // Primary or secondary button down
-            // Store current mouse position in window coordinates (mouse coordinate system: origin in the top-left corner; window coordinate system: origin in the bottom-left corner)
+        if (event.buttons == 2) { // Only handle secondary (right) mouse button
+            // Store current mouse position
             this.mousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
             // Select the camera whose view is being pointed
             const cameraView = this.getPointedViewport(this.mousePosition);
             if (cameraView != "none") {
                 if (cameraView == "mini-map") { // Mini-map camera selected
-                    if (event.buttons == 1) { // Primary button down
-                        this.dragMiniMap = true;
-                    }
+                    this.dragMiniMap = true; // Enable dragging
                 }
                 else { // One of the remaining cameras selected
                     const cameraIndex = ["fixed", "first-person", "third-person", "top"].indexOf(cameraView);
                     this.view.options.selectedIndex = cameraIndex;
                     this.setActiveViewCamera([this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][cameraIndex]);
-                    if (event.buttons == 1) { // Primary button down
-                        this.changeCameraDistance = true;
-                    }
-                    else { // Secondary button down
-                        this.changeCameraOrientation = true;
-                    }
+                    this.changeCameraOrientation = true; // Only allow changing camera orientation for right click
                 }
             }
         }
     }
+    
 
     mouseMove(event) {
-        if (event.buttons == 1 || event.buttons == 2) { // Primary or secondary button down
-            if (this.changeCameraDistance || this.changeCameraOrientation || this.dragMiniMap) { // Mouse action in progress
-                // Compute mouse movement and update mouse position
+        if (event.buttons == 2) { // Only handle secondary button (right click)
+            if (this.changeCameraOrientation || this.dragMiniMap) {
                 const newMousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
                 const mouseIncrement = newMousePosition.clone().sub(this.mousePosition);
                 this.mousePosition = newMousePosition;
-                if (event.buttons == 1) { // Primary button down
-                    if (this.changeCameraDistance) {
-                        this.activeViewCamera.updateDistance(-0.05 * (mouseIncrement.x + mouseIncrement.y));
-                        this.displayPanel();
-                    }
-                    else if (this.dragMiniMap) {
-                        const windowMinSize = Math.min(window.innerWidth, window.innerHeight);
-                        const width = this.miniMapCamera.viewport.width * windowMinSize;
-                        const height = this.miniMapCamera.viewport.height * windowMinSize;
-                        this.miniMapCamera.viewport.x += mouseIncrement.x / (window.innerWidth - width);
-                        this.miniMapCamera.viewport.y += mouseIncrement.y / (window.innerHeight - height);
-                    }
-                }
-                else { // Secondary button down
-                    if (this.changeCameraOrientation) {
-                        this.activeViewCamera.updateOrientation(mouseIncrement.multiply(new THREE.Vector2(-0.5, 0.5)));
-                        this.displayPanel();
-                    }
+                if (this.changeCameraOrientation) {
+                    this.activeViewCamera.updateOrientation(mouseIncrement.multiply(new THREE.Vector2(-0.5, 0.5)));
+                    this.displayPanel();
                 }
             }
         }
     }
+    
 
     mouseUp(event) {
         // Reset mouse move action

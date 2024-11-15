@@ -125,27 +125,7 @@ namespace DDDSample1.Controllers
             //return Forbid();
         }
 
-        [HttpPost("ExternalIAMRegister")]
-        public async Task<ActionResult<PatientDto>> ExternalIAMRegister(CreatingPatientDto dto)
-        {
-
-                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-                //var result = await _service.AddAsync(dto,user);
-
-                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var user = await _userService.GetByIdAsync(new UserId(userId));
-                var result = await _service.AddAsync(dto,user.Role.ToString());
-               
-
-                if (result == null)
-                {
-                    return BadRequest("Wasn't possible to create the patient.");
-                }
-
-                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), result.UserEmail.FullEmail);
-
-                return result;
-        }
+        
 
         [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleResponse()
@@ -168,7 +148,7 @@ namespace DDDSample1.Controllers
 
             if (patientRecord == null)
             {
-                var verificationLinkRegister = $"http://localhost:4200/patient";
+                var verificationLinkRegister = $"http://localhost:4200/user?email={emailClaim}";
 
                 var emailRequestRegister = new SendEmailRequest(emailClaim, "Register in Medical Appointment Management", $"Please verify your register by clicking here: {verificationLinkRegister}");
 

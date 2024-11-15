@@ -38,67 +38,8 @@ export class PatientComponent {
     // Define os controles do formulário com validações
     ngOnInit(): void {
      
-      this.myForm = this.fb.group({
-        id: [''],
-        name: [''],
-        dateOfBirth: [''],
-        medicalRecordNumber: [''],
-        email: [''],
-        phone: [''],
-        gender: [''],
-        allergies: [[]],
-        inputTag: [''],
-        emergencyContact: this.fb.group({
-          name: [''],
-          email: [''],
-          phone: ['']
-        })
-      });
-
-       
-     
     
-      // Valida o papel e carrega os dados do paciente
-      if (this.authService.isPatient()) {
-        this.loadPatientData('87557716-193c-4f53-964f-825e27cabe0b');
-      } else {
-        alert('Access denied. You are not a patient.');
-        this.router.navigate(['/login']);
-      }
     }
-
-    
-
-    loadPatientData(id: string): void {
-      this.patientService.getPatientById(id).subscribe(
-        (patient: Patient) => {
-          console.log('Dados do paciente:', patient);
-          this.myForm.patchValue({
-            id: patient.id,
-            name: patient.name,
-            dateOfBirth: patient.dateOfBirth,
-            medicalRecordNumber: patient.medicalRecordNumber,
-            email: patient.email,
-            phone: patient.phone,
-            gender: patient.gender,
-            allergies: patient.allergies,
-            emergencyContact: {
-              name: patient.emergencyContactName,
-              email: patient.emergencyContactEmail,
-              phone: patient.emergencyContactPhone
-            }
-          });
-
-          this.openModal();
-          this.cdr.detectChanges();
-        },
-        (error) => {
-          console.error('Erro ao carregar os dados do paciente', error);
-        }
-      );
-    }
-
-  tags: string[] = [];  // Array para armazenar as tags
 
 
   // Método para submeter o formulário
@@ -117,18 +58,8 @@ export class PatientComponent {
     console.log(inputTagControl);
     console.log(inputTag);
 
-
-
-    if (event.key === 'Enter' && inputTag) {
-      event.preventDefault();  // Evita o envio do formulário
-      this.tags.push(inputTag);  // Adiciona a tag ao array se o valor não estiver vazio
-      inputTagControl?.setValue('');  // Limpa o campo de input usando setValue
-    }
   }
-  // Método para remover uma tag pelo índice
-  removeTag(index: number) {
-    this.tags.splice(index, 1);  // Remove a tag do array pelo índice
-  }
+
 
 
 
