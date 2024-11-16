@@ -224,12 +224,14 @@
           <div class="col-md-2"></div>
 
           <div class="col-md-6">
-            <label for="validationCustom01" class="form-label">Search</label>
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
-
           </div>
+        </div>
           <div class="col-md-2">
-            <label for="validationCustom01" class="form-label">Filter</label>
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
               <option selected="" disabled="" value="">Choose...</option>
               <option>Name (WIP)</option>
@@ -239,6 +241,7 @@
             </select>
 
           </div>
+        </div>
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -270,7 +273,12 @@
                     <td>{{ request.phone.number }}</td>
                     <td>{{ request.gender }}</td>
                     <td>{{ request.dateOfBirth }}</td> <!-- Use 'date' pipe -->
-                    <td>{{ request.active }}</td>
+                    <td>
+                      <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
+                      <ng-template #failure>
+                        <span class="badge rounded-pill bg-danger">No</span>
+                      </ng-template>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -368,7 +376,7 @@
 
           <div class="col-md-4">
             <div class="input-group has-validation">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope-at"></i></span>
               <input type="text" class="form-control" value="{{ patientProfileSingle.emailEmergency.fullEmail }}" disabled>
             </div>
           </div>
@@ -377,7 +385,7 @@
 
           <div class="col-md-4">
             <div class="input-group has-validation">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-heart-pulse"></i></span>
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone"></i></span>
               <input type="text" class="form-control" value="{{ patientProfileSingle.phoneEmergency.number }}" disabled>
             </div>
           </div>
@@ -531,7 +539,12 @@
                       <td>{{ request.specialization }}</td>
                       <td>{{ request.email.fullEmail }}</td>
                       <td>{{ request.phoneNumber.number }}</td>
-                      <td id="active_{{ request.staffId }}">{{ request.active }}</td>
+                      <td id="active_{{ request.staffId }}">
+                        <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
+                        <ng-template #failure>
+                          <span class="badge rounded-pill bg-danger">No</span>
+                        </ng-template>
+                      </td>
                   </tr>
                 </tbody>
               </table>
