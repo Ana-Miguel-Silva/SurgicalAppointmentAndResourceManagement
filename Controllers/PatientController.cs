@@ -183,6 +183,19 @@ namespace DDDSample1.Controllers
             return Ok(user);
         }
 
+
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<PatientDto>> GetByEmail(string email)
+        {
+            var user = await _service.GetPatientByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
         // PUT: api/Patients/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
