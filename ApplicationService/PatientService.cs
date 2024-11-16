@@ -239,10 +239,10 @@ namespace DDDSample1.ApplicationService.Patients
 
             var comparisons = new List<(object dtoValue, object patientValue)>
             {
-                (dto.emailEmergency?.FullEmail, patient.emailEmergency?.FullEmail),
-                (dto.Email?.FullEmail, patient.Email?.FullEmail),
-                (dto.Phone?.Number, patient.Phone?.Number),
-                (dto.phoneEmergency?.Number, patient.phoneEmergency?.Number),
+                (dto.emailEmergency, patient.emailEmergency?.FullEmail),
+                (dto.Email, patient.Email?.FullEmail),
+                (dto.Phone, patient.Phone?.Number),
+                (dto.phoneEmergency, patient.phoneEmergency?.Number),
                 (dto.name, patient.name?.GetFullName()),
                 (dto.nameEmergency, patient.nameEmergency)
             };
@@ -281,12 +281,12 @@ namespace DDDSample1.ApplicationService.Patients
 
             if (dto.Email != null)
             {
-                patient.ChangeEmail(dto.Email);
+                patient.ChangeEmail(new Email(dto.Email));
             }
 
             if (dto.Phone != null)
             {
-                patient.ChangePhone(dto.Phone);
+                patient.ChangePhone(new PhoneNumber(dto.Phone));
             }
 
             if (!string.IsNullOrWhiteSpace(dto.nameEmergency))
@@ -296,12 +296,12 @@ namespace DDDSample1.ApplicationService.Patients
 
             if (dto.phoneEmergency != null)
             {
-                patient.ChangePhoneEmergency(dto.phoneEmergency);
+                patient.ChangePhoneEmergency(new PhoneNumber(dto.phoneEmergency));
             }
 
             if (dto.emailEmergency != null)
             {
-                patient.ChangeEmailEmergency(dto.emailEmergency);
+                patient.ChangeEmailEmergency(new Email(dto.emailEmergency));
             }
 
             if (dto.Allergies != null && dto.Allergies.Any())
@@ -326,9 +326,9 @@ namespace DDDSample1.ApplicationService.Patients
 
             return new UpdatePatientDto( 
              patient.name.GetFullName(), patient.gender, 
-                patient.Allergies, patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency, 
-                patient.emailEmergency,
-                patient.Phone, patient.Email, patient.UserEmail
+                patient.Allergies, patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency.Number, 
+                patient.emailEmergency.FullEmail,
+                patient.Phone.Number, patient.Email.FullEmail, patient.UserEmail.FullEmail
                 
             );
         }
@@ -382,10 +382,10 @@ namespace DDDSample1.ApplicationService.Patients
 
 
            
-                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/{email}";
+                string urlDelete = $"{actionId}";
 
                 var body = "You requested to update patient account Health App account.\r\n" +
-                        "<br>If you still wish to proced please click on the following link:\r\n\n" +
+                        "<br>If you still wish to proced please copy on the code:\r\n\n" +
                        $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
