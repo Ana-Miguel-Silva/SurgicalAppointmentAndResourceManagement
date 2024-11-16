@@ -322,6 +322,94 @@ export class AdminComponent {
     }
   }
 
+  editPatient(){}
+
+  deactivatePatient(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedPatientEmail === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um Patient.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      if (document.getElementById("active_"+this.selectedPatientEmail+"_false")){
+        Swal.fire({
+          icon: "error",
+          title: "Perfil já está desativado.",
+          toast: true,
+          position: "bottom-right",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return
+      }
+      Swal.fire({
+        icon: "warning",
+        iconColor: '#d33',
+        title: "Desativar este Perfil?",
+        text: "Não é possível reverter esta decisão.",
+        showCancelButton: true,
+        confirmButtonText: "Desativar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          console.log(`Deactivating Patient Email: ${this.selectedPatientEmail}`);
+          this.http.delete<string>(`${this.patientUrl}/${this.selectedPatientEmail}`, { headers })
+          .subscribe({
+            next: (response) => {
+              console.log(response);
+              this.getAllpatientsProfiles();
+              Swal.fire({
+                icon: "success",
+                title: "Perfil desativado com sucesso",
+                toast: true,
+                position: "top-end",
+                timer: 3000,
+                showConfirmButton: false
+              });
+            },
+            error: (error) => {
+              console.error('Error deactivating staff:', error);
+              this.errorMessage = 'Failed to deactivate staff profiles!';
+              Swal.fire({
+                icon: "error",
+                title: "Não foi possível desativar o perfil",
+                toast: true,
+                position: "top-end",
+                timer: 3000,
+                showConfirmButton: false
+              });
+            }
+          });
+        } else if (result.isDenied) {
+        }
+      });
+      
+    }
+  }
 
 
 

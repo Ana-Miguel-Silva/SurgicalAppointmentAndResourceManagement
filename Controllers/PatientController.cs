@@ -172,9 +172,22 @@ namespace DDDSample1.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDto>> GetById(string id)
+        public async Task<ActionResult<PatientDto>> GetById(PatientId id)
         {
-            var user = await _service.GetByIdAsync(new PatientId(id));
+            var user = await _service.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
+
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<PatientDto>> GetByEmail(string email)
+        {
+            var user = await _service.GetPatientByEmailAsync(email);
             if (user == null)
             {
                 return NotFound();
@@ -264,35 +277,31 @@ namespace DDDSample1.Controllers
             return Forbid();
         }
 
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpPatch("{email}")]
-        public async Task<ActionResult<PatientDto>> UpdatePatch(string email, PatientDto dto)
+        public async Task<ActionResult<PatientDto>> UpdatePatch(string email, UpdatePatientDto dto)
         {
 
                 try
                 { 
-
-                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
+              
                 var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var user = await _userService.GetByIdAsync(new UserId(userId));
 
+                var Patient = await _service.GetPatientByEmailAsync(email);
+                PatientId id = Patient.Id;
+
                     try
                     {
-                        var sendEmail = await _service.VerifySensiveData(dto, email);
+                        var sendEmail = await _service.VerifySensiveDataUpdate(dto, email);
 
                         if(sendEmail.ToString().Equals("1")){
 
-
-                            // Monta o nome completo como uma string
-                            string fullName = $"{dto.name.FirstName} {dto.name.MiddleNames} {dto.name.LastName}";
-
-                            var transformedDto = new
-                            {
-                                name = fullName,
-                                Id = dto.Id,
-                                DateOfBirth = dto.DateOfBirth,
-                                medicalRecordNumber = dto.medicalRecordNumber,
+                        var transformedDto = new
+                            {                                  
+                                name = dto.name,                                                  
                                 gender = dto.gender,
                                 Allergies = dto.Allergies,
                                 AppointmentHistory = dto.AppointmentHistory,
@@ -313,15 +322,98 @@ namespace DDDSample1.Controllers
                         } else if(sendEmail.ToString().Equals("0")){
 
 
-                            var patientProfile = await _service.UpdateAsync(dto,email);
+                            var patientProfile = await _service.UpdateAsyncPatch(dto,email);
+                       
 
-                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
+                            await _logService.LogAsync("Patient", "Updated", id.AsGuid(), "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
 
                             return Ok(patientProfile);
                         }
                         return BadRequest("The patient was not found");
 
                                                
+                    }
+                    catch (BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new { Message = ex.Message });
+                    }
+
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
+          
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
+
+        [HttpPatch("{actionId}/{email}")]
+        public async Task<ActionResult<PatientDto>> UpdateConfirmedPatch(string actionId, string email)
+        {
+
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+
+
+            var Patient = await _service.GetPatientByEmailAsync(email);
+            PatientId id = Patient.Id;
+            
+                try
+                {
+                    try
+                    {
+                        var pendingActionsId = new PendingActionsId(Guid.Parse(actionId));
+                        var action = await _pendingActionsService.FindbyId(pendingActionsId);
+
+                        var settings = new JsonSerializerSettings
+                        {
+                            MissingMemberHandling = MissingMemberHandling.Ignore,
+                            NullValueHandling = NullValueHandling.Include
+                        };
+
+                        UpdatePatientDto patientDto;
+                        try
+                        {
+                            patientDto = JsonConvert.DeserializeObject<UpdatePatientDto>(action, settings);
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest(new { Message = "Invalid action data. Deserialization failed.", Error = ex.Message });
+                        }
+
+                        var pendingActionExists = await _pendingActionsService.TryRemove(pendingActionsId);
+                                                     
+                        
+                        if(pendingActionExists.ToString().Equals("True")){
+                            var patientProfile = await _service.UpdateAsyncPatch(patientDto, email);
+
+                            if (patientProfile == null)
+                            {
+                                return NotFound(); 
+                            }
+
+                            string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+                            if (string.IsNullOrEmpty(userEmail))
+                            {
+                                return BadRequest("User email not found in the token.");
+                            }
+                            
+                            await _logService.LogAsync("Patient", "Update",id.AsGuid(), JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+
+                            return Ok(patientProfile);
+
+                        }
+
+                        return BadRequest("Was not possible to update the patient.");
+
+                
                     }
                     catch (BusinessRuleValidationException ex)
                     {
@@ -349,10 +441,7 @@ namespace DDDSample1.Controllers
 
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userService.GetByIdAsync(new UserId(userId));
-                //User user = await _authService.ValidateTokenAsync(Request.Headers["Authorization"].ToString());
-            //if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
-            {
-
+            
                 try
                 {
                     try
@@ -402,8 +491,7 @@ namespace DDDSample1.Controllers
                     return BadRequest(new { Message = ex.Message });
                 }
 
-            }
-            return Forbid();
+          
         }
 
         // GET: api/Patients/search
@@ -606,6 +694,54 @@ namespace DDDSample1.Controllers
 
                     return BadRequest("Was not possible to delete the patient.");
 
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+           
+        }
+
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+
+        [HttpDelete("{email}")]
+        public async Task<ActionResult<PatientDto>> DeleteByEmail(string email)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+            
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID not found in the token.");
+            }
+            
+                try
+                {
+
+
+                        var patientProfile = await _service.GetPatientByEmailAsync(email);
+
+                        await _service.DeactiveAsync(patientProfile.Id);
+
+
+                        if (patientProfile != null){
+
+                           string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+
+                            await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id.AsGuid() , JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+
+                            return Ok(patientProfile);
+                        }
+
+                       return BadRequest("The patient is already deactivated.");
                 }
                 catch (BusinessRuleValidationException ex)
                 {

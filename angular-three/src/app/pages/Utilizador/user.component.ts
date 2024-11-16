@@ -20,9 +20,9 @@ import Swal from 'sweetalert2';
 export class UserComponent {
 
   constructor(  private route: ActivatedRoute, private modalService: ModalService, private authService: AuthService,  private router: Router, private fb: FormBuilder, private http: HttpClient, private patientService: PatientService) {
-    
-    
-     
+
+
+
       this.myForm = this.fb.group({
         name: ['', Validators.required],
         dateOfBirth: ['', Validators.required],
@@ -33,19 +33,19 @@ export class UserComponent {
         agree: [false, Validators.requiredTrue]
       });
 
-      
-    
+
+
       // Obtém o e-mail do Google passado pela URL
       this.route.queryParams.subscribe(params => {
         const emailFromGoogle = params['email'];
         if (emailFromGoogle) {
-          this.myForm.patchValue({ email: emailFromGoogle }); 
+          this.myForm.patchValue({ email: emailFromGoogle });
         }
       });
 
-      
 
-    
+
+
     }
     myForm: FormGroup;
     errorMessage: string | null = null;
@@ -54,23 +54,23 @@ export class UserComponent {
     openModal(modalId: string): void {
       this.modalService.openModal(modalId);
     }
-  
+
     closeModal(modalId: string): void {
       this.modalService.closeModal(modalId);
     }
-  
+
     isModalOpen(modalId: string): boolean {
       return this.modalService.isModalOpen(modalId);
     }
 
-      
-  onSubmit() {   
+
+  onSubmit() {
 
       const formData = this.myForm.value;
-      const apiUrl = 'https://localhost:5001/api/users/registerPatient';
+
 
       if (this.myForm.valid) {
-      this.http.post(apiUrl, formData)
+      this.patientService.registerPatient(formData)
         .subscribe(
           response => {
             Swal.fire({
@@ -81,8 +81,12 @@ export class UserComponent {
               timer: 3000,
               showConfirmButton: false
             });
-            this.myForm.reset(); // Redefinir o formulário após o envio
-           
+            this.myForm.reset();
+
+              // Redirect to login after 2 seconds
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 2000);
           },
           error => {
             console.error("Erro ao submeter o formulário", error);
@@ -93,7 +97,7 @@ export class UserComponent {
       console.log("Formulário inválido");
     }
   }
-  
+
 
   onSubmitPatient(){};
 

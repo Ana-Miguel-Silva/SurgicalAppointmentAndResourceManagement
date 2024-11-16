@@ -32,7 +32,7 @@ namespace DDDSample1.Domain.Patients
          public bool Active { get; private set; }
 
         public PatientDto(Guid Id, string name, MedicalRecordNumber medicalRecordNumber, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
+                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory, bool Active)
         {
 
         //TODO:Validação para se não forem nulls (fazer a validação com os checks)
@@ -49,7 +49,7 @@ namespace DDDSample1.Domain.Patients
         this.nameEmergency = nameEmergency;
         this.phoneEmergency = phoneEmergency;
         this.emailEmergency = emailEmergency; 
-        this.Active = true;
+        this.Active = Active;
         }
 
         /*public PatientDto(Guid Id,string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)
