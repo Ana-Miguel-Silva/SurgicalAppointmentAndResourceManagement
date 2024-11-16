@@ -324,7 +324,7 @@ namespace DDDSample1.ApplicationService.Patients
             // Commit changes
             await this._unitOfWork.CommitAsync();
 
-            return new UpdatePatientDto( patient.Id.AsGuid(),
+            return new UpdatePatientDto( 
              patient.name.GetFullName(), patient.gender, 
                 patient.Allergies, patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency, 
                 patient.emailEmergency,

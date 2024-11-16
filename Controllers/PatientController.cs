@@ -277,6 +277,7 @@ namespace DDDSample1.Controllers
             return Forbid();
         }
 
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
         [HttpPatch("{email}")]
@@ -285,10 +286,12 @@ namespace DDDSample1.Controllers
 
                 try
                 { 
-
-               
+              
                 var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var user = await _userService.GetByIdAsync(new UserId(userId));
+
+                var Patient = await _service.GetPatientByEmailAsync(email);
+                PatientId id = Patient.Id;
 
                     try
                     {
@@ -297,8 +300,7 @@ namespace DDDSample1.Controllers
                         if(sendEmail.ToString().Equals("1")){
 
                         var transformedDto = new
-                            {  
-                                Id = dto.Id,   
+                            {                                  
                                 name = dto.name,                                                  
                                 gender = dto.gender,
                                 Allergies = dto.Allergies,
@@ -323,7 +325,7 @@ namespace DDDSample1.Controllers
                             var patientProfile = await _service.UpdateAsyncPatch(dto,email);
                        
 
-                            await _logService.LogAsync("Patient", "Updated", patientProfile.Id, "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
+                            await _logService.LogAsync("Patient", "Updated", id.AsGuid(), "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
 
                             return Ok(patientProfile);
                         }
@@ -353,6 +355,10 @@ namespace DDDSample1.Controllers
 
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userService.GetByIdAsync(new UserId(userId));
+
+
+            var Patient = await _service.GetPatientByEmailAsync(email);
+            PatientId id = Patient.Id;
             
                 try
                 {
@@ -394,7 +400,7 @@ namespace DDDSample1.Controllers
                                 return BadRequest("User email not found in the token.");
                             }
                             
-                            await _logService.LogAsync("Patient", "Update",patientProfile.Id, JsonConvert.SerializeObject(patientProfile), userEmail);
+                            await _logService.LogAsync("Patient", "Update",id.AsGuid(), JsonConvert.SerializeObject(patientProfile), userEmail);
 
                             if (patientProfile == null)
                             {

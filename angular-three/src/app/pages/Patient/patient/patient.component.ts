@@ -2,13 +2,12 @@ import { ChangeDetectorRef,Component, inject } from '@angular/core';
 import { AuthService } from '../../../Services/auth.service';
 import { PatientService } from '../../../Services/patient.service';
 import { ModalService } from '../../../Services/modal.service';
-import { Patient } from '../patient/patient.model';
 import { NgModule } from '@angular/core';
 import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 
 
@@ -25,6 +24,7 @@ export class PatientComponent {
 
   modalId: string = 'modalId';
   myForm!: FormGroup;
+  patientUpdateForm!: FormGroup;
   appointmentHistory: string[] = [];
   selectedPatientEmail: string | undefined;
   private patientUrl = "https://localhost:5001/api/Patients";
@@ -38,6 +38,20 @@ export class PatientComponent {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
+      userEmail: ['', [Validators.required, Validators.email] ],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      gender: ['', Validators.required],
+      appointmentHistory: [''],
+      //allergies: [''], // Controlador para o campo de "Allergies"
+      emergencyContactName: ['', Validators.required],
+      emergencyContactEmail: ['', [Validators.required, Validators.email]],
+      emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      agree: [false, Validators.requiredTrue]
+    });
+
+    this.patientUpdateForm = this.fb.group({
+      name: ['', Validators.required],    
       userEmail: ['', [Validators.required, Validators.email] ],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
@@ -115,7 +129,61 @@ export class PatientComponent {
     this.appointmentHistory.splice(index, 1);  // Remove a data do array pelo índice
   }
 
-  onUpdatePatient(){}
+  onUpdatePatient() {
+   
+    const token = this.authService.getToken();
+
+    if (!token) {
+      alert('You are not logged in!');
+      return;
+    }
+
+   
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,        
+      });
+
+      const updatedPatientData = this.patientUpdateForm.value;
+      console.log('Updated Patient Data:', updatedPatientData);
+  
+      this.http.patch(`${this.patientUrl}/${this.selectedPatientEmail}`, updatedPatientData,  { headers })
+        .subscribe({
+          next: (response: any) => {
+            console.log(response);
+  
+            if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
+              // SweetAlert para confirmação de email
+              Swal.fire({
+                icon: 'info',
+                title: 'Action Required',
+                text: response, // Exibe a mensagem do backend
+                confirmButtonText: 'Ok',
+              });
+            } else {
+              // SweetAlert para sucesso geral
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Patient updated successfully!',
+                confirmButtonText: 'Ok',
+              });
+            }
+  
+            this.viewPatient(); // Atualizar os dados no frontend
+          },
+          error: (error) => {
+            console.error('Update error:', error);
+            this.patientUpdateForm.markAllAsTouched();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.error?.Message || 'An error occurred while updating the patient.',
+            });
+          }
+        });
+   
+  }
+  
 
 
   ngOnInit() {
