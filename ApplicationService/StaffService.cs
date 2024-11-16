@@ -130,6 +130,31 @@ namespace DDDSample1.ApplicationService.Staff
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
+        public async Task<StaffDto> AddSlots(string id, SlotDTO dto){
+            var staff = await this._repo.GetByStaffIDAsync(id);
+
+            if (staff == null)
+                return null;
+            if (dto != null){
+                staff.AddSlots(dto.Slots);
+            }
+            
+            await this._unitOfWork.CommitAsync();
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
+        }
+
+        public async Task<StaffDto> RemoveSlots(string id, SlotDTO dto){
+            var staff = await this._repo.GetByStaffIDAsync(id);
+
+            if (staff == null)
+                return null;
+            if (dto != null){
+                staff.RemoveSlots(dto.Slots);
+            }
+            
+            await this._unitOfWork.CommitAsync();
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
+        }
         public async Task<StaffDto> InactivateAsync(string id)
         {
             var staff = await this._repo.GetByStaffIDAsync(id);

@@ -87,7 +87,72 @@ namespace DDDSample1.Controllers
                 return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
            
         }
+        // PUT: api/Staff/{id}/Slots
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+        [HttpPut("{id}/Slots")]
+        public async Task<ActionResult<StaffDto>> AddSlots(string id, SlotDTO dto)
+        {
+            var catOld = await _service.GetByStaffIDAsync(id);
 
+            Console.Write(catOld.Name);
+            if (id != catOld.StaffId)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                //string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+               
+
+                var cat = await _service.AddSlots(id, dto);
+
+                //await _logService.LogAsync("OperationRequest", "Deleted", cat.Id, "old" + JsonConvert.SerializeObject(catOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
+
+                if (cat == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cat);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+        // DELETE: api/Staff/{id}/Slots
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+        [HttpDelete("{id}/Slots")]
+        public async Task<ActionResult<StaffDto>> RemoveSlots(string id, SlotDTO dto)
+        {
+            var catOld = await _service.GetByStaffIDAsync(id);
+
+            Console.Write(catOld.Name);
+            if (id != catOld.StaffId)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                //string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+               
+
+                var cat = await _service.RemoveSlots(id, dto);
+
+                //await _logService.LogAsync("OperationRequest", "Deleted", cat.Id, "old" + JsonConvert.SerializeObject(catOld) + "new" + JsonConvert.SerializeObject(dto), userEmail);
+
+                if (cat == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cat);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
 
         // PUT: api/Staff/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]

@@ -62,12 +62,22 @@ namespace DDDSample1.Domain.Staff
             PhoneNumber = phone;
         }
 
-        public void UpdateSlots(List<Slot> slots)
+        public void AddSlots(List<Slot> slots)
         {
             if (!this.Active)
                 throw new BusinessRuleValidationException("Cannot change the Slots of an inactive Staff.");
-                
-            AvailabilitySlots = slots;
+            foreach(Slot slot in slots) {
+                AvailabilitySlots.Add(slot);
+            }
+        }
+
+        public void RemoveSlots(List<Slot> slots)
+        {
+            if (!this.Active)
+                throw new BusinessRuleValidationException("Cannot change the Slots of an inactive Staff.");
+            foreach(Slot slot in slots) {
+                AvailabilitySlots.Remove(slot);
+            }
         }
 
 

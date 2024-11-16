@@ -737,7 +737,7 @@
       <span (click)="closeModal('editStaffModal')" class="close">&times;</span>
       <div>
 
-      <form *ngIf="staffProfileSingle" [formGroup]="staffEditionForm" (ngSubmit)="editStaffPost()" class="row g-3 needs-validation" novalidate="">
+      <form *ngIf="staffProfileSingle && availabilitySlots3" [formGroup]="staffEditionForm" (ngSubmit)="editStaffPost()" class="row g-3 needs-validation" novalidate="">
         <div class="col-md-12"></div>
           <div class="col-md-4">
             <div class="input-group has-validation">
@@ -799,13 +799,21 @@
           <div class="col-md-12"></div>
           <hr>
           <div class="col-md-12"></div>
+          <div class="dates-input">
+            <ul id="dates2">
+              <li *ngFor="let date of availabilitySlots3; let i = index" class="date">
+                {{ date.startTime }} - {{ date.endTime }}
+                <span class="delete-button" (click)="removeDate3(i)">X</span>
+              </li>
+            </ul>
+          </div>
           <div class="col-md-2"></div>
           <div class="col-md-8">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart">
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd">
-              <span class="input-group-text" id="add"><i class="bi bi-plus-lg"></i></span>
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart" formControlName="startTime">
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd" formControlName="endTime">
+              <span class="input-group-text" id="add" (click)="addDate3()" ><i class="bi bi-plus-lg"></i></span>
               <div class="valid-feedback">
                 Looks good!
               </div>

@@ -65,7 +65,13 @@ export class AdminComponent {
       email: ['', Validators.required],
       phone: ['', Validators.required],
       specialization: ['', Validators.required],
-      slots: [''],
+      startTime: [''],
+      endTime: [''],
+    });
+    this.staffEditionForm2 = this.fb.group({
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      specialization: ['', Validators.required],
     });
     this.patientForm = this.fb.group({});
   }
@@ -90,6 +96,7 @@ export class AdminComponent {
   staffCreationForm: FormGroup;
   staffCreationForm2: FormGroup;
   staffEditionForm: FormGroup;
+  staffEditionForm2: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -99,6 +106,7 @@ export class AdminComponent {
   patientProfileSingle: any = null;
   availabilitySlots: any[] = [];
   availabilitySlots2: any[] = [];
+  availabilitySlots3: any[] = [];
   searchTerm: string = '';
   filterField: string = '';
   appointmentHistory: string[] = [];
@@ -401,10 +409,11 @@ export class AdminComponent {
         next: (response) => {
           console.log(response);
           this.staffProfileSingle = response;
-          this.availabilitySlots = this.staffProfileSingle.slots;
+          this.availabilitySlots = this.staffProfileSingle.slots.slice();
           this.staffEditionForm.get('email')?.setValue(this.staffProfileSingle.email.fullEmail);
           this.staffEditionForm.get('phone')?.setValue(this.staffProfileSingle.phoneNumber.number);
           this.staffEditionForm.get('specialization')?.setValue(this.staffProfileSingle.specialization);
+          this.availabilitySlots3 = this.staffProfileSingle.slots.slice();
           this.openModal('editStaffModal');
         },
         error: (error) => {
@@ -433,7 +442,15 @@ export class AdminComponent {
     const formData = this.staffEditionForm.value;
     console.log(formData);
     console.log(JSON.stringify(formData));
-    this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
+    const oldSlots = this.staffProfileSingle.slots;
+    const newSlots = this.availabilitySlots3;
+    console.log("-------------");
+    const commonElements = oldSlots.filter((value: any) => newSlots.includes(value));
+    const toRemove = oldSlots.filter((value: any) => !commonElements.includes(value));
+    const toCreate = newSlots.filter((value: any) => !commonElements.includes(value));
+    console.log(toRemove);
+    console.log(toCreate);
+    /*this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
       .subscribe({
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
@@ -461,7 +478,7 @@ export class AdminComponent {
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
         }
-      });
+      });*/
 
   }
 
@@ -485,6 +502,9 @@ export class AdminComponent {
   removeDate2(index: number) {
     this.availabilitySlots2.splice(index, 1);  // Remove a data do array pelo índice
   }
+  removeDate3(index: number) {
+    this.availabilitySlots3.splice(index, 1);  // Remove a data do array pelo índice
+  }
   addDate2() {
     const formData = this.staffCreationForm.value;
     const start = this.staffCreationForm.get('startTime')?.value;
@@ -495,6 +515,18 @@ export class AdminComponent {
       const json = {start: start, end: end}
       console.log(json);
       this.availabilitySlots2.push(json);  // Adiciona a data ao array
+    }
+  }
+  addDate3() {
+    const formData = this.staffEditionForm.value;
+    const start = this.staffEditionForm.get('startTime')?.value;
+    const end = this.staffEditionForm.get('endTime')?.value;
+    console.log(start);
+    console.log(end);
+    if (start && end) {
+      const json = {startTime: start, endTime: end}
+      console.log(json);
+      this.availabilitySlots3.push(json);  // Adiciona a data ao array
     }
   }
 
