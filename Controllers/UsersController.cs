@@ -101,7 +101,7 @@ namespace DDDSample1.Controllers
 
         [HttpPost("registerPatient")]
 
-        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto, string userEmail)
+        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
         {
               
                 var result = await _patientService.AddAsync(dto, Role.PATIENT);
@@ -111,7 +111,7 @@ namespace DDDSample1.Controllers
                     return BadRequest("Wasn't possible to create the patient.");
                 }
 
-                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), userEmail);
+                await _logService.LogAsync("Patient", "Created", result.Id, JsonConvert.SerializeObject(result), dto.UserEmail);
 
                 return result;           
         }

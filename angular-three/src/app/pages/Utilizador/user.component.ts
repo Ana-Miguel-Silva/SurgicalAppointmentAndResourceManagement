@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import Swal from 'sweetalert2';
 import { AuthService } from '../../Services/auth.service';
 import { PatientService } from '../../Services/patient.service';
 import { NgModule } from '@angular/core';
@@ -8,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ModalService } from '../../Services/modal.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-user',
@@ -19,6 +20,7 @@ import { ModalService } from '../../Services/modal.service';
 export class UserComponent {
 
   constructor(  private route: ActivatedRoute, private modalService: ModalService, private authService: AuthService,  private router: Router, private fb: FormBuilder, private http: HttpClient, private patientService: PatientService) {
+    
     
      
       this.myForm = this.fb.group({
@@ -46,6 +48,8 @@ export class UserComponent {
     
     }
     myForm: FormGroup;
+    errorMessage: string | null = null;
+
 
     openModal(modalId: string): void {
       this.modalService.openModal(modalId);
@@ -66,7 +70,7 @@ export class UserComponent {
       const apiUrl = 'https://localhost:5001/api/users/registerPatient';
 
       if (this.myForm.valid) {
-      this.http.post(apiUrl, formData, formData.userEmail)
+      this.http.post(apiUrl, formData)
         .subscribe(
           response => {
             Swal.fire({
@@ -92,6 +96,15 @@ export class UserComponent {
   
 
   onSubmitPatient(){};
+
+  ngOnInit() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      this.router.navigate(['/']);
+    }
+  }
 
 
 }
