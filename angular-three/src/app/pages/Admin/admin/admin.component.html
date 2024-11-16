@@ -273,7 +273,7 @@
                     <td>{{ request.phone.number }}</td>
                     <td>{{ request.gender }}</td>
                     <td>{{ request.dateOfBirth }}</td> <!-- Use 'date' pipe -->
-                    <td>
+                    <td id="active_{{ request.email.fullEmail }}_{{request.active}}">
                       <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
                       <ng-template #failure>
                         <span class="badge rounded-pill bg-danger">No</span>
@@ -290,8 +290,8 @@
         <div class="col-md-9"></div>
         <div class="col-md-3">
           <button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>
-          <button class="fs-5 btn btn-outline-warning" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
-          <button class="fs-5 btn btn-outline-danger" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
+          <button class="fs-5 btn btn-outline-warning" (click)="editPatient()">Edit <i class="bi bi-pencil-square"></i></button>
+          <button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>
         </div>
         </form>
       </div>

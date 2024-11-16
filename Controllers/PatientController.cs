@@ -703,5 +703,53 @@ namespace DDDSample1.Controllers
         }
 
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+
+        [HttpDelete("{email}")]
+        public async Task<ActionResult<PatientDto>> DeleteByEmail(string email)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userService.GetByIdAsync(new UserId(userId));
+            
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID not found in the token.");
+            }
+            
+                try
+                {
+
+
+                        var patientProfile = await _service.GetPatientByEmailAsync(email);
+
+                        await _service.DeactiveAsync(patientProfile.Id);
+
+
+                        if (patientProfile != null){
+
+                           string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+
+                            await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id.AsGuid() , JsonConvert.SerializeObject(patientProfile), userEmail);
+
+                            if (patientProfile == null)
+                            {
+                                return NotFound();
+                            }
+
+                            return Ok(patientProfile);
+                        }
+
+                       return BadRequest("The patient is already deactivated.");
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+           
+        }
+
+
     }
 }
