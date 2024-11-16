@@ -21,23 +21,7 @@
                   <h3 class="title" >Register Patient Profile</h3>
               </div>
             </div>
-
-
-                <!--<div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="username">
-                    <label for="floatingInput">Username</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">Password</label>
-                </div>-->
-
-                <!--<div class="form-floating center">
-                    <button (click)="openModal()" class="btn btnBl btn-primary">Clique aqui</button>
-                </div>-->
-
-            </div>
-
+          </div>
 
             <div class="container col-md-4">
               <div class="container-lg selectionDiv" (click)="openModal('listPatientModal')">
@@ -47,6 +31,7 @@
               </div>
             </div>
 
+            
             <div class="container col-md-4">
               <div class="container-lg  selectionDiv" (click)="openModal('registerStaffModal')">
                 <div class="form-floating mb-3">
@@ -68,8 +53,29 @@
 
 
 
-<!-- The Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!----------------------------------------------- The Modals --------------------------------------------------------->
+<!----------------------------------------------- The Modals --------------------------------------------------------->
+<!----------------------------------------------- The Modals --------------------------------------------------------->
+<!----------------------------------------------- The Modals --------------------------------------------------------->
+<!----------------------------------------------- The Modals --------------------------------------------------------->
+
  <!-- (click)="onBackdropClick($event)" -->
+
+
+
+
 <div [ngStyle]="{'display': isModalOpen('registerPatientModal') ? 'block' : 'none'}" id="registerPatientModal"  class="modal" >
     <div class="modal-content">
         <span (click)="closeModal('registerPatientModal')" class="close">&times;</span>
@@ -273,25 +279,195 @@
           </div>
         </div>
 
-          <div class="col-md-9"></div>
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+          <button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>
+          <button class="fs-5 btn btn-outline-warning" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
+          <button class="fs-5 btn btn-outline-danger" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
+        </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+
+
+<div [ngStyle]="{'display': isModalOpen('viewPatientModal') ? 'block' : 'none'}" id="viewPatientModal"  class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('viewPatientModal')" class="close">&times;</span>
+      <div *ngIf="patientProfileSingle">
+        <div  class="row g-3 needs-validation">
+        <div class="col-md-12"></div>
           <div class="col-md-3">
-            <button class="btn btn-warning">Edit <i style="color:rgb(250, 223, 164)" class="bi bi-pencil-square"></i></button>
-            <button class="btn btn-danger">Delete <i style="color:rgb(255, 204, 204)" class="bi bi-trash-fill"></i></button>
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+                <input type="text" class="form-control" disabled="" value="{{ patientProfileSingle.name.firstName }} {{patientProfileSingle.name.middleNames}} {{patientProfileSingle.name.lastName}}">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
+              <input type="text" class="form-control"aria-describedby="inputGroupPrepend" disabled="" value="{{ patientProfileSingle.email.fullEmail }}">
+            </div>
+          </div>
+
+          
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+              <input type="text" class="form-control"  value="{{ patientProfileSingle.phone.number }}" disabled>
+            </div>
+          </div>
+
+
+          
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.userEmail.fullEmail }}" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-calendar-date"></i></span>
+              <input type="date" class="form-control" [value]="formatDateToISO(patientProfileSingle.dateOfBirth)"  disabled >
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.gender }}" disabled>
+            </div>
+          </div>
+
+
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-heart-pulse"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.medicalRecordNumber.number }}" disabled>
+            </div>
+          </div>
+
+          <hr>
+
+
+
+          <h5 class="form-label">Emergency Contact</h5>
+
+
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.nameEmergency }}" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.emailEmergency.fullEmail }}" disabled>
+            </div>
+          </div>
+
+
+
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-heart-pulse"></i></span>
+              <input type="text" class="form-control" value="{{ patientProfileSingle.phoneEmergency.number }}" disabled>
+            </div>
           </div>
 
 
 
 
 
+          <div class="col-md-12"></div>
+          <hr>
+          <div class="col-md-1"></div>
+          <div class="col-md-5">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <span class="input-group-text" id="add">Appointment History</span>
+            </div>
+            <table class="table table-striped table-hover table-over" style="scrollbar-width: none;">
+              <thead>
+                <tr>
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of patientProfileSingle.appointmentHistory; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ request }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <!--<div class="col-12">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>-->
-        </form>
+          <div class="col-md-5">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-virus"></i></span>
+              <span class="input-group-text" id="add">Allergies</span>
+            </div>
+            <table class="table table-striped table-hover table-over" style="scrollbar-width: none;">
+              <thead>
+                <tr>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of patientProfileSingle.allergies; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ request }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <div class="col-md-2"></div>
+
+        </div>
       </div>
 
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div  [ngStyle]="{'display': isModalOpen('listStaffModal') ? 'block' : 'none'}" id="listStaffModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('listStaffModal')" class="close">&times;</span>
@@ -370,15 +546,6 @@
             <button class="fs-5 btn btn-outline-warning" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
             <button class="fs-5 btn btn-outline-danger" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
           </div>
-
-
-
-
-
-
-          <!--<div class="col-12">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>-->
         </form>
       </div>
 
@@ -491,9 +658,6 @@
   </div>
 </div>
 
-
-
-
 <div [ngStyle]="{'display': isModalOpen('viewStaffModal') ? 'block' : 'none'}" id="viewStaffModal"  class="modal">
   <div class="modal-content">
       <span (click)="closeModal('viewStaffModal')" class="close">&times;</span>
@@ -566,7 +730,6 @@
 
   </div>
 </div>
-
 
 
 <div [ngStyle]="{'display': isModalOpen('editStaffModal') ? 'block' : 'none'}" id="editStaffModal"  class="modal" >

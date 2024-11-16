@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 export class AdminComponent {
 
   private staffUrl = "https://localhost:5001/api/Staff";
+  private patientUrl = "https://localhost:5001/api/Patients";
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
     private http: HttpClient, private authService: AuthService, private router: Router) {
@@ -95,6 +96,7 @@ export class AdminComponent {
   patientsProfiles: any[] = [];
   staffsProfiles: any[] = [];
   staffProfileSingle: any = null;
+  patientProfileSingle: any = null;
   availabilitySlots: any[] = [];
   availabilitySlots2: any[] = [];
   searchTerm: string = '';
@@ -118,6 +120,12 @@ export class AdminComponent {
     return this.modalService.isModalOpen(modalId);
   }
 
+
+  formatDateToISO(date: string | Date): string {
+    if (!date) return ''; // Evita erros caso a data seja nula
+    const parsedDate = new Date(date);
+    return parsedDate.toISOString().split('T')[0];
+  }
 
 
   // Método para submeter o formulário
@@ -144,7 +152,7 @@ export class AdminComponent {
 
       // Obtém os valores do formulário
       const formData = this.myForm.value;
-      const apiUrl = 'https://localhost:5001/api/Patients/register';
+      const apiUrl = `${this.patientUrl}/register`
 
       //TODO: Adicionar opção de historico de appointments
       // Enviar os dados diretamente com HttpClient
@@ -305,6 +313,58 @@ export class AdminComponent {
       });
     }
   }
+
+
+
+
+  viewPatient(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedPatientEmail === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um Patient.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      
+    } else {
+      console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
+      this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.patientProfileSingle = response;
+
+          this.openModal('viewPatientModal');
+        },
+        error: (error) => {
+          console.error('Error viewing patient:', error);
+          this.errorMessage = 'Failed to view patient profile!';
+        }
+      });
+    }
+  }
+
+
 
   editStaff(){
     const token = this.authService.getToken();
@@ -503,7 +563,7 @@ export class AdminComponent {
 
 
 
-    this.http.get<any[]>('https://localhost:5001/api/Patients/search', { headers, params })
+    this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
       .subscribe({
         next: (response) => {
           this.patientsProfiles = response;
