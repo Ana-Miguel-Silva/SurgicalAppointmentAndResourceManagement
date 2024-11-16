@@ -155,7 +155,8 @@ namespace Backend.Tests.Services
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
                     Allergies: new List<string> { "Peanuts" },
-                    AppointmentHistory: new List<string> { "" }                   
+                    AppointmentHistory: new List<string> { "" },
+                    Active: true                
                 );
 
             var Patient = new Patient(

@@ -174,7 +174,8 @@ namespace DDDSample1.Domain.Patients
                 this.emailEmergency,
                 this.gender,
                 this.Allergies,
-                this.AppointmentHistory
+                this.AppointmentHistory,
+                this.Active
             );
         }
 

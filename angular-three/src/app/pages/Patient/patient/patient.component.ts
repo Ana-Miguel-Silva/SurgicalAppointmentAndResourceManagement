@@ -27,7 +27,7 @@ export class PatientComponent {
   myForm!: FormGroup;
   appointmentHistory: string[] = [];
   selectedPatientEmail: string | undefined;
-  patientUrl: any;
+  private patientUrl = "https://localhost:5001/api/Patients";
 
 
 
@@ -52,6 +52,7 @@ export class PatientComponent {
     this.patientForm = this.fb.group({});
   }
 
+  
   patientForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
@@ -117,6 +118,18 @@ export class PatientComponent {
   onUpdatePatient(){}
 
 
+  ngOnInit() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.log("abc");
+      this.errorMessage = 'You are not logged in!';
+      this.router.navigate(['/']);
+    }
+    this. viewPatient(); // Fetch all profiles on component initialization
+  }
+
+
   viewPatient() {
     const token = this.authService.getToken();
   
@@ -147,8 +160,6 @@ export class PatientComponent {
         next: (response) => {
           console.log(response);
           this.patientProfileSingle = response; 
-          console.log(this.patientProfileSingle);
-          this.openModal('viewPatientModal');
         },
         error: (error) => {
           console.error('Error viewing patient:', error);

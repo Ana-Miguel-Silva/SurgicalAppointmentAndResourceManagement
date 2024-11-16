@@ -25,10 +25,12 @@ namespace Domain.Tests
             var gender = "Male";
             var allergies = new List<string> { "Peanuts", "Penicillin" };
             var appointmentHistory = new List<string> { "Checkup", "Follow-up" };
+            var active = true;
+
 
             // Act
             var patientDto = new PatientDto(id, name, medicalRecordNumber, dateOfBirth, phone, email, userEmail, 
-                                             nameEmergency, phoneEmergency, emailEmergency, gender, allergies, appointmentHistory);
+                                             nameEmergency, phoneEmergency, emailEmergency, gender, allergies, appointmentHistory, active);
 
             // Assert
             Assert.Equal(id, patientDto.Id);
