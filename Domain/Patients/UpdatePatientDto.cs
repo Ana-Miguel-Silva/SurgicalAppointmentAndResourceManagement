@@ -13,18 +13,18 @@ public class UpdatePatientDto
         public List<string>? AppointmentHistory { get; set; }  
        
          public string? nameEmergency { get;   set; }
-        public PhoneNumber? phoneEmergency { get;   set; }
-        public Email? emailEmergency { get;   set; }
+        public string? phoneEmergency { get;   set; }
+        public string? emailEmergency { get;   set; }
 
 
-        public PhoneNumber? Phone { get;   set; }
+        public string? Phone { get;   set; }
 
-         public Email? Email { get;   set; }
+         public string? Email { get;   set; }
 
-         public Email? UserEmail { get;   set; }
+         public string? UserEmail { get;   set; }
 
     public UpdatePatientDto( string? name = null, string? gender = null, List<string>? allergies = null,
-        List<string>? appointmentHistory = null, string? nameEmergency = null, PhoneNumber? phoneEmergency = null, Email? emailEmergency = null, PhoneNumber? phone = null, Email? email = null, Email? userEmail = null)
+        List<string>? appointmentHistory = null, string? nameEmergency = null, string? phoneEmergency = null, string? emailEmergency = null, string? phone = null, string? email = null, string? userEmail = null)
     {
         
         this.name = name;

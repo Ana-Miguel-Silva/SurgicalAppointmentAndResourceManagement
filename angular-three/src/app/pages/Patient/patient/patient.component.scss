@@ -372,3 +372,49 @@ table.table td .btn.manage:hover {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.dates-input {
+  margin-top: 10px; /* Add some space above if needed */
+}
+
+.tags-input {
+  display: inline-block;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  box-shadow: 2px 2px 5px #00000033;
+  width: 100%;
+}
+
+.tags-input ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* Space between tags */
+}
+
+.tags-input .tag {
+  display: inline-block;
+  background-color: #e0f7fa;
+  color: #00796b;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.tags-input .delete-button {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.tags-input input[type="text"] {
+  border: none;
+  outline: none;
+  padding: 5px;
+  width: 100%;
+}
