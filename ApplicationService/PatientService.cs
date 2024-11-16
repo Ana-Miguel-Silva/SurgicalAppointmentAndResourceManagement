@@ -7,6 +7,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Users;
 using DDDSample1.ApplicationService.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System;
 
 
 
@@ -133,6 +134,7 @@ namespace DDDSample1.ApplicationService.Patients
 
             var patient = await this._repo.GetByEmailAsync(email);
 
+
             if (patient == null)
             {
                 sendEmail = -1; // Patient not found
@@ -162,23 +164,54 @@ namespace DDDSample1.ApplicationService.Patients
 
             if (patient == null)
             {
-                return null; // Patient not found
+                return null; 
             }
 
+            if (dto.name != null && !string.IsNullOrWhiteSpace(dto.name.GetFullName()))
+            {
+                patient.ChangeName(new FullName(dto.name.GetFullName()));
+            }
 
-            // Update patient's name
-            patient.ChangeName(new FullName(dto.name.GetFullName()));
-            patient.ChangeEmail(dto.Email);
-            patient.ChangePhone(dto.Phone);
-   
+            if (dto.Email != null)
+            {
+                patient.ChangeEmail(dto.Email);
+            }
 
-            // Update emergency contact
-            patient.ChangeNameEmergency(dto.nameEmergency);
-            patient.ChangePhoneEmergency(dto.phoneEmergency);
-            patient.ChangeEmailEmergency(dto.emailEmergency);
-            patient.ChangeAllergies(dto.Allergies);
-            patient.ChangeGender(dto.gender);
-            patient.ChangeAppointmentHistory(dto.AppointmentHistory);
+            if (dto.Phone != null)
+            {
+                patient.ChangePhone(dto.Phone);
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.nameEmergency))
+            {
+                patient.ChangeNameEmergency(dto.nameEmergency);
+            }
+
+            if (dto.phoneEmergency != null)
+            {
+                patient.ChangePhoneEmergency(dto.phoneEmergency);
+            }
+
+            if (dto.emailEmergency != null)
+            {
+                patient.ChangeEmailEmergency(dto.emailEmergency);
+            }
+
+            if (dto.Allergies != null && dto.Allergies.Any())
+            {
+                patient.ChangeAllergies(dto.Allergies);
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.gender))
+            {
+                patient.ChangeGender(dto.gender);
+            }
+
+            if (dto.AppointmentHistory != null && dto.AppointmentHistory.Any())
+            {
+                patient.ChangeAppointmentHistory(dto.AppointmentHistory);
+            }
+
 
             // Commit changes
             await this._unitOfWork.CommitAsync();
@@ -189,6 +222,114 @@ namespace DDDSample1.ApplicationService.Patients
                 patient.nameEmergency, patient.phoneEmergency, 
                 patient.emailEmergency, patient.gender, 
                 patient.Allergies, patient.AppointmentHistory
+            );
+        }
+
+
+        public async Task<int> VerifySensiveDataUpdate(UpdatePatientDto dto, string email){
+            int sendEmail = 0;
+
+            var patient = await this._repo.GetByEmailAsync(email);
+
+
+            if (patient == null)
+            {
+                sendEmail = -1; // Patient not found
+            }
+
+            var comparisons = new List<(object dtoValue, object patientValue)>
+            {
+                (dto.emailEmergency?.FullEmail, patient.emailEmergency?.FullEmail),
+                (dto.Email?.FullEmail, patient.Email?.FullEmail),
+                (dto.Phone?.Number, patient.Phone?.Number),
+                (dto.phoneEmergency?.Number, patient.phoneEmergency?.Number),
+                (dto.name, patient.name?.GetFullName()),
+                (dto.nameEmergency, patient.nameEmergency)
+            };
+
+            // Iterar sobre as comparações e verificar se há diferenças
+            foreach (var (dtoValue, patientValue) in comparisons)
+            {
+                if (dtoValue != null && !dtoValue.Equals(patientValue))
+                {
+                    sendEmail = 1;
+                    break; // Não é necessário continuar, já que encontramos uma diferença
+                }
+            }
+
+            return sendEmail;
+            
+        }
+
+        public async Task<UpdatePatientDto> UpdateAsyncPatch(UpdatePatientDto dto, string email)
+        {
+            //CheckGender(dto.gender);
+            //await checkCategoryIdAsync(dto.CategoryId);
+           
+            var patient = await this._repo.GetByEmailAsync(email);
+
+            if (patient == null)
+            {
+                return null; // Patient not found
+            }
+
+
+            if (dto.name != null && !string.IsNullOrWhiteSpace(dto.name))
+            {
+                patient.ChangeName(new FullName(dto.name));
+            }
+
+            if (dto.Email != null)
+            {
+                patient.ChangeEmail(dto.Email);
+            }
+
+            if (dto.Phone != null)
+            {
+                patient.ChangePhone(dto.Phone);
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.nameEmergency))
+            {
+                patient.ChangeNameEmergency(dto.nameEmergency);
+            }
+
+            if (dto.phoneEmergency != null)
+            {
+                patient.ChangePhoneEmergency(dto.phoneEmergency);
+            }
+
+            if (dto.emailEmergency != null)
+            {
+                patient.ChangeEmailEmergency(dto.emailEmergency);
+            }
+
+            if (dto.Allergies != null && dto.Allergies.Any())
+            {
+                patient.ChangeAllergies(dto.Allergies);
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.gender))
+            {
+                patient.ChangeGender(dto.gender);
+            }
+
+            if (dto.AppointmentHistory != null && dto.AppointmentHistory.Any())
+            {
+                patient.ChangeAppointmentHistory(dto.AppointmentHistory);
+            }
+
+
+
+            // Commit changes
+            await this._unitOfWork.CommitAsync();
+
+            return new UpdatePatientDto( patient.Id.AsGuid(),
+             patient.name.GetFullName(), patient.gender, 
+                patient.Allergies, patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency, 
+                patient.emailEmergency,
+                patient.Phone, patient.Email, patient.UserEmail
+                
             );
         }
 
@@ -239,16 +380,13 @@ namespace DDDSample1.ApplicationService.Patients
          public async Task SendConfirmationUpdateEmail(string email, string actionId)
         {
 
-            //var token = GenerateToken(user);
 
-           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/request/38865574-6786a3d6-0033-4d0f-8821-a1bfa8bd26ee";
-
-                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/Confirmed";
+           
+                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/{email}";
 
                 var body = "You requested to update patient account Health App account.\r\n" +
                         "<br>If you still wish to proced please click on the following link:\r\n\n" +
-                        $"{resetLink}<br>\r\n\n" +
-                        "\rThen in the Update header past this info " + $"{urlDelete}<br>\r\n\n";
+                       $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
                     email,

@@ -19,11 +19,15 @@ export class PatientService {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<Patient>(`https://localhost:5001/api/Patients/${id}`,{ headers });
-  }
+    return this.http.get<Patient>(`${this.apiUrl}/Patients/${id}`, { headers });
+}
+
+registerPatient(formData: any): Observable<any> {
+  return this.http.post<any>(`${this.apiUrl}/users/registerPatient`, formData);
+}
 
 
-  
+
 
 
 }

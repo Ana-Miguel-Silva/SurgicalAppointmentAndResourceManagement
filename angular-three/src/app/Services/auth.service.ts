@@ -38,6 +38,26 @@ export class AuthService {
     return '';
   }
 
+  getEmail(): string {
+    const token = this.getToken();
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<JwtPayload & { [key: string]: any }>(token || '');
+        console.log('Decoded Token:', decodedToken);
+        
+        const emailClaim = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress';
+        const email = decodedToken[emailClaim] || decodedToken['email'];
+        return email ? email : '';
+
+      } catch (error) {
+        console.error("Invalid token", error);
+        return '';
+      }
+    }
+    return '';
+  }
+  
+
   isAdmin(): boolean {
     return this.getRoles().includes('ADMIN');
   }
