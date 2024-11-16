@@ -47,6 +47,17 @@ export class AdminComponent {
       phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
+      startTime: [''],
+      endTime: [''],
+    });
+    this.staffCreationForm2 = this.fb.group({
+      //firstName: ['', Validators.required],
+      //lastName: ['', Validators.required],
+      name: ['', Validators.required],
+      email: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      role: ['', Validators.required],
+      specialization: ['', Validators.required],
       slots: [''],
     });
     this.staffEditionForm = this.fb.group({
@@ -76,6 +87,7 @@ export class AdminComponent {
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
+  staffCreationForm2: FormGroup;
   staffEditionForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
@@ -84,11 +96,11 @@ export class AdminComponent {
   staffsProfiles: any[] = [];
   staffProfileSingle: any = null;
   availabilitySlots: any[] = [];
+  availabilitySlots2: any[] = [];
   searchTerm: string = '';
   filterField: string = '';
   appointmentHistory: string[] = [];
   slots: string[] = [];
-
 
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
@@ -410,6 +422,21 @@ export class AdminComponent {
   removeDate(index: number) {
     this.appointmentHistory.splice(index, 1);  // Remove a data do array pelo índice
   }
+  removeDate2(index: number) {
+    this.availabilitySlots2.splice(index, 1);  // Remove a data do array pelo índice
+  }
+  addDate2() {
+    const formData = this.staffCreationForm.value;
+    const start = this.staffCreationForm.get('startTime')?.value;
+    const end = this.staffCreationForm.get('endTime')?.value;
+    console.log(start);
+    console.log(end);
+    if (start && end) {
+      const json = {start: start, end: end}
+      console.log(json);
+      this.availabilitySlots2.push(json);  // Adiciona a data ao array
+    }
+  }
 
 
 
@@ -550,10 +577,14 @@ export class AdminComponent {
         this.errorMessage = 'Failed to deactivate staff profiles!';
       }
     });*/
-    this.staffCreationForm.patchValue({ slots: this.slots });
-    const formData = this.staffCreationForm.value;
+    this.staffCreationForm2.patchValue({ name: this.staffCreationForm.get('name')?.value });
+    this.staffCreationForm2.patchValue({ email: this.staffCreationForm.get('email')?.value });
+    this.staffCreationForm2.patchValue({ phoneNumber: this.staffCreationForm.get('phoneNumber')?.value });
+    this.staffCreationForm2.patchValue({ role: this.staffCreationForm.get('role')?.value });
+    this.staffCreationForm2.patchValue({ specialization: this.staffCreationForm.get('specialization')?.value });
+    this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
+    const formData = this.staffCreationForm2.value;
     console.log(formData);
-    console.log(JSON.stringify(formData));
     this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
       .subscribe({
         next: () => {
