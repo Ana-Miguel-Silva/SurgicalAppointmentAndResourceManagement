@@ -33,8 +33,6 @@ export class PatientComponent {
 
 
 
-
-
   constructor(  private route: ActivatedRoute,   private http: HttpClient, private modalService: ModalService,private authService: AuthService,  private router: Router, private fb: FormBuilder, private patientService: PatientService, private cdr: ChangeDetectorRef) {
 
     this.myForm = this.fb.group({
@@ -62,13 +60,13 @@ export class PatientComponent {
       emergencyContactEmail: ['', [Validators.required, Validators.email]],
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       agree: [false, Validators.requiredTrue],
-      appointmentHistory: this.fb.array([]),  
-      allergies: this.fb.array([])  
+      appointmentHistory: this.fb.array([]),
+      allergies: this.fb.array([])
     });
     this.patientForm = this.fb.group({});
   }
 
-  
+
   patientForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
@@ -87,7 +85,7 @@ export class PatientComponent {
 
   closeModal(modalId: string): void {
     this.modalService.closeModal(modalId);
-    this.viewPatient(); 
+    this.viewPatient();
   }
 
   isModalOpen(modalId: string): boolean {
@@ -110,21 +108,21 @@ export class PatientComponent {
     return parsedDate.toISOString().split('T')[0];
   }
 
- 
+
   addDate(event: Event) {
     const input = event.target as HTMLInputElement;
     const selectedDate = input.value;
-  
+
     if (selectedDate) {
       // Add the selected date to the local appointmentHistory array
       this.appointmentHistory.push(selectedDate);
-  
+
       // Get the FormArray for appointmentHistory from the form
       const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
-  
+
       // Add a new FormControl to the FormArray
       appointmentHistoryControl.push(new FormControl(selectedDate));
-  
+
       // Clear the input field
       input.value = '';
     }
@@ -132,7 +130,7 @@ export class PatientComponent {
 
 
   removeDate(index: number) {
-    this.appointmentHistory.splice(index, 1); 
+    this.appointmentHistory.splice(index, 1);
   }
 
 
@@ -141,24 +139,24 @@ export class PatientComponent {
    addTag(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value.trim(); // Get the value from the input directly
-  
+
     console.log('Input Value:', value); // Debugging line to check the input value
-  
+
     // Check if the Enter key is pressed and if the value is not empty
     if (event.key === 'Enter' && value) {
       event.preventDefault();  // Prevent form submission
       this.tags.push(value);  // Add the allergy to the tags array
-  
+
       // Add the allergy to the FormArray
       const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
       allergiesControl.push(new FormControl(value));  // Add to FormArray
-  
+
       // Clear the input field
       input.value = '';  // Clear the input field after adding
     }
   }
 
-  
+
   // Method to remove a tag (allergy) by index
   removeTag(index: number) {
     // Remove from tags array
@@ -172,7 +170,7 @@ export class PatientComponent {
 
 
 
-  onUpdatePatient() {   
+  onUpdatePatient() {
     const token = this.authService.getToken();
 
     if (!token) {
@@ -181,19 +179,19 @@ export class PatientComponent {
     }
 
       const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,        
+        'Authorization': `Bearer ${token}`,
       });
 
       const updatedPatientData = this.patientUpdateForm.value;
       console.log('Updated Patient Data:', updatedPatientData);
-  
+
       this.http.patch(`${this.patientUrl}/${this.selectedPatientEmail}`, updatedPatientData, { headers, responseType: 'text' })
         .subscribe({
           next: (response: any) => {
             console.log(response);
-  
+
             if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
-             
+
 
 
               Swal.fire({
@@ -214,9 +212,9 @@ export class PatientComponent {
                 allowOutsideClick: () => !Swal.isLoading()
               }).then((result) => {
                 if (result.isConfirmed) {
-                  this.actionId = result.value; 
-                 
-                  
+                  this.actionId = result.value;
+
+
                   this.http.patch(`${this.patientUrl}/${this.actionId}/${this.selectedPatientEmail}`, {}, { headers })
                   .subscribe({
                     next: (response: any) => {
@@ -242,7 +240,7 @@ export class PatientComponent {
 
                 }
               });
-            } else {              
+            } else {
               Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -250,8 +248,8 @@ export class PatientComponent {
                 confirmButtonText: 'Ok',
               });
             }
-  
-            this.viewPatient(); 
+
+            this.viewPatient();
           },
           error: (error) => {
             console.error('Update error:', error);
@@ -263,7 +261,7 @@ export class PatientComponent {
             });
           }
         });
-   
+
   }
 
 
@@ -277,8 +275,8 @@ export class PatientComponent {
         emergencyContactName: this.patientProfileSingle.nameEmergency,
         emergencyContactEmail: this.patientProfileSingle.emailEmergency.fullEmail,
         emergencyContactPhone: this.patientProfileSingle.phoneEmergency.number,
-       
-     
+
+
     });
 }
 
@@ -300,7 +298,7 @@ export class PatientComponent {
 
   viewPatient() {
     const token = this.authService.getToken();
-  
+
     if (!token) {
       Swal.fire({
         icon: "error",
@@ -313,22 +311,22 @@ export class PatientComponent {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-  
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-  
+
     this.selectedPatientEmail = this.authService.getEmail();
-  
+
     console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
-  
+
     // Faça a requisição para obter os dados do paciente
     this.http.get<any>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
       .subscribe({
         next: (response) => {
           console.log(response);
-          this.patientProfileSingle = response; 
-          
+          this.patientProfileSingle = response;
+
         },
         error: (error) => {
           console.error('Error viewing patient:', error);
@@ -336,7 +334,7 @@ export class PatientComponent {
         }
       });
   }
-  
+
   }
 
 
