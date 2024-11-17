@@ -765,5 +765,55 @@ namespace DDDSample1.Controllers
         }
 
 
+
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+
+        [HttpPatch("adjust/update/{email}")]
+        public async Task<ActionResult<PatientDto>> UpdatePatchAsAdmin(string email, UpdatePatientDto dto)
+        {
+
+                try
+                { 
+              
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userService.GetByIdAsync(new UserId(userId));
+
+                var Patient = await _service.GetPatientByEmailAsync(email);
+                PatientId id = Patient.Id;
+
+                    try
+                    {
+                        var sendEmail = await _service.VerifySensiveDataUpdate(dto, email);
+
+                        if(sendEmail.ToString().Equals("1")) await _service.SendWarningUpdateEmail(email, user.Email.FullEmail);
+
+
+                        var patientProfile = await _service.UpdateAsyncPatch(dto,email);
+                       
+
+                        await _logService.LogAsync("Patient", "Updated", id.AsGuid(), "old" + JsonConvert.SerializeObject(patientProfile) + "new" + JsonConvert.SerializeObject(dto), user.Email.FullEmail);
+
+                        return Ok(patientProfile);
+
+                    }
+                    catch (BusinessRuleValidationException ex)
+                    {
+                        return BadRequest(new { Message = ex.Message });
+                    }
+
+                }
+                catch (BusinessRuleValidationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
+          
+        }
+
+    
+
+
+
     }
 }

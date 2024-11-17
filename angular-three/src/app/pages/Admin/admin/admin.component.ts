@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
@@ -23,6 +23,8 @@ export class AdminComponent {
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
     private http: HttpClient, private authService: AuthService, private router: Router) {
+
+
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -32,12 +34,28 @@ export class AdminComponent {
       phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       gender: ['', Validators.required],
       appointmentHistory: [''],
-      //allergies: [''], // Controlador para o campo de "Allergies"
+      allergies: [''], // Controlador para o campo de "Allergies"
       emergencyContactName: ['', Validators.required],
       emergencyContactEmail: ['', [Validators.required, Validators.email]],
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       agree: [false, Validators.requiredTrue]
     });
+
+    this.patientUpdateForm = this.fb.group({
+      name: ['', Validators.required],
+      userEmail: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      gender: ['', Validators.required],
+      emergencyContactName: ['', Validators.required],
+      emergencyContactEmail: ['', [Validators.required, Validators.email]],
+      emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      agree: [false, Validators.requiredTrue],
+      appointmentHistory: this.fb.array([]),
+      allergies: this.fb.array([])
+    });
+
+
 
     this.staffForm = this.fb.group({});
     this.staffCreationForm = this.fb.group({
@@ -94,6 +112,7 @@ export class AdminComponent {
 
 
   myForm: FormGroup;
+  patientUpdateForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -102,12 +121,15 @@ export class AdminComponent {
   staffEditionForm2: FormGroup;
   slotsForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
+  appointmentHistoryUpdate: string[] = [];
+  tagsUpdates: string[] = [];
   successMessage: string | null = null;
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
   staffsProfiles: any[] = [];
   staffProfileSingle: any = null;
   patientProfileSingle: any = null;
+  patientProfileUpdate: any = null;
   availabilitySlots: any[] = [];
   availabilitySlots2: any[] = [];
   availabilitySlots3: any[] = [];
@@ -173,17 +195,28 @@ export class AdminComponent {
           response => {
             Swal.fire({
               icon: "success",
-              title: "Formulário submetido com sucesso",
+              title: "Patient adicionado com sucesso!",
               toast: true,
               position: "top-end",
               timer: 3000,
               showConfirmButton: false
             });
             this.myForm.reset(); // Redefinir o formulário após o envio
-            this.tags = []; // Limpar o array de tags após o envio
+            this.appointmentHistory = []; // Limpar o array de tags após o envio
           },
           error => {
             console.error("Erro ao submeter o formulário", error);
+              console.error('Error editing patient:', error);
+              Swal.fire({
+                icon: "error",
+                title: "Não foi possível adicionar o patient devido a algum atributo",
+                toast: true,
+                position: "top-end",
+                timer: 3000,
+                showConfirmButton: false
+              });
+              this.errorMessage = 'Failed to edit patient!';
+              this.successMessage = null;
           }
         );
     } else {
@@ -276,7 +309,7 @@ export class AdminComponent {
         } else if (result.isDenied) {
         }
       });
-      
+
     }
   }
 
@@ -326,7 +359,151 @@ export class AdminComponent {
     }
   }
 
-  editPatient(){}
+  editPatient(){
+
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectedPatientEmail === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um Patient.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    }else {
+      console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
+      this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.patientProfileUpdate = response;
+
+          this.populateUpdateForm();
+
+
+          const updatedPatientData = this.patientUpdateForm.value;
+          console.log('Updated Patient Data:', updatedPatientData);
+          this.openModal('UpdatePatientModal');
+        },
+        error: (error) => {
+          console.error('Error getting patient:', error);
+          this.errorMessage = 'Failed to getting patient profile!';
+        }
+      });
+    }
+
+      
+
+  }
+
+
+  populateUpdateForm(): void {
+    this.patientUpdateForm.patchValue({
+        name: `${this.patientProfileUpdate.name.firstName} ${this.patientProfileUpdate.name.middleNames} ${this.patientProfileUpdate.name.lastName}`,
+        email: this.patientProfileUpdate.email.fullEmail,
+        phone: this.patientProfileUpdate.phone.number,
+        userEmail: this.patientProfileUpdate.userEmail.fullEmail,
+        gender: this.patientProfileUpdate.gender,
+        emergencyContactName: this.patientProfileUpdate.nameEmergency,
+        emergencyContactEmail: this.patientProfileUpdate.emailEmergency.fullEmail,
+        emergencyContactPhone: this.patientProfileUpdate.phoneEmergency.number,
+
+
+    });
+
+    const appointmentHistoryArray = this.patientUpdateForm.get('appointmentHistory') as FormArray;
+    const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
+    appointmentHistoryArray.clear();
+    allergiesArray.clear();
+  
+    // Popula o FormArray de appointmentHistory
+    if (this.patientProfileUpdate.appointmentHistory) {
+      this.patientProfileUpdate.appointmentHistory.forEach((appointment: string) => {
+        appointmentHistoryArray.push(new FormControl(appointment));
+      });
+      this.appointmentHistoryUpdate = [...this.patientProfileUpdate.appointmentHistory]; // Sincroniza com o array local
+    }
+  
+    // Popula o FormArray de allergies
+    if (this.patientProfileUpdate.allergies) {
+      this.patientProfileUpdate.allergies.forEach((allergy: string) => {
+        allergiesArray.push(new FormControl(allergy));
+      });
+      this.tags = [...this.patientProfileUpdate.allergies]; // Sincroniza com o array local
+    }
+  }
+
+  onUpdatePatient() {
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    console.log(this.patientUpdateForm.value);
+
+    this.http.patch(`${this.patientUrl}/adjust/update/${this.selectedPatientEmail}`, this.patientUpdateForm.value , { headers })
+      .subscribe({
+        next: (response: any) => {
+          console.log(response)
+          //this.successMessage = 'Time Slots Added!';
+          //this.errorMessage = null;
+          Swal.fire({
+            icon: "success",
+            title: "Patient atualizado com sucesso!",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllpatientsProfiles(); // Refresh the list after creation
+          this.closeModal('UpdatePatientModal');
+        },
+        error: (error) => {
+          console.error('Error editing patient:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível atualizar o patient",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit patient!';
+          this.successMessage = null;
+        }
+      });
+
+
+
+  }
 
   deactivatePatient(){
     const token = this.authService.getToken();
@@ -411,10 +588,11 @@ export class AdminComponent {
         } else if (result.isDenied) {
         }
       });
-      
+
     }
   }
 
+  
 
 
   viewPatient(){
@@ -445,7 +623,7 @@ export class AdminComponent {
         timer: 3000,
         showConfirmButton: false
       });
-      
+
     } else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
       this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
@@ -684,29 +862,59 @@ export class AdminComponent {
 
 
 
-  // Método para adicionar uma tag ao array
-  addTag(event: KeyboardEvent) {
-    const allergiesControl = this.myForm.get('allergies');
-    const allergies = allergiesControl?.value.trim(); // Obtém o valor atual do input
-    console.log(allergiesControl);
-    console.log(allergies);
 
-
-
-    if (event.key === 'Enter' && allergies) {
-      event.preventDefault();  // Evita o envio do formulário
-      this.tags.push(allergies);  // Adiciona a tag ao array se o valor não estiver vazio
-      allergiesControl?.setValue('');  // Limpa o campo de input usando setValue
+  
+  addDatePUpdate(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const selectedDate = input.value;
+  
+    if (selectedDate) {
+      // Adiciona ao array local
+      this.appointmentHistoryUpdate.push(selectedDate);
+  
+      // Adiciona ao FormArray
+      const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
+      appointmentHistoryControl.push(new FormControl(selectedDate));
+  
+      // Limpa o campo de entrada
+      input.value = '';
     }
   }
-
-
-
-  // Método para remover uma tag pelo índice
-  removeTag(index: number) {
-    this.tags.splice(index, 1);  // Remove a tag do array pelo índice
+  
+  removeDatePUpdate(index: number) {
+    // Remove do array local
+    this.appointmentHistoryUpdate.splice(index, 1);
+  
+    // Remove do FormArray
+    const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
+    appointmentHistoryControl.removeAt(index);
   }
-
+  
+  addTag(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.trim();
+  
+    if (event.key === 'Enter' && value) {
+      event.preventDefault(); // Impede o envio do formulário
+      this.tags.push(value); // Adiciona ao array local
+  
+      // Adiciona ao FormArray
+      const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
+      allergiesControl.push(new FormControl(value));
+  
+      // Limpa o campo de entrada
+      input.value = '';
+    }
+  }
+  
+  removeTag(index: number) {
+    // Remove do array local
+    this.tags.splice(index, 1);
+  
+    // Remove do FormArray
+    const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
+    allergiesControl.removeAt(index);
+  }
 
 
   ngOnInit() {

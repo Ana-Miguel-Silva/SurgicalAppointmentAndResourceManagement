@@ -457,7 +457,28 @@ namespace DDDSample1.ApplicationService.Patients
 
                 var SendEmailRequest = new SendEmailRequest(
                     userEmail,
-                    "Deactivated account warning",
+                    "Deactivated account warning!",
+                    body
+                );
+
+                await _mailService.SendEmailAsync(SendEmailRequest);
+        }
+
+
+        public async Task SendWarningUpdateEmail(string userEmail, string adminEmail)
+        {
+
+
+           
+
+                var body = "Sensitive information on your Patient Profile was updated by a Admin.\r\n" +
+                        "<br> The admin email who updated your data is: \r\n\n" +
+                        $"{adminEmail}<br>\r\n\n" +
+                        "\rIf you want to complain contact our services. \n\n\r" ;
+
+                var SendEmailRequest = new SendEmailRequest(
+                    userEmail,
+                    "Sensitive data account updated warning!",
                     body
                 );
 
