@@ -39,12 +39,7 @@
             </div>
           </div>
     
-
-
         </div>
-
-
-
 </div>
 
 
@@ -52,9 +47,8 @@
 <div [ngStyle]="{'display': isModalOpen('UpdatePatientModal') ? 'block' : 'none'}" id="UpdatePatientModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('UpdatePatientModal')" class="close">&times;</span>
-      <div>
 
-        <form [formGroup]="patientUpdateForm" (ngSubmit)="onUpdatePatient()" class="row g-3 needs-validation" novalidate="">
+        <form [formGroup]="patientUpdateForm" class="row g-3 needs-validation" novalidate="">
           <div *ngIf="patientProfileSingle">
             <div  class="row g-3 needs-validation">
             <div class="col-md-12"></div>
@@ -132,14 +126,15 @@
     
     
     
-              <div class="col-md-12"></div>
               <hr>
-              <div class="col-md-12"> 
+              <div class="col-md-2"></div>
+
+              <div class="col-md-3"> 
                 <div class="input-group has-validation">
-                  <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-                  <span class="input-group-text" id="add">Appointment History</span>
+                  <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+                  <span class="input-group-text" style="width:60%" id="add">Appointment History</span>
                 </div>
-                <table class="table table-striped table-hover table-over" style="scrollbar-width: none;">
+                <table class="table table-striped table-hover table-over-update" style="scrollbar-width: none;">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -153,9 +148,12 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
               
-                <div class="dates-input ms-10"> <!-- Dates input section -->
+                <div class="col-md-6"> <!-- Dates input section -->
+                  <div class="dates-input ms-10"> <!-- Dates input section -->
                   <ul id="dates">
+                    
                     <li *ngFor="let date of appointmentHistory; let i = index" class="date">
                       {{ date }}
                       <button type="button" class="delete-button" (click)="removeDate(i)">X</button>
@@ -164,13 +162,19 @@
                   <input type="date" id="input-date" (change)="addDate($event)" placeholder="Add appointment date" />
                 </div>
               </div>
+              <div class="col-md-1"></div>
+
               
-              <div class="col-md-12"> 
+              <div class="col-md-2"></div>
+
+              <div class="col-md-3">
+  
+
                 <div class="input-group has-validation">
-                  <span class="input-group-text" id="basic-addon1"><i class="bi bi-virus"></i></span>
-                  <span class="input-group-text" id="add">Allergies</span>
+                  <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
+                  <span class="input-group-text" style="width:60%" id="add">Allergies</span>
                 </div>
-                <table class="table table-striped table-hover table-over" style="scrollbar-width: none;">
+                <table class="table table-striped table-hover table-over-update" style="scrollbar-width: none;">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -178,12 +182,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let request of patientProfileSingle.allergies; let i = index">
+                    <tr *ngFor="let request of tags; let i = index">
                       <td>{{ i + 1 }}</td>
                       <td>{{ request }}</td>
                     </tr>
                   </tbody>
                 </table>  
+            </div>
               
                 <div class="col-md-6">
                   <label for="validationCustom06" class="form-label">Allergies</label>
@@ -197,11 +202,11 @@
                     <input type="text" id="input-tag" (keydown)="addTag($event)" placeholder="Enter allergies name" />
                   </div>
                 </div>
-    
-    
-              <div class="col-md-2"></div>
-            </div>
-            </div>
+
+              <div class="col-md-1"></div>
+
+
+          </div>
 
 
           
@@ -218,13 +223,10 @@
               </div>
             </div>
           </div>
-
-          <div class="col-12">
-            <button class="btn btn-primary" type="submit" >Submit form</button>
-          </div>
-        </form>
-      </div>
-
+      
+          <button class="btn btn-primary" (click)="onUpdatePatient()">Submit form</button>
+        </div>
+      </form>
   </div>
 </div>
 
@@ -379,8 +381,6 @@
     </form>
   </div>
 </div>
-
-
 
 
 

@@ -725,10 +725,12 @@ namespace DDDSample1.Controllers
 
                         await _service.DeactiveAsync(patientProfile.Id);
 
-
                         if (patientProfile != null){
 
                            string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+                           await _service.SendDeactivatedAccountEmail(user.Email.FullEmail, userEmail);
+
 
 
                             await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id.AsGuid() , JsonConvert.SerializeObject(patientProfile), userEmail);

@@ -162,9 +162,6 @@ export class PatientComponent {
     // Remove from tags array
     this.tags.splice(index, 1);
 
-    // Remove from FormArray
-    const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
-    allergiesControl.removeAt(index);
   }
 
 
@@ -265,6 +262,10 @@ export class PatientComponent {
   }
 
 
+
+  appointmentHistoryUpdate: any[] = [];
+
+
   populateUpdateForm(): void {
     this.patientUpdateForm.patchValue({
         name: `${this.patientProfileSingle.name.firstName} ${this.patientProfileSingle.name.middleNames} ${this.patientProfileSingle.name.lastName}`,
@@ -278,6 +279,11 @@ export class PatientComponent {
 
 
     });
+
+    this.appointmentHistory = this.patientProfileSingle.appointmentHistory;
+    this.tags = this.patientProfileSingle.allergies;
+
+    
 }
 
 
@@ -334,6 +340,41 @@ export class PatientComponent {
         }
       });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   }
 

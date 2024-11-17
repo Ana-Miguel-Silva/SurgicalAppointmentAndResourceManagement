@@ -446,6 +446,25 @@ namespace DDDSample1.ApplicationService.Patients
 
         }
 
+        public async Task SendDeactivatedAccountEmail(string userEmail, string adminEmail)
+        {
+
+            //var token = GenerateToken(user);
+
+                var body = "Your Account Health App was been deactivated and your date will be deleted in 30 days.\r\n" +
+                        "<br> The admin email who deleted your data is: \r\n\n" +
+                        $"{adminEmail}<br>\r\n\n" +
+                        "\rIf you want to complain contact our services. \n\n\r" ;
+
+                var SendEmailRequest = new SendEmailRequest(
+                    userEmail,
+                    "Deactivated account warning",
+                    body
+                );
+
+                await _mailService.SendEmailAsync(SendEmailRequest);
+        }
+
 
 
 

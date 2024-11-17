@@ -275,7 +275,13 @@ table.table td .btn.manage:hover {
 
 .table-over{
   display: block; 
-  height: 50vh; 
+  height: 35vh; 
+  overflow-y: scroll;
+}
+
+.table-over-update{
+  display: block; 
+  height: 20vh; 
   overflow-y: scroll;
 }
 
@@ -418,3 +424,4 @@ table.table td .btn.manage:hover {
   padding: 5px;
   width: 100%;
 }
+
