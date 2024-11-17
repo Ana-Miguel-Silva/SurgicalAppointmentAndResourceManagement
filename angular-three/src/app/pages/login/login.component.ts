@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import e from 'express';
+import Swal from 'sweetalert2';
 
 
 
@@ -31,7 +32,15 @@ export class LoginComponent {
     this.http.post<string>("https://localhost:5001/api/Users/login", this.loginObj, { responseType: 'text' as 'json' }).subscribe({
       next: token => {
         console.log(token);
-        alert('Login Success!');
+        //alert('Login Success!');
+        Swal.fire({
+          icon: "success",
+          title: "Login efetuado com sucesso!",
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false
+        });
         this.authService.setToken(token);
         this.navigateToRoleBasedPage();
 
@@ -39,7 +48,15 @@ export class LoginComponent {
       },
       error: error => {
         console.error(error);
-        alert("Login Fail!");
+        //alert("Login Fail!");
+        Swal.fire({
+          icon: "error",
+          title: "Não foi possível efetuar Login...",
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false
+        });
       },
       complete: () => {
         console.log('Request completed');

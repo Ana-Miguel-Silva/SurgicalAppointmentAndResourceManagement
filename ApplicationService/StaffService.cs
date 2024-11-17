@@ -152,6 +152,7 @@ namespace DDDSample1.ApplicationService.Staff
                 staff.RemoveSlots(dto.Slots);
             }
             
+            
             await this._unitOfWork.CommitAsync();
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }

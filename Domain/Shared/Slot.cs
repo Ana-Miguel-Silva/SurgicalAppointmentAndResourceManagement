@@ -27,5 +27,25 @@ namespace DDDSample1.Domain.Shared
             yield return StartTime;
             yield return EndTime;
         }
+
+        // Override Equals
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Slot);
+        }
+
+        // Implement IEquatable<Slot>
+        public bool Equals(Slot other)
+        {
+            if (other == null) return false;
+
+            return StartTime == other.StartTime && EndTime == other.EndTime;
+        }
+
+        // Override GetHashCode
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(StartTime, EndTime);
+        }
     }
 }

@@ -105,5 +105,6 @@ namespace DDDSample1.Domain.Staff
         {
             this.Active = false;
         }
+        
     }
 }
