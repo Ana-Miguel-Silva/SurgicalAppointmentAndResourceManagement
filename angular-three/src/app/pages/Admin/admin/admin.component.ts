@@ -73,6 +73,9 @@ export class AdminComponent {
       phone: ['', Validators.required],
       specialization: ['', Validators.required],
     });
+    this.slotsForm = this.fb.group({
+      slots: [''],
+    });
     this.patientForm = this.fb.group({});
   }
 
@@ -97,6 +100,7 @@ export class AdminComponent {
   staffCreationForm2: FormGroup;
   staffEditionForm: FormGroup;
   staffEditionForm2: FormGroup;
+  slotsForm: FormGroup;
   tags: string[] = [];  // Array para armazenar as tags
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -536,9 +540,69 @@ export class AdminComponent {
     const commonElements = oldSlots.filter((value: any) => newSlots.includes(value));
     const toRemove = oldSlots.filter((value: any) => !commonElements.includes(value));
     const toCreate = newSlots.filter((value: any) => !commonElements.includes(value));
-    console.log(toRemove);
-    console.log(toCreate);
-    /*this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
+    this.slotsForm.patchValue({slots: toCreate});
+    const formDataA = this.slotsForm.value;
+    this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsAdd`, JSON.stringify(formDataA).replaceAll("Time",""), { headers })
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Time Slots Added!';
+          this.errorMessage = null;
+          Swal.fire({
+            icon: "success",
+            title: "Time Slots adicionadas com sucesso.",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllstaffsProfiles(); // Refresh the list after creation
+        },
+        error: (error) => {
+          console.error('Error editing staff:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível adicionar uma ou mais Time Slots.",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit staff!';
+          this.successMessage = null;
+        }
+      });
+      this.slotsForm.patchValue({slots: toRemove});
+      const formDataB = this.slotsForm.value;
+      this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsRemove`, JSON.stringify(formDataB).replaceAll("Time",""), { headers })
+        .subscribe({
+          next: () => {
+            this.successMessage = 'Time Slots Removed!';
+            this.errorMessage = null;
+            Swal.fire({
+              icon: "success",
+              title: "Time Slots removidas com sucesso.",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false
+            });
+            this.getAllstaffsProfiles(); // Refresh the list after creation
+          },
+          error: (error) => {
+            console.error('Error editing staff:', error);
+            Swal.fire({
+              icon: "error",
+              title: "Não foi possível remover uma ou mais Time Slots.",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false
+            });
+            this.errorMessage = 'Failed to edit staff!';
+            this.successMessage = null;
+          }
+        });
+    this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
       .subscribe({
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
@@ -566,7 +630,7 @@ export class AdminComponent {
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
         }
-      });*/
+      });
 
   }
 

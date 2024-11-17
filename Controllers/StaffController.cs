@@ -89,7 +89,7 @@ namespace DDDSample1.Controllers
         }
         // PUT: api/Staff/{id}/Slots
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
-        [HttpPut("{id}/Slots")]
+        [HttpPut("{id}/SlotsAdd")]
         public async Task<ActionResult<StaffDto>> AddSlots(string id, SlotDTO dto)
         {
             var catOld = await _service.GetByStaffIDAsync(id);
@@ -122,7 +122,7 @@ namespace DDDSample1.Controllers
         }
         // DELETE: api/Staff/{id}/Slots
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
-        [HttpDelete("{id}/Slots")]
+        [HttpPut("{id}/SlotsRemove")]
         public async Task<ActionResult<StaffDto>> RemoveSlots(string id, SlotDTO dto)
         {
             var catOld = await _service.GetByStaffIDAsync(id);
