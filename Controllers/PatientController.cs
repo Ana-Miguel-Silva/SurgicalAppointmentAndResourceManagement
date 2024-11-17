@@ -619,8 +619,8 @@ namespace DDDSample1.Controllers
         //Delete with actions
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
-        [HttpDelete("{id}/delete")]
-        public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string id)
+        [HttpDelete("{email}/delete")]
+        public async Task<ActionResult<PatientDto>> DeleteConfirmationAction(string email)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userService.GetByIdAsync(new UserId(userId));
@@ -628,9 +628,12 @@ namespace DDDSample1.Controllers
                 try
                 {
 
-                    var patientId = new PatientId(Guid.Parse(id));
+                    var patient = await _service.GetPatientByEmailAsync(email);
+                    var id = patient.Id;
 
-                    var pendingAction = await _pendingActionsService.PendingActionsAsync(id);
+                    //var patientId = new PatientId(Guid.Parse(id));
+
+                    var pendingAction = await _pendingActionsService.PendingActionsAsync(id.AsString());
 
 
                     await _service.SendConfirmationEmail(user.Email.FullEmail, pendingAction.Id.AsString());
@@ -670,8 +673,13 @@ namespace DDDSample1.Controllers
 
 
                     var patientId = new PatientId(Guid.Parse(action.ToString()));
+                    var patient = await _service.GetByIdAsync(patientId);
 
-                        var patientProfile = await _service.DeactiveAsync(patientId);
+                    var patientProfile = await _service.DeactiveAsync(patientId);
+
+                    var patientUser = await _userService.GeBbyEmailAsync(patient.UserEmail.FullEmail);
+
+                    await _userService.InactivateAsync(new UserId(patientUser.Id));
 
 
                         if (patientProfile != null){
@@ -725,11 +733,15 @@ namespace DDDSample1.Controllers
 
                         await _service.DeactiveAsync(patientProfile.Id);
 
+                        var patientUser = await _userService.GeBbyEmailAsync(patientProfile.UserEmail.FullEmail);
+
+                        await _userService.InactivateAsync(new UserId(patientUser.Id));
+
                         if (patientProfile != null){
 
                            string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
-                           await _service.SendDeactivatedAccountEmail(user.Email.FullEmail, userEmail);
+                           await _service.SendDeactivatedAccountEmail(patientProfile.Email.FullEmail, userEmail);
 
 
 
