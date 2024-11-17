@@ -24,12 +24,18 @@
       "dom"
     ],
     "allowSyntheticDefaultImports": true,    
+    
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "exclude": [
+    "cypress/**/*.ts",
+    "cypress.config.ts"
+  ]
+  
   
 }
