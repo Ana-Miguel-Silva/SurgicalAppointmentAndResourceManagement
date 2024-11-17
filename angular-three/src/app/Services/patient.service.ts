@@ -15,19 +15,48 @@ export class PatientService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getPatientById(id: string): Observable<Patient> {
+getPatientById(id: string): Observable<Patient> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     return this.http.get<Patient>(`${this.apiUrl}/Patients/${id}`, { headers });
 }
 
-registerPatient(formData: any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/users/registerPatient`, formData);
+
+
+getPatientByEmail(email: string): Observable<Patient> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<Patient>(`${this.apiUrl}/Patients/email/${email}`, { headers });
 }
 
 
 
 
+registerPatient(formData: any): Observable<any> {
+  return this.http.post<any>(`${this.apiUrl}/users/registerPatient`, formData);
+}
 
+updatePatient(selectedPatientEmail: string, updatedData: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch(
+    `${this.apiUrl}/Patients/${selectedPatientEmail}`,
+    updatedData,
+    { headers, responseType: 'text' }
+  );
+}
+
+confirmAction(actionId: string, selectedPatientEmail: string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch(
+    `${this.apiUrl}/Patients/${actionId}/${selectedPatientEmail}`,
+    {},
+    { headers }
+  );
+}
 }

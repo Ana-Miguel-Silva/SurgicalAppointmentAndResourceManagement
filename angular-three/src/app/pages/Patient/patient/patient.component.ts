@@ -168,97 +168,102 @@ export class PatientComponent {
 
   onUpdatePatient() {
     const token = this.authService.getToken();
-
+  
     if (!token) {
       alert('You are not logged in!');
       return;
     }
 
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
+    if (!this.selectedPatientEmail) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum paciente selecionado.',
       });
+      return;
+    }
 
-      const updatedPatientData = this.patientUpdateForm.value;
-      console.log('Updated Patient Data:', updatedPatientData);
+  
+    const updatedPatientData = this.patientUpdateForm.value;
+    console.log('Updated Patient Data:', updatedPatientData);
+  
+    this.patientService.updatePatient(this.selectedPatientEmail, updatedPatientData).subscribe({
+      next: (response: any) => {
+        console.log(response);
+  
+        if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
+          Swal.fire({
+            title: "Submit your code",
+            input: "text",
+            inputAttributes: {
+              autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            showLoaderOnConfirm: true,
+            preConfirm: (code) => {
+              if (!code) {
+                Swal.showValidationMessage('Please enter your code');
+              }
+              return code;
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.actionId = result.value;
 
-      this.http.patch(`${this.patientUrl}/${this.selectedPatientEmail}`, updatedPatientData, { headers, responseType: 'text' })
-        .subscribe({
-          next: (response: any) => {
-            console.log(response);
+              if (!this.selectedPatientEmail) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Erro',
+                  text: 'Nenhum paciente selecionado.',
+                });
+                return;
+              }
 
-            if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
-
-
-
-              Swal.fire({
-                title: "Submit your code",
-                input: "text",
-                inputAttributes: {
-                  autocapitalize: "off"
-                },
-                showCancelButton: true,
-                confirmButtonText: "Submit",
-                showLoaderOnConfirm: true,
-                preConfirm: (login) => {
-                  if (!login) {
-                    Swal.showValidationMessage('Please enter your code');
-                  }
-                  return login;
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.actionId = result.value;
-
-
-                  this.http.patch(`${this.patientUrl}/${this.actionId}/${this.selectedPatientEmail}`, {}, { headers })
-                  .subscribe({
-                    next: (response: any) => {
-                      console.log(response);
-                      Swal.fire({
-                        title: 'Success!',
-                        text: 'Data submitted successfully.',
-                        icon: 'success'
-                      });
-                    },
-                    error: (error) => {
-                      console.error('Error:', error);
-                      Swal.fire({
-                        title: 'Error!',
-                        text: `There was a problem submitting the data: ${error.message}`,
-                        icon: 'error'
-                      });
-                    }
+  
+              this.patientService.confirmAction(this.actionId, this.selectedPatientEmail).subscribe({
+                next: (confirmResponse: any) => {
+                  console.log(confirmResponse);
+                  Swal.fire({
+                    title: 'Success!',
+                    text: 'Data submitted successfully.',
+                    icon: 'success',
                   });
-
-                  this.viewPatient;
-
-
-                }
-              });
-            } else {
-              Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Patient updated successfully!',
-                confirmButtonText: 'Ok',
+                },
+                error: (error) => {
+                  console.error('Error:', error);
+                  Swal.fire({
+                    title: 'Error!',
+                    text: `There was a problem submitting the data: ${error.message}`,
+                    icon: 'error',
+                  });
+                },
               });
             }
-
-            this.viewPatient();
-          },
-          error: (error) => {
-            console.error('Update error:', error);
-            this.patientUpdateForm.markAllAsTouched();
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: error.error?.Message || 'An error occurred while updating the patient.',
-            });
-          }
+          });
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Patient updated successfully!',
+            confirmButtonText: 'Ok',
+          });
+        }
+        this.viewPatient();
+      },
+      error: (error) => {
+        console.error('Update error:', error);
+        this.patientUpdateForm.markAllAsTouched();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.error?.Message || 'An error occurred while updating the patient.',
         });
-
+      },
+    });
   }
+  
 
 
 
@@ -344,7 +349,7 @@ export class PatientComponent {
     console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
 
     // Faça a requisição para obter os dados do paciente
-    this.http.get<any>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+    this.patientService.getPatientByEmail(this.selectedPatientEmail)
       .subscribe({
         next: (response) => {
           console.log(response);
@@ -360,41 +365,13 @@ export class PatientComponent {
       });
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); // Redireciona para a página de login
   }
+
+
+
+ }
 
 
