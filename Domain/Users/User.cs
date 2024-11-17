@@ -41,7 +41,7 @@
                 this.Email = email;
                 this.Role = role;
                 this.Password = new Password("#Password0");
-                this.Active = false;
+                this.Active = true;
             }
 
             /*public User(Email email, string role)
@@ -119,5 +119,9 @@
                 LockoutEndTime = null;
             }
 
+        internal bool isActive()
+        {
+            return Active == true;
         }
+    }
     }

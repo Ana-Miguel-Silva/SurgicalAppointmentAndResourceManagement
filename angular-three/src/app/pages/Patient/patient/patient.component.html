@@ -24,7 +24,7 @@
           </div>
 
           <div class="container col-md-4">
-            <div class="container-lg  selectionDiv" (click)="openModal('UpdatePatientModal')">
+            <div class="container-lg  selectionDiv" (click)="deactivatePatient()">
               <div class="form-floating mb-3">
                   <h3 class="title" >Delete Patient Profile</h3>
               </div>
@@ -383,7 +383,7 @@
 </div>
 
 <div class="container-xxl">
-  <button class="btn btn-danger" (click)="logout()">Logout</button>
+  <button class="btn-right" (click)="logout()">Logout</button>
 </div>
 
 

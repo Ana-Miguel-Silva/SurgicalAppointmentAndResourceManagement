@@ -358,15 +358,12 @@ namespace DDDSample1.ApplicationService.Patients
 
             //var token = GenerateToken(user);
 
-           var resetLink = $"https://team-name-ehehe.postman.co/workspace/f46d55f6-7e50-4557-8434-3949bdb5ccb9/environment/38865574-80fc09d7-9602-4738-aa58-9685f2d733ed";
-
-                string urlDelete = $"https://localhost:5001/api/Patients/{actionId}/deleteConfirmed";
+           
+                string urlDelete = $"{actionId}";
 
                 var body = "You requested to delete patient account Health App account.\r\n" +
-                        "<br>If you still wish to proced please click on the following link:\r\n\n" +
-                        $"{resetLink}<br>\r\n\n" +
-                        "\rThen write true or false, if you with to autorize!\n\n\r" +
-                        "\rThen in the Delete header past this info " + $"{urlDelete}<br>\r\n\n";
+                        "<br>If you still wish to proced please copy the following code:\r\n\n" +
+                        $"{urlDelete}<br>\r\n\n";
 
                 var SendEmailRequest = new SendEmailRequest(
                     userEmail,
@@ -428,6 +425,8 @@ namespace DDDSample1.ApplicationService.Patients
             //    throw new BusinessRuleValidationException("It is not possible to delete an active Patient.");
             if (prod.Active.Equals(true))
             {
+
+                
                 prod.Deactivate();
 
                 if(prod.ExpirationDate <= DateTime.Now)

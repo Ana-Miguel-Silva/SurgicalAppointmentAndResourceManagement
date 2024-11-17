@@ -59,4 +59,29 @@ confirmAction(actionId: string, selectedPatientEmail: string): Observable<any> {
     { headers }
   );
 }
+
+deactivatePatient(selectedPatientEmail: string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.delete(
+    `${this.apiUrl}/Patients/${selectedPatientEmail}/delete`,
+    { headers, responseType: 'text' }
+  );
+}
+
+confirmDeactivateAction(actionId: string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.delete(
+    `${this.apiUrl}/Patients/${actionId}/deleteConfirmed`,
+    { headers }
+  );
+}
+
+
+
+
+
 }

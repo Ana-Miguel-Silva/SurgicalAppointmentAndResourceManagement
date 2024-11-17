@@ -118,6 +118,8 @@ namespace DDDSample1.ApplicationService.Users
             {
                 throw new Exception("User not found.");
             }
+            if (!user.isActive()) throw new Exception("The user is not active");
+
             if (user.IsLockedOut()) throw new Exception("The user only has 5 attemps to login. Please wait 15 minuts and try again!");
 
             if (!user.CheckPassword(password))

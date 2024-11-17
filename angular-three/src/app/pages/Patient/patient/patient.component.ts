@@ -367,10 +367,145 @@ export class PatientComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); // Redireciona para a página de login
+    this.router.navigate(['/login']); 
   }
 
 
+  deactivatePatient() {
+    const token = this.authService.getToken();
+  
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  
+    if (this.selectedPatientEmail === null) {
+      return;
+    } else {
+      if (document.getElementById("active_" + this.selectedPatientEmail + "_false")) {
+        Swal.fire({
+          icon: "error",
+          title: "Perfil já está desativado.",
+          toast: true,
+          position: "bottom-right",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return;
+      }
+  
+      Swal.fire({
+        icon: "warning",
+        iconColor: '#d33',
+        title: "Desativar este Perfil?",
+        text: "Não é possível reverter esta decisão.",
+        showCancelButton: true,
+        confirmButtonText: "Desativar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log(`Deactivating Patient Email: ${this.selectedPatientEmail}`);
+
+          if (!this.selectedPatientEmail) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Nenhum paciente selecionado.',
+            });
+            return;
+          }
+
+          this.patientService.deactivatePatient(this.selectedPatientEmail).subscribe({
+              next: (response: any) => {
+                console.log(response);
+  
+                if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
+                  Swal.fire({
+                    title: "Submit your code",
+                    input: "text",
+                    inputAttributes: {
+                      autocapitalize: "off"
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "Submit",
+                    showLoaderOnConfirm: true,
+                    preConfirm: (code) => {
+                      if (!code) {
+                        Swal.showValidationMessage('Please enter your code');
+                      }
+                      return code;
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      this.actionId = result.value;
+  
+                      if (!this.selectedPatientEmail) {
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Erro',
+                          text: 'Nenhum paciente selecionado.',
+                        });
+                        return;
+                      }
+  
+                      this.patientService.confirmDeactivateAction(this.actionId).subscribe({
+                        next: (confirmResponse: any) => {
+                          console.log(confirmResponse);
+                          Swal.fire({
+                            title: 'Success!',
+                            text: 'Patient deleted successfully.',
+                            icon: 'success',
+                          });
+                          this. logout()
+                        }                      
+                        ,
+                        error: (error: any) => {
+                          console.error('Error confirming action:', error);
+                          Swal.fire({
+                            icon: "error",
+                            title: "Erro ao confirmar a ação",
+                            text: 'Houve um erro ao confirmar a desativação.',
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              },
+              error: (error: any) => {
+                console.error('Error deactivating patient:', error);
+                this.errorMessage = 'Failed to deactivate patient profiles!';
+                Swal.fire({
+                  icon: "error",
+                  title: "Não foi possível desativar o perfil",
+                  toast: true,
+                  position: "top-end",
+                  timer: 3000,
+                  showConfirmButton: false
+                });
+              }
+            });
+        } else if (result.isDenied) {
+          // Action when 'Cancel' is pressed
+        }
+      });
+    }
+  }
+  
 
  }
 

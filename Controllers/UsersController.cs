@@ -82,6 +82,7 @@ namespace DDDSample1.Controllers
         {
             try
             {
+                
                 Console.WriteLine($"Username: {login.Username}, Password: {login.Password}");
 
                 var user = await _service.Login(login.Username, login.Password);
