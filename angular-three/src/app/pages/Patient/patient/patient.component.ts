@@ -25,11 +25,11 @@ export class PatientComponent {
   modalId: string = 'modalId';
   myForm!: FormGroup;
   patientUpdateForm!: FormGroup;
-  appointmentHistory: string[] = [];
+
   selectedPatientEmail: string | undefined;
   private patientUrl = "https://localhost:5001/api/Patients";
   actionId: any;
-  allergies: any;
+  allergies: string[] = [];
 
 
 
@@ -68,7 +68,8 @@ export class PatientComponent {
 
 
   patientForm: FormGroup;
-  tags: string[] = [];  // Array para armazenar as tags
+  appointmentHistory: string[] = [];
+  tags: string[] = [];
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
@@ -112,57 +113,55 @@ export class PatientComponent {
   addDate(event: Event) {
     const input = event.target as HTMLInputElement;
     const selectedDate = input.value;
-
+  
     if (selectedDate) {
-      // Add the selected date to the local appointmentHistory array
+      // Adiciona ao array local
       this.appointmentHistory.push(selectedDate);
-
-      // Get the FormArray for appointmentHistory from the form
+  
+      // Adiciona ao FormArray
       const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
-
-      // Add a new FormControl to the FormArray
       appointmentHistoryControl.push(new FormControl(selectedDate));
-
-      // Clear the input field
+  
+      // Limpa o campo de entrada
       input.value = '';
     }
   }
-
-
+  
   removeDate(index: number) {
+    // Remove do array local
     this.appointmentHistory.splice(index, 1);
+  
+    // Remove do FormArray
+    const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
+    appointmentHistoryControl.removeAt(index);
   }
-
-
-
-   // Método para adicionar uma tag ao array
-   addTag(event: KeyboardEvent) {
+  
+  addTag(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
-    const value = input.value.trim(); // Get the value from the input directly
-
-    console.log('Input Value:', value); // Debugging line to check the input value
-
-    // Check if the Enter key is pressed and if the value is not empty
+    const value = input.value.trim();
+  
     if (event.key === 'Enter' && value) {
-      event.preventDefault();  // Prevent form submission
-      this.tags.push(value);  // Add the allergy to the tags array
-
-      // Add the allergy to the FormArray
+      event.preventDefault(); // Impede o envio do formulário
+      this.tags.push(value); // Adiciona ao array local
+  
+      // Adiciona ao FormArray
       const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
-      allergiesControl.push(new FormControl(value));  // Add to FormArray
-
-      // Clear the input field
-      input.value = '';  // Clear the input field after adding
+      allergiesControl.push(new FormControl(value));
+  
+      // Limpa o campo de entrada
+      input.value = '';
     }
   }
-
-
-  // Method to remove a tag (allergy) by index
+  
   removeTag(index: number) {
-    // Remove from tags array
+    // Remove do array local
     this.tags.splice(index, 1);
-
+  
+    // Remove do FormArray
+    const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
+    allergiesControl.removeAt(index);
   }
+  
 
 
 
@@ -280,8 +279,26 @@ export class PatientComponent {
 
     });
 
-    this.appointmentHistory = this.patientProfileSingle.appointmentHistory;
-    this.tags = this.patientProfileSingle.allergies;
+    const appointmentHistoryArray = this.patientUpdateForm.get('appointmentHistory') as FormArray;
+    const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
+    appointmentHistoryArray.clear();
+    allergiesArray.clear();
+  
+    // Popula o FormArray de appointmentHistory
+    if (this.patientProfileSingle.appointmentHistory) {
+      this.patientProfileSingle.appointmentHistory.forEach((appointment: string) => {
+        appointmentHistoryArray.push(new FormControl(appointment));
+      });
+      this.appointmentHistory = [...this.patientProfileSingle.appointmentHistory]; // Sincroniza com o array local
+    }
+  
+    // Popula o FormArray de allergies
+    if (this.patientProfileSingle.allergies) {
+      this.patientProfileSingle.allergies.forEach((allergy: string) => {
+        allergiesArray.push(new FormControl(allergy));
+      });
+      this.tags = [...this.patientProfileSingle.allergies]; // Sincroniza com o array local
+    }
 
     
 }
@@ -332,6 +349,8 @@ export class PatientComponent {
         next: (response) => {
           console.log(response);
           this.patientProfileSingle = response;
+
+          this.populateUpdateForm();
 
         },
         error: (error) => {
