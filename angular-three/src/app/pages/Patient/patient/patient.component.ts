@@ -116,6 +116,7 @@ export class PatientComponent {
   
     if (selectedDate) {
       // Adiciona ao array local
+      event.preventDefault(); // Impede o envio do formulário
       this.appointmentHistory.push(selectedDate);
   
       // Adiciona ao FormArray
@@ -266,8 +267,6 @@ export class PatientComponent {
   
 
 
-
-  appointmentHistoryUpdate: any[] = [];
 
 
   populateUpdateForm(): void {
