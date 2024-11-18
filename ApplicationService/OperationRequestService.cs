@@ -5,6 +5,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Logging;
 using System.Text.Json;
 using DDDSample1.Domain.OperationRequests;
+using System.CodeDom;
 
 
 namespace DDDSample1.ApplicationService.OperationRequests
@@ -27,14 +28,11 @@ namespace DDDSample1.ApplicationService.OperationRequests
             this._repoOpType = repoOpType;
         }
 
-        public async Task<List<OperationRequestDto>> GetAllAsync()
+        public async Task<List<OperationRequestUIDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
 
-            List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(operationRequest =>
-                new(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority));
-
-            return listDto;
+            return await Dto_to_UIDto(list);
         }
 
         public async Task<List<OperationRequestDto>> GetAllFilteredAsync(PatientId? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
@@ -213,6 +211,22 @@ namespace DDDSample1.ApplicationService.OperationRequests
             if (!Priority.IsValid(priority.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Priority.");
         }
+
+        private async Task<List<OperationRequestUIDto>> Dto_to_UIDto(List<OperationRequest> list)
+        {
+            var listDto = new List<OperationRequestUIDto>();
+            foreach (var operationRequest in list)
+            {
+                var operationTypes = await this._repoOpType.GetByIdAsync(operationRequest.OperationTypeId);
+                var doctors = await this._repoDoc.GetByIdAsync(operationRequest.DoctorId);
+                var patients = await this._repoPat.GetByIdAsync(operationRequest.MedicalRecordNumber);
+
+                listDto.Add(new OperationRequestUIDto(operationRequest.Id.AsGuid(), patients.Email.FullEmail, doctors.Email.FullEmail, operationTypes.Name, operationRequest.Deadline, operationRequest.Priority));
+            }
+
+            return listDto;
+        }
+
 
     }
 }

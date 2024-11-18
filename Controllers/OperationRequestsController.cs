@@ -35,7 +35,7 @@ namespace DDDSample1.Controllers
         // GET: api/OperationRequests
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<OperationRequestUIDto>>> GetAll()
         {
             try
             {

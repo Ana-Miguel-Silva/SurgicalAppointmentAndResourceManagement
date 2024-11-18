@@ -5,6 +5,8 @@ import { ModalService } from './modal.service';
 import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
+
 
 interface CreatingOperationRequestDto {
   medicalRecordNumber: { value: string };
@@ -13,6 +15,16 @@ interface CreatingOperationRequestDto {
   priority: string;
   patientName: string;
   requestName: string;
+}
+
+interface OperationRequest {
+  id: string;
+  medicalRecordNumber: string;
+  operationTypeName: string;
+  emailDoctor: string;
+  emailPatient: string;
+  deadline: string;
+  priority: string;
 }
 
 interface UpdateOperationRequestDto {
@@ -48,10 +60,9 @@ export class DoctorComponent implements OnInit {
   filteredRequests: any[] = [];
   filter = {
     priority: '',
-    operationTypeId: '',
-    medicalRecordNumber: '',
-    patientName: '',
-    requestName: '',
+    operationTypeName: '',
+    emailPatient: '',
+    emailDoctor: ''
   };
 
   private http = inject(HttpClient);
@@ -63,28 +74,53 @@ export class DoctorComponent implements OnInit {
     this.getAllOperationRequests();
   }
 
-  getAllOperationRequests() {
-    const token = this.authService.getToken();
-    if (!token) return;
+ getAllOperationRequests() {
+  const token = this.authService.getToken();
+  if (!token) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Authentication Error',
+    text: 'You are not logged in!',
+  });
+  return;
+}
 
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+  const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-    this.http.get<any[]>('https://localhost:5001/api/OperationRequests', { headers })
-      .subscribe({
-        next: (response) => {
-          this.operationRequests = response;
-          this.applyFilter();
-        },
-        error: (error) => {
-          console.error('Error fetching operation requests:', error);
-        }
-      });
-  }
+  this.http.get<OperationRequest[]>('https://localhost:5001/api/OperationRequests', { headers })
+    .subscribe({
+      next: (response) => {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Operation Type created successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        
+        this.operationRequests = response;
+        this.applyFilter();
+      },
+      error: (error) => {
+        console.error('Erro ao buscar requests:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to create Operation Type.',
+        });
+      }
+    });
+}
 
   onCreateRequest() {
     const token = this.authService.getToken();
     if (!token) {
-      alert('You are not logged in!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
       return;
     }
 
@@ -97,22 +133,47 @@ export class DoctorComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getAllOperationRequests();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Operation Type created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
           this.modalService.closeModal('createRequestModal');
         },
         error: (error) => {
           console.error('Error creating operation request:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create Operation Type.',
+          });
         }
       });
   }
 
   applyFilter() {
     this.filteredRequests = this.operationRequests.filter(request => {
-      const matchesPriority = this.filter.priority ? request.priority === this.filter.priority : true;
-      const matchesOperationType = this.filter.operationTypeId ? request.operationTypeId.value === this.filter.operationTypeId : true;
-      const matchesPatientId = this.filter.medicalRecordNumber ? request.medicalRecordNumber.value === this.filter.medicalRecordNumber : true;
-      const matchesPatientName = this.filter.patientName ? request.patientName.includes(this.filter.patientName) : true;
-      const matchesRequestName = this.filter.requestName ? request.requestName.includes(this.filter.requestName) : true;
-      return matchesPriority && matchesOperationType && matchesPatientId && matchesPatientName && matchesRequestName;
+      const matchesPriority = this.filter.priority 
+        ? request.priority.toLowerCase() === this.filter.priority.toLowerCase() 
+        : true;
+  
+      const matchesOperationType = this.filter.operationTypeName 
+        ? request.operationTypeName.toLowerCase().includes(this.filter.operationTypeName.toLowerCase()) 
+        : true;
+  
+      const matchesEmailPatient = this.filter.emailPatient 
+        ? request.emailPatient.toLowerCase().includes(this.filter.emailPatient.toLowerCase()) 
+        : true;
+  
+      const matchesEmailDoctor = this.filter.emailDoctor 
+        ? request.emailDoctor.toLowerCase().includes(this.filter.emailDoctor.toLowerCase()) 
+        : true;
+  
+      return matchesPriority && matchesOperationType && matchesEmailPatient && matchesEmailDoctor;
     });
   }
 
@@ -124,8 +185,12 @@ export class DoctorComponent implements OnInit {
   onUpdateRequest() {
     const token = this.authService.getToken();
     if (!token) {
-      alert('You are not logged in!');
-      return;
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+            return;
     }
 
     const headers = new HttpHeaders({
@@ -143,10 +208,24 @@ export class DoctorComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getAllOperationRequests();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Operation Type created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
           this.modalService.closeModal('updateRequestModal');
         },
         error: (error) => {
           console.error('Error updating operation request:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create Operation Type.',
+          });
         }
       });
   }
@@ -171,10 +250,24 @@ export class DoctorComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getAllOperationRequests();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Operation Type created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
           this.modalService.closeModal('deleteModal');
         },
         error: (error) => {
           console.error('Error deleting operation request:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create Operation Type.',
+          });
         }
       });
   }

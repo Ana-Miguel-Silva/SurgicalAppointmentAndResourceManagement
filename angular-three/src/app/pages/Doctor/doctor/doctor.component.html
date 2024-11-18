@@ -30,35 +30,34 @@
 
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Patient ID</th>
-                        <th>Operation Type ID</th>
-                        <th>Deadline</th>
-                        <th>Priority</th>
-                        <th>Actions</th>
-                    </tr>
+                  <tr>
+                    <th>Doctor Email</th>
+                    <th>Patient Email</th>
+                    <th>Operation Type</th>
+                    <th>Deadline</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let request of filteredRequests">
-                        <td>{{ request.id }}</td>
-                        <td>{{ request.medicalRecordNumber.value }}</td>
-                        <td>{{ request.operationTypeId.value }}</td>
-                        <td>{{ request.deadline | date:'mediumDate' }}</td>
-                        <td>{{ request.priority }}</td>
-                        <td>
-                            <div class="d-flex">
-                                <button class="btn btn-warning" (click)="setUpdateRequest(request)" style="margin-right: 5px;">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                  <tr *ngFor="let request of filteredRequests">
+                    <td>{{ request.emailDoctor }}</td>
+                    <td>{{ request.emailPatient }}</td>
+                    <td>{{ request.operationTypeName }}</td>
+                    <td>{{ request.deadline | date:'mediumDate' }}</td>
+                    <td>{{ request.priority }}</td>
+                    <td>
+                      <button class="btn btn-warning" (click)="setUpdateRequest(request)">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
-            </table>
+              </table>
+              
         </div>
     </div>
 
@@ -109,53 +108,42 @@
         </div>
     </div>
 
-    <!-- Filter Operation Requests Modal -->
-    <div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
-        <div class="modal-content">
-            <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
-            <form (ngSubmit)="onFilterRequests()">
-                <h3 class="text-center">Filter Operation Requests</h3>
-
-                <!-- Filter by Operation Type -->
-                <div class="mb-3">
-                    <label for="filterOperationType" class="form-label">Operation Type ID:</label>
-                    <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeId" name="filterOperationType" class="form-control" />
-                </div>
-
-                <!-- Filter by Patient ID (Medical Record Number) -->
-                <div class="mb-3">
-                    <label for="filterMedicalRecordNumber" class="form-label">Patient ID (Medical Record Number):</label>
-                    <input type="text" id="filterMedicalRecordNumber" [(ngModel)]="filter.medicalRecordNumber" name="filterMedicalRecordNumber" class="form-control" />
-                </div>
-
-                <!-- Filter by Patient Name -->
-                <div class="mb-3">
-                    <label for="filterPatientName" class="form-label">Patient Name:</label>
-                    <input type="text" id="filterPatientName" [(ngModel)]="filter.patientName" name="filterPatientName" class="form-control" />
-                </div>
-
-                <!-- Filter by Type Name -->
-                <div class="mb-3">
-                    <label for="filterRequestName" class="form-label">Operation Type Name:</label>
-                    <input type="text" id="filterRequestName" [(ngModel)]="filter.requestName" name="filterRequestName" class="form-control" />
-                </div>
-
-                <!-- Filter by Priority -->
-                <div class="mb-3">
-                    <label for="filterPriority" class="form-label">Priority:</label>
-                    <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select">
-                        <option value="">All</option>
-                        <option value="Urgent">Urgent</option>
-                        <option value="Elective">Elective</option>
-                        <option value="Emergency">Emergency</option>
-                    </select>
-                </div>
-
-                <!-- Filter Button -->
-                <button type="submit" class="btn btn-primary">Apply Filter</button>
-            </form>
+   <!-- Filter Operation Requests Modal -->
+<div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
+      <form (ngSubmit)="onFilterRequests()">
+        <h3 class="text-center">Filter Operation Requests</h3>
+  
+        <div class="mb-3">
+          <label for="filterDoctorEmail" class="form-label">Doctor Email:</label>
+          <input type="text" id="filterDoctorEmail" [(ngModel)]="filter.emailDoctor" name="filterDoctorEmail" class="form-control" />
         </div>
+  
+        <div class="mb-3">
+          <label for="filterPatientEmail" class="form-label">Patient Email:</label>
+          <input type="text" id="filterPatientEmail" [(ngModel)]="filter.emailPatient" name="filterPatientEmail" class="form-control" />
+        </div>
+  
+        <div class="mb-3">
+          <label for="filterOperationType" class="form-label">Operation Type:</label>
+          <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeName" name="filterOperationType" class="form-control" />
+        </div>
+  
+        <div class="mb-3">
+          <label for="filterPriority" class="form-label">Priority:</label>
+          <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select">
+            <option value="">All</option>
+            <option value="Urgent">Urgent</option>
+            <option value="Elective">Elective</option>
+            <option value="Emergency">Emergency</option>
+          </select>
+        </div>
+  
+        <button type="submit" class="btn btn-primary">Apply Filter</button>
+      </form>
     </div>
+  </div>
 
     <!-- Update Operation Request Modal -->
     <div [ngStyle]="{'display': isModalOpen('updateRequestModal') ? 'block' : 'none'}" id="updateRequestModal" class="modal">

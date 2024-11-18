@@ -1,6 +1,7 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.Users;
 
 
 namespace DDDSample1.ApplicationService.OperationTypes
@@ -115,8 +116,19 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
         private static void CheckRequiredStaff(List<RequiredStaff> requiredStaff)
         {
+            Boolean ver = false;
+
             if (requiredStaff == null || requiredStaff.Count == 0)
                 throw new BusinessRuleValidationException("Invalid Required Staff.");
+
+            foreach (RequiredStaff rs in requiredStaff)
+            {
+                if (!Specialization.IsValid(rs.Specialization.ToUpper()) || !Role.IsValid(rs.Role.ToUpper()))
+                {
+                    throw new BusinessRuleValidationException("Invalid Required Staff.");
+                }
+            }
+
         }
 
 
