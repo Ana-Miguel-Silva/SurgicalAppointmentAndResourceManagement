@@ -138,7 +138,9 @@
           "options": {
             "devServerTarget": "angular-three:serve",
             "watch": true,
-            "headless": false
+            "headless": false,
+            "port": 4300,
+            "browserTarget": "angular-three:build"
           },
           "configurations": {
             "production": {
