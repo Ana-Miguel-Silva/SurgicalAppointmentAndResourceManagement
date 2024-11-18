@@ -61,52 +61,53 @@
         </div>
     </div>
 
-    <!-- Create Operation Request Modal -->
-    <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
-        <div class="modal-content">
-            <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
-            <form (ngSubmit)="onCreateRequest()" class="row g-3 needs-validation" novalidate>
-                <h3 class="text-center">Insert New Operation Request</h3>
+<!-- Create Operation Request Modal -->
+<div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
+      <form (ngSubmit)="onCreateRequest()" class="row g-3 needs-validation" novalidate>
+          <h3 class="text-center">Insert New Operation Request</h3>
 
-                <!-- Medical Record Number -->
-                <div class="col-md-6">
-                    <label for="medicalRecordNumber" class="form-label">Medical Record Number</label>
-                    <input type="text" class="form-control" id="medicalRecordNumber" [(ngModel)]="operationRequest.medicalRecordNumber.value" name="medicalRecordNumber" required />
-                    <div class="valid-feedback">Looks good!</div>
-                </div>
+          <!-- Patient Email -->
+          <div class="col-md-6">
+              <label for="patientEmail" class="form-label">Patient Email</label>
+              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="operationRequest.patientEmail" name="patientEmail" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
 
-                <!-- Operation Type ID -->
-                <div class="col-md-6">
-                    <label for="operationTypeId" class="form-label">Operation Type ID</label>
-                    <input type="text" class="form-control" id="operationTypeId" [(ngModel)]="operationRequest.operationTypeId.value" name="operationTypeId" required />
-                    <div class="valid-feedback">Looks good!</div>
-                </div>
+          <!-- Operation Type Name -->
+          <div class="col-md-6">
+              <label for="operationTypeName" class="form-label">Operation Type Name</label>
+              <input type="text" class="form-control" id="operationTypeName" [(ngModel)]="operationRequest.operationTypeName" name="operationTypeName" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
 
-                <!-- Deadline -->
-                <div class="col-md-6">
-                    <label for="deadline" class="form-label">Deadline</label>
-                    <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
-                    <div class="valid-feedback">Looks good!</div>
-                </div>
+          <!-- Deadline -->
+          <div class="col-md-6">
+              <label for="deadline" class="form-label">Deadline</label>
+              <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
 
-                <!-- Priority -->
-                <div class="col-md-6">
-                    <label for="priority" class="form-label">Priority</label>
-                    <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
-                        <option value="Urgent">Urgent</option>
-                        <option value="Elective">Elective</option>
-                        <option value="Emergency">Emergency</option>
-                    </select>
-                    <div class="valid-feedback">Looks good!</div>
-                </div>
+          <!-- Priority -->
+          <div class="col-md-6">
+              <label for="priority" class="form-label">Priority</label>
+              <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Elective">Elective</option>
+                  <option value="Emergency">Emergency</option>
+              </select>
+              <div class="valid-feedback">Looks good!</div>
+          </div>
 
-                <!-- Submit Button -->
-                <div class="col-12">
-                    <button class="btn btn-primary" type="submit">Create Request</button>
-                </div>
-            </form>
-        </div>
-    </div>
+          <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" type="submit">Create Request</button>
+          </div>
+      </form>
+  </div>
+</div>
+
 
    <!-- Filter Operation Requests Modal -->
 <div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">

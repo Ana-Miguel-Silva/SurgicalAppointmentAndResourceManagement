@@ -116,8 +116,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
         private static void CheckRequiredStaff(List<RequiredStaff> requiredStaff)
         {
-            Boolean ver = false;
-
             if (requiredStaff == null || requiredStaff.Count == 0)
                 throw new BusinessRuleValidationException("Invalid Required Staff.");
 
@@ -128,7 +126,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
                     throw new BusinessRuleValidationException("Invalid Required Staff.");
                 }
             }
-
         }
 
 

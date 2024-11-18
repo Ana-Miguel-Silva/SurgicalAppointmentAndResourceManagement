@@ -8,18 +8,15 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 
-interface CreatingOperationRequestDto {
-  medicalRecordNumber: { value: string };
-  operationTypeId: { value: string };
+interface CreatingOperationRequestUIDto {
+  patientEmail: string;
+  operationTypeName: string;
   deadline: string;
   priority: string;
-  patientName: string;
-  requestName: string;
 }
 
 interface OperationRequest {
   id: string;
-  medicalRecordNumber: string;
   operationTypeName: string;
   emailDoctor: string;
   emailPatient: string;
@@ -41,13 +38,11 @@ interface UpdateOperationRequestDto {
   styleUrls: ['./doctor.component.scss']
 })
 export class DoctorComponent implements OnInit {
-  operationRequest: CreatingOperationRequestDto = {
-    medicalRecordNumber: { value: '' },
-    operationTypeId: { value: '' },
+  operationRequest: CreatingOperationRequestUIDto = {
+    patientEmail: '',
+    operationTypeName: '',
     deadline: '',
-    priority: '',
-    patientName: '',
-    requestName: ''
+    priority: ''
   };
 
   updateRequest: UpdateOperationRequestDto = {
@@ -90,14 +85,6 @@ export class DoctorComponent implements OnInit {
   this.http.get<OperationRequest[]>('https://localhost:5001/api/OperationRequests', { headers })
     .subscribe({
       next: (response) => {
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Operation Type created successfully!',
-          showConfirmButton: false,
-          timer: 1500
-        });
         
         this.operationRequests = response;
         this.applyFilter();
@@ -113,47 +100,52 @@ export class DoctorComponent implements OnInit {
     });
 }
 
-  onCreateRequest() {
-    const token = this.authService.getToken();
-    if (!token) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Authentication Error',
-        text: 'You are not logged in!',
-      });
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+onCreateRequest() {
+  const token = this.authService.getToken();
+  if (!token) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Authentication Error',
+      text: 'You are not logged in!',
     });
-
-    this.http.post('https://localhost:5001/api/OperationRequests', this.operationRequest, { headers })
-      .subscribe({
-        next: () => {
-          this.getAllOperationRequests();
-
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Operation Type created successfully!',
-            showConfirmButton: false,
-            timer: 1500
-          });
-
-          this.modalService.closeModal('createRequestModal');
-        },
-        error: (error) => {
-          console.error('Error creating operation request:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to create Operation Type.',
-          });
-        }
-      });
+    return;
   }
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+
+  const payload: CreatingOperationRequestUIDto = {
+    patientEmail: this.operationRequest.patientEmail,
+    operationTypeName: this.operationRequest.operationTypeName,
+    deadline: this.operationRequest.deadline,
+    priority: this.operationRequest.priority
+  };
+
+  this.http.post('https://localhost:5001/api/OperationRequests', payload, { headers })
+    .subscribe({
+      next: () => {
+        this.getAllOperationRequests();
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Operation request created successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        this.modalService.closeModal('createRequestModal');
+      },
+      error: (error) => {
+        console.error('Error creating operation request:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to create operation request.',
+        });
+      }
+    });
+}
 
   applyFilter() {
     this.filteredRequests = this.operationRequests.filter(request => {
@@ -178,6 +170,7 @@ export class DoctorComponent implements OnInit {
   }
 
   onFilterRequests() {
+    this.getAllOperationRequests();
     this.applyFilter();
     this.closeModal('filterRequestModal');
   }
@@ -212,7 +205,7 @@ export class DoctorComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: 'Operation Type created successfully!',
+            text: 'Operation Request updated successfully!',
             showConfirmButton: false,
             timer: 1500
           });
@@ -254,7 +247,7 @@ export class DoctorComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: 'Operation Type created successfully!',
+            text: 'Operation Request deleted successfully!',
             showConfirmButton: false,
             timer: 1500
           });

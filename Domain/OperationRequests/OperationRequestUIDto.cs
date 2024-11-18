@@ -30,9 +30,5 @@ namespace DDDSample1.Domain.OperationRequests
             this.Priority = priority;
         }
 
-        public string toString()
-        {
-            return "OperationRequestUIDto [Id=" + Id + ", EmailPatient=" + EmailPatient + ", EmailDoctor=" + EmailDoctor + ", OperationTypeName=" + OperationTypeName + ", Deadline=" + Deadline + ", Priority=" + Priority + "]";
-        }
     }
 }

@@ -65,7 +65,7 @@ namespace DDDSample1.Controllers
         // POST: api/OperationRequests
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpPost]
-        public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
+        public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestUIDto dto)
         {
 
             try
@@ -89,7 +89,7 @@ namespace DDDSample1.Controllers
         // GET: api/OperationRequests/search
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFiltered(
+        public async Task<ActionResult<IEnumerable<OperationRequestUIDto>>> GetAllFiltered(
             [FromQuery] string? patientId,
             [FromQuery] string? patientname,
             [FromQuery] Guid? operationTypeId,
