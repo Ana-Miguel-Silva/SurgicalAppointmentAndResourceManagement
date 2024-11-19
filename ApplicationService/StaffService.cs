@@ -31,11 +31,11 @@ namespace DDDSample1.ApplicationService.Staff
 
             List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
                 new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active));
-            if (id != null) listDto = listDto.Where(x => x.StaffId.Equals(id)).ToList();
-            if (name != null) listDto = listDto.Where(x => x.Name.Equals(name)).ToList();
-            if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Equals(license)).ToList();
-            if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Equals(phone)).ToList();
-            if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization)).ToList();
+            if (id != null) listDto = listDto.Where(x => x.StaffId.Contains(id)).ToList();
+            if (name != null) listDto = listDto.Where(x => x.Name.GetFullName().ToLower().Equals(name.ToLower())).ToList();
+            if (license != null) listDto = listDto.Where(x => x.LicenseNumber.Contains(license)).ToList();
+            if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Number.Contains(phone)).ToList();
+            if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization.ToUpper())).ToList();
             if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
             if (active != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList();}
             //else{listDto = listDto.Where(x => x.Active.Equals(true)).ToList();}
@@ -81,7 +81,7 @@ namespace DDDSample1.ApplicationService.Staff
             char roleId = dto.Role[0];
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
-            var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID);
+            var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID, dto.License);
 
             await this._repo.AddAsync(staff);
 
