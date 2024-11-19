@@ -81,10 +81,16 @@ namespace DDDSample1.Controllers
 
         public async Task<ActionResult<StaffDto>> Create(CreatingStaffDto dto)
         {
-           
+            try
+            {
                 var cat = await _service.AddAsync(dto);
 
                 return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
            
         }
         // PUT: api/Staff/{id}/Slots

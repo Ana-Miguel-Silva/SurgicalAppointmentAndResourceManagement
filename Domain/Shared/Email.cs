@@ -13,9 +13,9 @@ namespace DDDSample1.Domain.Shared
         public Email(string fullEmail)
         {
             // Optional: Validate the email format
-            if (string.IsNullOrWhiteSpace(fullEmail) || !fullEmail.Contains("@"))
+            if (string.IsNullOrWhiteSpace(fullEmail) || !(fullEmail.Contains("@") && fullEmail.IndexOf("@") < fullEmail.LastIndexOf(".")))
             {
-                throw new ArgumentException("Invalid email format", nameof(fullEmail));
+                throw new BusinessRuleValidationException("Invalid email format", nameof(fullEmail));
             }
 
             FullEmail = fullEmail;

@@ -218,13 +218,13 @@ export class AdminComponent {
 
   formatTimeToISO(time: string): string {
     if (!time) return ''; // Return an empty string if no value exists
-  
+
     // If the time is already in "HH:mm:ss" format, return it
     const timeRegex = /^\d{2}:\d{2}(:\d{2})?$/; // Matches "HH:mm" or "HH:mm:ss"
     if (timeRegex.test(time)) {
       return time;
     }
-  
+
     try {
       // Convert the time to a valid ISO string (assuming "HH:mm:ss" format)
       const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -236,7 +236,7 @@ export class AdminComponent {
       return 'Invalid Time';
     }
   }
-  
+
 
   onCreateOperationType() {
     const token = this.authService.getToken();
@@ -623,7 +623,7 @@ export class AdminComponent {
       });
   }
 
-  
+
 
   onFilterRequests(){
     console.log(this.filter);
@@ -1063,7 +1063,7 @@ export class AdminComponent {
     }
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
     this.getAllstaffsProfiles();
-    this.getAllOperationTypes(); 
+    this.getAllOperationTypes();
   }
 
   // Novo método para atualizar a lista ao mudar o filtro
@@ -1086,10 +1086,10 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
 
-    
+
     type FilterKeys = keyof typeof this.filter; // Restringe as chaves às do objeto filter
 
-  
+
     let params = new HttpParams();
 
   Object.keys(this.filter).forEach(key => {
@@ -1209,7 +1209,7 @@ export class AdminComponent {
           console.error('Error creating staff:', error);
           Swal.fire({
             icon: "error",
-            title: "Não foi possível criar o Perfil",
+            title: "Não foi possível criar o Perfil\n"+error.error.message,
             toast: true,
             position: "top-end",
             timer: 3000,
@@ -1245,7 +1245,7 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           console.log('Operation Type ',response);
-          
+
           this.OperationTypesProfiles = response;
           console.log(params);
         },

@@ -72,11 +72,15 @@ namespace DDDSample1.ApplicationService.Staff
                 if ((convertedSLot.timespan().TotalMinutes % 15) != 0) flag = false;
                 converted.Add(convertedSLot);
             }
-            if(!flag) return null;
-
+            if(!flag) {
+                throw new BusinessRuleValidationException("Time Slots need to be multiples of 15 minutes.");
+            }
+            if (string.IsNullOrEmpty(dto.Name))
+            {
+                throw new BusinessRuleValidationException("Staff's name cannot be Empty.");
+            }
             CheckRole(dto.Role);
             CheckSpecialization(dto.Specialization);
-
             int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role, null).Result.Count();
             char roleId = dto.Role[0];
             if(roleId!='D'&&roleId!='N') roleId='O';
@@ -85,7 +89,7 @@ namespace DDDSample1.ApplicationService.Staff
 
             await this._repo.AddAsync(staff);
 
-            await this._unitOfWork.CommitAsync();
+            //await this._unitOfWork.CommitAsync();
      
 
             if (staff == null)
