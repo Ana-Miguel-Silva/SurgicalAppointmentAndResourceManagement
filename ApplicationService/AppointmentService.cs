@@ -25,7 +25,7 @@ namespace DDDSample1.ApplicationService.Appointments
             var list = await this._repo.GetAllAsync();
 
             List<AppointmentDto> listDto = list.ConvertAll<AppointmentDto>(Appointment =>
-                new(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus));
+                new(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot));
 
             return listDto;
         }
@@ -37,7 +37,7 @@ namespace DDDSample1.ApplicationService.Appointments
             if (Appointment == null)
                 return null;
 
-            return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus);
+            return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot);
         }
 
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
@@ -46,13 +46,13 @@ namespace DDDSample1.ApplicationService.Appointments
             await checkRoomIdAsync(dto.RoomId);
             CheckDate(dto.Date);
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus);
+            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus, dto.AppointmentSlot);
 
             await this._repo.AddAsync(appointment);
 
             await this._unitOfWork.CommitAsync();
 
-            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus);
+            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
 
         public async Task<AppointmentDto> UpdateAsync(AppointmentDto dto)
@@ -68,7 +68,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             await this._unitOfWork.CommitAsync();
 
-            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus);
+            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
 
         public async Task<AppointmentDto> DeleteAsync(AppointmentId id)
@@ -81,7 +81,7 @@ namespace DDDSample1.ApplicationService.Appointments
             this._repo.Remove(appointment);
             await this._unitOfWork.CommitAsync();
 
-            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus);
+            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
 
         private async Task checkRoomIdAsync(SurgeryRoomId doctorId)

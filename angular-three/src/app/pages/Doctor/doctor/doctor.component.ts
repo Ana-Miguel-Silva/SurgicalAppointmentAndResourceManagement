@@ -91,11 +91,6 @@ export class DoctorComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao buscar requests:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to create Operation Type.',
-        });
       }
     });
 }
@@ -217,7 +212,7 @@ onCreateRequest() {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Failed to create Operation Type.',
+            text: 'Failed to update operation request.',
           });
         }
       });
@@ -259,7 +254,7 @@ onCreateRequest() {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Failed to create Operation Type.',
+            text: 'Failed to delete operation request.',
           });
         }
       });

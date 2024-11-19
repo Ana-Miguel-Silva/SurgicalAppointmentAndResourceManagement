@@ -22,6 +22,23 @@ namespace DDDSample1.Infrastructure.Appointments
                            .HasColumnName("EndTime")
                            .IsRequired();
             });
+
+
+            builder.OwnsMany(a => a.AppointmentSlot, slotBuilder =>
+            {
+                slotBuilder.Property(slot => slot.Staff).HasColumnName("StaffId");
+
+                slotBuilder.OwnsOne(slot => slot.AppointmentTime, slotTimeBuilder =>
+                {
+                    slotTimeBuilder.Property(slotTime => slotTime.StartTime)
+                                  .HasColumnName("StartTime")
+                                  .IsRequired();
+
+                    slotTimeBuilder.Property(slotTime => slotTime.EndTime)
+                                  .HasColumnName("EndTime")
+                                  .IsRequired();
+                });
+            });
         }
     }
 }
