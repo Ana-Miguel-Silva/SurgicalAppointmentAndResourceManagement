@@ -2,6 +2,9 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Appointments;
+using Newtonsoft.Json;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace DDDSample1.ApplicationService.Appointments
 {
@@ -11,13 +14,18 @@ namespace DDDSample1.ApplicationService.Appointments
         private readonly IAppointmentRepository _repo;
         private readonly ISurgeryRoomRepository _repoRooms;
         private readonly IOperationRequestRepository _repoOpReq;
+        private readonly HttpClient _httpClient;
+        public IConfiguration configuration { get; }
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests)
+
+        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IConfiguration configuration)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._repoRooms = repoSurgeryRooms;
             this._repoOpReq = repoOperationRequests;
+            _httpClient = new HttpClient();
+            this.configuration = configuration;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()
@@ -40,19 +48,31 @@ namespace DDDSample1.ApplicationService.Appointments
             return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot);
         }
 
-        public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
+        public async Task<string> ScheduleAppointments()
         {
-            await checkOperationRequestIdAsync(dto.OperationRequestId);
-            await checkRoomIdAsync(dto.RoomId);
-            CheckDate(dto.Date);
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus, dto.AppointmentSlot);
+            var url = configuration.GetValue<string>("PrologPath");
+            return PostToPrologServer(url, "").Result;
+        }
 
-            await this._repo.AddAsync(appointment);
+        public async Task<string> PostToPrologServer(string url, object data)
+        {
+            try
+            {
 
-            await this._unitOfWork.CommitAsync();
+                var json = JsonConvert.SerializeObject(data);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                return responseBody;
+            }
+            catch (HttpRequestException e)
+            {
+                throw new BusinessRuleValidationException(e.Message);
+            }
         }
 
         public async Task<AppointmentDto> UpdateAsync(AppointmentDto dto)

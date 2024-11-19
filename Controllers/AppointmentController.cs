@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.ApplicationService.Appointments;
-
+using System.Net.Http;
 
 namespace DDDSample1.Controllers
 {
@@ -40,21 +40,21 @@ namespace DDDSample1.Controllers
 
         // POST: api/Appointments
         [HttpPost]
-        public async Task<ActionResult<AppointmentDto>> Create(CreatingAppointmentDto dto)
+        public async Task<ActionResult<string>> Create()
         {
             try
             {
-                var appointment = await _service.AddAsync(dto);
+                var appointment = await _service.ScheduleAppointments();
 
-                return CreatedAtAction(nameof(GetGetById), new { id = appointment.Id }, appointment);
+                return (appointment);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
-        
+
         // PUT: api/Appointments/5
         [HttpPut("{id}")]
         public async Task<ActionResult<AppointmentDto>> Update(Guid id, AppointmentDto dto)
@@ -67,19 +67,19 @@ namespace DDDSample1.Controllers
             try
             {
                 var appointment = await _service.UpdateAsync(dto);
-                
+
                 if (appointment == null)
                 {
                     return NotFound();
                 }
                 return Ok(appointment);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
-        
+
         // DELETE: api/Appointments/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<AppointmentDto>> HardDelete(Guid id)
@@ -95,9 +95,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(appointment);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

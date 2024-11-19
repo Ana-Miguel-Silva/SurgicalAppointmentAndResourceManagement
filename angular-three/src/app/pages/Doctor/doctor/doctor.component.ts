@@ -6,6 +6,8 @@ import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { OperationRequestsService } from '../../../Services/operationRequest.service';
+
 
 
 interface CreatingOperationRequestUIDto {
@@ -60,10 +62,10 @@ export class DoctorComponent implements OnInit {
     emailDoctor: ''
   };
 
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private modalService = inject(ModalService);
+
+  constructor(private modalService: ModalService,
+    private http: HttpClient, private authService: AuthService, private operationRequestsService: OperationRequestsService, private router: Router) {
+  }
 
   ngOnInit() {
     this.getAllOperationRequests();
@@ -82,7 +84,8 @@ export class DoctorComponent implements OnInit {
 
   const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-  this.http.get<OperationRequest[]>('https://localhost:5001/api/OperationRequests', { headers })
+  this.operationRequestsService.getAllOperationRequests()
+  //this.http.get<OperationRequest[]>('https://localhost:5001/api/OperationRequests', { headers })
     .subscribe({
       next: (response) => {
         
@@ -118,7 +121,7 @@ onCreateRequest() {
     priority: this.operationRequest.priority
   };
 
-  this.http.post('https://localhost:5001/api/OperationRequests', payload, { headers })
+  this.operationRequestsService.createOperationRequests(payload)
     .subscribe({
       next: () => {
         this.getAllOperationRequests();
@@ -192,7 +195,8 @@ onCreateRequest() {
       priority: this.updateRequest.priority
     };
 
-    this.http.patch(`https://localhost:5001/api/OperationRequests/${payload.id}`, payload, { headers })
+    this.operationRequestsService.updateOperationRequests(payload)
+    //this.http.patch(`https://localhost:5001/api/OperationRequests/${payload.id}`, payload, { headers })
       .subscribe({
         next: () => {
           this.getAllOperationRequests();
@@ -234,7 +238,8 @@ onCreateRequest() {
 
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-    this.http.delete(`https://localhost:5001/api/OperationRequests/${id}`, { headers })
+    this.operationRequestsService.deleteOperationRequests(id)
+    //this.http.delete(`https://localhost:5001/api/OperationRequests/${id}`, { headers })
       .subscribe({
         next: () => {
           this.getAllOperationRequests();

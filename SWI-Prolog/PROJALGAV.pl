@@ -1,3 +1,17 @@
+% Bibliotecas
+:- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_dispatch)).
+:- use_module(library(http/http_parameters)).
+:- use_module(library(http/http_open)).
+:- use_module(library(http/http_cors)).
+:- use_module(library(date)).
+:- use_module(library(random)).
+% Bibliotecas JSON
+:- use_module(library(http/json_convert)).
+:- use_module(library(http/http_json)).
+:- use_module(library(http/json)).
+
+
 :-dynamic availability/3.
 :-dynamic agenda_staff/3.
 :-dynamic agenda_staff1/3.
@@ -7,6 +21,59 @@
 :-dynamic better_sol/5.
 :-dynamic n_staff_op/2.
 
+
+% Gerir Servidor
+server(Port) :-
+        http_server(http_dispatch, [port(Port)]).
+
+c_server(Port) :-
+    http_stop_server(Port, []).
+
+open_server() :-
+        http_server(http_dispatch, [port(5050)]).
+
+close_server():-
+    http_stop_server(5050, []).
+
+:- set_setting(http:cors, [*]).
+
+%JSONS
+
+:- json_object surgeryJson(array:list(surgeryStaffJson)).
+:- json_object surgeryStaffJson(staffId:string,agenda_array:list(agenda_json)).
+:- json_object agenda_json(instanteInicial:integer,instanteFinal:integer,idDaOperecao:string).
+
+% HANDLERS
+
+:- http_handler('/scheduleAllOperationsInADay', get_all_Surgeries, []).
+get_all_Surgeries(_Request) :-
+    cors_enable,
+    (   obtain_better_sol(or1, 20241028, _, LDoctorsAgenda, _)
+    ->  treatSurgeryData(LDoctorsAgenda, Res),
+        SurgeryJsonFinal = surgeryJson(Res),
+        (   prolog_to_json(SurgeryJsonFinal, JSONObject)
+        ->  reply_json(JSONObject, [json_object(dict)])
+        ;   reply_json(json([error='JSON conversion failed']), [status(500)])
+        )
+    ;   reply_json(json([error='Internal Server Error']), [status(500)])
+    ).
+
+% Methods
+treatSurgeryData([], []).
+treatSurgeryData([A|AgOpRoomBetter], [Res1|Res]) :-
+    treatStaffData(A, Res1),
+    treatSurgeryData(AgOpRoomBetter, Res).
+
+treatStaffData((StaffId, List), Res) :-
+    treatAgendaData(List, AgendaData),
+    atom_string(StaffId, StaffIdStr),
+    Res = surgeryStaffJson(StaffIdStr, AgendaData).
+
+treatAgendaData([], []).
+treatAgendaData([(Ini, Fin, Id)|Agenda], [Res1|Res]) :-
+    atom_string(Id, Id1),
+    Res1 = agenda_json(Ini, Fin, Id1),
+    treatAgendaData(Agenda, Res).
 
 agenda_staff(d001, 20241028, [(100, 599, so100000),(600, 700, so100000)]).
 agenda_staff(d002, 20241028, [(100, 599, so100000),(600, 700, so100005)]).
@@ -105,7 +172,7 @@ surgery_Required_Staff(so2, 1, nurse, anaesthetist).
 surgery_Required_Staff(so2, 1, nurse, assistant).
 
 % Required staff for surgery type so3
-surgery_Required_Staff(so3, 3, doctor, orthopaedist). 
+surgery_Required_Staff(so3, 3, doctor, orthopaedist).
 surgery_Required_Staff(so3, 1, doctor, anaesthetist).
 surgery_Required_Staff(so3, 1, nurse, instrumenting).
 surgery_Required_Staff(so3, 1, nurse, circulating).
@@ -113,7 +180,7 @@ surgery_Required_Staff(so3, 1, nurse, anaesthetist).
 surgery_Required_Staff(so3, 1, nurse, assistant).
 
 % Required staff for surgery type so4
-surgery_Required_Staff(so4, 2, doctor, orthopaedist). 
+surgery_Required_Staff(so4, 2, doctor, orthopaedist).
 surgery_Required_Staff(so4, 1, doctor, anaesthetist).
 surgery_Required_Staff(so4, 1, nurse, instrumenting).
 surgery_Required_Staff(so4, 1, nurse, circulating).
@@ -139,8 +206,10 @@ obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
     % OUTPUT
     retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),
 
-    foreach(member(X,LAgDoctorsBetter),(write(X),nl)).
-    
+    debug(http, 'AgOpRoomBetter: ~w', [AgOpRoomBetter]),
+    debug(http, 'LAgDoctorsBetter: ~w', [LAgDoctorsBetter]),
+    debug(http, 'TFinOp: ~w', [TFinOp]).
+
 
 obtain_better_sol1(Room,Day):-
 
@@ -161,7 +230,6 @@ obtain_better_sol1(Room,Day):-
         agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
         findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
 
-        write('Permutation:'),write(LOpCode),nl,
         % ALGORTIHM
         availability_all_surgeries(LOpCode,Room,Day),
 
@@ -179,17 +247,11 @@ update_better_sol(Day,Room,Agenda,LOpCode):-
     reverse(Agenda,AgendaR),
     evaluate_final_time(AgendaR,LOpCode,FinTime1),
 
-    write(FinTime1),nl,
-
     FinTime1<FinTime,
 
     retract(better_sol(_,_,_,_,_)),
 
     findall((Doctor,Ag),agenda_staff1(Doctor,Day,Ag),LDAgendas),
-
-    write('Best Solution found'),
-    write('LDAgendas:'),write(LDAgendas),
-
 
     asserta(better_sol(Day,Room,Agenda,LDAgendas,FinTime1)).
 
@@ -202,45 +264,40 @@ remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
 remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
 
 
+
+
+
+
+
 % MAIN PART
 availability_all_surgeries([],_,_).
 availability_all_surgeries([OpCode|LOpCode],Room,Day):-
-    
-    nl,nl,write('OpCode:'),write(OpCode),nl,
 
     %Part1 (Get time)
     surgery_id(OpCode,OpType),surgery(OpType,TAnesthesia,TSurgery,TCleaning),
     TotalTime is TAnesthesia+TSurgery+TCleaning,
 
-    %Part2 (Get room available time slot)
-    agenda_operation_room1(Room,Day,LAgenda),
-
-    % Finding all Necessary Doctors
+    % Part 2 Finding all Necessary Doctors , and assign them to the Room
     findALLNecessaryStaff(OpType,ListOfStaffsAnesthesia,ListOfStaffsAssistant,ListOfStaffsSurgery),
 
+    agenda_operation_room1(Room,Day,LAgenda),
     asserta(agenda_operation_room2(Room,Day,LAgenda)),
     findAvailableTimeForStaffAndRoom(TotalTime,OpType,Room,Day,ListOfStaffsAnesthesia,ListOfStaffsAssistant,ListOfStaffsSurgery,TinS,TfinS),
     retract(agenda_operation_room2(Room,Day,_)),
-
-    write('Found times:'),nl,
-    write('TinS'),write(TinS),nl,
-    write('TfinS'),write(TfinS),nl,
-
 
     TimeFinalForAnaesthesia is TinS + TAnesthesia + TSurgery - 1,
 
     SurgeryIntialTIme is TinS + TAnesthesia,
 
     TInitialForCleaning is TimeFinalForAnaesthesia + 1,
-    TimeFinalForCleaning is TinS + TSurgery + TAnesthesia + TCleaning - 1,
-    
 
-    % Updating the data
+    TimeFinalForCleaning is TinS + TSurgery + TAnesthesia + TCleaning - 1,
+
+
+    %Part 3 Updating the data
     retract(agenda_operation_room1(Room,Day,Agenda)),
     insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
     assertz(agenda_operation_room1(Room,Day,Agenda1)),
-
-    write('Updated Agenda:'),write(Agenda1),nl,
 
     addOpCodeToFormat([(TinS,TimeFinalForAnaesthesia)],OpCode,NewFormat),
     insert_agenda_doctors(NewFormat,Day,ListOfStaffsAnesthesia),
@@ -251,15 +308,7 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     addOpCodeToFormat([(TInitialForCleaning,TimeFinalForCleaning)],OpCode,NewFormat3),
     insert_agenda_doctors(NewFormat3,Day,ListOfStaffsAssistant),
 
-    %foreach(member(X,ListOfStaffsAnesthesia),(agenda_staff1(X,Day,AgendaX),write('X='),write(X),write('   Agenda='),write(AgendaX),nl)),
-    %foreach(member(X,ListOfStaffsSurgery),(agenda_staff1(X,Day,AgendaY),write('X='),write(X),write('   Agenda='),write(AgendaY),nl)),
-    %foreach(member(X,ListOfStaffsAssistant),(agenda_staff1(X,Day,AgendaZ),write('X='),write(X),write('   Agenda='),write(AgendaZ),nl)),
-
-
-
-    %write(']'),nl,nl,
-
-    %Part3 (Next Operation code)
+    %Part 4 (Next Operation code)
     availability_all_surgeries(LOpCode,Room,Day).
 
 findAvailableTimeForStaffAndRoom(TotalTime,OpType,Room,Day,ListOfStaffsAnesthesia,ListOfStaffsAssistant,ListOfStaffsSurgery,TinSF,TfinSF):-
@@ -285,14 +334,8 @@ findAvailableTimeForStaffAndRoom(TotalTime,OpType,Room,Day,ListOfStaffsAnesthesi
     TimeFinalForCleaning is TinS + TSurgery + TAnesthesia + TCleaning - 1,
     availability_Cleaning(Day,CleaningTime,ListOfStaffsAssistant,(TInitialForCleaning,TimeFinalForCleaning),TCleaning),
 
-    write('TinS'),write(TinS),nl,
-    write('TimeFinalForAnaesthesia'),write(TimeFinalForAnaesthesia),nl,
-
-    write('AneasthesiaTime'),write(AneasthesiaTime),nl,
-    write('SurgeryTime'),write(SurgeryTime),nl,
-    write('CleaningTime'),write(CleaningTime),nl,
-
-    ( (is_list_empty(AneasthesiaTime) ; is_list_empty(SurgeryTime) ; is_list_empty(CleaningTime)) 
+    % Permutation if any of the lists is empty
+    ( (is_list_empty(AneasthesiaTime) ; is_list_empty(SurgeryTime) ; is_list_empty(CleaningTime))
     ->         retract(agenda_operation_room2(Room,Day,Agenda1)),
     insert_agenda((TinS,TfinS,TotalTime),Agenda1,Agenda2),
     assertz(agenda_operation_room2(Room,Day,Agenda2)),
@@ -300,30 +343,24 @@ findAvailableTimeForStaffAndRoom(TotalTime,OpType,Room,Day,ListOfStaffsAnesthesi
     TinSF is TinSF1,TfinSF is TfinSF1
     ;TinSF is TinS, TfinSF is TfinS,!
     ).
-    
+
 is_list_empty([]).
 is_list_empty([_|_]) :-fail.
 
 availability_Anaesthesia(Day,Result,ListOfStaffsAnesthesia,(TinS,TfinS),TotalTime) :-
     intersect_all_agendas(ListOfStaffsAnesthesia,Day,StaffFreeTime),
     intersect_2_agendas(StaffFreeTime,[(TinS,TfinS)],Result1),
-    write('Before unf Anesthesia:'),write(Result1),nl,
-    remove_unf_intervals(TotalTime,Result1,Result),
-     write('After unf Anesthesia:'),write(Result),nl.
+    remove_unf_intervals(TotalTime,Result1,Result).
 
 availability_Cleaning(Day,Result,ListOfStaffsCleaning,(TinS,TfinS),TotalTime) :-
     intersect_all_agendas(ListOfStaffsCleaning,Day,StaffFreeTime),
     intersect_2_agendas(StaffFreeTime,[(TinS,TfinS)],Result1),
-    write('Before unf Cleaning:'),write(Result1),nl,
-    remove_unf_intervals(TotalTime,Result1,Result),
-    write('After unf Cleaning:'),write(Result),nl.
+    remove_unf_intervals(TotalTime,Result1,Result).
 
 availability_Surgery(Day,Result,ListOfStaffsSurgery,(TinS,TfinS),TotalTime) :-
     intersect_all_agendas(ListOfStaffsSurgery,Day,StaffFreeTime),
     intersect_2_agendas(StaffFreeTime,[(TinS,TfinS)],Result1),
-    write('Before unf Surgery:'),write(Result1),nl,
-    remove_unf_intervals(TotalTime,Result1,Result),
-    write('After unf Surgery:'),write(Result),nl.
+    remove_unf_intervals(TotalTime,Result1,Result).
 
 remove_unf_intervals(_,[],[]).
 remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-DT is Tfin-Tin+1,TSurgery=<DT,!,
@@ -392,9 +429,9 @@ findNecessaryStaffByType(SurgeryType,StaffType,FinalList):-
 
 findALLNecessaryStaff(SurgeryType,ListOfStaffsAnesthesia,ListOfStaffsCleaning,ListOfStaffsSurgery):-
 
-    % anaesthetist     
+    % anaesthetist
     findNecessaryStaffByType(SurgeryType,anaesthetist,ListOfStaffsAnesthesia),
-    % Cleaning     
+    % Cleaning
     findNecessaryStaffByType(SurgeryType,assistant,ListOfStaffsCleaning),
 
     % Surgery
