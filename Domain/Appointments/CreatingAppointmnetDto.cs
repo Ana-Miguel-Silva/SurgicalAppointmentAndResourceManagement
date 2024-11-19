@@ -13,13 +13,16 @@ public class CreatingAppointmentDto
     public Slot Date { get;  set; }
 
     public string Appstatus { get;  set; }
+    public List<AppointmentSlot> AppointmentSlot { get; private set; }
 
-    public CreatingAppointmentDto(SurgeryRoomId roomId, OperationRequestId opReqId, Slot date)
+
+    public CreatingAppointmentDto(SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, List<AppointmentSlot> slots)
     {
         this.RoomId = roomId;
         this.OperationRequestId = opReqId;
         this.Date = date;
         this.Appstatus = AppointmentStatus.SCHEDULED;
+        this.AppointmentSlot = slots;
     }
 
 }

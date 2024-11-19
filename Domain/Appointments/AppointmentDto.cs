@@ -14,15 +14,17 @@ namespace DDDSample1.Domain.Appointments
         public OperationRequestId OperationRequestId { get; set; }
 
         public Slot Date { get; set; }
+        public List<AppointmentSlot> AppointmentSlot { get; private set; }
 
         public string AppStatus { get; set; }
-        public AppointmentDto(Guid id, SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, string status)
+        public AppointmentDto(Guid id, SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, string status, List<AppointmentSlot> slots)
         {
             this.Id = id;
             this.RoomId = roomId;
             this.OperationRequestId = opReqId;
             this.Date = date;
             this.AppStatus = status;
+            this.AppointmentSlot = slots;
         }
 
     }

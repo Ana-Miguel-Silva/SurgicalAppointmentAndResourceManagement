@@ -307,6 +307,59 @@ namespace DDDNetCore.Migrations
                                 .HasForeignKey("AppointmentId");
                         });
 
+                    b.OwnsMany("DDDSample1.Domain.Shared.AppointmentSlot", "AppointmentSlot", b1 =>
+                        {
+                            b1.Property<string>("AppointmentId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Staff")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("StaffId");
+
+                            b1.HasKey("AppointmentId", "Id");
+
+                            b1.ToTable("AppointmentSlot");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AppointmentId");
+
+                            b1.OwnsOne("DDDSample1.Domain.Shared.Slot", "AppointmentTime", b2 =>
+                                {
+                                    b2.Property<string>("AppointmentSlotAppointmentId")
+                                        .HasColumnType("varchar(255)");
+
+                                    b2.Property<int>("AppointmentSlotId")
+                                        .HasColumnType("int");
+
+                                    b2.Property<DateTime>("EndTime")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("EndTime");
+
+                                    b2.Property<DateTime>("StartTime")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("StartTime");
+
+                                    b2.HasKey("AppointmentSlotAppointmentId", "AppointmentSlotId");
+
+                                    b2.ToTable("AppointmentSlot");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("AppointmentSlotAppointmentId", "AppointmentSlotId");
+                                });
+
+                            b1.Navigation("AppointmentTime")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("AppointmentSlot");
+
                     b.Navigation("Date")
                         .IsRequired();
                 });

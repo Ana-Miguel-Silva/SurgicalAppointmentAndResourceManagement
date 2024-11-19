@@ -202,11 +202,6 @@ remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
 remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
 
 
-
-
-
-
-
 % MAIN PART
 availability_all_surgeries([],_,_).
 availability_all_surgeries([OpCode|LOpCode],Room,Day):-
