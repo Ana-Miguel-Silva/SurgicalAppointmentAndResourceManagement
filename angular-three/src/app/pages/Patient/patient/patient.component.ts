@@ -270,6 +270,13 @@ export class PatientComponent {
 
 
   populateUpdateForm(): void {
+    console.log('Patient Profile Single:', this.patientProfileSingle); 
+    if (!this.patientProfileSingle) {
+        console.error('Patient profile is not available');
+        return; 
+    }
+
+
     this.patientUpdateForm.patchValue({
         name: `${this.patientProfileSingle.name.firstName} ${this.patientProfileSingle.name.middleNames} ${this.patientProfileSingle.name.lastName}`,
         email: this.patientProfileSingle.email.fullEmail,

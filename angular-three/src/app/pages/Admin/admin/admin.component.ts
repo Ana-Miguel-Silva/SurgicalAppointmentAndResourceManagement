@@ -91,6 +91,7 @@ export class AdminComponent {
       phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
+      license: ['', Validators.required],
       startTime: [''],
       endTime: [''],
     });
@@ -102,6 +103,7 @@ export class AdminComponent {
       phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
+      license: ['', Validators.required],
       slots: [''],
     });
     this.staffEditionForm = this.fb.group({
@@ -1151,6 +1153,7 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ phoneNumber: this.staffCreationForm.get('phoneNumber')?.value });
     this.staffCreationForm2.patchValue({ role: this.staffCreationForm.get('role')?.value });
     this.staffCreationForm2.patchValue({ specialization: this.staffCreationForm.get('specialization')?.value });
+    this.staffCreationForm2.patchValue({ license: this.staffCreationForm.get('license')?.value });
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);
