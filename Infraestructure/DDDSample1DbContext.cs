@@ -4,6 +4,10 @@ using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Infrastructure.Users;
+using DDDSample1.Infrastructure.Appointments;
+using DDDSample1.Domain.Appointments;
+using DDDSample1.Infrastructure.SurgeryRooms;
+using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Infrastructure.Staff;
 using DDDSample1.Infrastructure.OperationTypes;
@@ -24,9 +28,9 @@ namespace DDDSample1.Infrastructure
         public DbSet<OperationType> OperationTypes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
-
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
         public DbSet<PendingActionsEntry> PendingActions { get; set; }
-
 
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
@@ -44,6 +48,8 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LogEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PendingActionsEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
         }
     }
 }

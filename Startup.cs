@@ -30,6 +30,12 @@ using DDDSample1.ApplicationService.OperationTypes;
 using DDDSample1.ApplicationService.Logging;
 using DDDSample1.ApplicationService.PendingActions;
 using DDDSample1.ApplicationService.Shared;
+using DDDSample1.ApplicationService.Appointments;
+using DDDSample1.Domain.Appointments;
+using DDDSample1.Infrastructure.Appointments;
+using DDDSample1.ApplicationService.SurgeryRooms;
+using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Infrastructure.SurgeryRooms;
 using System.Security.Claims;
 
 
@@ -225,6 +231,12 @@ namespace DDDSample1
 
             services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<LogService>();
+
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<AppointmentService>();
+
+            services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
+            services.AddTransient<SurgeryRoomService>();
 
              services.AddTransient<IPendingActionsRepository, PendingActionsRepository>();
             services.AddTransient<PendingActionsService>();

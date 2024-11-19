@@ -5,6 +5,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Logging;
 using System.Text.Json;
 using DDDSample1.Domain.OperationRequests;
+using System.CodeDom;
 
 
 namespace DDDSample1.ApplicationService.OperationRequests
@@ -27,17 +28,14 @@ namespace DDDSample1.ApplicationService.OperationRequests
             this._repoOpType = repoOpType;
         }
 
-        public async Task<List<OperationRequestDto>> GetAllAsync()
+        public async Task<List<OperationRequestUIDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
 
-            List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(operationRequest =>
-                new(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority));
-
-            return listDto;
+            return await Dto_to_UIDto(list);
         }
 
-        public async Task<List<OperationRequestDto>> GetAllFilteredAsync(PatientId? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
+        public async Task<List<OperationRequestUIDto>> GetAllFilteredAsync(PatientId? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
         {
             var operationRequests = await this._repo.GetAllAsync();
 
@@ -73,8 +71,7 @@ namespace DDDSample1.ApplicationService.OperationRequests
             {
                 operationRequests = operationRequests.Where(o => o.Active == status.Value).ToList();
             }
-            return operationRequests.ConvertAll<OperationRequestDto>(operationRequest =>
-                new(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority));
+            return await Dto_to_UIDto(operationRequests);
         }
 
         public async Task<OperationRequestDto> GetByIdAsync(OperationRequestId id)
@@ -87,18 +84,20 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto, string authUserEmail)
+        public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestUIDto dto, string authUserEmail)
         {
             //verifies if the auth user has a staff profile
             var doctor = await CheckDoctorAsync(authUserEmail);
-            var operationType = await CheckOperationTypeAsync(dto.OperationTypeId);
+
+            var operationType = await CheckOperationTypeAsync(dto.OperationTypeName);
+
             await CheckSpecializationsAsync(operationType, doctor);
 
-            await CheckPatientAsync(dto.MedicalRecordNumber);
+            var patientId = await CheckPatientAsync(dto.PatientEmail);
             CheckDate(dto.Deadline);
             CheckPriority(dto.Priority);
 
-            var operationRequest = new OperationRequest(dto.MedicalRecordNumber, doctor.Id, dto.OperationTypeId, dto.Deadline, dto.Priority);
+            var operationRequest = new OperationRequest(patientId, doctor.Id, operationType.Id, dto.Deadline, dto.Priority);
 
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
@@ -164,18 +163,22 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
-        private async Task CheckPatientAsync(PatientId patientId)
+        private async Task<PatientId> CheckPatientAsync(string email)
         {
-            var patient = await _repoPat.GetByIdAsync(patientId);
+            var patient = await _repoPat.GetByEmailAsync(email);
             if (patient == null)
-                throw new BusinessRuleValidationException("Invalid Patient Id.");
+                throw new BusinessRuleValidationException("Invalid Patient Email.");
+
+            return patient.Id;
         }
 
-        private async Task<OperationType> CheckOperationTypeAsync(OperationTypeId operationTypeId)
+        private async Task<OperationType> CheckOperationTypeAsync(string operationTypeName)
         {
-            var operationType = await _repoOpType.GetByIdAsync(operationTypeId);
+            var operationTypes = await this._repoOpType.GetByNameAsync(operationTypeName);
+
+            var operationType = operationTypes.FirstOrDefault();
             if (operationType == null)
-                throw new BusinessRuleValidationException("Invalid OperationType Id.");
+                throw new BusinessRuleValidationException("Invalid OperationType.");
 
             return operationType;
         }
@@ -198,7 +201,7 @@ namespace DDDSample1.ApplicationService.OperationRequests
 
         private async Task CheckSpecializationsAsync(OperationType operationType, StaffProfile doctor)
         {
-            if (!operationType.GetAllSpecializations(operationType.RequiredStaff).Contains(doctor.Specialization))
+            if (operationType.Name.ToLower() != doctor.Specialization.ToLower())
                 throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
         }
 
@@ -213,6 +216,22 @@ namespace DDDSample1.ApplicationService.OperationRequests
             if (!Priority.IsValid(priority.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Priority.");
         }
+
+        private async Task<List<OperationRequestUIDto>> Dto_to_UIDto(List<OperationRequest> list)
+        {
+            var listDto = new List<OperationRequestUIDto>();
+            foreach (var operationRequest in list)
+            {
+                var operationTypes = await this._repoOpType.GetByIdAsync(operationRequest.OperationTypeId);
+                var doctors = await this._repoDoc.GetByIdAsync(operationRequest.DoctorId);
+                var patients = await this._repoPat.GetByIdAsync(operationRequest.MedicalRecordNumber);
+
+                listDto.Add(new OperationRequestUIDto(operationRequest.Id.AsGuid(), patients.Email.FullEmail, doctors.Email.FullEmail, operationTypes.Name, operationRequest.Deadline, operationRequest.Priority));
+            }
+
+            return listDto;
+        }
+
 
     }
 }
