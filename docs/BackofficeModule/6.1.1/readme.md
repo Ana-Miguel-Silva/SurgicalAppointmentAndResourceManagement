@@ -11,18 +11,23 @@ This is the first time this task has been assigned for development.
 **US 6.1.1** As user, I want to have an integrated UI for all modules of the system so that I
 don’t need to switch between application urls
 
+[//]: # ()
+[//]: # (**Acceptance Criteria:** )
 
-**Acceptance Criteria:** 
+[//]: # ()
+[//]: # (- )
 
-- 
+[//]: # ()
+[//]: # ()
+[//]: # (**Customer Specifications and Clarifications:**)
 
+[//]: # ()
+[//]: # ()
+[//]: # (> **Question:** )
 
-**Customer Specifications and Clarifications:**
+[//]: # (>)
 
-
-> **Question:** 
->
->**Answer:** 
+[//]: # (>**Answer:** )
 
 
 
@@ -35,28 +40,39 @@ don’t need to switch between application urls
 * US 5.1.1: "As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
 
 
+[//]: # ()
+[//]: # ()
+[//]: # (**Input and Output Data**)
 
+[//]: # ()
+[//]: # (**Input Data:**)
 
-**Input and Output Data**
+[//]: # ()
+[//]: # (* Typed data:)
 
-**Input Data:**
+[//]: # (    * Username)
 
-* Typed data:
-    * Username
-    * password
+[//]: # (    * password)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (**Output Data:**)
 
+[//]: # (* Display the success of the operation and the integration menu.)
 
-**Output Data:**
-* Display the success of the operation and the integration menu.
+[//]: # ()
+[//]: # ()
+[//]: # (## 3. Analysis)
 
+[//]: # ()
+[//]: # (>**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?)
 
-## 3. Analysis
+[//]: # (>)
 
->**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
->
-> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
+[//]: # (> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system)
 
+[//]: # ()
 
 
 [//]: # (### 3.1. Domain Model)

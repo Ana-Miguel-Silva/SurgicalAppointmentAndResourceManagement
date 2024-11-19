@@ -4,24 +4,26 @@
 ## 1. Context
 
 As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. 
-These functionalities are essential to allow staff to see the 3D model hospital floor illmunated.
+These functionalities are essential to see the hospital floor.
 This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
 **US 6.5.3** As a healthcare staff member, I want to see the hospital/clinic floor illuminated with ambient and directional light.
 
-
 **Acceptance Criteria:** 
 
 - 
 
 
-**Customer Specifications and Clarifications:**
+[//]: # (**Customer Specifications and Clarifications:**)
 
-> **Question:** 
->
->**Answer:** 
+[//]: # ()
+[//]: # (> **Question:** )
+
+[//]: # (>)
+
+[//]: # (>**Answer:** )
 
 
 **Dependencies/References:**
@@ -29,61 +31,82 @@ This is the first time this task has been assigned for development.
 * There is a dependency to "6.5.1 As a healthcare staff member, I want to see a 3D representation of the hospital/clinic floor."
 
 
+[//]: # ()
+[//]: # (**Input and Output Data**)
 
-**Input and Output Data**
+[//]: # ()
+[//]: # (**Input Data:**)
 
-**Input Data:**
+[//]: # ()
+[//]: # (* Typed data:)
 
-* Typed data:
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (**Output Data:**)
 
+[//]: # (* Display the success of the operation )
 
+[//]: # ()
+[//]: # ()
+[//]: # (## 3. Analysis)
 
+[//]: # ()
+[//]: # (> **Question:** )
 
+[//]: # (>)
 
-**Output Data:**
-* Display the success of the operation 
+[//]: # (>**Answer:** )
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ([//]: # &#40;### 3.1. Domain Model&#41;)
+[//]: # ()
+[//]: # ([//]: # &#40;![sub domain model]&#40;us1000-sub-domain-model.svg&#41;&#41;)
+[//]: # ()
+[//]: # (## 4. Design)
 
-## 3. Analysis
+[//]: # ()
+[//]: # ()
+[//]: # (**Domain Class/es:** Email, User, UserDto, Role)
 
-> **Question:** 
->
->**Answer:** 
+[//]: # ()
+[//]: # (**Controller:** UserController)
 
+[//]: # ()
+[//]: # (**UI:** )
 
+[//]: # ()
+[//]: # (**Repository:**	UserRepository)
 
-[//]: # (### 3.1. Domain Model)
+[//]: # ()
+[//]: # (**Service:** UserService, AuthorizationService)
 
-[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.1. Sequence Diagram)
 
-## 4. Design
+[//]: # ()
+[//]: # (**Register User Level 1**)
 
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-1.svg "Register User"&#41;)
 
-**Domain Class/es:** Email, User, UserDto, Role
+[//]: # ()
+[//]: # (**Register User Level 2**)
 
-**Controller:** UserController
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-2.svg "Register User"&#41;)
 
-**UI:** 
+[//]: # ()
+[//]: # (**Register User Level 3**)
 
-**Repository:**	UserRepository
-
-**Service:** UserService, AuthorizationService
-
-
-
-### 4.1. Sequence Diagram
-
-**Register User Level 1**
-
-![Register User](sequence-diagram-1.svg "Register User")
-
-**Register User Level 2**
-
-![Register User](sequence-diagram-2.svg "Register User")
-
-**Register User Level 3**
-
-![Register User](sequence-diagram-3.svg "Register User")
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-3.svg "Register User"&#41;)
 
 
 

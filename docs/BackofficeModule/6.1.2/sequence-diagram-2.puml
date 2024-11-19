@@ -19,13 +19,13 @@ BE --> FE: form
 deactivate BE
 FE --> AD : data input
 deactivate FE
-AD -> FE : info to create info to create user (email, username, role)
+AD -> FE : info to login(username, password)
 activate FE
-FE -> BE : createUser(email, username, role)
+FE -> BE : login(username, password)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
+FE --> AD : success and access to their funtionalities.
 deactivate FE
 deactivate AD
 
