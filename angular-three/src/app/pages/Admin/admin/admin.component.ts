@@ -92,6 +92,7 @@ export class AdminComponent {
       phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
+      license: ['', Validators.required],
       startTime: [''],
       endTime: [''],
     });
@@ -103,6 +104,7 @@ export class AdminComponent {
       phoneNumber: ['', Validators.required],
       role: ['', Validators.required],
       specialization: ['', Validators.required],
+      license: ['', Validators.required],
       slots: [''],
     });
     this.staffEditionForm = this.fb.group({
@@ -170,6 +172,17 @@ export class AdminComponent {
   filterField: string = '';
   appointmentHistory: string[] = [];
   slots: string[] = [];
+
+
+  filteredPatients: any[] = [];
+  filter = {
+    name: '',
+    email: '',
+    dateOfBirth: '',
+    medicalRecordNumber: '',
+    allergies: '',
+    appointmentHistory: ''
+  } as const;
 
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
@@ -608,11 +621,26 @@ export class AdminComponent {
           this.successMessage = null;
         }
       });
-
-
-
   }
 
+  
+
+  onFilterRequests(){
+    console.log(this.filter);
+    this.getAllpatientsProfiles();
+    this.closeModal('filterRequestModal');
+  }
+
+  cleanFilter() {
+    this.filter = {
+      name: '',
+      email: '',
+      medicalRecordNumber: '',
+      dateOfBirth: '',
+      allergies: '',
+      appointmentHistory: ''
+    };
+  }
   deactivatePatient(){
     const token = this.authService.getToken();
 
@@ -1058,9 +1086,23 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
 
-    const params = new HttpParams()
+    
+    type FilterKeys = keyof typeof this.filter; // Restringe as chaves às do objeto filter
+
+  
+    let params = new HttpParams();
+
+  Object.keys(this.filter).forEach(key => {
+    const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+    const value = this.filter[typedKey]; // Acessar o valor usando a chave tipada
+    if (value) { // Só adiciona se o valor estiver preenchido
+      params = params.set(key, value);
+    }
+  });
+
+    /*const params = new HttpParams()
   .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
-, this.searchTerm || '');
+, this.searchTerm || '');*/
 
 
 
@@ -1143,6 +1185,7 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ phoneNumber: this.staffCreationForm.get('phoneNumber')?.value });
     this.staffCreationForm2.patchValue({ role: this.staffCreationForm.get('role')?.value });
     this.staffCreationForm2.patchValue({ specialization: this.staffCreationForm.get('specialization')?.value });
+    this.staffCreationForm2.patchValue({ license: this.staffCreationForm.get('license')?.value });
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);

@@ -237,15 +237,22 @@
       <div>
 
       <form  class="row g-3 needs-validation" novalidate="">
-          <div class="col-md-2"></div>
+          <div class="col-md-10"></div>
 
-          <div class="col-md-6">
+          <!--<div class="col-md-6">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
           </div>
+        </div>-->
+      
+        <div class="col-md-2">
+          <div class="input-group">
+          <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
         </div>
-          <div class="col-md-2">
+      </div>
+
+          <!--<div class="col-md-2">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
@@ -257,7 +264,7 @@
             </select>
 
           </div>
-        </div>
+        </div>-->
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -648,6 +655,66 @@
   </div>
 </div>
 
+<div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
+    <form>
+      
+      <h3 class="text-center">Filter Patient Profile</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilter()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterName" class="form-label">Name:</label>
+        <input type="text" id="filterName" [(ngModel)]="filter.name"  name="filterName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail" [(ngModel)]="filter.email"  name="filterEmail" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterMedicalRecordNumber" class="form-label">Medical Record Number:</label>
+        <input type="number" id="filterMedicalRecordNumber" [(ngModel)]="filter.medicalRecordNumber" name="filterMedicalRecordNumber" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterDate" class="form-label">Date of Birth:</label>
+        <input type="date" id="filterDate"  name="filterDate" [(ngModel)]="filter.dateOfBirth" class="form-control" />
+      </div>
+
+      
+      <div class="mb-3">
+        <label for="filterAllergies" class="form-label">Allergies:</label>
+        <input type="text" id="filterAllergies" [(ngModel)]="filter.allergies" name="filterAllergies" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterAppointmentHistory" class="form-label">Appointment History:</label>
+        <input type="date" id="filterAppointmentHistory"  name="filterAppointmentHistory" [(ngModel)]="filter.appointmentHistory" class="form-control" />
+      </div>
+
+      <!-- Lista de allergies e appointment history
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>-->
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterRequests()" class="btn btn-primary">Apply Filter</button>
+     </div>
+     
+    </form>
+  </div>
+</div>
 
 
 
@@ -700,41 +767,32 @@
           </div>
 
           <div class="col-md-12">
-            <div class="table-wrapper" >
-              <div class="table-title">
+            <div class="table-wrapper w-100">
               <form [formGroup]="staffForm" (ngSubmit)="onSubmitStaff()" class="row g-3 needs-validation" novalidate="">
-              <table class="table table-striped table-hover table-over"  >
+              <table class="table table-striped table-hover w-100" style="max-height: 50vh;">
                 <thead>
                   <tr>
                     <tr>
                       <th>#</th>
-                      <th>ID</th>
-                      <th>Staff ID</th>
-                      <th>First Name</th>
-                      <th>Middle Name</th>
-                      <th>Last Name</th>
+                      <th>Name</th>
+                      <th>Email</th>
                       <th>License Number</th>
                       <th>Role</th>
                       <th>Specialization</th>
-                      <th>Email</th>
                       <th>Phone</th>
                       <th>Active</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let request of staffsProfiles; let i = index" (click)="selectStaff(request.staffId)" [ngClass]="{ 'selected-row': selectedStaffId === request.staffId }">
-                      <td>{{ i + 1 }}</td>
-                      <td><input class="selectRequest" type="radio" id="staff_{{ request.staffId }}" name="staffFormID" value="{{ request.staffId }}" [checked]="selectedStaffId === request.staffId" hidden>{{ request.id }}</td>
-                      <td>{{ request.staffId }}</td>
-                      <td>{{ request.name.firstName }}</td>
-                      <td>{{ request.name.middleNames }}</td>
-                      <td>{{ request.name.lastName }}</td>
-                      <td>{{ request.licenseNumber }}</td>
-                      <td>{{ request.role }}</td>
-                      <td>{{ request.specialization }}</td>
-                      <td>{{ request.email.fullEmail }}</td>
-                      <td>{{ request.phoneNumber.number }}</td>
-                      <td id="active_{{ request.staffId }}">
+                      <td>{{ i + 1 }}<input class="selectRequest" type="radio" id="staff_{{ request.staffId }}" name="staffFormID" value="{{ request.staffId }}" [checked]="selectedStaffId === request.staffId" hidden></td>
+                      <td class="table-overx">{{ request.name.firstName + " " + request.name.middleNames + " " + request.name.lastName }}</td>
+                      <td class="table-overx">{{ request.email.fullEmail }}</td>
+                      <td class="table-overx">{{ request.licenseNumber }}</td>
+                      <td class="table-overx">{{ request.role }}</td>
+                      <td class="table-overx">{{ request.specialization }}</td>
+                      <td class="table-overx">{{ request.phoneNumber.number }}</td>
+                      <td class="table-overx" id="active_{{ request.staffId }}">
                         <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
                         <ng-template #failure>
                           <span class="badge rounded-pill bg-danger">No</span>
@@ -744,7 +802,6 @@
                 </tbody>
               </table>
             </form>
-            </div>
           </div>
         </div>
 
@@ -795,9 +852,17 @@
             </div>
           </div>
           <div class="col-md-12"></div>
-          <div class="col-md-3"></div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" id="validationStaffLicense" formControlName="license" aria-describedby="inputGroupPrepend" placeholder="Medical License Number">
+              <div class="invalid-feedback">
+                Please choose a email.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <select class="form-select" id="validationRole" formControlName="role" required="">
@@ -812,7 +877,7 @@
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
@@ -836,7 +901,7 @@
           </div>
           <div class="col-md-12"></div>
           <hr>
-          <div class="col-md-12"></div>
+          <div class="col-md-12"><p class="h4">Availability Slots</p></div>
           <div class="dates-input">
             <ul id="dates2">
               <li *ngFor="let date of availabilitySlots2; let i = index" class="date">
@@ -849,8 +914,8 @@
           <div class="col-md-8">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart" formControlName="startTime">
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd" formControlName="endTime">
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart" formControlName="startTime" placeholder="Start Time">
+              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd" formControlName="endTime" placeholder="End Time">
               <span class="input-group-text" id="add" (click)="addDate2()" ><i class="bi bi-plus-lg"></i></span>
               <div class="valid-feedback">
                 Looks good!
@@ -891,16 +956,25 @@
             </div>
           </div>
           <div class="col-md-12"></div>
-          <div class="col-md-3"></div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ staffProfileSingle.licenseNumber }}" placeholder="Medical License Number" disabled>
+              <div class="invalid-feedback">
+                Please choose a email.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <input type="text" class="form-control" value="{{ staffProfileSingle.role }}" disabled>
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <input type="text" class="form-control" value="{{ staffProfileSingle.specialization }}" disabled>
@@ -908,13 +982,9 @@
           </div>
           <div class="col-md-12"></div>
           <hr>
-          <div class="col-md-12"></div>
+          <div class="col-md-12"><p class="h4">Availability Slots</p></div>
           <div class="col-md-2"></div>
           <div class="col-md-8">
-            <div class="input-group has-validation">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-              <span class="input-group-text" id="add">Availlability Slots</span>
-            </div>
             <table class="table table-striped table-hover table-over">
               <thead>
                 <tr>
@@ -973,16 +1043,25 @@
             </div>
           </div>
           <div class="col-md-12"></div>
-          <div class="col-md-3"></div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" value="{{ staffProfileSingle.licenseNumber }}" disabled>
+              <div class="invalid-feedback">
+                Please choose a email.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <input type="text" class="form-control" value="{{ staffProfileSingle.role }}" disabled>
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
@@ -1006,7 +1085,7 @@
           </div>
           <div class="col-md-12"></div>
           <hr>
-          <div class="col-md-12"></div>
+          <div class="col-md-12"><p class="h4">Availability Slots</p></div>
           <div class="dates-input">
             <ul id="dates2">
               <li *ngFor="let date of availabilitySlots3; let i = index" class="date">
@@ -1028,7 +1107,7 @@
             </div>
           </div>
           <div class="col-12">
-            <button class="fs-5 btn btn-outline-warning" type="submit" [disabled]="staffEditionForm.invalid">Update Staff Profile <i class="bi bi-plus-square-fill"></i></button>
+            <button class="fs-5 btn btn-outline-warning" type="submit" [disabled]="staffEditionForm.invalid">Update Staff Profile <i class="bi bi-arrow-down-left-square-fill"></i></button>
           </div>
         </form>
       </div>

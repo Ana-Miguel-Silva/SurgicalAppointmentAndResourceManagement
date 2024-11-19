@@ -42,6 +42,23 @@ namespace DDDSample1.Domain.Staff
 
 
 
+        public StaffProfile(FullName name, Email email, PhoneNumber phone, string role, string specialization, List<Slot> slots, string ID, string license)
+        {
+            if (name == null || email == null || phone == null || role == null || specialization == null || slots == null || ID == null)
+                throw new BusinessRuleValidationException("One of the Staff parameters was not valid");
+
+            this.Id = new StaffGuid(Guid.NewGuid());
+            this.StaffId = ID;
+            this.Name = name;
+            this.Email = email;
+            this.PhoneNumber = phone;
+            this.LicenseNumber = license;
+            this.Role = role.ToUpper();
+            this.Specialization = specialization.ToUpper();
+            this.AvailabilitySlots = slots;
+            this.Active = true;
+        }
+
         public void ChangeEmail(Email email)
         {
             if (!this.Active)
