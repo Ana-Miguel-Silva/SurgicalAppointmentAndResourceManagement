@@ -4,6 +4,7 @@ import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFor
 import { ModalService } from '../../../Services/modal.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
+import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -49,7 +50,7 @@ export class AdminComponent {
   private patientUrl = "https://localhost:5001/api/Patients";
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
-    private http: HttpClient, private authService: AuthService, private router: Router) {
+    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -123,6 +124,7 @@ export class AdminComponent {
   }
 
   selectedStaffId: number | null = null;
+  selectOperationTypeId: string | null = null;
   selectedPatientEmail: string | null = null;
 
   selectStaff(id: number) {
@@ -134,6 +136,9 @@ export class AdminComponent {
     this.selectedPatientEmail = this.selectedPatientEmail === email ? null : email;
   }
 
+  selectOperationType(id: string) {
+    this.selectOperationTypeId = this.selectOperationTypeId === id ? null : id;
+  }
 
 
   myForm: FormGroup;
@@ -152,6 +157,9 @@ export class AdminComponent {
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
   staffsProfiles: any[] = [];
+  OperationTypesProfiles: any[] = [];
+  OperationTypeSingle: any = null;
+  requiredStaffView: any[] = [];
   staffProfileSingle: any = null;
   patientProfileSingle: any = null;
   patientProfileUpdate: any = null;
@@ -194,6 +202,29 @@ export class AdminComponent {
     return parsedDate.toISOString().split('T')[0];
   }
 
+
+  formatTimeToISO(time: string): string {
+    if (!time) return ''; // Return an empty string if no value exists
+  
+    // If the time is already in "HH:mm:ss" format, return it
+    const timeRegex = /^\d{2}:\d{2}(:\d{2})?$/; // Matches "HH:mm" or "HH:mm:ss"
+    if (timeRegex.test(time)) {
+      return time;
+    }
+  
+    try {
+      // Convert the time to a valid ISO string (assuming "HH:mm:ss" format)
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0, 0); // Default seconds to 0 if not provided
+      return date.toISOString().slice(11, 19); // Extract "HH:mm:ss" part
+    } catch (error) {
+      console.error('Invalid time format:', time, error);
+      return 'Invalid Time';
+    }
+  }
+  
+
   onCreateOperationType() {
     const token = this.authService.getToken();
 
@@ -214,7 +245,7 @@ export class AdminComponent {
     });
 
     // Send a POST request to create the operation type
-    this.http.post('https://localhost:5001/api/OperationTypes', this.operationType, { headers })
+    this.operationTypesService.createOperationTypes(this.operationType)
       .subscribe({
         next: () => {
           Swal.fire({
@@ -1003,7 +1034,8 @@ export class AdminComponent {
       this.router.navigate(['/']);
     }
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
-    this.getAllstaffsProfiles(); // Fetch all profiles on component initialization
+    this.getAllstaffsProfiles();
+    this.getAllOperationTypes(); 
   }
 
   // Novo método para atualizar a lista ao mudar o filtro
@@ -1145,5 +1177,102 @@ export class AdminComponent {
         }
       });
   }
+
+  onSubmitOperationTypes(){}
+
+  getAllOperationTypes() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+  .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
+, this.searchTerm || '');
+
+
+
+    this.operationTypesService.getAllOperationTypes()
+      .subscribe({
+        next: (response) => {
+          console.log('Operation Type ',response);
+          
+          this.OperationTypesProfiles = response;
+          console.log(params);
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+  }
+
+
+  viewOperationTypes(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectOperationTypeId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um Operation Type.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+
+    } else {
+      console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
+      this.operationTypesService.getOperationTypeById(this.selectOperationTypeId)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.OperationTypeSingle = response;
+
+          this.operationType = {
+            name: response.name || "",
+            requiredStaff: response.requiredStaff || [],
+            estimatedDuration: {
+              patientPreparation: response.estimatedDuration?.patientPreparation || "",
+              surgery: response.estimatedDuration?.surgery || "",
+              cleaning: response.estimatedDuration?.cleaning || "",
+            },
+          };
+
+          this.requiredStaffView =  response.requiredStaff;
+
+          this.openModal('viewOperationTypeModal');
+        },
+        error: (error) => {
+          console.error('Error viewing operation type:', error);
+          this.errorMessage = 'Failed to view operation type profile!';
+        }
+      });
+    }
+  }
+
+
 
 }

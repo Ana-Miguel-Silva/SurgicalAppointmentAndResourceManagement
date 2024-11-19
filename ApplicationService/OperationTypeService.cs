@@ -22,7 +22,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
             var list = await this._repo.GetAllAsync();
 
             List<OperationTypeDto> listDto = list.ConvertAll<OperationTypeDto>(operationType =>
-                new(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration));
+                new(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active));
 
             return listDto;
         }
@@ -34,7 +34,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
             if (operationType == null)
                 return null;
 
-            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration);
+            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
         public async Task<OperationTypeDto> AddAsync(CreatingOperationTypeDto dto)
@@ -50,7 +50,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration);
+            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
         public async Task<OperationTypeDto> UpdateAsync(OperationTypeDto dto)
@@ -70,7 +70,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration);
+            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
         public async Task<OperationTypeDto> InactivateAsync(OperationTypeId id)
@@ -84,7 +84,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration);
+            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
         public async Task<OperationTypeDto> DeleteAsync(OperationTypeId id)
@@ -100,7 +100,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
             this._repo.Remove(operationType);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration);
+            return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
         private static void CheckName(string name)
@@ -157,7 +157,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
             }
 
             return operationType.ConvertAll<OperationTypeDto>(operationsTypes =>
-                new(operationsTypes.Id.AsGuid(), operationsTypes.Name, operationsTypes.RequiredStaff, operationsTypes.EstimatedDuration)).ToList();
+                new(operationsTypes.Id.AsGuid(), operationsTypes.Name, operationsTypes.RequiredStaff, operationsTypes.EstimatedDuration, operationsTypes.Active)).ToList();
         }
 
 

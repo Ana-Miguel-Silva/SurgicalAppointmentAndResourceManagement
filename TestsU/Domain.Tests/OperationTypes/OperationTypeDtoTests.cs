@@ -20,7 +20,7 @@ namespace Domain.Tests
             };
             var estimatedDuration = new EstimatedDuration(new TimeOnly(1, 0), new TimeOnly(2, 0), new TimeOnly(0, 30));
 
-            var dto = new OperationTypeDto(id, name, requiredStaff, estimatedDuration);
+            var dto = new OperationTypeDto(id, name, requiredStaff, estimatedDuration, true);
 
             Assert.Equal(id, dto.Id);
             Assert.Equal(name, dto.Name);

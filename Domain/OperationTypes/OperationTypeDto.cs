@@ -11,12 +11,15 @@ namespace DDDSample1.Domain.OperationTypes
         public List<RequiredStaff> RequiredStaff { get; set; }
         public EstimatedDuration EstimatedDuration { get; set; }
 
-        public OperationTypeDto(Guid Id, string Name, List<RequiredStaff> RequiredStaff, EstimatedDuration EstimatedDuration)
+        public bool Active { get; set; }
+
+        public OperationTypeDto(Guid Id, string Name, List<RequiredStaff> RequiredStaff, EstimatedDuration EstimatedDuration, bool active)
         {
             this.Id = Id;
             this.Name = Name;
             this.RequiredStaff = RequiredStaff;
             this.EstimatedDuration = EstimatedDuration;
+            this.Active = active;
         }
     }
 }

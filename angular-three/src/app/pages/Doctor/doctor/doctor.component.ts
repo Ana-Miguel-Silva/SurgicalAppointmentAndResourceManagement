@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { ModalService } from './modal.service';
+import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
