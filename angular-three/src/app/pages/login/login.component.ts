@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
+import { LoginService } from '../../Services/login.service';
 import e from 'express';
 import Swal from 'sweetalert2';
 
@@ -26,10 +27,12 @@ export class LoginComponent {
   http = inject(HttpClient);
   router = inject(Router);
   authService = inject(AuthService);
+  loginService = inject(LoginService);
 
   onLogin(){
 
-    this.http.post<string>("https://localhost:5001/api/Users/login", this.loginObj, { responseType: 'text' as 'json' }).subscribe({
+    //this.http.post<string>("https://localhost:5001/api/Users/login", this.loginObj, { responseType: 'text' as 'json' })
+    this.loginService.postLogin(this.loginObj).subscribe({
       next: token => {
         console.log(token);
         //alert('Login Success!');
@@ -44,7 +47,7 @@ export class LoginComponent {
         this.authService.setToken(token);
         this.navigateToRoleBasedPage();
 
-       
+
       },
       error: error => {
         console.error(error);

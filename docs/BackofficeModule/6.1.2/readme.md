@@ -14,11 +14,14 @@ This is the first time this task has been assigned for development.
 
 - Users can only access funtionalites based on their role.
 
-**Customer Specifications and Clarifications:**
+[//]: # (**Customer Specifications and Clarifications:**)
 
-> **Question:** 
->
->**Answer:** 
+[//]: # ()
+[//]: # (> **Question:** )
+
+[//]: # (>)
+
+[//]: # (>**Answer:** )
 
 **Dependencies/References:**
 
@@ -37,7 +40,7 @@ don’t need to switch between application urls"
 
 
 **Output Data:**
-* Display the success of the operation.
+* Display the success of the operation and access to their funtionalities.
 
 ## 3. Analysis
 
