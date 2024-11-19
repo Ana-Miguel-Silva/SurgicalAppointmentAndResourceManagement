@@ -371,7 +371,7 @@ namespace DDDSample1.Controllers
                         {
                             MissingMemberHandling = MissingMemberHandling.Ignore,
                             NullValueHandling = NullValueHandling.Include
-                        };
+                        };      
 
                         UpdatePatientDto patientDto;
                         try

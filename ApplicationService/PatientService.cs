@@ -489,49 +489,68 @@ namespace DDDSample1.ApplicationService.Patients
 
 
         public async Task<List<PatientDto>> GetAllFilteredAsync(
-            Guid? id,
-            string? nameFull,
-            string? email,
-            DateTime? DateOfBirth,
-            List<string>? Allergies,
-            string medicalRecordNumber,
-            List<string>? AppointmentHistory
-            )
-        {
+    Guid? id,
+    string? nameFull,
+    string? email,
+    DateTime? DateOfBirth,
+    List<string>? Allergies,
+    string medicalRecordNumber,
+    List<string>? AppointmentHistory
+)
+{
+    var patientsProfile = await this._repo.GetAllAsync();
 
-            var patientsProfile = await this._repo.GetAllAsync();
+    // Filtros aplicados conforme cada critério
 
-        // Filtros aplicados conforme cada critério
+    if (id != null)
+        patientsProfile = patientsProfile.Where(o => o.Id.AsGuid().Equals(id)).ToList();
 
-        if (id != null)
-            patientsProfile = patientsProfile.Where(o => o.Id.AsGuid().Equals(id)).ToList();
+    if (!string.IsNullOrEmpty(nameFull))
+        patientsProfile = patientsProfile.Where(o => 
+            o.name.toName().ToLower().Contains(nameFull.ToLower())).ToList();
 
-        if (!string.IsNullOrEmpty(nameFull))
-            patientsProfile = patientsProfile.Where(o => o.name.toName().Equals(nameFull)).ToList();
+    if (DateOfBirth.HasValue)
+        patientsProfile = patientsProfile.Where(o => o.DateOfBirth.Date == DateOfBirth.Value.Date).ToList();
 
+    if (Allergies != null && Allergies.Any())
+        patientsProfile = patientsProfile.Where(o => 
+            o.Allergies != null && o.Allergies.Any(a => Allergies.Any(al => 
+                string.Equals(a, al, StringComparison.OrdinalIgnoreCase)))).ToList();
 
-        if (DateOfBirth.HasValue)
-            patientsProfile = patientsProfile.Where(o => o.DateOfBirth.Date == DateOfBirth.Value.Date).ToList();
+    if (!string.IsNullOrEmpty(medicalRecordNumber))
+        patientsProfile = patientsProfile.Where(o => 
+            string.Equals(o.medicalRecordNumber.number, medicalRecordNumber, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        if (Allergies != null && Allergies.Any())
-            patientsProfile = patientsProfile.Where(o => o.Allergies != null && o.Allergies.Any(a => Allergies.Contains(a))).ToList();
+    if (!string.IsNullOrEmpty(email))
+        patientsProfile = patientsProfile.Where(o => 
+            string.Equals(o.Email.FullEmail, email, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        if (!string.IsNullOrEmpty(medicalRecordNumber))
-            patientsProfile = patientsProfile.Where(o => o.medicalRecordNumber.number.Equals(medicalRecordNumber)).ToList();
-        
-        if (!string.IsNullOrEmpty(email))
-            patientsProfile = patientsProfile.Where(o => o.Email.FullEmail.Equals(email)).ToList();
+    if (AppointmentHistory != null && AppointmentHistory.Any())
+        patientsProfile = patientsProfile.Where(o => 
+            o.AppointmentHistory != null && o.AppointmentHistory.Any(a => 
+                AppointmentHistory.Any(ah => 
+                    string.Equals(a, ah, StringComparison.OrdinalIgnoreCase)))).ToList();
 
-        if (AppointmentHistory != null && AppointmentHistory.Any())
-            patientsProfile = patientsProfile.Where(o => o.AppointmentHistory != null && o.AppointmentHistory.Any(a => AppointmentHistory.Contains(a))).ToList();
+    return patientsProfile.ConvertAll<PatientDto>(patients =>
+        new(
+            patients.Id.AsGuid(),
+            patients.name.toName(),
+            patients.medicalRecordNumber,
+            patients.DateOfBirth,
+            patients.Phone,
+            patients.Email,
+            patients.UserEmail,
+            patients.nameEmergency,
+            patients.phoneEmergency,
+            patients.emailEmergency,
+            patients.gender,
+            patients.Allergies,
+            patients.AppointmentHistory,
+            patients.Active
+        )
+    ).ToList();
+}
 
-
-
-            return patientsProfile.ConvertAll<PatientDto>(patients =>
-                new(patients.Id.AsGuid(), patients.name.toName(), patients.medicalRecordNumber, patients.DateOfBirth,patients.Phone,
-                 patients.Email, patients.UserEmail, patients.nameEmergency,
-                 patients.phoneEmergency, patients.emailEmergency, patients.gender, patients.Allergies, patients.AppointmentHistory, patients.Active )).ToList();
-        }
 
         public async Task<Patient> GetPatientByEmailAsync(string? emailClaim)
         {

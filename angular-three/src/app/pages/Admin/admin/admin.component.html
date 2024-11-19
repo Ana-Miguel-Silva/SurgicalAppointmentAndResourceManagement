@@ -228,15 +228,22 @@
       <div>
 
       <form  class="row g-3 needs-validation" novalidate="">
-          <div class="col-md-2"></div>
+          <div class="col-md-10"></div>
 
-          <div class="col-md-6">
+          <!--<div class="col-md-6">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
           </div>
+        </div>-->
+      
+        <div class="col-md-2">
+          <div class="input-group">
+          <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
         </div>
-          <div class="col-md-2">
+      </div>
+
+          <!--<div class="col-md-2">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
@@ -248,7 +255,7 @@
             </select>
 
           </div>
-        </div>
+        </div>-->
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -639,6 +646,66 @@
   </div>
 </div>
 
+<div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
+    <form>
+      
+      <h3 class="text-center">Filter Patient Profile</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilter()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterName" class="form-label">Name:</label>
+        <input type="text" id="filterName" [(ngModel)]="filter.name"  name="filterName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail" [(ngModel)]="filter.email"  name="filterEmail" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterMedicalRecordNumber" class="form-label">Medical Record Number:</label>
+        <input type="number" id="filterMedicalRecordNumber" [(ngModel)]="filter.medicalRecordNumber" name="filterMedicalRecordNumber" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterDate" class="form-label">Date of Birth:</label>
+        <input type="date" id="filterDate"  name="filterDate" [(ngModel)]="filter.dateOfBirth" class="form-control" />
+      </div>
+
+      
+      <div class="mb-3">
+        <label for="filterAllergies" class="form-label">Allergies:</label>
+        <input type="text" id="filterAllergies" [(ngModel)]="filter.allergies" name="filterAllergies" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterAppointmentHistory" class="form-label">Appointment History:</label>
+        <input type="date" id="filterAppointmentHistory"  name="filterAppointmentHistory" [(ngModel)]="filter.appointmentHistory" class="form-control" />
+      </div>
+
+      <!-- Lista de allergies e appointment history
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>-->
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterRequests()" class="btn btn-primary">Apply Filter</button>
+     </div>
+     
+    </form>
+  </div>
+</div>
 
 
 
