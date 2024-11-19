@@ -5,21 +5,17 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import { of, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
-import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
+import { ActivatedRoute } from '@angular/router'; 
 import { Component } from '@angular/core';
 
-// Mock Modal Component
-@Component({
-  selector: 'app-modal', // Adjust the selector accordingly
-  template: ''
-})
-class MockModalComponent {}
+
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let mockRouter: any;
   let mockAuthService: any;
+  
 
   beforeEach(async () => {
     mockRouter = {
@@ -35,11 +31,11 @@ describe('LoginComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, LoginComponent],
-      declarations: [], // Include your mock component here
+      declarations: [], 
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: AuthService, useValue: mockAuthService },
-        { provide: ActivatedRoute, useValue: {} } // Provide a mock for ActivatedRoute
+        { provide: ActivatedRoute, useValue: {} } 
       ]
     }).compileComponents();
 

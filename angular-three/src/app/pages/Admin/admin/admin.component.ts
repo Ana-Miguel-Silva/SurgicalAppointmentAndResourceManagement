@@ -7,6 +7,23 @@ import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
+interface RequiredStaff {
+  quantity: number;
+  specialization: string;
+  role: string;
+}
+
+interface EstimatedDuration {
+  patientPreparation: string;
+  surgery: string;
+  cleaning: string;
+}
+
+interface CreatingOperationTypeDto {
+  name: string;
+  requiredStaff: RequiredStaff[];
+  estimatedDuration: EstimatedDuration;
+}
 
 // or via CommonJS
 @Component({
@@ -18,13 +35,21 @@ import Swal from 'sweetalert2';
 })
 export class AdminComponent {
 
+  operationType: CreatingOperationTypeDto = {
+    name: '',
+    requiredStaff: [],
+    estimatedDuration: {
+      patientPreparation: '',
+      surgery: '',
+      cleaning: ''
+    }
+  };
+
   private staffUrl = "https://localhost:5001/api/Staff";
   private patientUrl = "https://localhost:5001/api/Patients";
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
     private http: HttpClient, private authService: AuthService, private router: Router) {
-
-
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -156,6 +181,14 @@ export class AdminComponent {
     return this.modalService.isModalOpen(modalId);
   }
 
+  addStaff() {
+    this.operationType.requiredStaff.push({ quantity: 1, specialization: '', role: '' });
+  }
+
+   // Remove a staff member from the requiredStaff array
+   removeStaff(index: number) {
+    this.operationType.requiredStaff.splice(index, 1);
+  }
 
   formatDateToISO(date: string | Date): string {
     if (!date) return ''; // Evita erros caso a data seja nula
@@ -163,6 +196,50 @@ export class AdminComponent {
     return parsedDate.toISOString().split('T')[0];
   }
 
+  onCreateOperationType() {
+    const token = this.authService.getToken();
+
+    // Check if the user is logged in
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    // Set up the headers with the token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    // Send a POST request to create the operation type
+    this.http.post('https://localhost:5001/api/OperationTypes', this.operationType, { headers })
+      .subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Operation Type created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          // Close the modal after success
+          this.modalService.closeModal('createOperationTypeModal');
+        },
+        error: (error) => {
+          console.error('Error creating operation type:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create Operation Type.',
+          });
+        }
+      });
+  }
 
   // Método para submeter o formulário
   onSubmit() {
@@ -413,7 +490,7 @@ export class AdminComponent {
       });
     }
 
-      
+
 
   }
 
@@ -436,7 +513,7 @@ export class AdminComponent {
     const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
     appointmentHistoryArray.clear();
     allergiesArray.clear();
-  
+
     // Popula o FormArray de appointmentHistory
     if (this.patientProfileUpdate.appointmentHistory) {
       this.patientProfileUpdate.appointmentHistory.forEach((appointment: string) => {
@@ -444,7 +521,7 @@ export class AdminComponent {
       });
       this.appointmentHistoryUpdate = [...this.patientProfileUpdate.appointmentHistory]; // Sincroniza com o array local
     }
-  
+
     // Popula o FormArray de allergies
     if (this.patientProfileUpdate.allergies) {
       this.patientProfileUpdate.allergies.forEach((allergy: string) => {
@@ -594,7 +671,7 @@ export class AdminComponent {
     }
   }
 
-  
+
 
 
   viewPatient(){
@@ -865,54 +942,54 @@ export class AdminComponent {
 
 
 
-  
+
   addDatePUpdate(event: Event) {
     const input = event.target as HTMLInputElement;
     const selectedDate = input.value;
-  
+
     if (selectedDate) {
       // Adiciona ao array local
       this.appointmentHistoryUpdate.push(selectedDate);
-  
+
       // Adiciona ao FormArray
       const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
       appointmentHistoryControl.push(new FormControl(selectedDate));
-  
+
       // Limpa o campo de entrada
       input.value = '';
     }
   }
-  
+
   removeDatePUpdate(index: number) {
     // Remove do array local
     this.appointmentHistoryUpdate.splice(index, 1);
-  
+
     // Remove do FormArray
     const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
     appointmentHistoryControl.removeAt(index);
   }
-  
+
   addTag(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value.trim();
-  
+
     if (event.key === 'Enter' && value) {
       event.preventDefault(); // Impede o envio do formulário
       this.tags.push(value); // Adiciona ao array local
-  
+
       // Adiciona ao FormArray
       const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
       allergiesControl.push(new FormControl(value));
-  
+
       // Limpa o campo de entrada
       input.value = '';
     }
   }
-  
+
   removeTag(index: number) {
     // Remove do array local
     this.tags.splice(index, 1);
-  
+
     // Remove do FormArray
     const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
     allergiesControl.removeAt(index);
