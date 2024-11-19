@@ -42,7 +42,12 @@ getOperationTypeById(id: string): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
 }
 
+InactivateAsync(id: string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
+  return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
+}
 
 
 

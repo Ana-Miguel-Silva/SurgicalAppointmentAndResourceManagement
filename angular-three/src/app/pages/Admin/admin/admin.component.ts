@@ -1316,6 +1316,66 @@ export class AdminComponent {
     }
   }
 
+  removeOperationType(){
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectOperationTypeId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona um Operation Type.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+
+    } else {
+      console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
+      this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          Swal.fire({
+            icon: "success",
+            title: "TIpo de operação desativado",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+        },
+        error: (error) => {
+          console.error('Error viewing operation type:', error);
+          this.errorMessage = 'Failed to view operation type profile!';
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível desativar o tipo de operação",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+        }
+      });
+    }
+  }
+
 
 
 }
