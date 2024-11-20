@@ -94,7 +94,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public async Task<Boolean> IsRoomAvailable(SurgeryRoomId id, DateTime date, int duration)
+        public async Task<bool> IsRoomAvailable(SurgeryRoomId id, DateTime date, int duration)
         {
             var surgeryRoom = await this._repo.GetByIdAsync(id);
 
