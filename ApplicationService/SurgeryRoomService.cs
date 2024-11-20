@@ -1,5 +1,6 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Domain.Appointments;
 
 
 namespace DDDSample1.ApplicationService.SurgeryRooms
@@ -8,11 +9,13 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISurgeryRoomRepository _repo;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo)
+        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo, IAppointmentRepository appointmentRepository)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            this._appointmentRepository = appointmentRepository;
         }
 
         public async Task<List<SurgeryRoomDto>> GetAllAsync()
@@ -39,7 +42,15 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
         {
             CheckStatus(dto.Status);
 
-            var surgeryRoom = new SurgeryRoom(dto.RoomNumber, dto.Type, dto.Capacity, dto.AssignedEquipment, dto.Status, dto.MaintenanceSlots);
+            List<Slot> converted = [];
+            foreach (var slot in dto.MaintenanceSlots)
+            {
+                var convertedSLot = new Slot(slot.Start, slot.End);
+                converted.Add(convertedSLot);
+            }
+
+            var surgeryRoom = new SurgeryRoom(dto.RoomNumber, dto.Type, dto.Capacity, dto.AssignedEquipment, dto.Status, converted);
+
 
             await this._repo.AddAsync(surgeryRoom);
 
@@ -81,6 +92,27 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
         {
             if (!RoomStatus.IsValid(status.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Status.");
+        }
+
+        public async Task<Boolean> IsRoomAvailable(SurgeryRoomId id, DateTime date, int duration)
+        {
+            var surgeryRoom = await this._repo.GetByIdAsync(id);
+
+            if (surgeryRoom == null)
+                return false;
+
+            var appointments = await this._appointmentRepository.GetByRoomAsync(id.Value);
+
+            foreach (var appointment in appointments)
+            {   
+                if (appointment.Date.StartTime.Day == date.Date.Day || appointment.Date.EndTime.Day == date.Date.Day)
+                {
+                    if (appointment.Date.StartTime.Hour <= date.Hour && appointment.Date.EndTime.Hour > date.Hour)
+                        return false;
+                }
+            }
+
+            return true;
         }
 
     }

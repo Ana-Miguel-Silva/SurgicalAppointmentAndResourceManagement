@@ -10,8 +10,6 @@ namespace DDDSample1.Domain.Appointments
         public OperationRequestId OperationRequestId { get; private set; }
         public Slot Date { get; private set; }
         public string AppStatus { get; private set; }
-        
-
         public List<AppointmentSlot> AppointmentSlot { get; private set; }
 
         private Appointment() { }

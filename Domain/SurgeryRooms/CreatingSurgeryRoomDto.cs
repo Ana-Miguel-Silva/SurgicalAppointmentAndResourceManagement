@@ -13,9 +13,9 @@ namespace DDDSample1.Domain.SurgeryRooms;
 
         public string Status { get;  set; }
 
-        public List<Slot> MaintenanceSlots { get;  set; }
+        public List<DateDTO> MaintenanceSlots { get;  set; }
 
-        public CreatingSurgeryRoomDto(int number, string type, int capacity, List<string> assignedEquipment, List<Slot> maintenanceSlots)
+        public CreatingSurgeryRoomDto(int number, string type, int capacity, List<string> assignedEquipment, List<DateDTO> maintenanceSlots)
         {
             this.RoomNumber = number;
             this.Type = type;
