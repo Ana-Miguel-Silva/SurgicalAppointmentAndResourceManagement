@@ -73,9 +73,9 @@ export class AdminComponent {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       gender: ['', Validators.required],
-      emergencyContactName: ['', Validators.required],
-      emergencyContactEmail: ['', [Validators.required, Validators.email]],
-      emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      nameEmergency: ['', Validators.required],
+      emailEmergency: ['', [Validators.required, Validators.email]],
+      phoneEmergency: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       agree: [false, Validators.requiredTrue],
       appointmentHistory: this.fb.array([]),
       allergies: this.fb.array([])
@@ -324,6 +324,7 @@ export class AdminComponent {
             });
             this.myForm.reset(); // Redefinir o formulário após o envio
             this.appointmentHistory = []; // Limpar o array de tags após o envio
+            this.getAllpatientsProfiles();
           },
           error => {
             console.error("Erro ao submeter o formulário", error);
@@ -544,9 +545,9 @@ export class AdminComponent {
         phone: this.patientProfileUpdate.phone.number,
         userEmail: this.patientProfileUpdate.userEmail.fullEmail,
         gender: this.patientProfileUpdate.gender,
-        emergencyContactName: this.patientProfileUpdate.nameEmergency,
-        emergencyContactEmail: this.patientProfileUpdate.emailEmergency.fullEmail,
-        emergencyContactPhone: this.patientProfileUpdate.phoneEmergency.number,
+        nameEmergency: this.patientProfileUpdate.nameEmergency,
+        emailEmergency: this.patientProfileUpdate.emailEmergency.fullEmail,
+        phoneEmergency: this.patientProfileUpdate.phoneEmergency.number,
 
 
     });

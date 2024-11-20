@@ -733,9 +733,20 @@ namespace DDDSample1.Controllers
 
                         await _service.DeactiveAsync(patientProfile.Id);
 
+
+                        try{
+
+
                         var patientUser = await _userService.GeBbyEmailAsync(patientProfile.UserEmail.FullEmail);
 
+
                         await _userService.InactivateAsync(new UserId(patientUser.Id));
+
+                        }
+                        catch (Exception e){
+                            Console.Write(e);
+                        }
+
 
                         if (patientProfile != null){
 
@@ -746,11 +757,6 @@ namespace DDDSample1.Controllers
 
 
                             await _logService.LogAsync("Patient", "Deactivate", patientProfile.Id.AsGuid() , JsonConvert.SerializeObject(patientProfile), userEmail);
-
-                            if (patientProfile == null)
-                            {
-                                return NotFound();
-                            }
 
                             return Ok(patientProfile);
                         }

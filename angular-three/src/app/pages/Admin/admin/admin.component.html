@@ -15,6 +15,7 @@
         <h1 class="h1 title glow" style="padding: 1cm; color:white"> Admin </h1>
         <!--TODO: Alterar o formato de como esta a organização/divisão das divs par aficar de forma mas dinamica-->
         <div class="row g-3">
+
           <div class="container col-md-4">
             <div class="container-lg  selectionDiv" (click)="openModal('registerPatientModal')">
               <div class="form-floating mb-3">
@@ -55,7 +56,6 @@
                 </div>
               </div>
             </div>
-        </div>
 
         <div class="container col-md-4">
           <div class="container-lg selectionDiv" (click)="openModal('listOperationTypeModal')">
@@ -64,6 +64,9 @@
             </div>
           </div>
         </div>
+
+      </div>
+
 
 </div>
 
@@ -245,7 +248,7 @@
             <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
           </div>
         </div>-->
-      
+
         <div class="col-md-2">
           <div class="input-group">
           <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
@@ -532,14 +535,14 @@
               <div class="col-md-4">
                 <div class="input-group has-validation">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge"></i></span>
-                  <input type="text" class="form-control" value="{{ patientProfileUpdate.nameEmergency }}" formControlName="emergencyContactName">
+                  <input type="text" class="form-control" value="{{ patientProfileUpdate.nameEmergency }}" formControlName="nameEmergency">
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="input-group has-validation">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
-                  <input type="text" class="form-control" value="{{ patientProfileUpdate.emailEmergency.fullEmail }}" formControlName="emergencyContactEmail">
+                  <input type="text" class="form-control" value="{{ patientProfileUpdate.emailEmergency.fullEmail }}" formControlName="emailEmergency">
                 </div>
               </div>
 
@@ -548,7 +551,7 @@
               <div class="col-md-4">
                 <div class="input-group has-validation">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-heart-pulse"></i></span>
-                  <input type="text" class="form-control" value="{{ patientProfileUpdate.phoneEmergency.number }}" formControlName="emergencyContactPhone">
+                  <input type="text" class="form-control" value="{{ patientProfileUpdate.phoneEmergency.number }}" formControlName="phoneEmergency">
                 </div>
               </div>
 
@@ -660,7 +663,7 @@
 
     <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
     <form>
-      
+
       <h3 class="text-center">Filter Patient Profile</h3>
       <div class="input-group" style="padding:1cm">
         <span class="input-group-text btn-outline-info" (click)="cleanFilter()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
@@ -686,7 +689,7 @@
         <input type="date" id="filterDate"  name="filterDate" [(ngModel)]="filter.dateOfBirth" class="form-control" />
       </div>
 
-      
+
       <div class="mb-3">
         <label for="filterAllergies" class="form-label">Allergies:</label>
         <input type="text" id="filterAllergies" [(ngModel)]="filter.allergies" name="filterAllergies" class="form-control" />
@@ -711,7 +714,7 @@
         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
       <button type="submit" (click)="onFilterRequests()" class="btn btn-primary">Apply Filter</button>
      </div>
-     
+
     </form>
   </div>
 </div>
@@ -1164,7 +1167,7 @@
                             Please select a valid specialization.
                           </div>
                         </div>
-                      </div>                      
+                      </div>
                       <!-- Role -->
                       <div class="col-md-3">
                         <label for="role_{{i}}" class="form-label">Role</label>
@@ -1247,12 +1250,12 @@
               <table class="table table-striped table-hover table-over">
                 <thead>
                   <tr>
-                    <th>#</th>                    
+                    <th>#</th>
                     <th>Name</th>
                     <th>Prepatation Duration</th>
                     <th>Surgery Duration</th>
-                    <th>Cleaning Duration</th> 
-                    <th>Active</th>                  
+                    <th>Cleaning Duration</th>
+                    <th>Active</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1357,8 +1360,8 @@
             </table>
           </div>
 
-    
-         
+
+
           <div class="col-md-2"></div>
 
         </div>
