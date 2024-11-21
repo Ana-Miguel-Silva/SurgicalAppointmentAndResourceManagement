@@ -191,7 +191,6 @@ agenda_operation_room(or1,20241028,[]).
 
 % Melhor solução
 obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
-
     (obtain_better_sol1(Room,Day);true),
 
     retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),
@@ -199,7 +198,6 @@ obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
     debug(http, 'AgOpRoomBetter: ~w', [AgOpRoomBetter]),
     debug(http, 'LAgDoctorsBetter: ~w', [LAgDoctorsBetter]),
     debug(http, 'TFinOp: ~w', [TFinOp]).
-
 
 obtain_better_sol1(Room,Day):-
 
