@@ -125,6 +125,7 @@ onCreateRequest() {
     .subscribe({
       next: () => {
         this.getAllOperationRequests();
+        this.cleanRegister();
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -281,5 +282,13 @@ onCreateRequest() {
 
   isModalOpen(modalId: string): boolean {
     return this.modalService.isModalOpen(modalId);
+  }
+  cleanRegister() {
+    this.operationRequest = {
+      patientEmail: '',
+      operationTypeName: '',
+      deadline: '',
+      priority: ''
+    };
   }
 }
