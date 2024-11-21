@@ -226,3 +226,24 @@ table.table-striped.table-hover tbody tr:hover {
 .action-buttons button:hover {
   background-color: #7fb7f3;
 }
+
+.btn-right {
+  background: linear-gradient(0deg, rgb(222, 70, 70) 0%, rgba(255,80,80,1) 50%, rgb(212, 134, 134) 100%);
+  color: white;
+  border: 2px solid #e40d0d;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 20px; /* Tamanho menor */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: absolute;
+  right: 200px; /* Posicionamento no canto direito */
+  top: 60px; /* Ajuste da posição no eixo vertical */
+}
+
+.btn-right:hover {
+  background: rgb(255,0,0);
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.411) 0%, rgba(255,80,80,1) 50%, rgba(255,0,0,1) 100%);
+  transform: scale(1.1);
+  transition: transform 0.3s, background-color 0.3s;
+}

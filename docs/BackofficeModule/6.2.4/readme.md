@@ -84,17 +84,17 @@ backoffice system with appropriate permissions."
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+**Login User Level 1**
 
-![Register User](sequence-diagram-1.svg "Register User")
+![Login User](sequence-diagram-1.svg "Login User")
 
-**Register User Level 2**
+**Login User Level 2**
 
-![Register User](sequence-diagram-2.svg "Register User")
+![Login User](sequence-diagram-2.svg "Login User")
 
-**Register User Level 3**
+**Login User Level 3**
 
-![Register User](sequence-diagram-3.svg "Register User")
+![Login User](sequence-diagram-3.svg "Login User")
 
 
 

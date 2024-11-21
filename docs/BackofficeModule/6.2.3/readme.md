@@ -93,17 +93,17 @@ backoffice system with appropriate permissions."
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+**Deactivate Patient Level 1**
 
-![Register User](sequence-diagram-1.svg "Register User")
+![Deactivate Patient](sequence-diagram-1.svg "Deactivate Patient")
 
-**Register User Level 2**
+**Deactivate Patient Level 2**
 
-![Register User](sequence-diagram-2.svg "Register User")
+![Deactivate Patient](sequence-diagram-2.svg "Deactivate Patient")
 
-**Register User Level 3**
+**Deactivate Patient Level 3**
 
-![Register User](sequence-diagram-3.svg "Register User")
+![Deactivate Patient](sequence-diagram-3.svg "Deactivate Patient")
 
 
 

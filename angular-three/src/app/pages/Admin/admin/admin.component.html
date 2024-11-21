@@ -211,7 +211,7 @@
               </div>
             </div>
 
-            <div class="col-12">
+            <!--<div class="col-12">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="invalidCheck" formControlName="agree" required="">
                 <label class="form-check-label" for="invalidCheck">
@@ -221,7 +221,7 @@
                   You must agree before submitting.
                 </div>
               </div>
-            </div>
+            </div>!-->
 
             <div class="col-12">
               <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid">Submit form</button>
@@ -640,7 +640,7 @@
 
 
 
-          <div class="col-12">
+          <!--<div class="col-12">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="invalidCheck" formControlName="agree" required="">
               <label class="form-check-label" for="invalidCheck">
@@ -650,7 +650,7 @@
                 You must agree before submitting.
               </div>
             </div>
-          </div>
+          </div>!-->
 
           <button class="btn btn-primary" (click)="onUpdatePatient()">Submit form</button>
         </div>
@@ -1415,7 +1415,9 @@
   </div>
 </div>
 
-
+<div class="container-xxl">
+  <button class="btn-right" (click)="logout()">Logout</button>
+</div>
 
 
 <div [ngStyle]="{'display': isModalOpen('UpdateOperationTypeModal') ? 'block' : 'none'}" id="UpdateOperationTypeModal" class="modal" >

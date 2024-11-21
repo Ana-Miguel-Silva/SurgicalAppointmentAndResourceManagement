@@ -1,4 +1,4 @@
-# US 6.1.1
+# US 6.2\.1
 
 
 ## 1. Context
@@ -86,27 +86,27 @@ to control their data access.
 
 **Controller:** UserController
 
-**UI:** 
+**UI:** user.component
 
 **Repository:**	UserRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** UserService, AuthorizationService, patient.service
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+**Register Patient Level 1**
 
-![Register User](sequence-diagram-1.svg "Register User")
+![Register Patient](sequence-diagram-1.svg "Register Patient")
 
-**Register User Level 2**
+**Register Patient Level 2**
 
-![Register User](sequence-diagram-2.svg "Register User")
+![Register Patient](sequence-diagram-2.svg "Register Patient")
 
-**Register User Level 3**
+**Register Patient Level 3**
 
-![Register User](sequence-diagram-3.svg "Register User")
+![Register Patient](sequence-diagram-3.svg "Register Patient")
 
 
 

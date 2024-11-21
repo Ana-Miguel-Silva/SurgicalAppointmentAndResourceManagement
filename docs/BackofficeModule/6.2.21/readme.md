@@ -73,27 +73,27 @@ These functionalities are essential to allow administrators to view operation ty
 
 **Controller:** UserController
 
-**UI:** 
+**UI:** admin
 
 **Repository:**	UserRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** UserService, AuthorizationService, adminService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+**List OperationTypes Level 1**
 
-![Register User](sequence-diagram-1.svg "Register User")
+![List OperationTypes](sequence-diagram-1.svg "List OperationTypes")
 
-**Register User Level 2**
+**List OperationTypes Level 2**
 
-![Register User](sequence-diagram-2.svg "Register User")
+![List OperationTypes](sequence-diagram-2.svg "List OperationTypes")
 
-**Register User Level 3**
+**List OperationTypes Level 3**
 
-![Register User](sequence-diagram-3.svg "Register User")
+![List OperationTypes](sequence-diagram-3.svg "List OperationTypes")
 
 
 

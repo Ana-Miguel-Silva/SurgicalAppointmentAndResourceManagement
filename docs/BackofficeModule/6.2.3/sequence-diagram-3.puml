@@ -1,56 +1,50 @@
-@startuml 5.1.1
+@startuml 5.1.3
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-participant "Controller" as CTRL <<component>>
+participant "WebAplication" as FE <<component>>
 participant "Service" as SERV <<component>>
-participant "Domain" as DOM <<component>>
-participant "Repository" as REPO <<component>>
-participant "MySql DB" as BDD <<component>>
+
+-> FE : confirmation to delete account(email)
+activate FE
 
 
-
- -> CTRL : Create Post Request
-activate CTRL
-CTRL -> SERV: Call AddAsync method
-
+FE -> SERV: deactivatePatient(email)
 activate SERV
-SERV -> DOM: create User through CreatingUserDto
 
-activate DOM
-DOM --> SERV : UserDTO
-deactivate DOM
+ SERV -> : deleteByEmail(email)
 
-SERV -> REPO : Save new User
-activate REPO
+ SERV <-- : message
 
-REPO -> BDD : Save Entity
-activate BDD
 
-BDD --> REPO : Confirm Save
-deactivate BDD
+SERV --> FE : message
+deactivate
 
-REPO --> SERV : Return Success
-deactivate REPO
+<-- FE : message
+deactivate FE
 
-SERV -> SERV : Call SendPasswordSetupEmail
+-> FE : confirmation
+deactivate SERV
+activate FE
 
-SERV -> DOM : Create UserDTO
-activate DOM
 
-DOM --> SERV : Return UserDTO
-deactivate DOM
-SERV --> CTRL : Return UserDTO
 
+FE -> SERV : confirmDeactivateAction(this.actionId)
+activate SERV
+ SERV -> : DeleteConfirmed(email)
+
+ SERV <-- : sucess
+
+
+ SERV --> FE : sucess
 
 deactivate SERV
-<-- CTRL : success
+<-- FE  : success and data
 
-deactivate CTRL
-
+deactivate FE
 
 
 

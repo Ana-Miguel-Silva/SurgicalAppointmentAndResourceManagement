@@ -125,6 +125,7 @@ onCreateRequest() {
     .subscribe({
       next: () => {
         this.getAllOperationRequests();
+        this.cleanRegister();
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -265,6 +266,12 @@ onCreateRequest() {
       });
   }
 
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); 
+  }
+
   openModal(modalId: string): void {
     this.modalService.openModal(modalId);
   }
@@ -275,5 +282,13 @@ onCreateRequest() {
 
   isModalOpen(modalId: string): boolean {
     return this.modalService.isModalOpen(modalId);
+  }
+  cleanRegister() {
+    this.operationRequest = {
+      patientEmail: '',
+      operationTypeName: '',
+      deadline: '',
+      priority: ''
+    };
   }
 }
