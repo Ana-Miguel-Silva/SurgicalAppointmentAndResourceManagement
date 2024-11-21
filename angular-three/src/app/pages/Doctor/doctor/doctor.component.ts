@@ -265,6 +265,12 @@ onCreateRequest() {
       });
   }
 
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); 
+  }
+
   openModal(modalId: string): void {
     this.modalService.openModal(modalId);
   }

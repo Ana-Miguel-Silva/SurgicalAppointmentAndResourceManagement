@@ -64,7 +64,7 @@ export class AdminComponent {
       emergencyContactName: ['', Validators.required],
       emergencyContactEmail: ['', [Validators.required, Validators.email]],
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-      agree: [false, Validators.requiredTrue]
+      //agree: [false, Validators.requiredTrue]
     });
 
     this.patientUpdateForm = this.fb.group({
@@ -76,7 +76,7 @@ export class AdminComponent {
       nameEmergency: ['', Validators.required],
       emailEmergency: ['', [Validators.required, Validators.email]],
       phoneEmergency: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-      agree: [false, Validators.requiredTrue],
+      //agree: [false, Validators.requiredTrue],
       appointmentHistory: this.fb.array([]),
       allergies: this.fb.array([])
     });
@@ -1377,6 +1377,10 @@ export class AdminComponent {
     }
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); 
+  }
 
 
 }
