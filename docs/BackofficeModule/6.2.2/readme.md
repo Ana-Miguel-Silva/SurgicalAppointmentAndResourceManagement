@@ -82,27 +82,27 @@ backoffice system with appropriate permissions."
 
 **Controller:** UserController
 
-**UI:** 
+**UI:** patient
 
 **Repository:**	UserRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** UserService, AuthorizationService, patientService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+**Update Patient Level 1**
 
-![Register User](sequence-diagram-1.svg "Register User")
+![Update Patient](sequence-diagram-1.svg "Update Patient")
 
-**Register User Level 2**
+**Update Patient Level 2**
 
-![Register User](sequence-diagram-2.svg "Register User")
+![Update Patient](sequence-diagram-2.svg "Update Patient")
 
-**Register User Level 3**
+**Update Patient Level 3**
 
-![Register User](sequence-diagram-3.svg "Register User")
+![Update Patient](sequence-diagram-3.svg "Update Patient")
 
 
 

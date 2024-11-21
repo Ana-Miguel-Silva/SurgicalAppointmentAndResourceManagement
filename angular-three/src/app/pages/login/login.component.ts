@@ -31,8 +31,7 @@ export class LoginComponent {
 
   onLogin(){
 
-    //this.http.post<string>("https://localhost:5001/api/Users/login", this.loginObj, { responseType: 'text' as 'json' })
-    this.loginService.postLogin(this.loginObj).subscribe({
+      this.loginService.postLogin(this.loginObj).subscribe({
       next: token => {
         console.log(token);
         //alert('Login Success!');

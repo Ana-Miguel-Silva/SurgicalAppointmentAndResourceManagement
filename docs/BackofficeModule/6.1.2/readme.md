@@ -10,7 +10,7 @@ This is the first time this task has been assigned for development.
 
 **US 6.1.2** As user I want the application menu to adjust according to my role so that it only presents me the options I may access
 
-**Acceptance Criteria:** 
+**Acceptance Criteria:**
 
 - Users can only access funtionalites based on their role.
 
@@ -26,15 +26,15 @@ This is the first time this task has been assigned for development.
 **Dependencies/References:**
 
 * US 6.1.1: "As user, I want to have an integrated UI for all modules of the system so that I
-don’t need to switch between application urls"
+  don’t need to switch between application urls"
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * Username
-    * Password
+  * Username
+  * Password
 
 
 
@@ -49,9 +49,9 @@ don’t need to switch between application urls"
 >**Answer:** podem escolher livremente a implementação do menu e a sua estrutura
 
 
-> **Question:** 
+> **Question:**
 >
->**Answer:** 
+>**Answer:**
 
 
 [//]: # (### 3.1. Domain Model)
@@ -65,7 +65,7 @@ don’t need to switch between application urls"
 
 **Controller:** UserController
 
-**UI:** 
+**UI:**
 
 **Repository:**	UserRepository
 

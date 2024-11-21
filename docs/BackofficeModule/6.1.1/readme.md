@@ -1,14 +1,14 @@
-# US 6.1.1
+# US 6.1.2
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow users to have an integrated UI for all the funtionalities of the sistem. 
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow users to have an integrated UI for all the funtionalities of the sistem.
 This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 6.1.1** As user, I want to have an integrated UI for all modules of the system so that I
+**US 6.1.2** As user, I want to have an integrated UI for all modules of the system so that I
 don’t need to switch between application urls
 
 [//]: # ()
@@ -86,7 +86,7 @@ don’t need to switch between application urls
 
 **Controller:** UserController
 
-**UI:** 
+**UI:**
 
 **Repository:**	UserRepository
 
