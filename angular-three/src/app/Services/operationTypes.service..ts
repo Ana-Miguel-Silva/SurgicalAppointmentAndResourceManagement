@@ -49,6 +49,17 @@ InactivateAsync(id: string): Observable<any> {
   return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
 }
 
+UpdateOperationType(selectOperationTypeId: string, updatedData: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch(
+    `${this.apiUrl}/${selectOperationTypeId}`,
+    updatedData,
+    { headers}
+  );
+}
+
 
 
 }

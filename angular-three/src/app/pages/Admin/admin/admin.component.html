@@ -741,6 +741,10 @@
 
 
 
+
+
+
+
 <div  [ngStyle]="{'display': isModalOpen('listStaffModal') ? 'block' : 'none'}" id="listStaffModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('listStaffModal')" class="close">&times;</span>
@@ -1120,6 +1124,46 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Create Operation Type Modal -->
 <div [ngStyle]="{'display': isModalOpen('createOperationTypeModal') ? 'block' : 'none'}" id="createOperationTypeModal" class="modal">
   <div class="modal-content">
@@ -1283,7 +1327,7 @@
         <div class="col-md-9"></div>
         <div class="col-md-3">
           <button class="fs-5 btn btn-outline-info" (click)="viewOperationTypes()">View <i class="bi bi-info-square-fill"></i></button>
-          <button class="fs-5 btn btn-outline-warning" (click)="editPatient()">Edit <i class="bi bi-pencil-square"></i></button>
+          <button class="fs-5 btn btn-outline-warning" (click)="editOperationType()">Edit <i class="bi bi-pencil-square"></i></button>
           <button class="fs-5 btn btn-outline-danger" (click)="removeOperationType()">Deactivate <i class="bi bi-archive-fill"></i></button>
         </div>
         </form>
@@ -1291,6 +1335,7 @@
 
   </div>
 </div>
+
 
 <div [ngStyle]="{'display': isModalOpen('viewOperationTypeModal') ? 'block' : 'none'}" id="viewOperationTypeModal"  class="modal">
   <div class="modal-content">
@@ -1369,6 +1414,108 @@
 
   </div>
 </div>
+
+
+
+
+<div [ngStyle]="{'display': isModalOpen('UpdateOperationTypeModal') ? 'block' : 'none'}" id="UpdateOperationTypeModal" class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('UpdateOperationTypeModal')" class="close">&times;</span>
+
+        <form [formGroup]="operationTypeUpdateForm" class="row g-3 needs-validation" novalidate="">
+          
+          <div *ngIf="operationTypeUpdate">
+            <div  class="row g-3 needs-validation">
+              <div class="col-md-12"></div>
+                <div class="col-md-3">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+                      <input type="text" class="form-control" disabled value="{{ operationTypeUpdate.name}}"  formControlName="name">
+                  </div>
+                </div>
+                <!--TODO: Meter os forms direito, para estarem no formato de leitora no .ts-->
+      
+                <div class="col-md-6"></div>
+      
+                <div class="col-md-4">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+                    <span class="input-group-text" id="add">Preparation Duration</span>
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.patientPreparation)" >
+                  </div>
+                </div>
+      
+                <div class="col-md-4">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+                    <span class="input-group-text" id="add">Surgery Duration</span>
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.surgery)">
+                  </div>
+                </div>
+      
+      
+                <div class="col-md-4">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+                    <span class="input-group-text" id="add">Cleaning Duration</span>
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.cleaning)"   >
+                  </div>
+                </div>
+      
+               <div class="col-md-2"></div>
+      
+                <div class="col-md-8">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+                    <span class="input-group-text" id="add">Required Staff</span>
+                  </div>
+                  <table class="table table-striped table-hover table-over">
+                    <thead>
+                      <tr>
+                        <tr>
+                          <th>#</th>
+                          <th>Quantity</th>
+                          <th>Role</th>
+                          <th>Specialization</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let request of operationTypeUpdate.requiredStaff; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ request.quantity }}</td>
+                          <td>{{ request.role }}</td>
+                          <td>{{ request.specialization }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+      
+      
+      
+                <div class="col-md-2"></div>
+      
+              </div>
+
+
+
+          <!--<div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="invalidCheck" formControlName="agree" required="">
+              <label class="form-check-label" for="invalidCheck">
+                Agree to terms and conditions
+              </label>
+              <div class="invalid-feedback">
+                You must agree before submitting.
+              </div>
+            </div>
+          </div>-->
+
+          <button class="btn btn-primary" (click)="onUpdateOperationType()">Submit form</button>
+        </div>
+      </form>
+  </div>
+</div>
+
 
 
 

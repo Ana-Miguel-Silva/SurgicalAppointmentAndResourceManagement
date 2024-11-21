@@ -53,19 +53,20 @@ namespace DDDSample1.ApplicationService.OperationTypes
             return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
 
-        public async Task<OperationTypeDto> UpdateAsync(OperationTypeDto dto)
+        public async Task<OperationTypeDto> UpdateAsync(Guid id, UpdateOperationTypeDto dto)
         {
-            CheckName(dto.Name);
-            CheckEstimatedTime(dto.EstimatedDuration);
-            CheckRequiredStaff(dto.RequiredStaff);
 
-            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto.Id));
+            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(id));
 
             if (operationType == null)
                 return null;
-
+            if (dto.Name != null && !string.IsNullOrWhiteSpace(dto.Name))
             operationType.ChangeName(dto.Name);
+
+            if (dto.RequiredStaff != null && dto.RequiredStaff.Any())
             operationType.ChangeRequiredStaff(dto.RequiredStaff);
+
+            if (dto.EstimatedDuration != null)
             operationType.ChangeEstimatedDuration(dto.EstimatedDuration);
 
             await this._unitOfWork.CommitAsync();

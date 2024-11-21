@@ -79,37 +79,26 @@ namespace DDDSample1.Controllers
 
         // PUT: api/OperationTypes/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OperationTypeDto>> Update(Guid id, OperationTypeDto dto)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<OperationTypeDto>> Update(Guid id, UpdateOperationTypeDto dto)
         {
            
-                try
+                
+            try
+            {
+                var operationType = await _service.UpdateAsync(id,dto);
+
+                if (operationType == null)
                 {
-                    if (id != dto.Id)
-                    {
-                        return BadRequest();
-                    }
-
-                    try
-                    {
-                        var operationType = await _service.UpdateAsync(dto);
-
-                        if (operationType == null)
-                        {
-                            return NotFound();
-                        }
-                        return Ok(operationType);
-                    }
-                    catch (BusinessRuleValidationException ex)
-                    {
-                        return BadRequest(new { Message = ex.Message });
-                    }
-
+                    return NotFound();
                 }
-                catch (BusinessRuleValidationException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
+                return Ok(operationType);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+
             
         }
 

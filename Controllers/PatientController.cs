@@ -576,7 +576,7 @@ namespace DDDSample1.Controllers
         // DELETE: api/User/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}")]
 
-        [HttpDelete("{id}/hard")]
+        [HttpDelete("{id}/hard")]   
 
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {

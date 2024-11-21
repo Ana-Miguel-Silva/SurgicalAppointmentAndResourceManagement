@@ -81,6 +81,17 @@ export class AdminComponent {
       allergies: this.fb.array([])
     });
 
+    this.operationTypeUpdateForm = this.fb.group({
+      name: ['', Validators.required],
+      estimatedDuration: this.fb.group({
+        cleaning: ['', Validators.required],
+        patientPreparation: ['', Validators.required],
+        surgery: ['', Validators.required],
+      }),
+      agree: [false, Validators.requiredTrue],
+      requiredStaff: this.fb.array([]),
+    });
+
 
 
     this.staffForm = this.fb.group({});
@@ -145,6 +156,7 @@ export class AdminComponent {
 
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
+  operationTypeUpdateForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -165,6 +177,7 @@ export class AdminComponent {
   staffProfileSingle: any = null;
   patientProfileSingle: any = null;
   patientProfileUpdate: any = null;
+  operationTypeUpdate: any = null;
   availabilitySlots: any[] = [];
   availabilitySlots2: any[] = [];
   availabilitySlots3: any[] = [];
@@ -270,6 +283,7 @@ export class AdminComponent {
           });
 
           // Close the modal after success
+          this.getAllOperationTypes();
           this.modalService.closeModal('createOperationTypeModal');
         },
         error: (error) => {
@@ -309,7 +323,6 @@ export class AdminComponent {
       const formData = this.myForm.value;
       const apiUrl = `${this.patientUrl}/register`
 
-      //TODO: Adicionar opção de historico de appointments
       // Enviar os dados diretamente com HttpClient
       this.http.post(apiUrl, formData, { headers })
         .subscribe(
@@ -1317,6 +1330,174 @@ export class AdminComponent {
     }
   }
 
+  populateOperationTUpdateForm(): void {
+    this.operationTypeUpdateForm.patchValue({
+        name: this.operationTypeUpdate.name,
+        estimatedDuration: {
+          patientPreparation: this.operationTypeUpdate.estimatedDuration.patientPreparation,
+          surgery: this.operationTypeUpdate.estimatedDuration.surgery,
+          cleaning: this.operationTypeUpdate.estimatedDuration.cleaning
+        }
+
+    });
+
+    const requiredStaffControl = this.operationTypeUpdateForm.get('requiredStaff') as FormArray;
+    requiredStaffControl.clear(); // Limpar quaisquer dados antigos no FormArray
+  
+    this.operationTypeUpdate.requiredStaff.forEach((staff: any) => {
+      requiredStaffControl.push(this.fb.group({
+        quantity: [staff.quantity, Validators.required],
+        specialization: [staff.specialization, Validators.required],
+        role: [staff.role, Validators.required],
+      }));
+    });
+
+    //TODO: Fazer o array dos required staff atualizar automaticamente e ir buscar o codigo de adicionar o staff
+
+  }
+
+
+  editOperationType(){
+
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectOperationTypeId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Por favor seleciona uma Operation Type.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    }else {
+      console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
+      this.operationTypesService.getOperationTypeById(this.selectOperationTypeId)
+      .subscribe({
+        next: (response) => {
+
+          console.log('Operation to edit',response);
+          this.operationTypeUpdate = response;
+
+          this.populateOperationTUpdateForm();
+
+
+          const updateOpertTypeData = this.operationTypeUpdateForm.value;
+          console.log('Updated Operation Type Data:', updateOpertTypeData);
+          this.openModal('UpdateOperationTypeModal');
+        },
+        error: (error) => {
+          console.error('Error getting operation type:', error);
+          this.errorMessage = 'Failed to getting operation type!';
+        }
+      });
+    }
+
+
+
+  }
+
+
+  onUpdateOperationType() {
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    if (!this.selectOperationTypeId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum operation type selecionado.',
+      });
+      return;
+    }
+
+    this.populateOperationTUpdateForm();
+
+    console.log('before update:',this.operationTypeUpdateForm.value);
+    
+    this.operationTypesService.UpdateOperationType(this.selectOperationTypeId,this.operationTypeUpdateForm.value)
+      
+    .subscribe({
+        next: (response: any) => {
+          console.log(response)
+          //this.successMessage = 'Time Slots Added!';
+          //this.errorMessage = null;
+          Swal.fire({
+            icon: "success",
+            title: "Operation Type atualizado com sucesso!",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllOperationTypes(); // Refresh the list after creation
+          this.closeModal('UpdateOperationTypeModal');
+        },
+        error: (error) => {
+          console.error('Error editing Operation Type:', error);
+      
+          if (error.status === 400) {
+            // Erro 400 específico
+            Swal.fire({
+              icon: "error",
+              title: "Não podes editar um operation type desativado",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false,
+            });
+          } else {
+            // Outros erros
+            Swal.fire({
+              icon: "error",
+              title: "Não foi possível atualizar o operation type.",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false,
+            });
+          }
+      
+          // Ajustar mensagens de erro internas
+          /*this.errorMessage = error.status === 400
+            ? 'Erro de validação! Verifique os dados inseridos.'
+            : 'Ocorreu um erro ao atualizar o Operation Type!';
+          this.successMessage = null;*/
+        },
+      });
+  }
+
+
+
+
+
+
+
+
+
   removeOperationType(){
     const token = this.authService.getToken();
 
@@ -1354,7 +1535,7 @@ export class AdminComponent {
           console.log(response);
           Swal.fire({
             icon: "success",
-            title: "TIpo de operação desativado",
+            title: "Tipo de operação desativado",
             toast: true,
             position: "top-end",
             timer: 3000,
