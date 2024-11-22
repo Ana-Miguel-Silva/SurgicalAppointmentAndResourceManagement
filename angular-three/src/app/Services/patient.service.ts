@@ -8,10 +8,8 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root',
 })
-
-@Injectable()
 export class PatientService {
-  private apiUrl = 'https://localhost:5001/api';
+  private apiUrl = 'https://localhost:5001';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
