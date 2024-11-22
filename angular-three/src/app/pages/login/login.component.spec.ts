@@ -34,7 +34,7 @@ describe('LoginComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: AuthService, useValue: mockAuthService  },
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
-        { provide: LoginService, useValue: mockLoginService }, // Use the spy object here.
+        { provide: LoginService, useValue: mockLoginService }, 
       ],
     }).compileComponents();
 

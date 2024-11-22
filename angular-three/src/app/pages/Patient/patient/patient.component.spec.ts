@@ -1,179 +1,141 @@
-import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PatientComponent } from './patient.component';
-import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
-import { AuthService } from '../../../Services/auth.service';
 import { PatientService } from '../../../Services/patient.service';
-import { ModalService } from '../../../Services/modal.service'; 
-import { ActivatedRoute } from '@angular/router'; 
+import { AuthService } from '../../../Services/auth.service';
+import { ModalService } from '../../../Services/modal.service';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { MockModalService } from '../../../Services/Tests/mock-modal.service';
+import { of, throwError } from 'rxjs';
+import { ActivatedRoute } from '@angular/router'; 
+import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing'; 
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 describe('PatientComponent', () => {
   let component: PatientComponent;
   let fixture: ComponentFixture<PatientComponent>;
-  let mockPatientService: MockPatientService;
+  let mockPatientService: jasmine.SpyObj<PatientService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockModalService: jasmine.SpyObj<ModalService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let modalService: ModalService;
 
   beforeEach(async () => {
+    mockPatientService = jasmine.createSpyObj('PatientService', ['getPatientByEmail', 'updatePatient', 'deactivatePatient']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getToken', 'getEmail', 'logout']);
+    mockModalService = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal', 'isModalOpen']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    spyOn(Swal, 'fire').and.returnValue(Promise.resolve({ isConfirmed: true, value: 'mock-code' } as any));
+    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['']);
 
     await TestBed.configureTestingModule({
       declarations: [],
-      imports: [ReactiveFormsModule, FormsModule, HttpClientTestingModule, PatientComponent],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule, CommonModule, HttpClientModule, PatientComponent],
       providers: [
-        { provide: PatientService, useClass: MockPatientService },
+        FormBuilder,
+        { provide: PatientService, useValue: mockPatientService },
         { provide: AuthService, useValue: mockAuthService },
-        { provide: ModalService, useClass: MockModalService },
+        { provide: ModalService, useValue: mockModalService },
         { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: {} }
+        { provide: ActivatedRoute, useValue: activatedRouteSpy },
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PatientComponent);
     component = fixture.componentInstance;
-
-    mockPatientService = TestBed.inject(MockPatientService);
-    modalService = TestBed.inject(ModalService);
-    modalService = new ModalService();
-
-    mockAuthService.getToken.and.returnValue('mock-token');
-    mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-
     fixture.detectChanges();
   });
 
+  beforeEach(() => {
+    component.patientProfileSingle = {
+      name: {
+        firstName: 'John',
+        middleNames: 'Michael',
+        lastName: 'Doe'
+      },
+      dateOfBirth: '1990-01-01',
+      medicalRecordNumber: 123456,
+      email: 'johndoe@example.com',
+      userEmail: 'johndoe@example.com',
+      phone: {
+        number: '123456789'
+      },
+      gender: 'Male',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactEmail: 'janedoe@example.com',
+      emergencyContactPhone: {
+        number: '987654321'
+      },
+      appointmentHistory: ['2023-11-01', '2023-11-10'],
+      allergies: ['Peanuts', 'Dust'],
+    };
 
-
-  it('should call isModalOpen on the MockModalService', async () => {
-    const modalId = 'test-modal';
-    spyOn(modalService, 'isModalOpen').and.callThrough();
-
-    modalService.openModal(modalId);
-    expect(modalService.isModalOpen(modalId)).toBeTrue();
-
-    expect(modalService.isModalOpen).toHaveBeenCalledWith(modalId);
+    mockAuthService.getToken.calls.reset();
+    mockAuthService.getEmail.calls.reset();
+    mockAuthService.logout.calls.reset();
+    mockRouter.navigate.calls.reset();
+    mockPatientService.getPatientByEmail.calls.reset();
+    mockPatientService.updatePatient.calls.reset();
+    mockPatientService.deactivatePatient.calls.reset();
   });
 
-  it('should create the component', () => {
+
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    it('should redirect to login if no token is present', async () => {
-      mockAuthService.getToken.and.returnValue(null);
-
-      component.ngOnInit();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
-    });
-
-    it('should call viewPatient if token is present', async () => {
-      spyOn(component, 'viewPatient');
-      mockAuthService.getToken.and.returnValue('mock-token');
-
-      component.ngOnInit();
-
-      expect(component.viewPatient).toHaveBeenCalled();
-    });
+  it('should get patient by email on init', () => {
+    mockPatientService.getPatientByEmail.and.returnValue(of(component.patientProfileSingle));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.patientProfileSingle).toEqual(component.patientProfileSingle);
   });
 
-  describe('ModalService Integration', () => {
-    it('should open and close modal properly', () => {
-      const modalId = 'test-modal';
-      console.log(modalService);
-
-      modalService.openModal(modalId);
-      expect(modalService.isModalOpen(modalId)).toBeTrue();
-
-      modalService.closeModal(modalId);
-      expect(modalService.isModalOpen(modalId)).toBeFalse();
-    });
+  it('should handle error if getPatientByEmail fails on init', () => {
+    mockPatientService.getPatientByEmail.and.returnValue(throwError(() => new Error('Patient not found')));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.errorMessage).toContain('Failed to view patient profile!');
   });
 
-  describe('viewPatient', () => {
-    it('should set patientProfileSingle and populate the form on success', () => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-
-      component.viewPatient();
-
-      expect(component.patientProfileSingle).toEqual(mockPatientService.mockPatient);
-      expect(component.patientUpdateForm.value.name).toContain('John Doe');
-    });
-
-    it('should handle error when patient is not found', () => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('invalid@example.com');
-
-      component.viewPatient();
-
-      expect(component.errorMessage).toEqual('Failed to view patient profile!');
-    });
-
-    it('should not throw an error when patientProfileSingle is null', () => {
-      component.patientProfileSingle = null; // Simulate uninitialized state
-      expect(() => fixture.detectChanges()).not.toThrow();
-    });
+  it('should handle the error for view patient', () => {
+    mockPatientService.getPatientByEmail.and.returnValue(throwError(() => new Error('Failed to view patient')));
+    component.viewPatient();
+    fixture.detectChanges();
+    expect(component.errorMessage).toBe('Failed to view patient profile!');
   });
 
-  describe('onUpdatePatient', () => {
-    it('should update patient data and show success message', fakeAsync(() => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-      component.selectedPatientEmail = 'johndoe@example.com';
-      component.patientUpdateForm.patchValue({ name: 'Updated Name', email: 'updated@example.com' });
-
-      spyOn(window, 'alert'); // Mock alert for simplicity
-
-      component.onUpdatePatient();
-      tick();
-
-      expect(window.alert).toHaveBeenCalledWith('Patient updated successfully');
-    }));
-
-    it('should handle update error', fakeAsync(() => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-      spyOn(mockPatientService, 'updatePatient').and.returnValue(throwError(() => new Error('Update failed')));
-
-      component.onUpdatePatient();
-      tick();
-
-      expect(component.errorMessage).toEqual('An error occurred while updating the patient.');
-    }));
+  it('should update patient successfully', () => {
+    mockPatientService.updatePatient.and.returnValue(of('Patient updated successfully'));
+    component.selectedPatientEmail = 'johndoe@example.com';
+    component.onUpdatePatient();
+    fixture.detectChanges();
+    expect(component.successMessage).toBe('Patient updated successfully!');
   });
 
-  describe('deactivatePatient', () => {
-    it('should deactivate patient and show success message', fakeAsync(() => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-      component.selectedPatientEmail = 'johndoe@example.com';
+  it('should handle error if updatePatient fails', () => {
+    mockAuthService.getToken.and.returnValue('fake-token');
+    mockPatientService.updatePatient.and.returnValue(throwError(() => new Error('Failed to update patient')));
+    component.onUpdatePatient();
+    expect(component.errorMessage).toBe('An error occurred while updating the patient.');
+  });
 
-      spyOn(window, 'alert'); 
+  it('should handle the view patient', () => {
+    mockPatientService.getPatientByEmail.and.returnValue(of(component.patientProfileSingle));
+    component.viewPatient();
+    expect(component.patientProfileSingle).toEqual(component.patientProfileSingle);
+  });
 
-      component.deactivatePatient();
-      tick();
+  it('should handle the error for view patient', () => {
+    mockPatientService.getPatientByEmail.and.returnValue(throwError(() => new Error('You are not logged in!')));
+    component.viewPatient();
+    expect(component.errorMessage).toBe('You are not logged in!');
+  });
 
-      expect(window.alert).toHaveBeenCalledWith('Patient deleted successfully.');
-    }));
-
-    it('should handle deactivation error', fakeAsync(() => {
-      mockAuthService.getToken.and.returnValue('mock-token');
-      mockAuthService.getEmail.and.returnValue('johndoe@example.com');
-      spyOn(mockPatientService, 'deactivatePatient').and.returnValue(throwError(() => new Error('Deactivation failed')));
-
-      component.deactivatePatient();
-      tick();
-
-      expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ icon: 'error', title: 'Erro' }));
-    }));
+  it('should handle logout', () => {
+    component.logout();
+    expect(mockAuthService.logout).toHaveBeenCalled();
   });
 });

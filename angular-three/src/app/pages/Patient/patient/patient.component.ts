@@ -73,7 +73,25 @@ export class PatientComponent {
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
-  patientProfileSingle: any = null;
+  patientProfileSingle : any = {
+    id: "",
+    name: {
+      firstName: "",
+      middleNames: "",
+      lastName: ""
+    },
+    email: { fullEmail: "" },
+    userEmail: { fullEmail: "" },
+    phone: { number: "" },
+    gender: "",
+    nameEmergency: "",
+    emailEmergency: { fullEmail: "" },
+    phoneEmergency: { number: "" },
+    allergies: [],
+    appointmentHistory: [],
+    medicalRecordNumber: { number: "" },
+    dateOfBirth: "",
+  };
 
 
 
@@ -276,19 +294,17 @@ export class PatientComponent {
         return; 
     }
 
-
     this.patientUpdateForm.patchValue({
-        name: `${this.patientProfileSingle.name.firstName} ${this.patientProfileSingle.name.middleNames} ${this.patientProfileSingle.name.lastName}`,
-        email: this.patientProfileSingle.email.fullEmail,
-        phone: this.patientProfileSingle.phone.number,
-        userEmail: this.patientProfileSingle.userEmail.fullEmail,
-        gender: this.patientProfileSingle.gender,
-        emergencyContactName: this.patientProfileSingle.nameEmergency,
-        emergencyContactEmail: this.patientProfileSingle.emailEmergency.fullEmail,
-        emergencyContactPhone: this.patientProfileSingle.phoneEmergency.number,
-
-
+      name: `${this.patientProfileSingle.name?.firstName || ''} ${this.patientProfileSingle.name?.middleNames || ''} ${this.patientProfileSingle.name?.lastName || ''}`.trim(),
+      email: this.patientProfileSingle.email?.fullEmail || '',
+      phone: this.patientProfileSingle.phone?.number || '',
+      userEmail: this.patientProfileSingle.userEmail?.fullEmail || '',
+      gender: this.patientProfileSingle.gender || '',
+      emergencyContactName: this.patientProfileSingle.nameEmergency || '',
+      emergencyContactEmail: this.patientProfileSingle.emailEmergency?.fullEmail || '',
+      emergencyContactPhone: this.patientProfileSingle.phoneEmergency?.number || '',
     });
+    
 
     const appointmentHistoryArray = this.patientUpdateForm.get('appointmentHistory') as FormArray;
     const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
@@ -355,7 +371,8 @@ export class PatientComponent {
     console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
 
     // Faça a requisição para obter os dados do paciente
-    this.patientService.getPatientByEmail(this.selectedPatientEmail)
+    if (this.selectedPatientEmail){
+      this.patientService.getPatientByEmail(this.selectedPatientEmail)
       .subscribe({
         next: (response) => {
           console.log(response);
@@ -369,6 +386,7 @@ export class PatientComponent {
           this.errorMessage = 'Failed to view patient profile!';
         }
       });
+    } else { this.errorMessage = 'No email provided!'; }
   }
 
   logout(): void {

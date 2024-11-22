@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  
   loginObj : any = {
     "username" : "",
     "password" : ""

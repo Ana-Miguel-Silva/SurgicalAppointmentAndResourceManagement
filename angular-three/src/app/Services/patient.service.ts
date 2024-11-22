@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Patient } from '../pages/Patient/patient/patient.model';
+//import { Patient } from '../pages/Patient/patient/patient.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -15,20 +15,20 @@ export class PatientService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-getPatientById(id: string): Observable<Patient> {
+getPatientById(id: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<Patient>(`${this.apiUrl}/Patients/${id}`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/Patients/${id}`, { headers });
 }
 
 
 
-getPatientByEmail(email: string): Observable<Patient> {
+getPatientByEmail(email: string): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.get<Patient>(`${this.apiUrl}/Patients/email/${email}`, { headers });
+  return this.http.get<any>(`${this.apiUrl}/Patients/email/${email}`, { headers });
 }
 
 
