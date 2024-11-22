@@ -143,13 +143,13 @@ namespace DDDSample1.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<OperationTypeDto>>> GetAllFiltered(
-            [FromQuery] string? name,
+           
             [FromQuery] string? specialization,
             [FromQuery] bool? status)
         {
            
 
-                var operationTypes = await _service.GetAllFilteredAsync(name, specialization, status);
+                var operationTypes = await _service.GetAllFilteredAsync( specialization, status);
 
                 return operationTypes;
            

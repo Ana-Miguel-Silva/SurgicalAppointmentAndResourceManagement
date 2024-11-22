@@ -197,6 +197,13 @@ export class AdminComponent {
     appointmentHistory: ''
   } as const;
 
+  
+  filteredOperationTypes: any[] = [];
+  filterOperationTypes = {
+    specialization: '',
+    status: ''    
+  } as const;
+
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
   }*/
@@ -655,6 +662,8 @@ export class AdminComponent {
       appointmentHistory: ''
     };
   }
+
+
   deactivatePatient(){
     const token = this.authService.getToken();
 
@@ -1087,6 +1096,9 @@ export class AdminComponent {
   onFilter2Change() {
     this.getAllstaffsProfiles();
   }
+  onFilterOperationTypesChange() {
+    this.getAllOperationTypes();
+  }
   // Method to fetch all patients profiles
   getAllpatientsProfiles() {
     const token = this.authService.getToken();
@@ -1249,25 +1261,48 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
 
-    const params = new HttpParams()
-  .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
-, this.searchTerm || '');
+    type FilterKeys = keyof typeof this.filterOperationTypes; // Restringe as chaves às do objeto filter
 
 
+    let params = new HttpParams();
 
-    this.operationTypesService.getAllOperationTypes()
+    Object.keys(this.filterOperationTypes).forEach(key => {
+    const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+    const value = this.filterOperationTypes[typedKey]; // Acessar o valor usando a chave tipada
+    if (value) { // Só adiciona se o valor estiver preenchido
+      params = params.set(key, value);
+    }
+    });
+
+
+    this.operationTypesService.getSearchOperationTypes(params)
       .subscribe({
         next: (response) => {
           console.log('Operation Type ',response);
 
           this.OperationTypesProfiles = response;
-          console.log(params);
+          console.log(response);
+          console.log("params Operation Types: ", params);
         },
         error: (error) => {
           console.error('Error fetching  profiles:', error);
           this.errorMessage = 'Failed to fetch patients profiles!';
         }
       });
+  }
+
+
+  onFilterOperationTypesRequests(){
+    console.log(this.filter);
+    this.getAllOperationTypes();
+    this.closeModal('filterOperationTypesRequestModal');
+  }
+
+  cleanOperationTypesFilter() {
+    this.filterOperationTypes = {
+      specialization: '',
+      status: ''
+    };
   }
 
 

@@ -131,7 +131,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
 
     public async Task<List<OperationTypeDto>> GetAllFilteredAsync(
-                string? name,
                 string? specialization,
                 bool? status
                 )
@@ -140,10 +139,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
             var operationType = await this._repo.GetAllAsync();
 
 
-            if (name != null)
-            {
-                operationType = operationType.Where(o => o.Name == name).ToList();
-            }
+          
 
                 
             if (specialization != null)

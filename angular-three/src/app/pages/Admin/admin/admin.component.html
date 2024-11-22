@@ -1259,21 +1259,29 @@
 </div>
 
 
+
+
 <div  [ngStyle]="{'display': isModalOpen('listOperationTypeModal') ? 'block' : 'none'}" id="listOperationTypeModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('listOperationTypeModal')" class="close">&times;</span>
       <div>
 
-      <form  class="row g-3 needs-validation" novalidate="">
-          <div class="col-md-2"></div>
+        <form  class="row g-3 needs-validation" novalidate="">
+          <div class="col-md-10"></div>
 
-          <div class="col-md-6">
+          <div class="col-md-2">
+            <div class="input-group">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterOperationTypesRequestModal')"> Filter </button>
+          </div>
+        </div>
+
+         <!--<div class="col-md-6">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilterChange()">
           </div>
-        </div>
-          <div class="col-md-2">
+        </div>!-->
+          <!--<div class="col-md-2">
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilterChange()" required>
@@ -1285,7 +1293,8 @@
             </select>
 
           </div>
-        </div>
+        </div>!-->
+        
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -1295,7 +1304,7 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Name</th>
+                    <th>Specialization</th>
                     <th>Prepatation Duration</th>
                     <th>Surgery Duration</th>
                     <th>Cleaning Duration</th>
@@ -1333,6 +1342,41 @@
         </form>
       </div>
 
+
+
+  </div>
+</div>
+
+
+
+<div [ngStyle]="{'display': isModalOpen('filterOperationTypesRequestModal') ? 'block' : 'none'}" id="filterOperationTypesRequestModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterOperationTypesRequestModal')" class="close">&times;</span>
+    <form>
+
+      <h3 class="text-center">Filter Operation Types</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanOperationTypesFilter()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterSpecialization" class="form-label">Specialization:</label>
+        <input type="text" id="filterSpecialization" [(ngModel)]="filterOperationTypes.specialization"  name="filterSpecialization" class="form-control" />
+      </div>
+
+
+      <div class="mb-3">
+        <label for="filterStatus" class="form-label">Status: </label>
+        <input type="text" id="filterStatus" [(ngModel)]="filterOperationTypes.status"  name="filterStatus" class="form-control" />
+      </div>
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterOperationTypesRequests()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
   </div>
 </div>
 
