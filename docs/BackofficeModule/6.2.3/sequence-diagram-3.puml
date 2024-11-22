@@ -6,13 +6,19 @@ skinparam shadowing false
 autonumber
 
 participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "component" as CM <<component>>
 participant "Service" as SERV <<component>>
 
 -> FE : confirmation to delete account(email)
 activate FE
 
+FE -> HT : onClick()
+activate HT
+HT -> CM : deactivatePatient(email)
+activate CM
 
-FE -> SERV: deactivatePatient(email)
+CM -> SERV: deactivatePatient(email)
 activate SERV
 
  SERV -> : deleteByEmail(email)
@@ -20,29 +26,52 @@ activate SERV
  SERV <-- : message
 
 
-SERV --> FE : message
-deactivate
+
+SERV --> CM : message
+ deactivate SERV
+
+ CM --> HT : message
+ deactivate CM
+
+  HT --> FE : message
+  deactivate HT
+
 
 <-- FE : message
 deactivate FE
 
--> FE : confirmation
+-> FE : confirmation(actionId)
 deactivate SERV
 activate FE
 
+FE -> HT : onClick()
+activate HT
+
+HT -> CM : confirmation(actionId)
+activate CM
 
 
-FE -> SERV : confirmDeactivateAction(this.actionId)
+CM -> SERV : confirmDeactivateAction(actionId)
+
+
 activate SERV
  SERV -> : DeleteConfirmed(email)
 
- SERV <-- : sucess
+ SERV <-- : success
 
 
- SERV --> FE : sucess
+ SERV --> CM : success
 
 deactivate SERV
-<-- FE  : success and data
+
+CM --> HT : success 
+deactivate CM
+
+HT --> FE : success
+deactivate HT
+
+
+<-- FE  : success 
 
 deactivate FE
 

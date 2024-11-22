@@ -6,13 +6,23 @@ skinparam shadowing false
 autonumber
 
 participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "component" as CM <<component>>
 participant "Service" as SERV <<component>>
 
 
 activate FE
 -> FE: access page
 
-FE -> SERV : postLogin(loginObj)
+FE -> HT : onClick()
+activate HT
+
+
+HT -> CM : onLogin(loginObj)
+
+activate CM
+
+CM -> SERV : postLogin(loginObj)
 
  activate SERV
 
@@ -20,11 +30,18 @@ FE -> SERV : postLogin(loginObj)
 
  SERV <-- : Success and Token to login
 
+SERV --> CM : Success
 
-
-SERV --> FE : Success
 
 deactivate SERV
+
+CM --> HT : Success
+deactivate CM
+
+
+
+HT --> FE : Success
+deactivate HT
 
 <--- FE : success and access to their funtionalities.
 
