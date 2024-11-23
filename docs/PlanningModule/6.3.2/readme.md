@@ -3,7 +3,6 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface.
 These functionalities are essential to allow administrators to now till what dimension in terms of number of surgeries is possible to ask for the better solution.
 This is the first time this task has been assigned for development.
 
@@ -17,12 +16,18 @@ This is the first time this task has been assigned for development.
 ask for the better solution. Document your results and findings.
 
 
+**INFO**
 
-**Customer Specifications and Clarifications:**
+To see the complexity analysis please look for the report in the folder "Planning Module".
 
-> **Question:** 
->
->**Answer:** 
+[//]: # (**Customer Specifications and Clarifications:**)
+
+[//]: # ()
+[//]: # (> **Question:** )
+
+[//]: # (>)
+
+[//]: # (>**Answer:** )
 
 **Dependencies/References:**
 
@@ -32,59 +37,78 @@ ask for the better solution. Document your results and findings.
 * There is a dependency to "6.3.3 As an Admin, I want to obtain a good schedule, not necessarily the better, in useful time to be adopted."
 
 
-**Input and Output Data**
+[//]: # (**Input and Output Data**)
 
-**Input Data:**
+[//]: # ()
+[//]: # (**Input Data:**)
 
-* Typed data:
+[//]: # ()
+[//]: # (* Typed data:)
+
+[//]: # ()
 
 
 
+[//]: # ()
+[//]: # ( **Output Data:**)
 
+[//]: # (* Display the success of the operation)
 
-**Output Data:**
-* Display the success of the operation
+[//]: # (## 3. Analysis)
 
-## 3. Analysis
+[//]: # ()
+[//]: # (> **Question:** )
 
-> **Question:** 
->
->**Answer:** 
+[//]: # (>)
+
+[//]: # (>**Answer:** )
 
 
 
 [//]: # (### 3.1. Domain Model)
 
 [//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
+[//]: # ()
+[//]: # (## 4. Design)
 
-## 4. Design
+[//]: # ()
+[//]: # ()
+[//]: # (**Domain Class/es:** Email, User, UserDto, Role)
 
+[//]: # ()
+[//]: # (**Controller:** UserController)
 
-**Domain Class/es:** Email, User, UserDto, Role
+[//]: # ()
+[//]: # (**UI:** )
 
-**Controller:** UserController
+[//]: # ()
+[//]: # (**Repository:**	UserRepository)
 
-**UI:** 
+[//]: # ()
+[//]: # (**Service:** UserService, AuthorizationService)
 
-**Repository:**	UserRepository
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.1. Sequence Diagram)
 
-**Service:** UserService, AuthorizationService
+[//]: # ()
+[//]: # (**Register User Level 1**)
 
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-1.svg "Register User"&#41;)
 
+[//]: # ()
+[//]: # (**Register User Level 2**)
 
-### 4.1. Sequence Diagram
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-2.svg "Register User"&#41;)
 
-**Register User Level 1**
+[//]: # ()
+[//]: # (**Register User Level 3**)
 
-![Register User](sequence-diagram-1.svg "Register User")
-
-**Register User Level 2**
-
-![Register User](sequence-diagram-2.svg "Register User")
-
-**Register User Level 3**
-
-![Register User](sequence-diagram-3.svg "Register User")
+[//]: # ()
+[//]: # ( ![Register User]&#40;sequence-diagram-3.svg "Register User"&#41;)
 
 
 

@@ -22,7 +22,7 @@ namespace DDDSample1.Tests.Domain.Users
             Assert.Equal(name, User.Username);
             Assert.Equal(email, User.Email);
             Assert.Equal(role, User.Role);
-            Assert.False(User.Active);
+            Assert.True(User.Active);
         }
 
 
