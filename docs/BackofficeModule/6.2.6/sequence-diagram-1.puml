@@ -1,4 +1,4 @@
-@startuml 5.1.1
+@startuml 5.1.8
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -13,7 +13,7 @@ AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : info to create user(email, username, role)
+AD -> SYS : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth, emailUser, gender, emailContact)
 activate SYS
 SYS --> AD : success and data
 

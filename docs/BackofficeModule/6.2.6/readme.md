@@ -1,98 +1,83 @@
-# US 6.1.1
+# US 6.2.6
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-This is the first time this task has been assigned for development.
+As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history
 
 ## 2. Requirements
 
-**US 6.1.1** As an Admin, I want to register new backoffice users (e.g., doctors, nurses,
-technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions.
-
+**US 6.2.6** 
 
 **Acceptance Criteria:** 
 
-- Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal
-process, not via self-registration.
-
-- Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
-
-- Registered users receive a one-time setup link via email to set their password and activate their
-account.
-
-- The system enforces strong password requirements for security.
-
-- A confirmation email is sent to verify the user’s registration.
-
-- The user’s IAM record is linked to the respective user and staff/patient record
-in the backoffice data.
-
-- All users authenticate using the IAM.
-
-- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character.
-
-- Account locked if log in errror 5 times.
-
+- Admins can input patient details such as first name, last name, date of birth, contact information, and medical history.
+- A unique patient ID (Medical Record Number) is generated upon profile creation.
+- The system validates that the patient’s email and phone number are unique.
+- The profile is stored securely in the system, and access is governed by role-based permissions.
 
 **Customer Specifications and Clarifications:**
 
-> **Question:** Can the user only be a staff member or patient, or can they be something else? 
+> **Question 1: When an Admin creates a patient profile, should he already register them in the system, as users that can login, or should the registration always be responsibility of the patient? If the latter is intended, should the patient's user credentials be linked to the existing profile?**
 >
->**Answer:** The users of the system are the administrators, nurses and doctors, as well as the patients (with limited functionality).
+> **Answer 1: Registering a patient record is a separate action from the patient self-registering as a user** 
 
-
-> **Question:** Does the user have contact information, email and phone, both are mandatory?
+> **Question 2: I understand that the Admin can create the Patient profile and leave the User as inactive, but how does the activation happen? If that pacient eventualy wants to register himself, should there be an option to activate an existing profile? For example, associate the e-mail from registration input with the existing profile's e-mail? The feature 5.1.3 asks for the full registration, but doesn't say anything about profiles that already exist.**
 >
->**Answer:** Yes.
+> **Answer 2: the admin register the patient (this does not create a user for that patient) optionally, the patient self-registers in the system by providing the same email that is currently recorded in their patient record and the system associates the user and the patient there is no option for someone who is not a patient of the system to register as a user** 
 
-
->**Question:**  Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.". Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
+> **Question 3: It is specified that the admin can input some of the patient's information (name, date of birth, contact information, and medical history). Do they also input the omitted information (gender, emergency contact and allergies/medical condition)? Additionally, does the medical history that the admin inputs refer to the patient's medical record, or is it referring to the appointment history?**
 >
->**Answer:** What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
+> **Answer 3: The admin can not input medical history nor allergies. they can however input gender and emergency contact.** 
 
-
-
-> **Question:** Can you clarify the username and email requirements?
+> **Question 4: When the administrator starts creating the patient profile, what format(s) of the date of birth will they need to enter? Furthermore, what will be the format of the Medical Record Number generated after recording the data?**
 >
->**Answer:**The username is the "official" email address of the user. for backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an easy configuration of the DNS domain (e.g., environment variable).
->For patients, the username is the email address provided in the patient record and used as identity in the external IAM. for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That email address will be his username when he self-registers in the system
+> **Answer 4:From a usability perspective, dates should be presented to the user using the operating system's locale definitions. since for this sprint you are building an API, you should use a standard format like ISO 8601. Medical record numbers are generated by the system following the format YYYYMMnnnnnn where YYYY and MM are the year and month of the registration and nnnnnn is a sequential number** 
 
-
-
->**Question**: What defines session inactivity?
+> **Question 5:So, when the administrator starts creating the patient profile, what format(s) of the date of birth will they need to enter? Furthermore, what will be the format of the Medical Record Number generated after recording the data?**
 >
-> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
+> **Answer 5:From a usability perspective, dates should be presented to the user using the operating system's locale definitions. since for this sprint you are building an API, you should use a standard format like ISO 8601. Medical record numbers are generated by the system following the format YYYYMMnnnnnn where YYYY and MM are the year and month of the registration and nnnnnn is a sequential number** 
+
+> **Question 6:**
+>
+> **Answer 6:**
 
 **Dependencies/References:**
 
-* There are no dependencies to other US.
+
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
+
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
+    * Full Name
+    * E-mail User
     * E-mail
-    * Username
-    * Role
-
-
+    * Phone
+    * Gender
+    * Date of Birth
+    * AppointmentHistory
+    * Emergency Contact
+  
+* Generated data:
+  * Patient Profile Id
+  * Medical Record Number
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-
+* Display the success of the operation and the data of the registered patient (Add Patient)
 
 ## 3. Analysis
 
->**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
->
-> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
-
-
+> **Question 1: is specified that the admin can input some of the patient's information (name, date of birth, contact information, and medical history). Do they also input the omitted information (gender, emergency contact and allergies/medical condition)?
+Additionally, does the medical history that the admin inputs refer to the patient's medical record, or is it referring to the appointment history?** 
+> 
+> **Answer 1: the admin can not input medical history nor allergies. they can however input gender and emergency contact** 
 
 [//]: # (### 3.1. Domain Model)
 
@@ -100,122 +85,137 @@ in the backoffice data.
 
 ## 4. Design
 
+**Domain Class/es:** Email, Patient, PatientDto, CreatingPatientDto, PhoneNumber, MedicalRecordNumber
 
-**Domain Class/es:** Email, User, UserDto, Role
+**Controller:** PatientController
 
-**Controller:** UserController
+**UI:** Admin.component.html
 
-**UI:** 
+**Repository:**	PatientRepository, LogRepository
 
-**Repository:**	UserRepository
-
-**Service:** UserService, AuthorizationService
-
+**Service:** PatientService, AuthorizationService, LogService
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+#### Create Patient Profile
 
-![Register User](sequence-diagram-1.svg "Register User")
+**Sequence Diagram Level 1**
 
-**Register User Level 2**
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
-![Register User](sequence-diagram-2.svg "Register User")
+**Sequence Diagram Level 2**
 
-**Register User Level 3**
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
 
-![Register User](sequence-diagram-3.svg "Register User")
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Creat Patient Profile")
+
+### 4.2. Applied Patterns
+
+### 4.3. Tests
+
+Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
 
 
-[//]: # (### 4.2. Class Diagram)
+**Json**
 
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
+```
+    {
+  "name": "Pedro Doouu",
+  "dateOfBirth": "1985-05-20",
+  "phone": "932385677",
+  "email":"gago3@gmail.com",
+  "userEmail": "gago@isep.ipp.pt",
 
-[//]: # ()
-[//]: # (### 4.4. Tests)
+  "emergencyContact": {
+    "name": "Jane Doeaeae",
+    "phone": "987654321",
+    "email":  "janedoe123@example.com"
+  },
 
-[//]: # ()
-[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
+  "gender": "Female",
+  "allergies": [],
+  "appointmentHistory": ["2021-09-15", "2022-10-10"]
+}
 
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (**Before Tests** **Setup of Dummy Users**)
+```
 
-[//]: # ()
-[//]: # (```)
+**Test 1:** 
 
-[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
+```
+// Check that the response status code is 201 (Created)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 
-[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
+// Parse the response body as JSON
+const responseJson = pm.response.json();
 
-[//]: # (    })
+// Check if the response contains the 'id' field
+pm.test("Response contains ID", function () {
+    pm.expect(responseJson).to.have.property("id");
+});
 
-[//]: # ()
-[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
+// Save the 'id' from the response to an environment variable
+pm.environment.set("patientId", responseJson.id);
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
+pm.environment.set("patientEmail", responseJson.email.fullEmail);
+pm.environment.set("patientMedicalRecordNumber", responseJson.medicalRecordNumber.number);
 
-[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
 
-[//]: # (    })
+````
 
-[//]: # ()
-[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
 
-[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
-
-[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # ()
-[//]: # (**Test 1:** *Verifies if Users are equals*)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test)
-
-[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
-
-[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
-
-[//]: # (})
-
-[//]: # (````)
-
-[//]: # ()
 [//]: # (## 5. Implementation)
 
 [//]: # ()
 [//]: # ()
-[//]: # (### Methods in the UsersController)
+[//]: # (### Methods in the ListUsersController)
 
-[//]: # (* **public async Task<ActionResult<UserDto>> Create&#40;CreatingUserDto dto&#41;**  this method creates a user)
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
 [//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
+
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
+
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
+
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
+
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
+
+[//]: # (k)
+
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
+
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
+
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
+
 [//]: # ()
 [//]: # ()
 [//]: # (## 6. Integration/Demonstration)
 
-[//]: # ()
 
 
 [//]: # (## 7. Observations)

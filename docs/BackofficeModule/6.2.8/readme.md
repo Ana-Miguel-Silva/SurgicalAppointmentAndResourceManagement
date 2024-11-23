@@ -1,98 +1,58 @@
-# US 6.1.1
+# US 6.2.8
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-This is the first time this task has been assigned for development.
-
+As an Admin, I want to delete a patient profile, so that I can remove patients who are no longer under care
 ## 2. Requirements
 
-**US 6.1.1** As an Admin, I want to register new backoffice users (e.g., doctors, nurses,
-technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions.
-
+**US 6.2.8** 
 
 **Acceptance Criteria:** 
 
-- Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal
-process, not via self-registration.
-
-- Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
-
-- Registered users receive a one-time setup link via email to set their password and activate their
-account.
-
-- The system enforces strong password requirements for security.
-
-- A confirmation email is sent to verify the user’s registration.
-
-- The user’s IAM record is linked to the respective user and staff/patient record
-in the backoffice data.
-
-- All users authenticate using the IAM.
-
-- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character.
-
-- Account locked if log in errror 5 times.
-
+- Admins can search for a patient profile and mark it for deletion.
+- Before deletion, the system prompts the admin to confirm the action.
+- Once deleted, all patient data is permanently removed from the system within a predefined time frame.
+- The system logs the deletion for audit and GDPR compliance purposes.
 
 **Customer Specifications and Clarifications:**
 
-> **Question:** Can the user only be a staff member or patient, or can they be something else? 
+> **Question 1: When generating the audit record to log the deletion of patient profiles what patient information (if any) are we allowed to keep in the log for identification purposes? If none are the logs then only a record of deletion operations and not actually tied to the deletion of a specific patient?**
 >
->**Answer:** The users of the system are the administrators, nurses and doctors, as well as the patients (with limited functionality).
+> **Answer 1: The ERS (health regulator) issued an opinion on the retention of health data in which it established a minimum retention period of 5 years, after which the data can be deleted. You may wish to keep some of the information anonymised for statistical purposes only, limiting yourself to, for example, gender and type of surgery.** 
 
-
-> **Question:** Does the user have contact information, email and phone, both are mandatory?
+> **Question 2: Gostávamos de perguntar se na funcionalidade que pretende que envolve remover o perfil de pacientes que já não se encontram a receber ajuda ou tratamento da entidade hospitalar (6.2.8) se quando é mencionado "(...)all patient data is permanently removed from the system within a predefined time frame." se o tempo predefinido é do sistema em si ou se é definido pelo admin que apaga os dados.**
 >
->**Answer:** Yes.
+> **Answer 2: Faz parte das vossas responsabilidades no âmbito do módulo de proteçãod e dados e de acordo com a politica que venham a definir**
 
-
->**Question:**  Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.". Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
+> **Question 3:**
 >
->**Answer:** What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
-
-
-
-> **Question:** Can you clarify the username and email requirements?
->
->**Answer:**The username is the "official" email address of the user. for backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an easy configuration of the DNS domain (e.g., environment variable).
->For patients, the username is the email address provided in the patient record and used as identity in the external IAM. for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That email address will be his username when he self-registers in the system
-
-
-
->**Question**: What defines session inactivity?
->
-> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
+> **Answer 3:**
 
 **Dependencies/References:**
 
-* There are no dependencies to other US.
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
+
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+* There is a dependency to "US 5.1.8 - As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history."
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Username
-    * Role
-
-
+    * Email
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-
+* Display the success of the operation and the data of the deleted patient (Delete Patient)
 
 ## 3. Analysis
 
->**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
+> **Question 1:**
 >
-> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
-
-
+> **Answer 1:** 
 
 [//]: # (### 3.1. Domain Model)
 
@@ -101,121 +61,115 @@ in the backoffice data.
 ## 4. Design
 
 
-**Domain Class/es:** Email, User, UserDto, Role
+**Domain Class/es:** Email, Patient, MedicalRecordNumber, PhoneNumber
 
-**Controller:** UserController
+**Controller:** PatientController
 
-**UI:** 
+**UI:** Admin.component.html
 
-**Repository:**	UserRepository
+**Repository:**	PatientRepository, LogsRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** PatientService, AuthorizationService, LogsService, GmailService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+#### Delete Patient Profile
 
-![Register User](sequence-diagram-1.svg "Register User")
+**Sequence Diagram Level 1**
 
-**Register User Level 2**
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
-![Register User](sequence-diagram-2.svg "Register User")
+**Sequence Diagram Level 2**
 
-**Register User Level 3**
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
 
-![Register User](sequence-diagram-3.svg "Register User")
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Delete Patient Profile")
 
 
 
-[//]: # (### 4.2. Class Diagram)
+[//]: # (TODO: Necessario fazer algo ?)
 
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
+### 4.2. Applied Patterns
 
-[//]: # ()
-[//]: # (### 4.4. Tests)
+### 4.3. Tests
 
-[//]: # ()
-[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
+Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (**Before Tests** **Setup of Dummy Users**)
 
-[//]: # ()
-[//]: # (```)
 
-[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
+**HTTPDEL**
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
+```
+https://localhost:5001/api/Patients/{{patientId}}/delete
 
-[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
+https://localhost:5001/api/Patients/___/deleteConfirmed
 
-[//]: # (    })
+https://localhost:5001/api/Patients/{{patientId}}/hard
 
-[//]: # ()
-[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
 
-[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
+```
 
-[//]: # (    })
+**Test 1:** 
 
-[//]: # ()
-[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
 
-[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
+```
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+````
 
-[//]: # (    })
 
-[//]: # ()
-[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
-
-[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # ()
-[//]: # (**Test 1:** *Verifies if Users are equals*)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test)
-
-[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
-
-[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
-
-[//]: # (})
-
-[//]: # (````)
-
-[//]: # ()
 [//]: # (## 5. Implementation)
 
 [//]: # ()
 [//]: # ()
-[//]: # (### Methods in the UsersController)
+[//]: # (### Methods in the ListUsersController)
 
-[//]: # (* **public async Task<ActionResult<UserDto>> Create&#40;CreatingUserDto dto&#41;**  this method creates a user)
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
 [//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
+
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
+
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
+
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
+
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
+
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
+
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
+
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
+
 [//]: # ()
 [//]: # ()
 [//]: # (## 6. Integration/Demonstration)
 
-[//]: # ()
 
 
 [//]: # (## 7. Observations)
