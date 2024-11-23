@@ -258,7 +258,7 @@ export class AdminComponent {
   }
 
 
-  onCreateOperationType() {
+  onCreateOperationType(operationTypeData: CreatingOperationTypeDto) {
     const token = this.authService.getToken();
 
     // Check if the user is logged in
@@ -271,14 +271,14 @@ export class AdminComponent {
       return;
     }
 
-    // Set up the headers with the token
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+    const payload: CreatingOperationTypeDto = {
+      name: operationTypeData.name,
+      requiredStaff: operationTypeData.requiredStaff,
+      estimatedDuration: operationTypeData.estimatedDuration
+    };
 
     // Send a POST request to create the operation type
-    this.operationTypesService.createOperationTypes(this.operationType)
+    this.operationTypesService.createOperationTypes(payload)
       .subscribe({
         next: () => {
           Swal.fire({
@@ -1256,10 +1256,6 @@ export class AdminComponent {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     type FilterKeys = keyof typeof this.filterOperationTypes; // Restringe as chaves às do objeto filter
 

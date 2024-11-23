@@ -1168,7 +1168,7 @@
 <div [ngStyle]="{'display': isModalOpen('createOperationTypeModal') ? 'block' : 'none'}" id="createOperationTypeModal" class="modal">
   <div class="modal-content">
       <span (click)="closeModal('createOperationTypeModal')" class="close">&times;</span>
-      <form (ngSubmit)="onCreateOperationType()" class="row g-3 needs-validation" novalidate>
+      <form (ngSubmit)="onCreateOperationType(operationType)" class="row g-3 needs-validation" novalidate>
           <h3 class="text-center">Insert New Operation Type</h3>
 
           <!-- Operation Type Name -->
