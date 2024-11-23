@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
@@ -7,8 +7,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
-
-
 
 interface CreatingOperationRequestUIDto {
   patientEmail: string;
@@ -53,8 +51,8 @@ export class DoctorComponent implements OnInit {
     priority: ''
   };
 
-  operationRequests: any[] = [];
-  filteredRequests: any[] = [];
+  operationRequests: OperationRequest[] = [];
+  filteredRequests: OperationRequest[] = [];
   filter = {
     priority: '',
     operationTypeName: '',
@@ -62,90 +60,41 @@ export class DoctorComponent implements OnInit {
     emailDoctor: ''
   };
 
-
-  constructor(private modalService: ModalService,
-    private http: HttpClient, private authService: AuthService, private operationRequestsService: OperationRequestsService, private router: Router) {
-  }
+  constructor(
+    private modalService: ModalService,
+    private http: HttpClient,
+    private authService: AuthService,
+    private operationRequestsService: OperationRequestsService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.getAllOperationRequests();
   }
 
- getAllOperationRequests() {
-  const token = this.authService.getToken();
-  if (!token) {
-  Swal.fire({
-    icon: 'error',
-    title: 'Authentication Error',
-    text: 'You are not logged in!',
-  });
-  return;
-}
+  getAllOperationRequests() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
 
-  const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-
-  this.operationRequestsService.getAllOperationRequests()
-  //this.http.get<OperationRequest[]>('https://localhost:5001/api/OperationRequests', { headers })
-    .subscribe({
-      next: (response) => {
-        
+    this.operationRequestsService.getAllOperationRequests().subscribe({
+      next: (response: OperationRequest[]) => {
         this.operationRequests = response;
         this.applyFilter();
       },
       error: (error) => {
-        console.error('Erro ao buscar requests:', error);
+        console.error('Error fetching requests:', error);
       }
     });
-}
-
-onCreateRequest() {
-  const token = this.authService.getToken();
-  if (!token) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Authentication Error',
-      text: 'You are not logged in!',
-    });
-    return;
   }
 
-  const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  });
-
-  const payload: CreatingOperationRequestUIDto = {
-    patientEmail: this.operationRequest.patientEmail,
-    operationTypeName: this.operationRequest.operationTypeName,
-    deadline: this.operationRequest.deadline,
-    priority: this.operationRequest.priority
-  };
-
-  this.operationRequestsService.createOperationRequests(payload)
-    .subscribe({
-      next: () => {
-        this.getAllOperationRequests();
-        this.cleanRegister();
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Operation request created successfully!',
-          showConfirmButton: false,
-          timer: 1500
-        });
-        this.modalService.closeModal('createRequestModal');
-      },
-      error: (error) => {
-        console.error('Error creating operation request:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to create operation request.',
-        });
-      }
-    });
-}
-
+  
   applyFilter() {
     this.filteredRequests = this.operationRequests.filter(request => {
       const matchesPriority = this.filter.priority 
@@ -174,7 +123,8 @@ onCreateRequest() {
     this.closeModal('filterRequestModal');
   }
 
-  onUpdateRequest() {
+  // Update: Now accepts a parameter for testing (Create or Update)
+  onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
     if (!token) {
       Swal.fire({
@@ -182,48 +132,93 @@ onCreateRequest() {
         title: 'Authentication Error',
         text: 'You are not logged in!',
       });
-            return;
+      return;
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-    const payload: UpdateOperationRequestDto = {
-      id: this.updateRequest.id,
-      deadline: this.updateRequest.deadline,
-      priority: this.updateRequest.priority
+    const payload: CreatingOperationRequestUIDto = {
+      patientEmail: requestData.patientEmail,
+      operationTypeName: requestData.operationTypeName,
+      deadline: requestData.deadline,
+      priority: requestData.priority
     };
 
-    this.operationRequestsService.updateOperationRequests(payload)
-    //this.http.patch(`https://localhost:5001/api/OperationRequests/${payload.id}`, payload, { headers })
-      .subscribe({
-        next: () => {
-          this.getAllOperationRequests();
-
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Operation Request updated successfully!',
-            showConfirmButton: false,
-            timer: 1500
-          });
-
-          this.modalService.closeModal('updateRequestModal');
-        },
-        error: (error) => {
-          console.error('Error updating operation request:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to update operation request.',
-          });
-        }
-      });
+    this.operationRequestsService.createOperationRequests(payload).subscribe({
+      next: () => {
+        this.getAllOperationRequests();
+        this.cleanRegister();
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Operation request created successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        this.modalService.closeModal('createRequestModal');
+      },
+      error: (error) => {
+        console.error('Error creating operation request:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to create operation request.',
+        });
+      }
+    });
   }
 
-  setUpdateRequest(request: any) {
+  // Update: Now accepts a parameter for testing (Create or Update)
+  onUpdateRequest(requestData: UpdateOperationRequestDto) {
+    if (!requestData.id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Invalid operation request ID!',
+      });
+      return;
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    const payload: UpdateOperationRequestDto = {
+      id: requestData.id,
+      deadline: requestData.deadline,
+      priority: requestData.priority
+    };
+
+    this.operationRequestsService.updateOperationRequests(payload).subscribe({
+      next: () => {
+        this.getAllOperationRequests();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Operation request updated successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+        this.modalService.closeModal('updateRequestModal');
+      },
+      error: (error) => {
+        console.error('Error updating operation request:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update operation request.',
+        });
+      }
+    });
+  }
+
+  setUpdateRequest(request: OperationRequest) {
     this.updateRequest.id = request.id;
     this.updateRequest.deadline = request.deadline;
     this.updateRequest.priority = request.priority;
@@ -237,39 +232,30 @@ onCreateRequest() {
       return;
     }
 
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-    this.operationRequestsService.deleteOperationRequests(id)
-    //this.http.delete(`https://localhost:5001/api/OperationRequests/${id}`, { headers })
-      .subscribe({
-        next: () => {
-          this.getAllOperationRequests();
+    this.operationRequestsService.deleteOperationRequests(id).subscribe({
+      next: () => {
+        this.getAllOperationRequests();
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Operation Request deleted successfully!',
-            showConfirmButton: false,
-            timer: 1500
-          });
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Operation request deleted successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
 
-          this.modalService.closeModal('deleteModal');
-        },
-        error: (error) => {
-          console.error('Error deleting operation request:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to delete operation request.',
-          });
-        }
-      });
-  }
-
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']); 
+        this.modalService.closeModal('deleteModal');
+      },
+      error: (error) => {
+        console.error('Error deleting operation request:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to delete operation request.',
+        });
+      }
+    });
   }
 
   openModal(modalId: string): void {
@@ -283,6 +269,7 @@ onCreateRequest() {
   isModalOpen(modalId: string): boolean {
     return this.modalService.isModalOpen(modalId);
   }
+
   cleanRegister() {
     this.operationRequest = {
       patientEmail: '',

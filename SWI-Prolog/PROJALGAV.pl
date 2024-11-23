@@ -85,49 +85,49 @@ treatAgendaData([(Ini, Fin, Id)|Agenda], [Res1|Res]) :-
 :-dynamic n_staff_op/2.
 
 % Definir o staff e o seu horario
-agenda_staff(d001, 20241028, [(100, 599, so100000),(600, 700, so100000)]).
-agenda_staff(d002, 20241028, [(100, 599, so100000),(600, 700, so100005)]).
-agenda_staff(d003, 20241028, [(100, 599, so100000),(600, 700, so100006)]).
-agenda_staff(d004, 20241028, [(600, 700, so100000),(750, 790, so100005)]).
-agenda_staff(d005, 20241028, [(600, 700, so100000),(750, 790, so100005)]).
-agenda_staff(d006, 20241028, [(600, 700, so100000),(750, 790, so100005)]).
-agenda_staff(d007, 20241028, []).
-agenda_staff(d008, 20241028, []).
-agenda_staff(d009, 20241028, []).
-agenda_staff(d010, 20241028, []).
-agenda_staff(d011, 20241028, []).
-agenda_staff(d012, 20241028, []).
-agenda_staff(d013, 20241028, []).
-agenda_staff(d014, 20241028, []).
-agenda_staff(d015, 20241028, []).
-agenda_staff(d016, 20241028, []).
-agenda_staff(d017, 20241028, []).
-agenda_staff(d018, 20241028, []).
-agenda_staff(d019, 20241028, [(100, 599, so100000),(600, 700, so100000)]).
-agenda_staff(d020, 20241028, [(100, 599, so100000),(600, 700, so100000)]).
+agenda_staff(d001, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d002, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d003, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d004, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d005, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d006, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d007, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d008, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d009, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d010, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d011, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d012, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d013, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d014, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d015, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d016, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d017, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d018, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d019, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
+agenda_staff(d020, 20241028, [(420, 580, so100000),(690, 900, so100099)]).
 
 % Definir o horario de entrada e saida do staff
-timetable(d001, 20241028, (0, 1440)).
-timetable(d002, 20241028, (0, 1440)).
-timetable(d003, 20241028, (0, 1440)).
-timetable(d004, 20241028, (600, 1440)).
-timetable(d005, 20241028, (0, 1440)).
-timetable(d006, 20241028, (0, 1440)).
-timetable(d007, 20241028, (0, 1440)).
-timetable(d008, 20241028, (0, 1440)).
-timetable(d009, 20241028, (0, 1440)).
-timetable(d010, 20241028, (0, 1440)).
-timetable(d011, 20241028, (0, 1440)).
-timetable(d012, 20241028, (0, 1440)).
-timetable(d013, 20241028, (0, 1440)).
-timetable(d014, 20241028, (0, 1440)).
-timetable(d015, 20241028, (0, 1440)).
-timetable(d016, 20241028, (0, 1440)).
-timetable(d017, 20241028, (0, 1440)).
-timetable(d018, 20241028, (0, 1440)).
-timetable(d019, 20241028, (0, 1440)).
-timetable(d020, 20241028, (0, 1440)).
-timetable(d021, 20241028, (0, 1440)).
+timetable(d001, 20241028, (260, 1440)).
+timetable(d002, 20241028, (260, 1440)).
+timetable(d003, 20241028, (260, 1440)).
+timetable(d004, 20241028, (260, 1440)).
+timetable(d005, 20241028, (260, 1440)).
+timetable(d006, 20241028, (260, 1440)).
+timetable(d007, 20241028, (260, 1440)).
+timetable(d008, 20241028, (260, 1440)).
+timetable(d009, 20241028, (260, 1440)).
+timetable(d010, 20241028, (260, 1440)).
+timetable(d011, 20241028, (260, 1440)).
+timetable(d012, 20241028, (260, 1440)).
+timetable(d013, 20241028, (260, 1440)).
+timetable(d014, 20241028, (260, 1440)).
+timetable(d015, 20241028, (260, 1440)).
+timetable(d016, 20241028, (260, 1440)).
+timetable(d017, 20241028, (260, 1440)).
+timetable(d018, 20241028, (260, 1440)).
+timetable(d019, 20241028, (260, 1440)).
+timetable(d020, 20241028, (260, 1440)).
+timetable(d021, 20241028, (260, 1440)).
 
 % Definir a especialidade e role do staff
 staff(d001,doctor,orthopaedist).
@@ -153,8 +153,8 @@ staff(d018,nurse,assistant).
 
 % Definir tempo das etapas
 surgery(so2,45,60,45).
-surgery(so3,45,10,45).
-surgery(so4,45,10,45).
+surgery(so3,30,40,30).
+surgery(so4,45,110,45).
 
 % Definir staff necessario para surgery type so2
 surgery_Required_Staff(so2, 3, doctor, orthopaedist). % At least 1 must be an orthopaedist
@@ -184,6 +184,7 @@ surgery_Required_Staff(so4, 1, nurse, assistant).
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
 surgery_id(so100003,so4).
+surgery_id(so100004,so2).
 
 % Definir horario da sala
 agenda_operation_room(or1,20241028,[]).
@@ -406,7 +407,7 @@ findAvailableTimeForStaffAndRoom(TotalTime,OpType,Room,Day,ListOfStaffsAnesthesi
 
     % Coloca o inervalo de cirurgia ocupado para tentar o seguinte intervalo possivel
     retract(agenda_operation_room2(Room,Day,Agenda1)),
-    insert_agenda((TinS,TfinS,TotalTime),Agenda1,Agenda2),
+    insert_agenda((TinS,(TinS + 9),TotalTime),Agenda1,Agenda2),
     assertz(agenda_operation_room2(Room,Day,Agenda2)),
 
     % Volta a tentar encontrar um intervalo para a cirurgia mas com agenda_operation_room2 atualizada
