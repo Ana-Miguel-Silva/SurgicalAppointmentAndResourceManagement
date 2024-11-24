@@ -126,8 +126,9 @@ export default class Maze {
                             });
                         }
                         else {
-                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
+                                doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
                             });
                         }
