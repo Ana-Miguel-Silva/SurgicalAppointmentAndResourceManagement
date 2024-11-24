@@ -751,26 +751,14 @@
 
       <form  class="row g-3 needs-validation" novalidate="">
         <div class="col-md-12"></div>
-          <div class="col-md-2"></div>
+          <div class="col-md-10"></div>
 
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilter2Change()">
-            </div>
-          </div>
           <div class="col-md-2">
             <div class="input-group">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span>
-            <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilter2Change()" required>
-              <option selected="" disabled="" value="" hidden>Filters</option>
-              <option>Name (WIP)</option>
-              <option>Id</option>
-              <option>Medical Record Number</option>
-              <option>Email</option>
-            </select>
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterStaffModal')"> Filter </button>
+            </div>
           </div>
-          </div>
+
 
           <div class="col-md-12">
             <div class="table-wrapper w-100">
@@ -1118,6 +1106,79 @@
         </form>
       </div>
 
+  </div>
+</div>
+
+<div [ngStyle]="{'display': isModalOpen('filterStaffModal') ? 'block' : 'none'}" id="filterStaffModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterStaffModal')" class="close">&times;</span>
+    <form>
+
+      <h3 class="text-center">Filter Staff</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilterStaff()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterStaffName" class="form-label">Name:</label>
+        <input type="text" id="filterStaffName" [(ngModel)]="filterStaff.name"  name="filterStaffName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffPhone" class="form-label">Phone:</label>
+        <input type="text" id="filterStaffPhone" [(ngModel)]="filterStaff.phone"  name="filterStaffPhone" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffLicense" class="form-label">License:</label>
+        <input type="text" id="filterStaffLicense" [(ngModel)]="filterStaff.license"  name="filterStaffLicense" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffRole" class="form-label">Role:</label>
+        <select id="filterStaffRole" [(ngModel)]="filterStaff.role" name="filterStaffRole" class="form-control">
+          <option value="" disabled selected hidden>Role</option>
+          <option value="DOCTOR">Doctor</option>
+          <option value="NURSE">Nurse</option>
+          <option value="TECHNICIAN">Technician</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffSpecialization" class="form-label">Specialization:</label>
+        <select id="filterStaffSpecialization" [(ngModel)]="filterStaff.specialization" name="filterStaffSpecialization" class="form-control">
+          <option value="" disabled selected hidden>Specialization</option>
+          <option value="PEDIATRICS">Pediatrics</option>
+          <option value="SURGERY">Surgery</option>
+          <option value="CARDIOLOGY">Cardiology</option>
+          <option value="ORTHOPEDICS">Orthopedics</option>
+          <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
+          <option value="NEUROLOGY">Neurology</option>
+          <option value="ONCOLOGY">Oncology</option>
+          <option value="GYNECOLOGY">Gynecology</option>
+          <option value="OBSTETRICS">Obstetrics</option>
+          <option value="RADIOLOGY">Radiology</option>
+          <option value="UROLOGY">Urology</option>
+        </select>
+      </div>
+
+      <!-- Lista de allergies e appointment history
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>-->
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterStaff()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
   </div>
 </div>
 

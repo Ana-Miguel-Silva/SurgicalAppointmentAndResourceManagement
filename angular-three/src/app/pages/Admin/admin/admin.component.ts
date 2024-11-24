@@ -197,6 +197,15 @@ export class AdminComponent {
     appointmentHistory: ''
   } as const;
 
+  filteredStaffs: any[] = [];
+  filterStaff = {
+    name: '',
+    phone: '',
+    license: '',
+    role: '',
+    specialization: '',
+  } as const;
+
   
   filteredOperationTypes: any[] = [];
   filterOperationTypes = {
@@ -663,6 +672,23 @@ export class AdminComponent {
     };
   }
 
+  onFilterStaff(){
+    console.log('filter staff: ',this.filterStaff);
+    console.log('filter : ', this.filter);
+    this.getAllstaffsProfiles();
+    this.closeModal('filterStaffModal');
+  }
+
+  cleanFilterStaff() {
+    this.filterStaff = {
+      name: '',
+      phone: '',
+      license: '',
+      role: '',
+      specialization: '',
+    };
+  }
+
 
   deactivatePatient(){
     const token = this.authService.getToken();
@@ -1096,12 +1122,15 @@ export class AdminComponent {
   onFilterChange() {
     this.getAllpatientsProfiles();
   }
-  onFilter2Change() {
+
+  onFilterStaffChange() {
     this.getAllstaffsProfiles();
   }
+
   onFilterOperationTypesChange() {
     this.getAllOperationTypes();
   }
+
   // Method to fetch all patients profiles
   getAllpatientsProfiles() {
     const token = this.authService.getToken();
@@ -1159,9 +1188,22 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
 
-    const params = new HttpParams()
+    type FilterKeys = keyof typeof this.filterStaff; // Restringe as chaves às do objeto filter
+
+
+    let params = new HttpParams();
+
+  Object.keys(this.filterStaff).forEach(key => {
+    const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+    const value = this.filterStaff[typedKey].toLowerCase().replace(/\s+/g, ''); // Acessar o valor usando a chave tipada
+    if (value) { // Só adiciona se o valor estiver preenchido
+      params = params.set(key, value);
+    }
+  });
+
+    /*const params = new HttpParams()
   .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
-, this.searchTerm || '');
+, this.searchTerm || '');*/
 
 
 
@@ -1276,7 +1318,6 @@ export class AdminComponent {
           console.log('Operation Type ',response);
 
           this.OperationTypesProfiles = response;
-          console.log(response);
           console.log("params Operation Types: ", params);
         },
         error: (error) => {
