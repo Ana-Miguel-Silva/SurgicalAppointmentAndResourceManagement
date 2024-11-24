@@ -6,13 +6,13 @@ export const generalData = {
 }
 
 export const mazeData = {
-    url: "./mazes/Loquitas.json",
+    url: "assets/mazes/Loquitas.json",
     credits: "Maze designed by Cecília Fernandes and Nikita.",
     scale: new THREE.Vector3(1.0, 1.0, 1.0)
 }
 
 export const playerData = {
-    url: "./models/gltf/RobotExpressive/RobotExpressive.glb",
+    url: "assets/models/gltf/RobotExpressive/RobotExpressive.glb",
     credits: "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
     eyeHeight: 0.8, // fraction of character height
     scale: new THREE.Vector3(0.1, 0.1, 0.1),

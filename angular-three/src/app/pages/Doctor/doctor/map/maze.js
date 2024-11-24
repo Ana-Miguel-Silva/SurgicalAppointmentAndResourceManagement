@@ -15,7 +15,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 export default class Maze {
     constructor(parameters) {
         const modelLoader = new GLTFLoader();
-        this.onLoad = function (description) {
+        this.onLoad = async function (description) {
             this.map = description.map;
             this.size = description.size;
 
@@ -26,7 +26,11 @@ export default class Maze {
 
             this.object = new THREE.Group();
 
-            let rooms_temp = this.createMatrix(description.map, description.room_number, description.rooms_per_row);
+            let roomData = await this.fetchRoomNum(description); 
+            let roomNum = roomData?roomData.length:description.room_number;
+
+            
+            let rooms_temp = this.createMatrix(description.map, roomNum, description.rooms_per_row);
             let rooms_temp2 = [];
             let rooms = [];
             for (let i = 0; i<rooms_temp.length; i++) {
@@ -38,7 +42,7 @@ export default class Maze {
                     rooms.push(rooms_temp2[i][j]);
                 }
             }
-            let h = (rooms.length + 1) - (description.lobby[0].length - 1) + description.room_number;
+            let h = (rooms.length + 1) - (description.lobby[0].length - 1) + roomNum;
             for(let i = 0; i<description.lobby.length; i++){
                 let temp = [];
                 for (let j = 0; j< description.lobby[0].length; j++) temp.push(description.lobby[i][j]);
@@ -48,18 +52,18 @@ export default class Maze {
             for (let i = 0; i<rooms.length; i++) {
                 if (i==0) {
                     for(let j = 0; j<rooms[0].length; j++) {
-                        if (rooms[i][j] == 1) rooms[i][j] = 3;
-                        if (rooms[i][j] == 0) rooms[i][j] = 2;
+                        if (rooms[i][j] == 1) rooms[i][j] = 11;
+                        if (rooms[i][j] == 0) rooms[i][j] = 10;
                     }
                 }
-                if(rooms[i][0] == 0) rooms[i][0] = 1;
-                if(rooms[i][0] == 2) rooms[i][0] = 3;
-                if(rooms[i][rooms[0].length-1] == 0) rooms[i][rooms[0].length-1] = 1;
-                if(rooms[i][rooms[0].length-1] == 2) rooms[i][rooms[0].length-1] = 1;
+                if(rooms[i][0] == 0) rooms[i][0] = 9;
+                if(rooms[i][0] == 2) rooms[i][0] = 11;
+                if(rooms[i][rooms[0].length-1] == 0) rooms[i][rooms[0].length-1] = 9;
+                if(rooms[i][rooms[0].length-1] == 2) rooms[i][rooms[0].length-1] = 9;
                 if (i==rooms.length-1) {
                     for(let j = 0; j<rooms[0].length; j++) {
-                        if (rooms[i][j] == 1) rooms[i][j] = 2;
-                        if (rooms[i][j] == 0) rooms[i][j] = 2;
+                        if (rooms[i][j] == 1) rooms[i][j] = 10;
+                        if (rooms[i][j] == 0) rooms[i][j] = 10;
                     }
                     rooms[i][rooms[0].length-1] = 0;
                 }
@@ -73,6 +77,7 @@ export default class Maze {
             this.object.add(this.ground.object);
 
             this.wall = new Wall({ textureUrl: description.wallTextureUrl });
+            this.walldow = new Wall({ textureUrl: description.windowWallTextureUrl });
             let wallObject;
             let doorObject;
             for (let i = 0; i <= actual_width; i++) { 
@@ -88,28 +93,48 @@ export default class Maze {
                         wallObject.position.set(i - actual_width/2.0, 0, j - actual_height/2 + 0.5);
                         this.object.add(wallObject);
                     }
+                    if (rooms[j][i] == 10 || rooms[j][i] == 11) {
+                        wallObject = this.walldow.object.clone();
+                        wallObject.position.set(i - actual_width/2.0 + 0.5, 0, j - actual_height/2.0);
+                        this.object.add(wallObject);
+                    }
+                    if (rooms[j][i] == 9 || rooms[j][i] == 11) {
+                        wallObject = this.walldow.object.clone();
+                        wallObject.rotateY(Math.PI/2);
+                        wallObject.position.set(i - actual_width/2.0, 0, j - actual_height/2 + 0.5);
+                        this.object.add(wallObject);
+                    }
                     if(rooms[j][i] == 4) {
-                        const door = new Decor({ url: './models/gltf/double_doors.glb', scale: new THREE.Vector3(0.0033, 0.00725, 0.003) }, (doorObject) => {
+                        const door = new Decor({ url: 'assets/models/gltf/double_doors.glb', scale: new THREE.Vector3(0.0033, 0.00725, 0.003) }, (doorObject) => {
                             doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                             doorObject.rotateY(Math.PI/2);
                             this.object.add(doorObject); // Add to the scene
                         });
                     }
                     if(rooms[j][i] == 5) {
-                        const door = new Decor({ url: './models/gltf/double_doors.glb', scale: new THREE.Vector3(0.0033, 0.00725, 0.003) }, (doorObject) => {
+                        const door = new Decor({ url: 'assets/models/gltf/double_doors.glb', scale: new THREE.Vector3(0.0033, 0.00725, 0.003) }, (doorObject) => {
                             doorObject.position.set(i - actual_width / 2.0 + 0.5, 0, j - actual_height / 2);
                             this.object.add(doorObject); // Add to the scene
                         });
                     }
                     if(rooms[j][i] == 6) {
-                        const door = new Decor({ url: './models/gltf/hospital_bed.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
-                            doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
-                            doorObject.rotateY(Math.PI/2);
-                            this.object.add(doorObject); // Add to the scene
-                        });
+                        if (roomData[0].status == "AVAILABLE") {
+                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                                doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
+                                doorObject.rotateY(Math.PI/2);
+                                this.object.add(doorObject); // Add to the scene
+                            });
+                        }
+                        else {
+                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                                doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
+                                this.object.add(doorObject); // Add to the scene
+                            });
+                        }
+                        roomData.shift();
                     }
                     if(rooms[j][i] == 7) {
-                        const door = new Decor({ url: './models/gltf/lobby.glb', scale: new THREE.Vector3(0.5, 1, 0.5) }, (doorObject) => {
+                        const door = new Decor({ url: 'assets/models/gltf/lobby.glb', scale: new THREE.Vector3(0.5, 1, 0.5) }, (doorObject) => {
                             doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                             doorObject.rotateY(Math.PI);
                             this.object.add(doorObject); // Add to the scene
@@ -119,7 +144,7 @@ export default class Maze {
                         wallObject = this.wall.object.clone();
                         wallObject.position.set(i - actual_width/2.0 + 0.5, 0, j - actual_height/2.0);
                         this.object.add(wallObject);
-                        const door = new Decor({ url: './models/gltf/lobby.glb', scale: new THREE.Vector3(0.5, 1, 0.5) }, (doorObject) => {
+                        const door = new Decor({ url: 'assets/models/gltf/lobby.glb', scale: new THREE.Vector3(0.5, 1, 0.5) }, (doorObject) => {
                             doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                             doorObject.rotateY(Math.PI);
                             this.object.add(doorObject); // Add to the scene
@@ -152,6 +177,18 @@ export default class Maze {
             xhr => this.onProgress(this.url, xhr),
             error => this.onError(this.url, error)
         );
+    }
+    async fetchRoomNum(description) {
+        try {
+            const response = await fetch('https://localhost:5001/api/SurgeryRooms');
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('There was an error fetching the room number:', error);
+        }
     }
     createMatrix(N, X, Y) {
 		const zeroMatrix = this.replaceWithZero(N);

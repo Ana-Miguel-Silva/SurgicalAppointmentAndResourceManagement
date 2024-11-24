@@ -378,29 +378,29 @@ export default class ThumbRaiser {
     }
 
     setViewMode(multipleViews) { // Single-view mode: false; multiple-views mode: true
-        this.multipleViewsCheckBox.checked = multipleViews;
+        this.multipleViewsCheckBox.checked = false;
         this.arrangeViewports(this.multipleViewsCheckBox.checked);
     }
 
     setUserInterfaceVisibility(visible) {
-        this.userInterfaceCheckBox.checked = visible;
-        this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
-        this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
-        this.userInterface.setVisibility(visible);
+        this.userInterfaceCheckBox.checked = false;
+        this.viewsPanel.style.visibility = false ? "visible" : "hidden";
+        this.subwindowsPanel.style.visibility = false ? "visible" : "hidden";
+        this.userInterface.setVisibility(false);
     }
 
     setMiniMapVisibility(visible) { // Hidden: false; visible: true
-        this.miniMapCheckBox.checked = visible;
+        this.miniMapCheckBox.checked = false;
     }
 
     setHelpVisibility(visible) { // Hidden: false; visible: true
-        this.helpCheckBox.checked = visible;
-        this.helpPanel.style.visibility = visible ? "visible" : "hidden";
+        this.helpCheckBox.checked = false;
+        this.helpPanel.style.visibility = false ? "visible" : "hidden";
     }
 
     setStatisticsVisibility(visible) { // Hidden: false; visible: true
-        this.statisticsCheckBox.checked = visible;
-        this.statistics.dom.style.visibility = visible ? "visible" : "hidden";
+        this.statisticsCheckBox.checked = false;
+        this.statistics.dom.style.visibility = false ? "visible" : "hidden";
     }
 
     windowResize() {
@@ -804,7 +804,6 @@ export default class ThumbRaiser {
                 const viewport = camera.getViewport();
                 this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
                 this.renderer.render(this.scene3D, camera.object);
-                this.renderer.render(this.scene2D, this.camera2D);
                 this.renderer.clearDepth();
             }
 
@@ -814,7 +813,6 @@ export default class ThumbRaiser {
                 this.player.object.visible = true;
                 const viewport = this.miniMapCamera.getViewport();
                 this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-                this.renderer.render(this.scene3D, this.miniMapCamera.object);
                 this.renderer.render(this.scene2D, this.camera2D);
             }
         }

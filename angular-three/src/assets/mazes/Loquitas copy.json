@@ -1,6 +1,6 @@
 {
-    "groundTextureUrl": "./textures/ground.jpg",
-    "wallTextureUrl": "./textures/wall.jpg",
+    "groundTextureUrl": "assets/textures/ground.jpg",
+    "wallTextureUrl": "assets/textures/wall.jpg",
     "size": { "width": 10, "height": 10 },
     "map": [
         [3, 3, 2, 2, 2, 2, 1, 2, 2, 3, 1],

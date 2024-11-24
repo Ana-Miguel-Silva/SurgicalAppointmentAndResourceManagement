@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 export function merge(object, ...sources) {
     return _.mergeWith(object, ...sources, (objValue, srcValue, key, object, source) => {
         if (_.isArray(objValue)) { // Arrays must be concatenated

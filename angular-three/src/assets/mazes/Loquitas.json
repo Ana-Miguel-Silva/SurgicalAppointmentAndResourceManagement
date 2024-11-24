@@ -1,6 +1,7 @@
 {
-    "groundTextureUrl": "./textures/ground.jpg",
-    "wallTextureUrl": "./textures/wall.jpg",
+    "groundTextureUrl": "assets/textures/ground.jpg",
+    "wallTextureUrl": "assets/textures/wall.jpg",
+    "windowWallTextureUrl": "assets/textures/window.jpg",
     "size": { "width": 4, "height": 5 },
     "room_number": 2 ,
     "rooms_per_row": 2,
