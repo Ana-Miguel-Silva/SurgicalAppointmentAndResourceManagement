@@ -1487,7 +1487,7 @@
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Preparation Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.patientPreparation)" >
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration?.patientPreparation)" >
                   </div>
                 </div>
       
@@ -1495,7 +1495,7 @@
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Surgery Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.surgery)">
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration?.surgery)">
                   </div>
                 </div>
       
@@ -1504,7 +1504,7 @@
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Cleaning Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.cleaning)"   >
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration?.cleaning)"   >
                   </div>
                 </div>
       

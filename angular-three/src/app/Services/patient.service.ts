@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class PatientService {
-  private apiUrl = 'https://localhost:5001';
+  private apiUrl = 'https://localhost:5001/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

@@ -342,7 +342,8 @@ export class PatientComponent {
       this.errorMessage = 'You are not logged in!';
       this.router.navigate(['/']);
     }
-    this.viewPatient(); // Fetch all profiles on component initialization
+
+    this.viewPatient();     
   }
 
 
