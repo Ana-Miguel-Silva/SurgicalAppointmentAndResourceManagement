@@ -1,4 +1,4 @@
-@startuml 5.1.1
+@startuml 5.1.21
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -12,19 +12,25 @@ participant "Repository" as REPO <<component>>
 participant "MySql DB" as BDD <<component>>
 
 
-
- -> CTRL : Create Post Request
+-> CTRL: Submit Operation Type Put Request
 activate CTRL
-CTRL -> SERV: Call AddAsync method
 
+CTRL -> SERV: Call UpdateAsync method
 activate SERV
-SERV -> DOM: create User through CreatingUserDto
 
+SERV -> REPO: Get OperationType through DTO Id
+activate REPO
+
+REPO --> SERV: Return OperationType
+deactivate REPO
+
+SERV -> DOM: Update OperationType with OperationTypeDTO Info
 activate DOM
-DOM --> SERV : UserDTO
+
+DOM --> SERV: Return OperationType
 deactivate DOM
 
-SERV -> REPO : Save new User
+SERV -> REPO : Save updated Operation Type
 activate REPO
 
 REPO -> BDD : Save Entity
@@ -36,23 +42,17 @@ deactivate BDD
 REPO --> SERV : Return Success
 deactivate REPO
 
-SERV -> SERV : Call SendPasswordSetupEmail
-
-SERV -> DOM : Create UserDTO
+SERV -> DOM : Create OperationTypeDTO
 activate DOM
 
-DOM --> SERV : Return UserDTO
+DOM --> SERV : Return Updated DTO
 deactivate DOM
-SERV --> CTRL : Return UserDTO
 
-
+SERV --> CTRL : Return Updated DTO
 deactivate SERV
-<-- CTRL : success
 
+<-- CTRL  : Return Updated DTO
 deactivate CTRL
-
-
-
 
 
 @enduml

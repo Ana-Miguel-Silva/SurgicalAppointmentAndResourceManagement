@@ -1,221 +1,212 @@
-# US 6.1.1
+# US 6.2.19
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to edit existing operation types, to update or correct information. 
 This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 6.1.1** As an Admin, I want to register new backoffice users (e.g., doctors, nurses,
-technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions.
-
+**US 6.2.19** As an Admin, I want to edit existing operation types, so that I can update or correct
+information about the procedure.
 
 **Acceptance Criteria:** 
 
-- Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal
-process, not via self-registration.
+- Admins can search for and select an existing operation type to edit.
 
-- Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
+- Editable fields include operation name, required staff by specialization, and estimated
+duration.
 
-- Registered users receive a one-time setup link via email to set their password and activate their
-account.
+- Changes are reflected in the system immediately for future operation requests.
 
-- The system enforces strong password requirements for security.
-
-- A confirmation email is sent to verify the user’s registration.
-
-- The user’s IAM record is linked to the respective user and staff/patient record
-in the backoffice data.
-
-- All users authenticate using the IAM.
-
-- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character.
-
-- Account locked if log in errror 5 times.
-
+- Historical data is maintained, but new operation requests will use the updated operation type
+information.
 
 **Customer Specifications and Clarifications:**
 
-> **Question:** Can the user only be a staff member or patient, or can they be something else? 
+> **Question:**Can you clarify? "Historical data is maintained, but new operation requests will use the updated operation type information."
 >
->**Answer:** The users of the system are the administrators, nurses and doctors, as well as the patients (with limited functionality).
+> **Answer:** It means that if an operation type is changed we need to keep track of its changes. For instance,Operation Type "A" is defined as taking 30 minutes preparation, 1h surgery and 30 minutes cleaning with a team of 1 doctor with specialization X and one nurse with specialization Y some operations are requested, scheduled and performed based on this definition after sometime, the hospital changes its procedures and defines the operation type "A" as needing 30 min prep, 30 min. surgery and 30 min. cleaning, with a team of 3 doctors and one nurse.New operations will be requested, scheduled and performed using this new definition, however, we need to keep historical data, so that if the admin wants to know the details of an operation in the past, the system must show the operation type as it was defined at the time of the operation request.
 
 
-> **Question:** Does the user have contact information, email and phone, both are mandatory?
+> **Question:** If the operation type already has a specialization associated, how can we have staff with different specializations?
+>What do you understand by specialization? Is it cardiology/orthopedics? Or anaesthesist/circulating/...
 >
->**Answer:** Yes.
-
-
->**Question:**  Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.". Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
->
->**Answer:** What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
+> **Answer:** The operation is mainly associated with one specialization, but for a specific operation it might require a team with multiple specializations.
+>Cardiology, orthopedics, anaesthesist are specializations that either doctors or nurses can have.
+>The circulating technician is a different type of medical professional. for now the system doesn't need to support technicians
 
 
 
-> **Question:** Can you clarify the username and email requirements?
->
->**Answer:**The username is the "official" email address of the user. for backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an easy configuration of the DNS domain (e.g., environment variable).
->For patients, the username is the email address provided in the patient record and used as identity in the external IAM. for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That email address will be his username when he self-registers in the system
 
 
-
->**Question**: What defines session inactivity?
->
-> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
 
 **Dependencies/References:**
 
-* There are no dependencies to other US.
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
+backoffice system with appropriate permissions."
+
+* There is a dependency to "5.1.20 As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures in the system."
+
+* There is a dependency to "6.2.18 As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures in the system."
+
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Username
-    * Role
+    * Name
+    * RequiredStaff
+    * EstimatedDuration
 
 
+* Selected data:
+    
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-
+* Display the success of the operation and the changed data.
 
 ## 3. Analysis
 
->**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
+> **Question 1:**
 >
-> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
+> **Answer 1:**
 
-
-
-[//]: # (### 3.1. Domain Model)
-
-[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
 
 ## 4. Design
 
 
-**Domain Class/es:** Email, User, UserDto, Role
+**Domain Class/es:** OperationTypes
 
-**Controller:** UserController
+**Controller:** OperationTypesController
 
-**UI:** 
+**UI:** Admin.component.html
 
-**Repository:**	UserRepository
+**Repository:**	OperationTypesRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** OperationTypesService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+#### Edit OperationType
 
-![Register User](sequence-diagram-1.svg "Register User")
+**Sequence Diagram Level 1**
 
-**Register User Level 2**
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
-![Register User](sequence-diagram-2.svg "Register User")
+**Sequence Diagram Level 2**
 
-**Register User Level 3**
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
 
-![Register User](sequence-diagram-3.svg "Register User")
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "Edit OperationType")
 
 
 
-[//]: # (### 4.2. Class Diagram)
 
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
 
-[//]: # ()
-[//]: # (### 4.4. Tests)
+### 4.2. Applied Patterns
 
-[//]: # ()
-[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
+### 4.3. Tests
 
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (**Before Tests** **Setup of Dummy Users**)
+Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
-[//]: # ()
-[//]: # (```)
 
-[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
+**Json**
 
-[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
+```
+    {
+        "id": "{{operationTypeId}}",
+        "name": "GYNECOLOGY",
+        "requiredStaff": [
+            {
+                "quantity": 6,
+                "specialization": "Lung",
+                "role": "Doctor"
+            },
+            {
+                "quantity": 3,
+                "specialization": "Heart",
+                "role": "Doctor"
+            },
+            {
+                "quantity": 2,
+                "specialization": "Lung",
+                "role": "Nurse"
+            }
+        ],
+        "estimatedDuration": {
+            "patientPreparation": "00:30:00",
+            "surgery": "02:30:00",
+            "cleaning": "00:55:00"
+        }
+}
 
-[//]: # (    })
+```
 
-[//]: # ()
-[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
+**Test 1:**
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
 
-[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
+```
+// Check that the response status code is 200 (OK)
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+````
 
-[//]: # (    })
 
-[//]: # ()
-[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
-
-[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
-
-[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # ()
-[//]: # (**Test 1:** *Verifies if Users are equals*)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test)
-
-[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
-
-[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
-
-[//]: # (})
-
-[//]: # (````)
-
-[//]: # ()
 [//]: # (## 5. Implementation)
 
 [//]: # ()
 [//]: # ()
-[//]: # (### Methods in the UsersController)
+[//]: # (### Methods in the ListUsersController)
 
-[//]: # (* **public async Task<ActionResult<UserDto>> Create&#40;CreatingUserDto dto&#41;**  this method creates a user)
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
 [//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
+
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
+
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
+
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
+
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
+
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
+
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
+
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
+
 [//]: # ()
 [//]: # ()
 [//]: # (## 6. Integration/Demonstration)
 
-[//]: # ()
 
 
 [//]: # (## 7. Observations)
