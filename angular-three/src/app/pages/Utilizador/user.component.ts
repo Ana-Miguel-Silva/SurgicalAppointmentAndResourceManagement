@@ -23,6 +23,8 @@ export class UserComponent {
 
 
 
+    
+
       this.myForm = this.fb.group({
         name: ['', Validators.required],
         dateOfBirth: ['', Validators.required],
@@ -33,6 +35,8 @@ export class UserComponent {
         agree: [false, Validators.requiredTrue]
       });
 
+
+      
 
 
       // Obtém o e-mail do Google passado pela URL
@@ -49,6 +53,15 @@ export class UserComponent {
     }
     myForm: FormGroup;
     errorMessage: string | null = null;
+
+    ngOnInit() {
+      const token = this.authService.getToken();
+  
+      if (!token) {
+        this.errorMessage = 'You are not logged in!';
+        this.router.navigate(['/']);
+      }
+    }
 
 
     openModal(modalId: string): void {
@@ -101,14 +114,7 @@ export class UserComponent {
 
   onSubmitPatient(){};
 
-  /*ngOnInit() {
-    const token = this.authService.getToken();
-
-    if (!token) {
-      this.errorMessage = 'You are not logged in!';
-      this.router.navigate(['/']);
-    }
-  }*/
+  
 
 
 }
