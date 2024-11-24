@@ -11,17 +11,6 @@
 :- use_module(library(http/http_json)).
 :- use_module(library(http/json)).
 
-
-:-dynamic availability/3.
-:-dynamic agenda_staff/3.
-:-dynamic agenda_staff1/3.
-:-dynamic agenda_operation_room/3.
-:-dynamic agenda_operation_room1/3.
-:-dynamic agenda_operation_room2/3.
-:-dynamic better_sol/5.
-:-dynamic n_staff_op/2.
-
-
 % Gerir Servidor
 server(Port) :-
         http_server(http_dispatch, [port(Port)]).

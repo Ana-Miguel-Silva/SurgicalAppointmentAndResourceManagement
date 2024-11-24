@@ -16,8 +16,18 @@ export class PatientService {
 getPatientById(id: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
 
     return this.http.get<any>(`${this.apiUrl}/Patients/${id}`, { headers });
+}
+
+getAllPatientProfiles(params: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any[]>(`${this.apiUrl}/Patients/search`, { headers, params })
+
+  //return this.http.get<any>(`${this.apiUrl}/Patients/${id}`, { headers });
 }
 
 

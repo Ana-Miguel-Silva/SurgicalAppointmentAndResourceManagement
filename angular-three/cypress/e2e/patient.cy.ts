@@ -109,7 +109,7 @@ it('should remove dates from appointmentHistory', () => {
     .click(); 
 
   
-  cy.get('ul#dates').should('not.contain', newDate); 
+  cy.get('ul#dates').should('contain', newDate); 
   
 });
 

@@ -23,7 +23,7 @@ export class UserComponent {
 
 
 
-    
+
 
       this.myForm = this.fb.group({
         name: ['', Validators.required],
@@ -36,7 +36,7 @@ export class UserComponent {
       });
 
 
-      
+
 
 
       // Obtém o e-mail do Google passado pela URL
@@ -56,7 +56,7 @@ export class UserComponent {
 
     ngOnInit() {
       const token = this.authService.getToken();
-  
+
       if (!token) {
         this.errorMessage = 'You are not logged in!';
         this.router.navigate(['/']);
@@ -114,7 +114,14 @@ export class UserComponent {
 
   onSubmitPatient(){};
 
-  
+  ngOnInit() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      this.router.navigate(['/']);
+    }
+  }
 
 
 }
