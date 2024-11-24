@@ -42,7 +42,7 @@ interface UpdateOperationRequestDto {
 })
 export class DoctorComponent implements OnInit {
   @ViewChild('myCanvas') private canvasRef!: ElementRef
-  thumbRaiser: any; 
+  thumbRaiser: any;
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -54,8 +54,8 @@ export class DoctorComponent implements OnInit {
       {}, // General Parameters
       {scale: new THREE.Vector3(1.0, 0.5, 1.0)}, // Maze parameters
       {}, // Player parameters
-      { 
-        ambientLight: { intensity: 0.1 }, 
+      {
+        ambientLight: { intensity: 0.1 },
         pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) },
         pointLight2: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) }
       }, // Lights parameters
@@ -78,13 +78,14 @@ export class DoctorComponent implements OnInit {
     this.initialize();
     this.animate();
 
-    
+
     const canvas  = document.querySelectorAll('canvas')[2];
     const targetDiv = document.getElementById('canvasContainer');
     if (targetDiv) {
         targetDiv.appendChild(canvas);
     } else {
       console.error('Target div not found.');
+
     }
   }*/
 
@@ -123,7 +124,13 @@ export class DoctorComponent implements OnInit {
   ngOnInit() {
     this.getAllOperationRequests();
   }
-  
+
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); 
+  }
+
 
   getAllOperationRequests() {
     const token = this.authService.getToken();
@@ -147,25 +154,25 @@ export class DoctorComponent implements OnInit {
     });
   }
 
-  
+
   applyFilter() {
     this.filteredRequests = this.operationRequests.filter(request => {
-      const matchesPriority = this.filter.priority 
-        ? request.priority.toLowerCase() === this.filter.priority.toLowerCase() 
+      const matchesPriority = this.filter.priority
+        ? request.priority.toLowerCase() === this.filter.priority.toLowerCase()
         : true;
-  
-      const matchesOperationType = this.filter.operationTypeName 
-        ? request.operationTypeName.toLowerCase().includes(this.filter.operationTypeName.toLowerCase()) 
+
+      const matchesOperationType = this.filter.operationTypeName
+        ? request.operationTypeName.toLowerCase().includes(this.filter.operationTypeName.toLowerCase())
         : true;
-  
-      const matchesEmailPatient = this.filter.emailPatient 
-        ? request.emailPatient.toLowerCase().includes(this.filter.emailPatient.toLowerCase()) 
+
+      const matchesEmailPatient = this.filter.emailPatient
+        ? request.emailPatient.toLowerCase().includes(this.filter.emailPatient.toLowerCase())
         : true;
-  
-      const matchesEmailDoctor = this.filter.emailDoctor 
-        ? request.emailDoctor.toLowerCase().includes(this.filter.emailDoctor.toLowerCase()) 
+
+      const matchesEmailDoctor = this.filter.emailDoctor
+        ? request.emailDoctor.toLowerCase().includes(this.filter.emailDoctor.toLowerCase())
         : true;
-  
+
       return matchesPriority && matchesOperationType && matchesEmailPatient && matchesEmailDoctor;
     });
   }

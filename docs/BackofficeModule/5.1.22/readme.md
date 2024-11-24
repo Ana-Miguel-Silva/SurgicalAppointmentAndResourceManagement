@@ -24,21 +24,12 @@ As part of the development of the software system, it is necessary to implement 
 
 **Input Data:**
 
-* Typed data:
-    * First Name
-    * Last Name
-    * E-mail
-
-
 * Selected data:
-    * User 
-    * Role
+    * OperationType
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
-* Display the success of the operation and the list the users of the backoffice (List Users)
-* Display the success of the operation and the disable or enable action on the specific user (Enable/Disable User)
+* Display the success of the operation
 
 ## 3. Analysis
 

@@ -226,7 +226,7 @@ namespace DDDSample1.ApplicationService.Appointments
                 {
                     list.Add(new AppointmentSlot(new Slot(dateTime.AddMinutes(staff.Start), dateTime.AddMinutes(staff.End)), new StaffGuid(staff.StaffId + "6dba-0b3d-4248-9c44-ccde4b07d1eb")));
 
-                    formatedString += "\n" + staff.StaffId + " | Schedule: " + dateTime.AddMinutes(operation.Value.Start).TimeOfDay + " - " + dateTime.AddMinutes(operation.Value.End).TimeOfDay;
+                    formatedString += "\n" + staff.StaffId + " | Schedule: " + dateTime.AddMinutes(staff.Start).TimeOfDay + " - " + dateTime.AddMinutes(staff.End).TimeOfDay;
 
                 }
 

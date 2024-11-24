@@ -89,7 +89,7 @@ namespace DDDSample1.ApplicationService.Staff
 
             await this._repo.AddAsync(staff);
 
-            //await this._unitOfWork.CommitAsync();
+            await this._unitOfWork.CommitAsync();
      
 
             if (staff == null)

@@ -4,6 +4,7 @@ import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFor
 import { ModalService } from '../../../Services/modal.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
+import { AppointmentService } from '../../../Services/appointment.service';
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -47,11 +48,14 @@ export class AdminComponent {
     }
   };
 
+  scheduledAppointmentMessage: string = '';
+
   private staffUrl = `${environment.apiBaseUrl}/Staff`;
   private patientUrl = `${environment.apiBaseUrl}/Patients`;
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
-    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private router: Router) {
+    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService ,
+    private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -136,11 +140,11 @@ export class AdminComponent {
     this.patientForm = this.fb.group({});
   }
 
-  selectedStaffId: number | null = null;
+  selectedStaffId: string | null = null;
   selectOperationTypeId: string | null = null;
   selectedPatientEmail: string | null = null;
 
-  selectStaff(id: number) {
+  selectStaff(id: string) {
     this.selectedStaffId = this.selectedStaffId === id ? null : id;
   }
 
@@ -246,7 +250,7 @@ export class AdminComponent {
 
 
   formatTimeToISO(time: string): string {
-    if (!time) return ''; // Return an empty string if no value exists
+    if (!time) return ''; // Return an empty strig if no value exists
 
     // If the time is already in "HH:mm:ss" format, return it
     const timeRegex = /^\d{2}:\d{2}(:\d{2})?$/; // Matches "HH:mm" or "HH:mm:ss"
@@ -266,6 +270,39 @@ export class AdminComponent {
     }
   }
 
+
+  onScheduleAppointment() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.appointmentService.scheduleAppointments().subscribe({
+      next: (response: any) => {
+        this.scheduledAppointmentMessage = response.message.replace(/\n/g, '<br>');
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Appointment scheduled successfully!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      },
+      error: (error) => {
+        console.error('Error scheduling appointment:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to schedule appointment.',
+        });
+      },
+    });
+  }
 
   onCreateOperationType(operationTypeData: CreatingOperationTypeDto) {
     const token = this.authService.getToken();

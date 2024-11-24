@@ -86,7 +86,6 @@ namespace DDDSample1.ApplicationService.OperationRequests
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestUIDto dto, string authUserEmail)
         {
-            //verifies if the auth user has a staff profile
             var doctor = await CheckDoctorAsync(authUserEmail);
 
             var operationType = await CheckOperationTypeAsync(dto.OperationTypeName);
