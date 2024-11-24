@@ -17,6 +17,7 @@ describe('AdminComponent', () => {
   });
 
  
+ 
 
     describe('Patient Registration Modal', () => {
       beforeEach(() => {
@@ -60,7 +61,7 @@ describe('AdminComponent', () => {
     
     
 
-    /*describe('Register Patient Form', () => {
+    describe('Register Patient Form', () => {
       beforeEach(() => {
          // Supondo que o formulário está na página inicial
         cy.get('.selectionDiv').contains('Register Patient Profile').click(); // Abrir o modal
@@ -93,10 +94,10 @@ describe('AdminComponent', () => {
         cy.contains('Patient adicionado com sucesso!').should('be.visible');
 
       });
-    });*/
+    });
 
 
-    /*describe('Admin Page Tests', () => {
+    describe('Admin Page Tests', () => {
       it('Should open the "Register Patient Profile" modal when clicked', () => {
         // Abrir o modal de registro de paciente
         cy.get('.selectionDiv').contains('List Patient Profile').click();
@@ -133,87 +134,107 @@ describe('AdminComponent', () => {
         // Garantir que o paciente foi selecionado (verificando se a linha tem a classe 'selected-row')
         //cy.get('tr').contains('1').should('have.class', 'selected-row');
       });
-    });*/
-    
-    
-    
-
-
-
-    /*describe('Patient Registration Form Validation', () => {
-      beforeEach(() => {
-         // Supondo que o formulário está na página inicial
-        cy.get('.selectionDiv').contains('Register Patient Profile').click(); // Abrir o modal
-      });
-    
-      it('Should show validation errors when required fields are not filled', () => {
-        // Não preencher nada e tentar enviar
-        cy.get('button[type="submit"]').click();
-    
-        // Verificar se os erros de validação aparecem
-        cy.get('.invalid-feedback').should('be.visible');
-      });
-    
-      it('Should show error for invalid email format', () => {
-        // Preencher um email inválido
-        cy.get('#validationCustomEmail').type('invalid-email');
-        
-        // Verificar erro de email inválido
-        cy.get('#validationCustomEmail').parent().find('.invalid-feedback').should('be.visible');
-      });
     });
-    
-    describe('Remove Appointment Date', () => {
-      beforeEach(() => {
-         // Supondo que o formulário está na página inicial
-        cy.get('.selectionDiv').contains('Register Patient Profile').click(); // Abrir o modal
-      });
-    
-      it('Should remove an appointment date from the list', () => {
-        // Adicionar uma data
-        cy.get('#input-date').type('2023-01-01').trigger('change');
-        
-        // Verificar se a data foi adicionada
-        cy.get('#dates').should('contain', '2023-01-01');
-        
-        // Remover a data
-        cy.get('#dates').contains('2023-01-01').parent().find('.delete-button').click();
-        
-        // Verificar se a data foi removida
-        cy.get('#dates').should('not.contain', '2023-01-01');
-      });
-    });*/
 
-
-
-    /*describe('Form Submit Button', () => {
-      beforeEach(() => {
-         // Supondo que o formulário está na página inicial
-        cy.get('.selectionDiv').contains('Register Patient Profile').click(); // Abrir o modal
-      });
-    
-      it('Should disable submit button when form is invalid', () => {
-        // Não preencher nada
-        cy.get('button[type="submit"]').should('be.disabled');
-        
-        // Preencher campos obrigatórios para torná-lo válido
-        cy.get('#validationCustom01').type('John Doe');
-        cy.get('#validationCustom02').type('1990-01-01');
-        cy.get('#validationCustomEmail').type('johndoe@example.com');
-        
-        // Verificar se o botão é habilitado
-        cy.get('button[type="submit"]').should('not.be.disabled');
-      });
-    });*/
-    
-    
-    
-
-
-
-
+    describe('View Patient Modal Tests', () => {
   
+      it('Deve abrir o modal de visualização do paciente', () => {
+        cy.get('.selectionDiv').contains('List Patient Profile').click();
+        cy.get('td').first().click(); // Seleciona o primeiro paciente da lista
+        cy.contains('View').click();
+    
+        cy.get('#viewPatientModal').should('be.visible'); // Verifica que o modal está visível
+     
+        cy.get('#viewPatientModal').within(() => {
+          cy.get('table').each(($table) => {
+            cy.wrap($table).find('tbody tr').should('have.length.greaterThan', 0); // Verifica que há linhas na tabela
+          });
+        });
+    
+        cy.get('#viewPatientModal').find('.close').click();
+        cy.get('#viewPatientModal').should('not.be.visible');
+      });
+  
+    });
+  
+
+
+   describe('Update Patient Modal Tests', () => {
+      it('Deve abrir o modal de visualização do paciente', () => {
+      cy.get('.selectionDiv').contains('List Patient Profile').click();
+      cy.get('td').first().click(); // Seleciona o primeiro paciente da lista
+      cy.contains('Edit').click();
+  
+        cy.get('#UpdatePatientModal').should('be.visible'); // Verifica que o modal está visível
+
+        cy.get('#UpdatePatientModal').within(() => {
+          const newDate = '2024-12-25';
+          cy.get('#input-date').type(newDate).trigger('change');
+          cy.get('#dates li').contains(newDate).should('exist'); // Verifica se a nova data foi adicionada
+        });
+
+        cy.get('#UpdatePatientModal').within(() => {
+          const newAllergy = 'Pollen';
+          cy.get('#input-tag').type(`${newAllergy}{enter}`);
+          cy.get('#tags li').contains(newAllergy).should('exist'); // Verifica se a nova alergia foi adicionada
+        });
+
+        cy.get('#UpdatePatientModal').find('.btn-primary').click();
+
+        cy.get('#UpdatePatientModal').find('.close').click();
+        cy.get('#UpdatePatientModal').should('not.be.visible');
+        cy.contains('Patient atualizado com sucesso!').should('be.visible');
+      });
+  
+  });
+    
+  describe('Desativar Paciente', () => {
+    beforeEach(() => {
+      // Navegar para a página com o modal
+      // Abrir o modal
+      cy.get('#listPatientModal').should('be.hidden');
+      cy.get('.selectionDiv').contains('List Patient Profile').click();
+      cy.get('#listPatientModal').should('be.visible');
+    });
+  
+    it('Deve exibir aviso ao tentar desativar sem paciente selecionado', () => {
+      cy.contains('Deactivate').click(); // Botão Desativar
+      cy.get('.swal2-toast').should('contain', 'Por favor seleciona um Patient.');
+    });
+  
+    it('Deve desativar paciente com sucesso', () => {
+      // Simular paciente ativo
+      cy.get('td').first().click(); // Seleciona o primeiro paciente da lista
+  
+      // Iniciar desativação
+      cy.contains('Deactivate').click();
+
+      cy.get('.swal2-confirm').click(); // Confirmar no modal do Swal
+  
+      // Validar sucesso
+      cy.get('.swal2-toast').should('contain', 'Perfil desativado com sucesso');
+    });
+  
+    /*it('Deve exibir erro ao falhar na desativação', () => {
+      // Simular erro de servidor
+      cy.intercept('DELETE', '*api/patients/test@example.com', {
+        statusCode: 500,
+        body: { message: 'Erro no servidor' },
+      });
+  
+      // Simular paciente ativo
+      cy.contains('Deactivate').click();
+      cy.get('.swal2-confirm').click(); // Confirmar no modal do Swal
+  
+      // Validar erro
+      cy.get('.swal2-toast').should('contain', 'Não foi possível desativar o perfil');
+    });*/
+  });
+  
+    
+
     /*it('should allow creating a new operation type', () => {
+
       // Visit the page and ensure the modal button is visible
       cy.visit('http://localhost:4200/admin');
   
