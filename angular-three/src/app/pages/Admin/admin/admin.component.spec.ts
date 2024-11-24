@@ -35,9 +35,9 @@ describe('AdminComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         AdminComponent,
-        HttpClientTestingModule, 
-        FormsModule, 
-        CommonModule, 
+        HttpClientTestingModule,
+        FormsModule,
+        CommonModule,
       ],
       providers: [
         { provide: OperationTypesService, useClass: MockOperationTypesService },
@@ -77,7 +77,7 @@ describe('AdminComponent', () => {
       },
     ]));
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-  
+
     const newOperationType = {
       name: 'Appendectomy',
       requiredStaff: [
@@ -90,23 +90,23 @@ describe('AdminComponent', () => {
         cleaning: '20 mins',
       },
     };
-  
+
     component.onCreateOperationType(newOperationType);
-  
+
     tick(500);
-  
+
     flush();
-  
+
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockOperationTypeService.createOperationTypes).toHaveBeenCalledWith(newOperationType);
   }));
 
   it('should open the create operation type modal', () => {
-    component.isModalOpen = () => true;  
-    
+    component.isModalOpen = () => true;
+
     component.openModal('createOperationTypeModal');
     fixture.detectChanges();
-    
+
     const modal = fixture.nativeElement.querySelector('#createOperationTypeModal');
     expect(modal).toBeTruthy();
     expect(modal.style.display).toBe('block');

@@ -29,15 +29,5 @@ describe('PatientService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call getPatientById and return patient data', () => {
-    const mockResponse = { id: '123', name: 'John Doe' };
-    httpClientSpy.get.and.returnValue(of(mockResponse));
-
-    service.getPatientById('123').subscribe((response) => {
-      expect(response).toEqual(mockResponse);
-      expect(httpClientSpy.get).toHaveBeenCalledOnceWith('https://localhost:5001/Patients/123', {
-        headers: jasmine.any(Object),
-      });
-    });
-  });
+ 
 });

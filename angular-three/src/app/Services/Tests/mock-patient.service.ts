@@ -1,73 +1,93 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { PatientService } from '../patient.service';
-//import { Patient } from '../../pages/Patient/patient/patient.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class MockPatientService extends PatientService{
+export class MockPatientService {
+  private patients = [
+    {
+      
+        id: "341736fd-0291-4b7f-bede-63f7723cc6e0",
+        name: {
+          "firstName": "patient",
+          "middleNames": "",
+          "lastName": "patient"
+        },
+        email: { 
+          "fullEmail": "avlismana@gmail.com" 
+        },
+        userEmail: { 
+          "fullEmail": "avlismana@gmail.com" 
+        },
+        phone: { 
+          "number": "966783434" 
+        },
+        gender: "Female",
+        nameEmergency: "default dd",
+        emailEmergency: { 
+          "fullEmail": "default@gmail.com" 
+        },
+        phoneEmergency: { 
+          "number": "999999999" 
+        },
+       allergies: ["apple"],
+        appointmentHistory: ["2024-11-06"],
+        medicalRecordNumber: { 
+          "number": "202411000001" 
+        },
+        dateOfBirth: "1994-11-19T17:23:59.346839"
+      
+    },
+  ];
 
- 
-  public mockPatient = {
-    id: "11111111111",
-    name: {
-      firstName: 'John',
-      middleNames: 'Michael',
-      lastName: 'Doe'
-    },
-    dateOfBirth: '1990-01-01',
-    medicalRecordNumber: 123456,
-    email:'johndoe@example.com',
-    userEmail: 'johndoe@example.com',
-    phone: {
-      number: '123456789'
-    },
-    gender: 'Male',
-    emergencyContactName: 'Jane Doe',
-    emergencyContactEmail:  'janedoe@example.com'
-    ,
-    emergencyContactPhone: {
-      number: '987654321'
-    },
-    appointmentHistory: ['2023-11-01', '2023-11-10'],
-    allergies: ['Peanuts', 'Dust'],
-  };
-  
-  override getPatientByEmail(email: string | undefined): Observable<any> {
-    if (email === 'johndoe@example.com') {
-      return of(this.mockPatient);
+  getPatientById(id: string): Observable<any> {
+    const patient = this.patients.find((p) => p.id === id);
+    return patient ? of(patient) : throwError(() => new Error('Patient not found'));
+  }
+
+  getPatientByEmail(email: string): Observable<any> {
+    const patient = this.patients.find((p) => p.email.fullEmail === email);
+    return patient ? of(patient) : throwError(() => new Error('Patient not found'));
+  }
+
+  registerPatient(formData: any): Observable<any> {
+    const newPatient = {
+      ...formData,
+      id: String(Date.now()), // Assign a mock ID
+    };
+    this.patients.push(newPatient);
+    return of(newPatient); // Return the newly created patient
+  }
+
+  updatePatient(selectedPatientEmail: string, updatedData: any): Observable<any> {
+    const patientIndex = this.patients.findIndex((p) => p.email.fullEmail === selectedPatientEmail);
+    if (patientIndex !== -1) {
+      this.patients[patientIndex] = {
+        ...this.patients[patientIndex],
+        ...updatedData,
+      };
+      return of(this.patients[patientIndex]); // Return the updated patient
     }
     return throwError(() => new Error('Patient not found'));
   }
 
-  override updatePatient(email: string | undefined, data: any): Observable<any> {
-    if (email === 'johndoe@example.com') {
-      // Simulate a successful update
-      return of('Patient updated successfully');
-    }
-    return throwError(() => new Error('Failed to update patient'));
+  confirmAction(actionId: string, selectedPatientEmail: string): Observable<any> {
+    // Example implementation that simulates confirming an action
+    return this.getPatientByEmail(selectedPatientEmail);
   }
 
-  override deactivatePatient(email: string | undefined): Observable<any> {
-    if (email === 'johndoe@example.com') {
-      // Simulate a successful deactivation
-      return of('Patient deactivated successfully');
+  deactivatePatient(selectedPatientEmail: string): Observable<any> {
+    const patientIndex = this.patients.findIndex((p) => p.email.fullEmail === selectedPatientEmail);
+    if (patientIndex !== -1) {
+      this.patients.splice(patientIndex, 1); // Remove the patient
+      return of({}); // Return success
     }
-    return throwError(() => new Error('Failed to deactivate patient'));
+    return throwError(() => new Error('Patient not found'));
   }
 
-  override confirmAction(actionId: string, email: string): Observable<any> {
-    if (actionId && email === 'johndoe@example.com') {
-      return of('Action confirmed successfully');
-    }
-    return throwError(() => new Error('Failed to confirm action'));
-  }
-
-  override confirmDeactivateAction(actionId: string): Observable<any> {
-    if (actionId) {
-      return of('Deactivation confirmed successfully');
-    }
-    return throwError(() => new Error('Failed to confirm deactivation'));
+  confirmDeactivateAction(actionId: string): Observable<any> {
+    // Example implementation that simulates confirming a deactivation
+    return of({ message: 'Deactivation confirmed for actionId: ' + actionId });
   }
 }

@@ -291,7 +291,7 @@
                   <tr *ngFor="let request of patientsProfiles; let i = index" (click)="selectPatient(request.email.fullEmail)" [ngClass]="{ 'selected-row': selectedPatientEmail === request.email.fullEmail }">
                     <td>{{ i + 1 }}</td>
                     <td><input class="selectRequest" type="radio" id="patient_{{ request.email.fullEmail }}" name="patientFormID" value="{{ request.email.fullEmail }}" [checked]="selectedPatientEmail === request.email.fullEmail" hidden>{{ request.medicalRecordNumber.number }} </td>
-                    
+
                     <td>{{ request.name.firstName }}</td>
                     <td>{{ request.name.lastName }}</td>
                     <td>{{ request.email.fullEmail }}</td>
@@ -1230,7 +1230,7 @@
                       <button type="button" class="btn btn-danger mt-4" (click)="removeStaff(i)">Remove</button>
                     </div>
               </div>
-              <button type="button" class="btn btn-secondary" (click)="addStaff()">Add Staff</button>
+              <button type="button" class="staff-entry" (click)="addStaff()">Add Staff</button>
             </div>
 
           <!-- Estimated Duration -->
@@ -1293,7 +1293,7 @@
 
           </div>
         </div>!-->
-        
+
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -1468,7 +1468,7 @@
       <span (click)="closeModal('UpdateOperationTypeModal')" class="close">&times;</span>
 
         <form [formGroup]="operationTypeUpdateForm" class="row g-3 needs-validation" novalidate="">
-          
+
           <div *ngIf="operationTypeUpdate" >
             <div  class="row g-3 needs-validation">
               <div class="col-md-12"></div>
@@ -1479,10 +1479,10 @@
                   </div>
                 </div>
                 <!--TODO: Meter os forms direito, para estarem no formato de leitora no .ts-->
-      
+
                 <div class="col-md-6"></div>
-      
-                
+
+
                 <div class="col-md-4" formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
@@ -1490,7 +1490,7 @@
                     <input type="time" class="form-control" formControlName="patientPreparation">
                   </div>
                 </div>
-      
+
                 <div class="col-md-4" formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
@@ -1498,8 +1498,8 @@
                     <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.surgery)" formControlName="surgery">
                   </div>
                 </div>
-      
-      
+
+
                 <div class="col-md-4"  formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
@@ -1507,9 +1507,9 @@
                     <input id="cleaning" type="time" class="form-control" value="{{operationTypeUpdate.estimatedDuration.cleaning}}" formControlName="cleaning">
                   </div>
                 </div>
-      
+
               <!-- <div class="col-md-2"></div>
-      
+
                 <div class="col-md-8">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
@@ -1535,9 +1535,9 @@
                     </tbody>
                   </table>
                 </div>
-      
-      
-      
+
+
+
                 <div class="col-md-2"></div>-->
 
                 <div class="col-md-12" formArrayName="requiredStaff">
@@ -1548,7 +1548,7 @@
                         <label for="quantity{{i}}">Quantity</label>
                         <input id="quantity{{i}}" formControlName="quantity" class="form-control" type="number" required />
                       </div>
-                
+
                       <!-- Specialization -->
                       <div class="col-md-12">
                         <label for="specialization_{{i}}" class="form-label">Specialization</label>
@@ -1573,7 +1573,7 @@
                           </div>
                         </div>
                       </div>
-                
+
                       <!-- Role -->
                       <div class="col-md-12">
                         <label for="role_{{i}}" class="form-label">Role</label>
@@ -1590,26 +1590,26 @@
                           </div>
                         </div>
                       </div>
-                
+
                       <button type="button" class="btn btn-danger" (click)="removeRequiredStaff(i)" style="margin-top:0.5cm;">Remove</button>
                     </div>
                   </div>
-                
+
                   <!-- Botão para adicionar mais staff -->
                   <button type="button" class="btn btn-outline-primary" (click)="addRequiredStaff()" style="margin-top:1cm;margin-bottom:0.2cm">Add Staff</button>
                 </div>
-                
-                
+
+
                 <!-- Botão para Adicionar Staff -->
-                
-
-                
 
 
 
 
 
-      
+
+
+
+
               </div>
 
 

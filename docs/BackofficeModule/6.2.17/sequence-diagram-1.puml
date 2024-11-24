@@ -1,21 +1,17 @@
-@startuml 5.1.1
+@startuml
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
+actor "Doctor" as AD
 participant "SAaRM System" as SYS <<system>>
 
 activate AD
 AD -> SYS: access page
 activate SYS
-SYS --> AD : data input
-deactivate SYS
-AD -> SYS : info to create user(email, username, role)
-activate SYS
-SYS --> AD : success and data
+SYS --> AD : list of OperationRequests
 
 deactivate SYS
 
