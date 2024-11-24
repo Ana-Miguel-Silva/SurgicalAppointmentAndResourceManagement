@@ -250,7 +250,7 @@ export class AdminComponent {
 
 
   formatTimeToISO(time: string): string {
-    if (!time) return ''; // Return an empty string if no value exists
+    if (!time) return ''; // Return an empty strig if no value exists
 
     // If the time is already in "HH:mm:ss" format, return it
     const timeRegex = /^\d{2}:\d{2}(:\d{2})?$/; // Matches "HH:mm" or "HH:mm:ss"
