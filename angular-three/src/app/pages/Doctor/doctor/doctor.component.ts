@@ -123,6 +123,12 @@ export class DoctorComponent implements OnInit {
   ngOnInit() {
     this.getAllOperationRequests();
   }
+
+  
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); 
+  }
   
 
   getAllOperationRequests() {
