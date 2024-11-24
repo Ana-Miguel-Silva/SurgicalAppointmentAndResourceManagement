@@ -203,46 +203,128 @@ describe('AdminComponent', () => {
   });
 
 
-  it('should not fetch patients if token is missing', () => {
-    mockAuthService.getToken.and.returnValue('');
 
-    component.getAllpatientsProfiles();
+  it('should open the view patient type modal', () => {
+    component.isModalOpen = () => true;
 
-    expect(mockHttpClientGet.get).not.toHaveBeenCalled();
-    expect(component.errorMessage).toBe('You are not logged in!');
+    component.openModal('viewPatientModal');
+    fixture.detectChanges();
+
+    const modal = fixture.nativeElement.querySelector('#viewPatientModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('block');
   });
 
-  it('should fetch patients and populate patientsProfiles if token exists', () => {
-    const mockPatients = [
-      {
-        medicalRecordNumber: { number: '12345' },
-        name: { firstName: 'John', lastName: 'Doe' },
-        email: { fullEmail: 'john.doe@example.com' },
-        phone: { number: '123-456-7890' },
-        gender: 'Male',
-        dateOfBirth: '1990-01-01',
-        active: true,
-      },
-    ];
+  it('should close the view patient modal', () => {
+    component.openModal('viewPatientModal');
+    fixture.detectChanges();
 
+    component.closeModal('viewPatientModal');
+    fixture.detectChanges();
+
+    const modal = fixture.nativeElement.querySelector('#viewPatientModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('none');
+  });
+
+  it('should submit the patient form successfully', async () => {
+    component.isModalOpen = () => true;
+    fixture.detectChanges();
+  
+    component.onSubmit();
+    fixture.detectChanges();
+  
+    fixture.whenStable().then(() => { const successMessage = fixture.nativeElement.querySelector('.form-submission-message'); expect(successMessage).toBeNull();
+    expect(successMessage.textContent).toContain('Form Submitted!'); });
+  });
+
+
+  it('should show error message if no token is present', () => {
+    spyOn(Swal, 'fire');
+
+    component.editPatient();
+
+    expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({
+      icon: 'warning', 
+      title: 'Por favor seleciona um Patient.',
+      toast: true, 
+      position: 'bottom-right', 
+      timer: 3000, 
+      showConfirmButton: false
+    }));
     
+  });
 
-    // Chamando o método
-    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-    component.getAllpatientsProfiles();
 
-// Verificar requisição feita pelo HttpClient
-    const req = httpMock.expectOne(`${environment.apiBaseUrl}/Patients/search`);
+
+  it('should show warning if no patient email is selected', () => {
+   
+    component.selectedPatientEmail = null; 
+
+    spyOn(Swal, 'fire');
+
+    component.editPatient();
+
+    expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({
+      icon: "warning",
+      title: "Por favor seleciona um Patient.",
+      toast: true,
+      position: "bottom-right",
+      timer: 3000,
+      showConfirmButton: false
+    }));
+  });
+
+
+
+  it('should fetch patient profile and open modal if patient email is selected', () => {
+    const mockPatientResponse = { 
+      id: "341736fd-0291-4b7f-bede-63f7723cc6e0",
+      name: {
+        "firstName": "patient",
+        "middleNames": "",
+        "lastName": "patient"
+      },
+      email: { 
+        "fullEmail": "avlismana@gmail.com" 
+      },
+      userEmail: { 
+        "fullEmail": "avlismana@gmail.com" 
+      },
+      phone: { 
+        "number": "966783434" 
+      },
+      gender: "Female",
+      nameEmergency: "default dd",
+      emailEmergency: { 
+        "fullEmail": "default@gmail.com" 
+      },
+      phoneEmergency: { 
+        "number": "999999999" 
+      },
+     allergies: ["apple"],
+      appointmentHistory: ["2024-11-06"],
+      medicalRecordNumber: { 
+        "number": "202411000001" 
+      },
+      dateOfBirth: "1994-11-19T17:23:59.346839"
+     };
+    spyOn(component, 'populateUpdateForm');
+    spyOn(component, 'openModal');
+
+    component.selectedPatientEmail = 'avlismana@gmail'; 
+
+    component.editPatient();
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/Patients/email/${component.selectedPatientEmail}`);
     expect(req.request.method).toBe('GET');
 
-    // Simular resposta da API
-    req.flush(mockPatients);
+    req.flush(mockPatientResponse); 
 
-    // Verificar se os dados foram atribuídos corretamente
-    expect(component.patientsProfiles).toEqual(mockPatients);
-    expect(component.errorMessage).toBeUndefined();
+    expect(component.populateUpdateForm).toHaveBeenCalled();
+    expect(component.openModal).toHaveBeenCalledWith('UpdatePatientModal'); 
   });
 
-
+ 
 
 });

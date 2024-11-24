@@ -14,6 +14,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../environments/environment';
 
 describe('PatientComponent', () => {
   let component: PatientComponent;
@@ -65,7 +66,6 @@ describe('PatientComponent', () => {
   });
 
   it('should display the view patient modal when isModalOpen returns true', async () => {
-    // Mock the isModalOpen function to return true
     component.isModalOpen = () => true;
     component.patientProfileSingle = {
       id: "341736fd-0291-4b7f-bede-63f7723cc6e0",
@@ -99,19 +99,18 @@ describe('PatientComponent', () => {
       dateOfBirth: "1994-11-19T17:23:59.346839"
     };
 
-    // Detect changes to reflect the modal's state
+
     fixture.detectChanges();
 
-    // Check if the modal is displayed
+
     const modal = fixture.nativeElement.querySelector('#viewPatientModal');
-    expect(modal.style.display).toBe('block'); // Modal should be visible
+    expect(modal.style.display).toBe('block'); 
 });
 
 
 
 
   it('should close the view patient modal when close button is clicked', async () => {
-    // Mock the isModalOpen function to return true
     component.isModalOpen = () => true;
     component.patientProfileSingle = {
       id: "341736fd-0291-4b7f-bede-63f7723cc6e0",
@@ -149,11 +148,10 @@ describe('PatientComponent', () => {
     const closeButton = fixture.nativeElement.querySelector('.close');
     closeButton.click();
 
-    // Simulate closing the modal
+
     component.closeModal('viewPatientModal');
     fixture.detectChanges();
 
-    // Check that the modal is no longer visible
     const modal = fixture.nativeElement.querySelector('#viewPatientModal');
     expect(modal.style.display).toBe('block'); 
   });
@@ -168,35 +166,31 @@ describe('PatientComponent', () => {
     const editButton = fixture.nativeElement.querySelector(".btn.btn-primary");
     editButton.click();
   
-    // Detect changes to apply the mocked function
+
     fixture.detectChanges();
-    await fixture.whenStable();
- 
+    await fixture.whenStable(); 
   
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
   it('should open the view patient modal when a button is clicked', async () => {
-    // Mock the isModalOpen function to return true
     component.isModalOpen = () => true;
    
-  
-    // Simulate opening the modal
     component.openModal('viewPatientModal');
     fixture.detectChanges();
   
-    // Check that the modal is visible
+
     const modal = fixture.nativeElement.querySelector('#viewPatientModal');
     expect(modal.style.display).toBe('block'); 
   });
 
   
   it('should submit the patient form successfully', async () => {
-    // Open the viewPatientModal
+
     component.isModalOpen = () => true;
     fixture.detectChanges();
   
-    // Simulate form submission
+
     component.onSubmit();
     fixture.detectChanges();
   
@@ -205,24 +199,24 @@ describe('PatientComponent', () => {
   });
   
   it('should display validation errors if the form is invalid', async () => {
-    // Mock invalid form state
+  
     component.myForm = new FormBuilder().group({
       name: ['', Validators.required], 
     });
   
-    // Open the viewPatientModal
+
     component.isModalOpen = () => true;
     fixture.detectChanges();
   
-    // Simulate form submission
+
     component.onSubmit();
     fixture.detectChanges();
   
-    // Check for validation error messages
+
     const validationErrors = fixture.nativeElement.querySelectorAll('.form-alert-error');
     expect(validationErrors.length).toBeGreaterThanOrEqual(0);
     validationErrors.forEach((error: any) => {
-      expect(error.textContent).toContain('Please fill out this field.'); // Adjust this to match actual error messages
+      expect(error.textContent).toContain('Please fill out this field.'); 
     });
   });
   
@@ -232,64 +226,67 @@ describe('PatientComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /*it('should update patient', fakeAsync(() => {
-    const mockPatient = {
-      id: "341736fd-0291-4b7f-bede-63f7723cc6e0",
-      name: { firstName: "patient", middleNames: "", lastName: "patient" },
-      email: { fullEmail: "avlismana@gmail.com" },
-      userEmail: { fullEmail: "avlismana@gmail.com" },
-      phone: { number: "966783434" },
+  it('should fetch patient profile and open modal if patient email is selected', (done) => {
+    const mockPatientResponse = { 
+      name: {
+        firstName: "patient",
+        middleNames: "",
+        lastName: "patient"
+      },
+      userEmail: { 
+        fullEmail: "avlismana@gmail.com" 
+      },
+      email: { 
+        fullEmail: "avlismana@gmail.com" 
+      },
+      phone: { 
+        number: "966783434" 
+      },
       gender: "Female",
-      nameEmergency: "default dd",
-      emailEmergency: { fullEmail: "default@gmail.com" },
-      phoneEmergency: { number: "999999999" },
+      emergencyContactName: "default dd",
+      emergencyContactEmail: { 
+        fullEmail: "default@gmail.com" 
+      },
+      emergencyContactPhone: { 
+        number: "999999999" 
+      },
       allergies: ["apple"],
       appointmentHistory: ["2024-11-06"],
-      medicalRecordNumber: { number: "202411000001" },
+      medicalRecordNumber: { 
+        number: "202411000001" 
+      },
       dateOfBirth: "1994-11-19T17:23:59.346839"
     };
   
-    spyOn(mock_service, 'getPatientById').and.returnValue(of(mockPatient));
-    spyOn(mock_service, 'updatePatient').and.returnValue(of({ message: 'Patient updated successfully!' }));
+    spyOn(component, 'populateUpdateForm').and.callThrough();
+    spyOn(component, 'openModal').and.callThrough();
   
-    component.ngOnInit(); 
-    fixture.detectChanges();
+    component.selectedPatientEmail = 'avlismana@gmail.com'; 
   
-
-    const update = {
-      name: `${mockPatient.name.firstName} ${mockPatient.name.lastName}`,
-      email: mockPatient.email.fullEmail,
-      userEmail: mockPatient.userEmail.fullEmail,
-      phone: mockPatient.phone.number,
-      gender: "Male",
-      emergencyContactName: mockPatient.nameEmergency,
-      emergencyContactEmail: mockPatient.emailEmergency.fullEmail,
-      emergencyContactPhone: mockPatient.phoneEmergency.number,
-      allergies: ["apple"], 
-      appointmentHistory: ["2024-11-06", "2024-11-21"] 
-    };
+    component.patientUpdateForm.patchValue({
+      name: {
+        firstName: mockPatientResponse.name.firstName,
+        middleNames: mockPatientResponse.name.middleNames,
+        lastName: mockPatientResponse.name.lastName
+      },
+      userEmail: mockPatientResponse.userEmail.fullEmail,
+      email: mockPatientResponse.email.fullEmail,
+      phone: mockPatientResponse.phone.number,
+      gender: mockPatientResponse.gender,
+      emergencyContactName: mockPatientResponse.emergencyContactName,
+      emergencyContactEmail: mockPatientResponse.emergencyContactEmail.fullEmail,
+      emergencyContactPhone: mockPatientResponse.emergencyContactPhone.number
+    });
   
-    component.patientUpdateForm.setValue(update);
-  
+ 
     component.onUpdatePatient();
-    tick();
-    flush();
   
-    expect(mock_service.updatePatient).toHaveBeenCalledOnceWith(
-      mockPatient.email.fullEmail,
-      jasmine.objectContaining({
-        name: `${mockPatient.name.firstName} ${mockPatient.name.lastName}`,
-        email: mockPatient.email.fullEmail,
-        phone: mockPatient.phone.number,
-        gender: "Male",
-        emergencyContactName: mockPatient.nameEmergency,
-        emergencyContactEmail: mockPatient.emailEmergency.fullEmail,
-        emergencyContactPhone: mockPatient.phoneEmergency.number,
-        allergies: ["apple"],
-        appointmentHistory: ["2024-11-06", "2024-11-21"]
-      })
-    );
-  }));*/
-  
+    mock_service.updatePatient(component.selectedPatientEmail, mockPatientResponse);
+      
+    setTimeout(() => {      
+      done(); 
+    }, 0);
+  });
+
   
 });

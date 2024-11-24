@@ -100,7 +100,7 @@ export class UserComponent {
 
 
   onSubmitPatient(){};
-
+  
   ngOnInit() {
     const token = this.authService.getToken();
 
