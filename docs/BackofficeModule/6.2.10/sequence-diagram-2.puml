@@ -1,33 +1,31 @@
-@startuml 5.1.1
+@startuml
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+-> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getStaffDataForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<--FE : staff data input
 deactivate FE
-AD -> FE : info to create info to create user (email, username, role)
+-> FE : info to create Staff Profile
 activate FE
-FE -> BE : createUser(email, username, role)
+FE -> BE : Create(CreatingStaffDto dto)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
+<--FE : success of operation and created data
 deactivate FE
-deactivate AD
 
 
 @enduml
