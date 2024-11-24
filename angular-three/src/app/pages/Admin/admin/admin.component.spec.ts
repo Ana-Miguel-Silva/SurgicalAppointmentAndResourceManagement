@@ -2,6 +2,9 @@ import { AdminComponent } from './admin.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from '../../../Services/auth.service';
 import { MockOperationTypesService } from '../../../Services/Tests/mock-operationTypes.service';
+/*import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
+import { PatientService } from '../../../Services/patient.service';*/
+
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +12,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ModalService } from '../../../Services/modal.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { fakeAsync, tick, flush } from '@angular/core/testing';
+import Swal from 'sweetalert2';
+import { environment } from '../../../../environments/environment'; // Importa o environment correto
 
 class MockAuthService {
   getToken() {
@@ -25,13 +31,16 @@ describe('AdminComponent', () => {
   let mockModalService: jasmine.SpyObj<ModalService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let httpMock: HttpTestingController;
+  let mockHttpClient: jasmine.SpyObj<HttpClient>;
+  let mockHttpClientGet: jasmine.SpyObj<HttpClient>;
+  
 
 
   beforeEach(async () => {
 
     mockModalService = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal', 'isModalOpen']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-
+    
     await TestBed.configureTestingModule({
       imports: [
         AdminComponent,
@@ -54,7 +63,12 @@ describe('AdminComponent', () => {
     fixture = TestBed.createComponent(AdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+
+
+
   });
+
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -76,6 +90,7 @@ describe('AdminComponent', () => {
         },
       },
     ]));
+
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
 
     const newOperationType = {
@@ -123,4 +138,111 @@ describe('AdminComponent', () => {
     expect(modal).toBeTruthy();
     expect(modal.style.display).toBe('none');
   });
+
+
+  
+  it('should submit form successfully', () => {
+    // Preparar o formulário com valores válidos
+    component.myForm.setValue({
+      name: 'John Doe',
+      dateOfBirth: '1990-01-01',
+      userEmail: 'john.doe@example.com',
+      email: 'john.doe@example.com',
+      phone: '123456789',
+      gender: 'Male',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactEmail: 'jane.doe@example.com',
+      emergencyContactPhone: '987654321',
+      appointmentHistory: [],
+      allergies: []
+    });
+
+    // Adicionar valores ao appointmentHistory
+    component.appointmentHistory = ['2021-09-15', '2022-10-10'];
+
+    // Espiar o método Swal.fire
+    const swalSpy = spyOn(Swal, 'fire');
+
+    // Chamar o método onSubmit
+    component.onSubmit();
+
+    // Verificar a requisição HTTP
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/Patients/register`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer fake-token');
+    expect(req.request.body).toEqual({
+      name: 'John Doe',
+      dateOfBirth: '1990-01-01',
+      userEmail: 'john.doe@example.com',
+      email: 'john.doe@example.com',
+      phone: '123456789',
+      gender: 'Male',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactEmail: 'jane.doe@example.com',
+      emergencyContactPhone: '987654321',
+      appointmentHistory: ['2021-09-15', '2022-10-10'],
+      allergies: []
+    });
+
+    // Simular uma resposta de sucesso
+    req.flush({ message: 'Patient added successfully' });
+
+    // Verificar se o Swal foi chamado com sucesso
+    expect(swalSpy).toHaveBeenCalledWith(jasmine.objectContaining({
+      icon: 'success',
+      title: 'Patient adicionado com sucesso!',
+      toast: true,
+      position: 'top-end',
+      timer: 3000,
+      showConfirmButton: false
+    }));
+
+    // Verificar se o formulário foi resetado e o array limpo
+    expect(component.myForm.pristine).toBeTrue();
+    expect(component.appointmentHistory.length).toBe(0);
+  });
+
+
+  it('should not fetch patients if token is missing', () => {
+    mockAuthService.getToken.and.returnValue('');
+
+    component.getAllpatientsProfiles();
+
+    expect(mockHttpClientGet.get).not.toHaveBeenCalled();
+    expect(component.errorMessage).toBe('You are not logged in!');
+  });
+
+  it('should fetch patients and populate patientsProfiles if token exists', () => {
+    const mockPatients = [
+      {
+        medicalRecordNumber: { number: '12345' },
+        name: { firstName: 'John', lastName: 'Doe' },
+        email: { fullEmail: 'john.doe@example.com' },
+        phone: { number: '123-456-7890' },
+        gender: 'Male',
+        dateOfBirth: '1990-01-01',
+        active: true,
+      },
+    ];
+
+    
+
+    // Chamando o método
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
+    component.getAllpatientsProfiles();
+
+// Verificar requisição feita pelo HttpClient
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/Patients/search`);
+    expect(req.request.method).toBe('GET');
+
+    // Simular resposta da API
+    req.flush(mockPatients);
+
+    // Verificar se os dados foram atribuídos corretamente
+    expect(component.patientsProfiles).toEqual(mockPatients);
+    expect(component.errorMessage).toBeUndefined();
+  });
+
+
+
 });
