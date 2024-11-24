@@ -123,7 +123,6 @@ export class DoctorComponent implements OnInit {
     this.closeModal('filterRequestModal');
   }
 
-  // Update: Now accepts a parameter for testing (Create or Update)
   onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
     if (!token) {
@@ -166,7 +165,6 @@ export class DoctorComponent implements OnInit {
     });
   }
 
-  // Update: Now accepts a parameter for testing (Create or Update)
   onUpdateRequest(requestData: UpdateOperationRequestDto) {
     if (!requestData.id) {
       Swal.fire({

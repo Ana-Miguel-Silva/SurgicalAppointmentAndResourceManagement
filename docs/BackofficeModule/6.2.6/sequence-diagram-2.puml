@@ -1,33 +1,30 @@
-@startuml 5.1.1
+@startuml 6.2.6
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+ -> FE: access page
 activate FE
 FE -> BE: getCreateForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<-- FE   : data input
 deactivate FE
-AD -> FE : info to create info to create user (email, username, role)
+-> FE : info to create Patient Profile(fullName,email, phone, gender, dateOfBirth, emailUser, gender, emailContact)
 activate FE
-FE -> BE : createUser(email, username, role)
+FE -> BE : createPatientProfile(patientDTO)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
-deactivate FE
-deactivate AD
+
+<-- FE   : success and data
 
 
 @enduml

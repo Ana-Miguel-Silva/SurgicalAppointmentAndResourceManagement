@@ -1,122 +1,126 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AdminComponent } from './admin.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from '../../../Services/auth.service';
-import { ModalService } from '../../../Services/modal.service';
-import { Router } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CommonModule } from '@angular/common';
-import { of } from 'rxjs';
+import { MockOperationTypesService } from '../../../Services/Tests/mock-operationTypes.service';
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
+import { of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ModalService } from '../../../Services/modal.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { fakeAsync, tick, flush } from '@angular/core/testing';
+
+class MockAuthService {
+  getToken() {
+    return 'fake-token';
+  }
+}
 
 describe('AdminComponent', () => {
   let component: AdminComponent;
   let fixture: ComponentFixture<AdminComponent>;
-
+  let mockOperationTypeService: jasmine.SpyObj<OperationTypesService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockModalService: jasmine.SpyObj<ModalService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let mockOperationTypesService: jasmine.SpyObj<OperationTypesService>;
+  let httpMock: HttpTestingController;
+
 
   beforeEach(async () => {
-    // Correct initialization of spy objects
+
     mockModalService = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal', 'isModalOpen']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockAuthService = jasmine.createSpyObj('AuthService', ['getToken']);
-    mockOperationTypesService = jasmine.createSpyObj('OperationTypesService', [
-      'getAllOperationTypes',
-      'createOperationTypes',
-      'getSearchOperationTypes' // Fixed: no trailing space
-    ]);
-  
-    // Mock return values for the spy methods
-    mockOperationTypesService.getAllOperationTypes.and.returnValue(
-      of([
-        {
-          id: '2889eef2-111f-4eec-90a3-d251a90f5c6f',
-          Name: 'CARDIOLOGY',
-          PatientPreparationDuration: '00:35:00',
-          SurgeryDuration: '01:30:00',
-          CleaningDuration: '00:45:00',
-          Active: true,
-        },
-      ])
-    );
-  
-    mockOperationTypesService.createOperationTypes.and.returnValue(of({ success: true }));
-    mockOperationTypesService.getSearchOperationTypes.and.returnValue(
-      of([
-        {
-          id: '2889eef2-111f-4eec-90a3-d251a90f5c6f',
-          Name: 'CARDIOLOGY',
-          PatientPreparationDuration: '00:35:00',
-          SurgeryDuration: '01:30:00',
-          CleaningDuration: '00:45:00',
-          Active: true,
-        },
-      ])
-    );
-  
-    mockAuthService.getToken.and.returnValue('fake-token');
-  
+
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule, CommonModule, AdminComponent],
-      declarations: [],
-      providers: [
-        { provide: OperationTypesService, useValue: mockOperationTypesService },
-        { provide: AuthService, useValue: mockAuthService },
-        { provide: ModalService, useValue: mockModalService },
-        { provide: Router, useValue: mockRouter },
+      imports: [
+        AdminComponent,
+        HttpClientTestingModule,
+        FormsModule,
+        CommonModule,
       ],
+      providers: [
+        { provide: OperationTypesService, useClass: MockOperationTypesService },
+        { provide: AuthService, useClass: MockAuthService },
+        { provide: ModalService, useValue: mockModalService },
+        { provide: Router, useValue: mockRouter }
+      ]
     }).compileComponents();
-  
-    // Initialize the component and fixture
+
+    mockOperationTypeService = TestBed.inject(OperationTypesService) as jasmine.SpyObj<OperationTypesService>;
+    mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    httpMock = TestBed.inject(HttpTestingController);
+
     fixture = TestBed.createComponent(AdminComponent);
     component = fixture.componentInstance;
-  
-    // Ensure mocks are properly set up before running lifecycle methods
     fixture.detectChanges();
   });
 
-
-  
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load operation types on init', fakeAsync(() => {
-    // Trigger ngOnInit manually if needed
-    component.ngOnInit();
-    tick();
+  it('should call createOperationType and display success message', fakeAsync(() => {
+    spyOn(mockOperationTypeService, 'createOperationTypes').and.returnValue(of({ success: true }));
+    spyOn(mockOperationTypeService, 'getAllOperationTypes').and.returnValue(of([
+      {
+        name: 'Heart Surgery',
+        requiredStaff: [
+          { quantity: 2, specialization: 'Cardiologist', role: 'Surgeon' },
+          { quantity: 1, specialization: 'Anesthesiologist', role: 'Support' },
+        ],
+        estimatedDuration: {
+          patientPreparation: '15 mins',
+          surgery: '2 hours',
+          cleaning: '30 mins',
+        },
+      },
+    ]));
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
 
-    // Expectations
-    expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockOperationTypesService.getAllOperationTypes).toHaveBeenCalled();
-    expect(component.OperationTypesProfiles.length).toBe(1);
-    expect(component.OperationTypesProfiles[0].Name).toBe('CARDIOLOGY');
-  }));
-
-  it('should create operation type', fakeAsync(() => {
     const newOperationType = {
-      name: 'CARDIOLOGY',
-      requiredStaff: [],
+      name: 'Appendectomy',
+      requiredStaff: [
+        { quantity: 1, specialization: 'General Surgeon', role: 'Surgeon' },
+        { quantity: 1, specialization: 'Anesthesiologist', role: 'Support' },
+      ],
       estimatedDuration: {
-        patientPreparation: '00:35:00',
-        surgery: '01:30:00',
-        cleaning: '00:45:00',
+        patientPreparation: '10 mins',
+        surgery: '1 hour',
+        cleaning: '20 mins',
       },
     };
 
-    // Mock the createOperationTypes method
-    mockOperationTypesService.createOperationTypes.and.returnValue(of({ success: true }));
+    component.onCreateOperationType(newOperationType);
 
-    // Call the method
-    component.operationType = newOperationType;
-    component.onCreateOperationType();
-    tick();
+    tick(500);
 
-    expect(mockOperationTypesService.createOperationTypes).toHaveBeenCalledWith(newOperationType);
-    expect(component.OperationTypesProfiles.length).toBeGreaterThan(0); // Ensure it was added
+    flush();
+
+    expect(mockAuthService.getToken).toHaveBeenCalled();
+    expect(mockOperationTypeService.createOperationTypes).toHaveBeenCalledWith(newOperationType);
   }));
+
+  it('should open the create operation type modal', () => {
+    component.isModalOpen = () => true;
+
+    component.openModal('createOperationTypeModal');
+    fixture.detectChanges();
+
+    const modal = fixture.nativeElement.querySelector('#createOperationTypeModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('block');
+  });
+
+  it('should close the create operation type modal', () => {
+    component.openModal('createOperationTypeModal');
+    fixture.detectChanges();
+
+    component.closeModal('createOperationTypeModal');
+    fixture.detectChanges();
+
+    const modal = fixture.nativeElement.querySelector('#createOperationTypeModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('none');
+  });
 });

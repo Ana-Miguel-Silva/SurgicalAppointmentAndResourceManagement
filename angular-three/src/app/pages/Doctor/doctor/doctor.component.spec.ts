@@ -12,7 +12,7 @@ import { of } from 'rxjs';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
 import { fakeAsync, tick, flush } from '@angular/core/testing';
 
-// Create the mock service for AuthService
+
 class MockAuthService {
   getToken() {
     return 'fake-token';
@@ -32,27 +32,26 @@ describe('DoctorComponent', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
-    // Create spy objects for dependencies
+   
     mockModalService = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal', 'isModalOpen']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     
-    // Set up the TestBed configuration
+   
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule, 
         FormsModule, 
         CommonModule, 
-        DoctorComponent // Import your component
+        DoctorComponent
       ],
       providers: [
-        { provide: OperationRequestsService, useClass: MockOperationRequestsService },  // Use the mock service
-        { provide: AuthService, useClass: MockAuthService },  // Use the mock service
+        { provide: OperationRequestsService, useClass: MockOperationRequestsService }, 
+        { provide: AuthService, useClass: MockAuthService },
         { provide: ModalService, useValue: mockModalService },
         { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
 
-    // Inject the mock service and create the component
     mockOperationRequestsService = TestBed.inject(OperationRequestsService) as jasmine.SpyObj<OperationRequestsService>;
     mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     httpMock = TestBed.inject(HttpTestingController);
@@ -71,15 +70,14 @@ describe('DoctorComponent', () => {
 
     spyOn(mockOperationRequestsService, 'getAllOperationRequests').and.returnValue(of([{ id: '1', priority: 'Urgent' }, { id: '2', priority: 'Low' }]));
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-    // Trigger ngOnInit
+
     component.ngOnInit();
     fixture.detectChanges();
-    tick(); // Simulate async passage of time
+    tick(); 
   
 
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockOperationRequestsService.getAllOperationRequests).toHaveBeenCalled();
-    // Ensure the operation requests were loaded
     expect(component.operationRequests.length).toBe(2);
   }));
 
@@ -98,25 +96,20 @@ describe('DoctorComponent', () => {
   
 component.onCreateRequest(newRequest);
 
-    // Simulate the passage of time for async operations
-    tick(500);  // You can increase the time to make sure everything is flushed
+    tick(500);  
 
-    // Flush any pending HTTP requests
     flush();
 
-    // Verify mocks were called
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockOperationRequestsService.createOperationRequests).toHaveBeenCalledWith(newRequest);
     expect(mockOperationRequestsService.getAllOperationRequests).toHaveBeenCalled();
 
-    // Ensure the operation request was added
     expect(component.operationRequests.length).toBe(1);
   }));
 
   
 
   it('should update operation request and display success message', fakeAsync(() => {
-    // Mock dependencies
     spyOn(mockOperationRequestsService, 'updateOperationRequests').and.callThrough();
     spyOn(mockOperationRequestsService, 'getAllOperationRequests').and.returnValue(of([
       { id: '1', deadline: '2024-12-15', priority: 'Low' },
@@ -132,36 +125,30 @@ component.onCreateRequest(newRequest);
       priority: 'Urgent',
     };
   
-    // Initialize component state
     component.operationRequests = [request];
   
     const updatedRequest = {
       id: '1',
       deadline: '2024-12-15',
-      priority: 'Low', // Update priority
+      priority: 'Low',
     };
   
-    // Call onUpdateRequest
     component.onUpdateRequest(updatedRequest);
   
-    tick(); // Simulate async passage of time
+    tick();
   
-    // Flush any pending HTTP requests
     flush();
   
-    // Verify mocks were called
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockOperationRequestsService.updateOperationRequests).toHaveBeenCalledWith(updatedRequest);
     expect(mockOperationRequestsService.getAllOperationRequests).toHaveBeenCalled();
   
-    // Verify updated request in component
     const updatedItem = component.operationRequests.find(req => req.id === '1');
     expect(updatedItem?.priority).toBe('Low');
   }));
   
 
   it('should delete operation request and display success message', fakeAsync(() => {
-    // Sample request to delete
     const request = {
       id: '1',
       operationTypeName: 'Heart Surgery',
@@ -171,39 +158,73 @@ component.onCreateRequest(newRequest);
       priority: 'Urgent',
     };
   
-    // Initialize component state
     component.operationRequests = [request];
   
-    // Mock the deleteOperationRequests method
     spyOn(mockOperationRequestsService, 'deleteOperationRequests').and.returnValue(of({}));
   
-    // Mock getAllOperationRequests to return an empty array after deletion
     spyOn(mockOperationRequestsService, 'getAllOperationRequests').and.returnValue(of([]));
   
-    // Spy on the getToken method of mockAuthService
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
   
-    // Call onDeleteRequest method
     component.onDeleteRequest(request.id);
   
-    // Simulate the passage of time for async operations
-    tick(500);  // Allow async code to complete
+    tick(500);
   
-    // Flush any pending HTTP requests
     flush();
   
-    // Verify deleteOperationRequests was called
     expect(mockOperationRequestsService.deleteOperationRequests).toHaveBeenCalledWith(request.id);
   
-    // Ensure operationRequests is empty
-    expect(component.operationRequests.length).toBe(0); // Now the test should pass
+    expect(component.operationRequests.length).toBe(0);
   }));
 
     it('should apply filter correctly', () => {
-    // Set a filter and check if it applies correctly
     component.filter.priority = 'Urgent';
     component.applyFilter();
 
     expect(component.filteredRequests.length).toBeGreaterThan(0);
+  });
+
+  it('should open the create request modal', () => {
+    component.isModalOpen = () => true;  
+    
+    component.openModal('createRequestModal');
+    fixture.detectChanges();
+    
+    const modal = fixture.nativeElement.querySelector('#createRequestModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('block');
+  });
+
+  it('should close the create request modal', () => {
+    component.openModal('createRequestModal');
+    fixture.detectChanges();
+
+    component.closeModal('createRequestModal');
+    fixture.detectChanges();
+
+    const modal = fixture.nativeElement.querySelector('#createRequestModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('none');
+  });
+
+  it('should open the filter request modal', () => {
+    component.isModalOpen = () => true
+
+    component.openModal('filterRequestModal');
+    fixture.detectChanges();
+  
+    const modal = fixture.nativeElement.querySelector('#filterRequestModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('block');
+  });
+
+  it('should open the update request modal', () => {
+    component.isModalOpen = () => true
+
+    component.openModal('updateRequestModal');
+    fixture.detectChanges();
+    const modal = fixture.nativeElement.querySelector('#updateRequestModal');
+    expect(modal).toBeTruthy();
+    expect(modal.style.display).toBe('block');
   });
 });

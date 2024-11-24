@@ -6,7 +6,7 @@ autonumber
 
 participant "WebAplication" as FE <<component>>
 participant "HTML+CSS" as HT <<component>>
-participant "component" as CM <<component>>
+participant "Component" as CM <<component>>
 participant "Service" as SERV <<component>>
 
 
@@ -27,14 +27,14 @@ activate SERV
 
 SERV -> : Register with external IAM credentials
 
- SERV <--: sucess and data
+ SERV <--: success and data
 
 
- SERV--> CM : sucess and data
+ SERV--> CM : success and data
 
 deactivate  SERV
 
- CM --> HT : sucess and data
+ CM --> HT : success and data
   deactivate CM
  HT --> FE : success and data
 

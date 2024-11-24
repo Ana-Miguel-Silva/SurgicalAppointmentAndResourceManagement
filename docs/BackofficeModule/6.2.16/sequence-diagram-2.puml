@@ -1,33 +1,38 @@
-@startuml 5.1.1
+@startuml 5.1.3
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+-> FE: access page
+
 activate FE
+
 FE -> BE: getCreateForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<--FE: data input
+
 deactivate FE
-AD -> FE : info to create info to create user (email, username, role)
+
+-> FE : confirmation to delete operationRequest(operationRequestId)
 activate FE
-FE -> BE : createUser(email, username, role)
+FE -> BE: deleteOperationRequest(operationRequestId)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and data
+<-- FE  : success and data
+
 deactivate FE
-deactivate AD
+
+
 
 
 @enduml

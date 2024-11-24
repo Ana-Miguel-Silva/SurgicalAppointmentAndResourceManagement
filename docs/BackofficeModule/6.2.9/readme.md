@@ -1,98 +1,62 @@
-# US 6.1.1
+# US 6.2.9
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-This is the first time this task has been assigned for development.
+As an Admin, I want to list/search patient profiles by different attributes, so that I can view the details, edit, and remove patient profiles.
 
 ## 2. Requirements
 
-**US 6.1.1** As an Admin, I want to register new backoffice users (e.g., doctors, nurses,
-technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions.
-
+**US 6.2.9** 
 
 **Acceptance Criteria:** 
 
-- Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal
-process, not via self-registration.
-
-- Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
-
-- Registered users receive a one-time setup link via email to set their password and activate their
-account.
-
-- The system enforces strong password requirements for security.
-
-- A confirmation email is sent to verify the user’s registration.
-
-- The user’s IAM record is linked to the respective user and staff/patient record
-in the backoffice data.
-
-- All users authenticate using the IAM.
-
-- Pawword must have at least 10 characters long, at least a digit, a capital letter and a special character.
-
-- Account locked if log in errror 5 times.
-
+- Admins can search patient profiles by various attributes, including name, email, date of birth, or medical record number.
+- The system displays search results in a list view with key patient information (name, email, date of birth).
+- Admins can select a profile from the list to view, edit, or delete the patient record. 
+- The search results are paginated, and filters are available to refine the search results.
 
 **Customer Specifications and Clarifications:**
 
-> **Question:** Can the user only be a staff member or patient, or can they be something else? 
+
+> **Question 1:**
 >
->**Answer:** The users of the system are the administrators, nurses and doctors, as well as the patients (with limited functionality).
+> **Answer 1:** 
 
-
-> **Question:** Does the user have contact information, email and phone, both are mandatory?
->
->**Answer:** Yes.
-
-
->**Question:**  Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.". Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
->
->**Answer:** What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
-
-
-
-> **Question:** Can you clarify the username and email requirements?
->
->**Answer:**The username is the "official" email address of the user. for backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an easy configuration of the DNS domain (e.g., environment variable).
->For patients, the username is the email address provided in the patient record and used as identity in the external IAM. for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That email address will be his username when he self-registers in the system
-
-
-
->**Question**: What defines session inactivity?
->
-> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
 
 **Dependencies/References:**
 
-* There are no dependencies to other US.
+* There is a dependency to "US 5.1.1 - As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions."
+
+* There is a dependency to "US 5.1.6 - As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+
+* There is a dependency to "US 5.1.8 - As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history."
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Username
-    * Role
+    * Id (Optional)
+    * Medical Record Number (Optional)
+    * Email (Optional)
+    * Name (Optional)
+    * Date of Birth (Optional)
 
 
+* Selected data:
+    * None
 
 
 **Output Data:**
-* Display the success of the operation and the data of the registered user (Add User)
+* Display the success of the operation and the data of the listed patients (List Patient)
 
 
 ## 3. Analysis
 
->**Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
+> **Question 1:** 
 >
-> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking the account is typically handled outside the system by an administrator, who would verify that the failed attempts were not made with malicious intent. However, this unlocking process is not part of the current system
-
-
+> **Answer 1:** 
 
 [//]: # (### 3.1. Domain Model)
 
@@ -101,121 +65,146 @@ in the backoffice data.
 ## 4. Design
 
 
-**Domain Class/es:** Email, User, UserDto, Role
+**Domain Class/es:** Email, Patient, PatientDto
 
-**Controller:** UserController
+**Controller:** PatientController
 
-**UI:** 
+**UI:** Admin.component.html
 
-**Repository:**	UserRepository
+**Repository:**	PatientRepository
 
-**Service:** UserService, AuthorizationService
+**Service:** PatientService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Register User Level 1**
+#### List Patient Profile
 
-![Register User](sequence-diagram-1.svg "Register User")
+**Sequence Diagram Level 1**
 
-**Register User Level 2**
+![Sequence Diagram Level 1](sequence-diagram-1.svg "Actor and System")
 
-![Register User](sequence-diagram-2.svg "Register User")
+**Sequence Diagram Level 2**
 
-**Register User Level 3**
+![Sequence Diagram Level 2](sequence-diagram-2.svg "FrontEnd and BackEnd")
 
-![Register User](sequence-diagram-3.svg "Register User")
+**Sequence Diagram Level 3**
+
+![Sequence Diagram Level 3](sequence-diagram-3.svg "List Patient Profile")
+
+
+### 4.2. Applied Patterns
+
+### 4.3. Tests
+
+Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
 
 
 
-[//]: # (### 4.2. Class Diagram)
+**Test 1:**
 
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
 
-[//]: # ()
-[//]: # (### 4.4. Tests)
+```
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
 
-[//]: # ()
-[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
+// Parse the response body as JSON
+const responseJson = pm.response.json();
 
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (**Before Tests** **Setup of Dummy Users**)
+// Remove o array e seleciona o primeiro objeto dentro dele
+const actualResponse = Array.isArray(responseJson) ? responseJson[0] : responseJson;
 
-[//]: # ()
-[//]: # (```)
+const expectedPostResponse = {
+    name: {
+        "firstName": "Pedro",
+        "middleNames": "",
+        "lastName": "Doouu"
+    },
+    id: pm.environment.get("patientId"), // Use the generated ID from the response
+    dateOfBirth: "1985-05-20T00:00:00",
+    medicalRecordNumber: {
+        number: pm.environment.get("patientMedicalRecordNumber") // Example; will be dynamically checked
+    },
+    gender: "Female",
+    allergies: [],
+    appointmentHistory: [
+        "2021-09-15",
+        "2022-10-10"
+    ],
+    nameEmergency: "default dd",
+    phoneEmergency: {
+        number: "999999999"
+    },
+    emailEmergency: {
+        fullEmail: "default@gmail.com"
+    },
+    phone: {
+        number: "932385677"
+    },
+    email: {
+        fullEmail: "gago3@gmail.com"
+    },
+    userEmail: {
+        fullEmail: "gago@isep.ipp.pt"
+    }
+};
 
-[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
+// Validate that the retrieved response matches the expected structure
+pm.test("Response matches expected structure", function () {
+    pm.expect(actualResponse).to.deep.equal(expectedPostResponse);
+});
 
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
+}
+````
 
-[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
 
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
-
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
-
-[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
-
-[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
-
-[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # ()
-[//]: # (**Test 1:** *Verifies if Users are equals*)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test)
-
-[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
-
-[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
-
-[//]: # (})
-
-[//]: # (````)
-
-[//]: # ()
 [//]: # (## 5. Implementation)
 
 [//]: # ()
 [//]: # ()
-[//]: # (### Methods in the UsersController)
+[//]: # (### Methods in the ListUsersController)
 
-[//]: # (* **public async Task<ActionResult<UserDto>> Create&#40;CreatingUserDto dto&#41;**  this method creates a user)
+[//]: # (* **Iterable<SystemUser> filteredUsersOfBackOffice&#40;&#41;**  this method filters to list all backoffice users)
 
 [//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the AddUsersController)
+
+[//]: # ()
+[//]: # (* **Role[] getRoleTypes&#40;&#41;** this method list the roles to choose for the User)
+
+[//]: # ()
+[//]: # (* **SystemUser addUser&#40;final String email, final String password, final String firstName,)
+
+[//]: # (  final String lastName, final Set<Role> roles, final Calendar createdOn&#41;**  this method send the information to create the User.)
+
+[//]: # ()
+[//]: # (* **String generatePassword&#40;&#41;** this method automatically generate a password for the User. )
+
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### Methods in the DeactivateUsersController)
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> activeUsers&#40;&#41;** this method list all the activated Users. )
+
+[//]: # ()
+[//]: # (* **Iterable<SystemUser> deactiveUsers&#40;&#41;** this method list all the deactivated Users.)
+
+[//]: # ()
+[//]: # (* **SystemUser activateUser&#40;final SystemUser user&#41;** this method activate the chosen User.)
+
+[//]: # ()
+[//]: # (* **SystemUser deactivateUser&#40;final SystemUser user&#41;** this method deactivate the chosen User. )
+
 [//]: # ()
 [//]: # ()
 [//]: # (## 6. Integration/Demonstration)
 
-[//]: # ()
 
 
 [//]: # (## 7. Observations)
