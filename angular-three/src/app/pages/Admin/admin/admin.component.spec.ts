@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { fakeAsync, tick, flush } from '@angular/core/testing';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment'; // Importa o environment correto
-
+import { StaffService } from '../../../Services/staff.service';
 class MockAuthService {
   getToken() {
     return 'fake-token';
