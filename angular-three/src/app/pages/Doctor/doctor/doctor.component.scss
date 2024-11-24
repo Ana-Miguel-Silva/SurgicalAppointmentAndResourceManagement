@@ -258,3 +258,79 @@ canvas {
   overflow: hidden;
   position: relative;
 }
+
+
+
+
+#mapButton {
+  position: fixed;
+  left: -160px; /* Fora da tela inicialmente */
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #007BFF, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 25px 35px;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: left 0.5s ease, background 0.5s ease, box-shadow 0.3s ease;
+  font-size: 1.2rem; /* Texto maior */
+}
+
+/* Ícone do botão */
+#mapButton .icon {
+  font-size: 2rem; /* Ícone grande e destacado */
+}
+
+/* Texto do botão */
+#mapButton .text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Efeito de hover - botão desliza para dentro */
+#mapButton:hover {
+  left: 10px; /* Botão desliza para dentro */
+  background: linear-gradient(135deg, #0056b3, #003a75);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal */
+#mapModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Ocupa toda a largura */
+  height: 100%; /* Ocupa toda a altura */
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo semitransparente */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Conteúdo do Modal */
+#mapModalContent {
+  width: 95vw; /* 90% da largura da janela */
+  height: 95vh; /* 90% da altura da janela */
+  background-color: white;
+  border-radius: 10px; /* Bordas arredondadas */
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; /* Scroll caso o conteúdo exceda */
+  position: relative;
+}
+
+
+
+#mapModalContent .close:hover {
+  color: #f00;
+}
+
+
+
