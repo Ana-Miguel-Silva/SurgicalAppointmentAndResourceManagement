@@ -11,7 +11,8 @@ import { FormBuilder } from '@angular/forms';
 import { MockPatientService } from '../../Services/Tests/mock-patient.service';
 import { ModalService } from '../../Services/modal.service';
 import { AuthService } from '../../Services/auth.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import Swal from 'sweetalert2';
 
 describe('UserComponent', () => {
   let component: UserComponent;
@@ -53,12 +54,45 @@ describe('UserComponent', () => {
   
     fixture = TestBed.createComponent(UserComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    mockPatientService = TestBed.inject(PatientService) as jasmine.SpyObj<PatientService>;
+    mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    mockModalService = TestBed.inject(ModalService) as jasmine.SpyObj<ModalService>;
+   
+ 
+    activatedRouteSpy.queryParams = of({ email: 'avlismana@gmail.com' });
+
+    fixture.detectChanges(); 
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+
+  it('should handle form submission error', () => {
+    // Arrange
+    const formData = {
+      name: 'John Doe',
+      dateOfBirth: '1990-01-01',
+      userEmail: 'john@example.com',
+      email: 'test@example.com',
+      phone: '123456789',
+      gender: 'male',
+      agree: true
+    };
+    component.myForm.setValue(formData);
+    mockPatientService.registerPatient.and.returnValue(throwError('Error occurred'));
+
+    spyOn(console, 'error'); 
+
+    component.onSubmit();
+
+    expect(mockPatientService.registerPatient).toHaveBeenCalledWith(formData);
+    expect(console.error).toHaveBeenCalledWith("Erro ao submeter o formulário", 'Error occurred');
   });
 
+  it('should mark all fields as touched if the form is invalid', () => {
+    component.myForm.controls['name'].setValue(''); 
 
+    component.onSubmit();
+
+    expect(component.myForm.valid).toBeFalse();
+
+  });
 });

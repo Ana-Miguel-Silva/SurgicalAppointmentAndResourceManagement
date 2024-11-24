@@ -41,6 +41,12 @@ export class MockPatientService {
     },
   ];
 
+  getAllPatients(params: any): Observable<any[]> {   
+    return of(this.patients); 
+  }
+   
+
+
   getPatientById(id: string): Observable<any> {
     const patient = this.patients.find((p) => p.id === id);
     return patient ? of(patient) : throwError(() => new Error('Patient not found'));

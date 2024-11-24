@@ -11,74 +11,105 @@ This is the first time this task has been assigned for development.
 
 **US 6.4.5** As system administrator, I want to define the MBCO (Minimum Business Continuity Objective) to propose to stakeholders
 
-**Acceptance Criteria:** 
+[//]: # ()
+[//]: # (**Acceptance Criteria:** )
 
-- 
+[//]: # ()
+[//]: # (- )
 
+[//]: # ()
+[//]: # ()
+[//]: # (**Customer Specifications and Clarifications:**)
 
-**Customer Specifications and Clarifications:**
+[//]: # ()
+[//]: # (> **Question:** )
 
-> **Question:** 
->
->**Answer:** 
+[//]: # (>)
 
-**Dependencies/References:**
+[//]: # (>**Answer:** )
 
-* There are no dependencies to other US.
+[//]: # ()
+[//]: # (**Dependencies/References:**)
 
-**Input and Output Data**
+[//]: # ()
+[//]: # (* There are no dependencies to other US.)
 
-**Input Data:**
+[//]: # ()
+[//]: # (**Input and Output Data**)
 
-* Typed data:
+[//]: # ()
+[//]: # (**Input Data:**)
 
+[//]: # ()
+[//]: # (* Typed data:)
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (**Output Data:**)
 
+[//]: # (* Display the success of the operation )
 
-**Output Data:**
-* Display the success of the operation 
+[//]: # ()
+[//]: # (## 3. Analysis)
 
-## 3. Analysis
+[//]: # ()
+[//]: # (> **Question:** )
 
-> **Question:** 
->
->**Answer:** 
+[//]: # (>)
 
+[//]: # (>**Answer:** )
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ([//]: # &#40;### 3.1. Domain Model&#41;)
+[//]: # ()
+[//]: # ([//]: # &#40;![sub domain model]&#40;us1000-sub-domain-model.svg&#41;&#41;)
+[//]: # ()
+[//]: # (## 4. Design)
 
-[//]: # (### 3.1. Domain Model)
+[//]: # ()
+[//]: # ()
+[//]: # (**Domain Class/es:** Email, User, UserDto, Role)
 
-[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
+[//]: # ()
+[//]: # (**Controller:** UserController)
 
-## 4. Design
+[//]: # ()
+[//]: # (**UI:** )
 
+[//]: # ()
+[//]: # (**Repository:**	UserRepository)
 
-**Domain Class/es:** Email, User, UserDto, Role
+[//]: # ()
+[//]: # (**Service:** UserService, AuthorizationService)
 
-**Controller:** UserController
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.1. Sequence Diagram)
 
-**UI:** 
+[//]: # ()
+[//]: # (**Register User Level 1**)
 
-**Repository:**	UserRepository
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-1.svg "Register User"&#41;)
 
-**Service:** UserService, AuthorizationService
+[//]: # ()
+[//]: # (**Register User Level 2**)
 
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-2.svg "Register User"&#41;)
 
+[//]: # ()
+[//]: # (**Register User Level 3**)
 
-### 4.1. Sequence Diagram
+[//]: # ()
+[//]: # (![Register User]&#40;sequence-diagram-3.svg "Register User"&#41;)
 
-**Register User Level 1**
-
-![Register User](sequence-diagram-1.svg "Register User")
-
-**Register User Level 2**
-
-![Register User](sequence-diagram-2.svg "Register User")
-
-**Register User Level 3**
-
-![Register User](sequence-diagram-3.svg "Register User")
-
+[//]: # ()
 
 
 [//]: # (### 4.2. Class Diagram)
