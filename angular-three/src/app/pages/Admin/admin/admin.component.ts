@@ -1610,7 +1610,36 @@ export class AdminComponent {
       });
 
     } else {
+
+      if (document.getElementById("active_"+this.selectOperationTypeId+"_false")){
+        Swal.fire({
+          icon: "error",
+          title: "Operação já está desativada.",
+          toast: true,
+          position: "bottom-right",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return
+      }
+      Swal.fire({
+        icon: "warning",
+        iconColor: '#d33',
+        title: "Desativar esta operação?",
+        text: "Não é possível reverter esta decisão.",
+        showCancelButton: true,
+        confirmButtonText: "Desativar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
+
+      if(this.selectOperationTypeId)
+
       this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
@@ -1623,6 +1652,9 @@ export class AdminComponent {
             timer: 3000,
             showConfirmButton: false
           });
+
+          this.getAllOperationTypes();
+
         },
         error: (error) => {
           console.error('Error viewing operation type:', error);
@@ -1637,6 +1669,10 @@ export class AdminComponent {
           });
         }
       });
+         } else if (result.isDenied) {
+        }
+      });
+
     }
   }
 
