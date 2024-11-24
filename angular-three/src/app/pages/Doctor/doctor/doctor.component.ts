@@ -79,13 +79,13 @@ export class DoctorComponent implements OnInit {
     this.animate();
 
     
-    const canvas  = document.querySelectorAll('canvas')[2];
+    /*const canvas  = document.querySelectorAll('canvas')[2];
     const targetDiv = document.getElementById('canvasContainer');
     if (targetDiv) {
         targetDiv.appendChild(canvas);
     } else {
       console.error('Target div not found.');
-    }
+    }*/
   }
 
 

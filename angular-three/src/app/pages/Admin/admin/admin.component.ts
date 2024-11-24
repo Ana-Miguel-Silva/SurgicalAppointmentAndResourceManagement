@@ -136,11 +136,11 @@ export class AdminComponent {
     this.patientForm = this.fb.group({});
   }
 
-  selectedStaffId: number | null = null;
+  selectedStaffId: string | null = null;
   selectOperationTypeId: string | null = null;
   selectedPatientEmail: string | null = null;
 
-  selectStaff(id: number) {
+  selectStaff(id: string) {
     this.selectedStaffId = this.selectedStaffId === id ? null : id;
   }
 
