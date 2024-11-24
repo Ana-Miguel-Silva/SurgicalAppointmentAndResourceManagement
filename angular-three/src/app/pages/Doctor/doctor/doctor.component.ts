@@ -74,7 +74,7 @@ export class DoctorComponent implements OnInit {
     //this.thumbRaiser.update();
   }
 
-  ngAfterViewInit(): void {
+  /*ngAfterViewInit(): void {
     this.initialize();
     this.animate();
 
@@ -86,7 +86,7 @@ export class DoctorComponent implements OnInit {
     } else {
       console.error('Target div not found.');
     }
-  }
+  }*/
 
 
 
