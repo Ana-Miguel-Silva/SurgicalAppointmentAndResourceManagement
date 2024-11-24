@@ -114,14 +114,6 @@ export class UserComponent {
 
   onSubmitPatient(){};
 
-  ngOnInit() {
-    const token = this.authService.getToken();
-
-    if (!token) {
-      this.errorMessage = 'You are not logged in!';
-      this.router.navigate(['/']);
-    }
-  }
 
 
 }
