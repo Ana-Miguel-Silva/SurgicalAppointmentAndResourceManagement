@@ -4,6 +4,7 @@ import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFor
 import { ModalService } from '../../../Services/modal.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
+import { AppointmentService } from '../../../Services/appointment.service';
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -47,11 +48,14 @@ export class AdminComponent {
     }
   };
 
+  scheduledAppointmentMessage: string = '';
+
   private staffUrl = `${environment.apiBaseUrl}/Staff`;
   private patientUrl = `${environment.apiBaseUrl}/Patients`;
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
-    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private router: Router) {
+    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService ,
+    private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -267,6 +271,39 @@ export class AdminComponent {
   }
 
 
+  onScheduleAppointment() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.appointmentService.scheduleAppointments().subscribe({
+      next: (response: any) => {
+        this.scheduledAppointmentMessage = response.message.replace(/\n/g, '<br>');
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Appointment scheduled successfully!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      },
+      error: (error) => {
+        console.error('Error scheduling appointment:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to schedule appointment.',
+        });
+      },
+    });
+  }
+
   onCreateOperationType(operationTypeData: CreatingOperationTypeDto) {
     const token = this.authService.getToken();
 
@@ -433,7 +470,6 @@ export class AdminComponent {
           this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
           .subscribe({
             next: (response) => {
-              console.log(response);
               this.getAllstaffsProfiles();
               Swal.fire({
                 icon: "success",
@@ -497,7 +533,6 @@ export class AdminComponent {
       this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.staffProfileSingle = response;
           this.availabilitySlots = this.staffProfileSingle.slots;
           this.openModal('viewStaffModal');
@@ -545,7 +580,6 @@ export class AdminComponent {
       this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.patientProfileUpdate = response;
 
           this.populateUpdateForm();
@@ -618,12 +652,10 @@ export class AdminComponent {
       'Content-Type': 'application/json'
     });
 
-    console.log(this.patientUpdateForm.value);
 
     this.http.patch(`${this.patientUrl}/adjust/update/${this.selectedPatientEmail}`, this.patientUpdateForm.value , { headers })
       .subscribe({
         next: (response: any) => {
-          console.log(response)
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
           Swal.fire({
@@ -656,7 +688,6 @@ export class AdminComponent {
 
 
   onFilterRequests(){
-    console.log(this.filter);
     this.getAllpatientsProfiles();
     this.closeModal('filterRequestModal');
   }
@@ -673,8 +704,6 @@ export class AdminComponent {
   }
 
   onFilterStaff(){
-    console.log('filter staff: ',this.filterStaff);
-    console.log('filter : ', this.filter);
     this.getAllstaffsProfiles();
     this.closeModal('filterStaffModal');
   }
@@ -746,7 +775,6 @@ export class AdminComponent {
           this.http.delete<string>(`${this.patientUrl}/${this.selectedPatientEmail}`, { headers })
           .subscribe({
             next: (response) => {
-              console.log(response);
               this.getAllpatientsProfiles();
               Swal.fire({
                 icon: "success",
@@ -814,7 +842,6 @@ export class AdminComponent {
       this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.patientProfileSingle = response;
 
           this.openModal('viewPatientModal');
@@ -862,7 +889,6 @@ export class AdminComponent {
       this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.staffProfileSingle = response;
           this.availabilitySlots = this.staffProfileSingle.slots.slice();
           this.staffEditionForm.get('email')?.setValue(this.staffProfileSingle.email.fullEmail);
@@ -1329,7 +1355,6 @@ export class AdminComponent {
 
 
   onFilterOperationTypesRequests(){
-    console.log(this.filter);
     this.getAllOperationTypes();
     this.closeModal('filterOperationTypesRequestModal');
   }
@@ -1376,7 +1401,6 @@ export class AdminComponent {
       this.operationTypesService.getOperationTypeById(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.OperationTypeSingle = response;
 
           this.operationType = {
@@ -1573,7 +1597,6 @@ export class AdminComponent {
       
     .subscribe({
         next: (response: any) => {
-          console.log(response)
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
           Swal.fire({
@@ -1589,26 +1612,29 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error editing Operation Type:', error);
-        
-          if (error.error && error.error.errors) {
-            // Exibir erros detalhados de validação, se disponíveis
-            const validationErrors = error.error.errors;
-            for (const key in validationErrors) {
-              if (validationErrors.hasOwnProperty(key)) {
-                console.error(`Validation error - ${key}:`, validationErrors[key]);
-              }
-            }
-          } else {
+      
+          if (error.status === 400) {
+            // Erro 400 específico
             Swal.fire({
               icon: "error",
-              title: "Failed to update Operation Type.",
-              text: error.message || 'An unknown error occurred.',
+              title: "Não podes editar um operation type desativado ou com campos vazios",
               toast: true,
               position: "top-end",
               timer: 3000,
-              showConfirmButton: false
+              showConfirmButton: false,
+            });
+          } else {
+            // Outros erros
+            Swal.fire({
+              icon: "error",
+              title: "Não foi possível atualizar o operation type.",
+              toast: true,
+              position: "top-end",
+              timer: 3000,
+              showConfirmButton: false,
             });
           }
+      
         },
       });
   }
@@ -1684,7 +1710,6 @@ export class AdminComponent {
       this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
-          console.log(response);
           Swal.fire({
             icon: "success",
             title: "Tipo de operação desativado",

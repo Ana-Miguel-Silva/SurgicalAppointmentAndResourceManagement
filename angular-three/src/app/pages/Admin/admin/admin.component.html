@@ -65,6 +65,14 @@
           </div>
         </div>
 
+        <div class="container col-md-4">
+          <div class="container-lg selectionDiv" (click)="openModal('scheduleOperationsModal')">
+            <div class="form-floating mb-3">
+              <h3 class="title" >Schedule Operations</h3>
+            </div>
+          </div>
+        </div>
+
       </div>
 
 
@@ -1219,7 +1227,22 @@
 
 
 
+<!-- Schedule Operations Modal -->
+<div [ngStyle]="{'display': isModalOpen('scheduleOperationsModal') ? 'block' : 'none'}" id="scheduleOperationsModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeModal('scheduleOperationsModal')" class="close">&times;</span>
+    <h3 class="text-center">Schedule Operations</h3>
+    
+    <!-- Generate Schedule Button -->
+    <div class="text-center my-3">
+      <button class="btn btn-primary" (click)="onScheduleAppointment()">Generate Schedule</button>
+    </div>
 
+    <!-- Display Scheduled Message -->
+      <h5 class="text-center">Schedule Preview:</h5>
+      <div class="formatted-message" [innerHTML]="scheduledAppointmentMessage"></div>
+    </div>
+</div>
 
 
 
