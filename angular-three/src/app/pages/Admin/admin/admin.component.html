@@ -110,26 +110,26 @@
 
           <form [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
             <div class="col-md-4">
-              <label for="validationCustom01" class="form-label">Name</label>
-              <input type="text" class="form-control" id="validationCustom01" placeholder="Name" formControlName="name" required="">
+              <label for="registerPatientName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="registerPatientName" placeholder="Name" formControlName="name" required="">
               <div class="valid-feedback">
                 Looks good!
               </div>
             </div>
 
             <div class="col-md-4">
-              <label for="validationCustom02" class="form-label">Date of Birth</label>
-              <input type="date" class="form-control" id="validationCustom02" formControlName="dateOfBirth" required="">
+              <label for="registerPatientDate" class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" id="registerPatientDate" formControlName="dateOfBirth" required="">
               <div class="valid-feedback">
                 Looks good!
               </div>
             </div>
 
             <div class="col-md-4">
-              <label for="validationCustomUsername" class="form-label">User Email</label>
+              <label for="registerPatientUsername" class="form-label">User Email</label>
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
-                <input type="text" class="form-control" id="validationCustomUserEmail" aria-describedby="inputGroupPrepend" formControlName="userEmail" required="">
+                <input type="text" class="form-control" id="registerPatientUserEmail" aria-describedby="inputGroupPrepend" formControlName="userEmail" required="">
                 <div class="invalid-feedback">
                   Please choose a userEmail.
                 </div>
@@ -137,10 +137,10 @@
             </div>
 
             <div class="col-md-4">
-              <label for="validationCustomUsername" class="form-label">Email</label>
+              <label for="registerPatientUsername" class="form-label">Email</label>
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
-                <input type="email" class="form-control" id="validationCustomEmail" aria-describedby="inputGroupPrepend" formControlName="email" required="">
+                <input type="email" class="form-control" id="registerPatientEmail" aria-describedby="inputGroupPrepend" formControlName="email" required="">
                 <div class="invalid-feedback">
                   Please choose a valid email.
                 </div>
@@ -148,8 +148,8 @@
             </div>
 
             <div class="col-md-4">
-              <label for="validationCustom02" class="form-label">Phone</label>
-              <input type="number" class="form-control" id="validationCustom02" formControlName="phone" min="0" max="999999999" required="">
+              <label for="registerPatientPhone" class="form-label">Phone</label>
+              <input type="number" class="form-control" id="registerPatientPhone" formControlName="phone" min="0" max="999999999" required="">
               <div class="valid-feedback">
                 Looks good!
               </div>
@@ -157,7 +157,7 @@
 
             <div class="col-md-3">
               <label for="validationCustom04" class="form-label">Gender</label>
-              <select class="form-select" id="validationCustom04" formControlName="gender" required="">
+              <select class="form-select" id="registerPatientGender" formControlName="gender" required="">
                 <option selected="" disabled="" value="">Choose...</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -232,7 +232,7 @@
             </div>!-->
 
             <div class="col-12">
-              <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid">Submit form</button>
+              <button class="btn btn-primary" id="submitRegister" type="submit" [disabled]="myForm.invalid">Submit form</button>
             </div>
           </form>
         </div>
