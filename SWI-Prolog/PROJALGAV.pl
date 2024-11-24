@@ -38,19 +38,29 @@ close_server():-
 :- set_setting(http:cors, [*]).
 
 %JSONS
+:- json_object surgeryJson(
+    rooms:list(room_json),       % List of room schedules
+    doctors:list(surgeryStaffJson), % List of doctor schedules
+    day:integer,                  % Date received by better_sol
+    room:atom                     % Room received by better_sol
+).
+
 
 :- json_object surgeryJson(array:list(surgeryStaffJson)).
 :- json_object surgeryStaffJson(staffId:string,agenda_array:list(agenda_json)).
 :- json_object agenda_json(instanteInicial:integer,instanteFinal:integer,idDaOperecao:string).
+:- json_object room_json(instanteInicial:integer, instanteFinal:integer, idDaOperacao:string).
+
 
 % HANDLERS
 
 :- http_handler('/scheduleAllOperationsInADay', get_all_Surgeries, []).
 get_all_Surgeries(_Request) :-
     cors_enable,
-    (   obtain_better_sol(or1, 20241028, _, LDoctorsAgenda, _)
-    ->  treatSurgeryData(LDoctorsAgenda, Res),
-        SurgeryJsonFinal = surgeryJson(Res),
+    (   obtain_better_sol(or1, 20241028, ROOMS, DOCTORS, _TFinOp)
+    ->  treatRoomData(ROOMS, RoomRes),
+        treatSurgeryData(DOCTORS, DoctorRes),
+        SurgeryJsonFinal = surgeryJson(RoomRes, DoctorRes, 20241028, or1), % Pass the date (Day) and room (Room)
         (   prolog_to_json(SurgeryJsonFinal, JSONObject)
         ->  reply_json(JSONObject, [json_object(dict)])
         ;   reply_json(json([error='JSON conversion failed']), [status(500)])
@@ -74,6 +84,13 @@ treatAgendaData([(Ini, Fin, Id)|Agenda], [Res1|Res]) :-
     atom_string(Id, Id1),
     Res1 = agenda_json(Ini, Fin, Id1),
     treatAgendaData(Agenda, Res).
+
+% Process room data into JSON-compatible format
+treatRoomData([], []).
+treatRoomData([(Ini, Fin, Id)|Rooms], [Res1|Res]) :-
+    atom_string(Id, IdStr),
+    Res1 = room_json(Ini, Fin, IdStr),
+    treatRoomData(Rooms, Res).
 
 :-dynamic availability/3.
 :-dynamic agenda_staff/3.

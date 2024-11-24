@@ -39,7 +39,7 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/Appointments
-        [HttpPost]
+        [HttpPost("pmodule")]
         public async Task<ActionResult<string>> Create()
         {
             try
