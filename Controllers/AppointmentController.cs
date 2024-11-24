@@ -40,13 +40,13 @@ namespace DDDSample1.Controllers
 
         // POST: api/Appointments
         [HttpPost("pmodule")]
-        public async Task<ActionResult<string>> Create()
+        public async Task<IActionResult> Create()
         {
             try
             {
                 var appointment = await _service.ScheduleAppointments();
 
-                return (appointment);
+                return Ok(new { message = appointment });
             }
             catch (BusinessRuleValidationException ex)
             {

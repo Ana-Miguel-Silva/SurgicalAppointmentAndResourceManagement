@@ -405,3 +405,14 @@ table.table td .btn.manage:hover {
     transform: scale(1.1);
     transition: transform 0.3s, background-color 0.3s;
   }
+
+  .formatted-message {
+    text-align: center; /* Centers text horizontally */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Ensures multi-line alignment */
+    height: 100%; /* Optional: Ensure it fills the parent container */
+    font-family: Arial, sans-serif; /* Optional: Set a desired font */
+  }
+  
