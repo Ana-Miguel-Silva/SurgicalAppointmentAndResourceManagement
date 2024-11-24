@@ -3,13 +3,11 @@
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow administrators to control user access, manage permissions and monitor user activity in the system. This is the first time this task has been assigned for development.
-This is the first time this task has been assigned for development.
+As a healthcare staff member, I want to see appropriate textures (that is, suitable for use in representing a hospital or clinic) mapped onto the floor, walls, and so on
 
 ## 2. Requirements
 
-**US 6.5.2** As a healthcare staff member, I want to see appropriate textures (that is, suitable for use in representing a hospital or clinic) mapped onto the floor, walls, and so on.
-
+**US 6.5.2** As a healthcare staff member, I want to see appropriate textures (that is, suitable for use in representing a hospital or clinic) mapped onto the floor, walls, and so on
 
 **Acceptance Criteria:** 
 
@@ -24,10 +22,7 @@ This is the first time this task has been assigned for development.
 
 **Dependencies/References:**
 
-* There are no dependencies to other US.
-
-**Input and Output Data**
-
+* There is a dependency to "6.5.1 As a healthcare staff member, I want to see a 3D representation of the hospital/clinic floor."
 
 
 ## 3. Analysis

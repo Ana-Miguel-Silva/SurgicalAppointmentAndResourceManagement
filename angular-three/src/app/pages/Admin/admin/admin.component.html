@@ -12,7 +12,7 @@
 
     <div class="container-xxl ">
 
-        <h1 class="h1 title glow" style="padding: 1cm; color:white"> Admin </h1>
+        <h1 class="h1 title glow" (click)="ngOnInit()" style="padding: 1cm; color:white"> Admin </h1>
         <!--TODO: Alterar o formato de como esta a organização/divisão das divs par aficar de forma mas dinamica-->
         <div class="row g-3">
 
@@ -277,7 +277,6 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>ID</th>
                     <th>Medical Number</th>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -291,8 +290,8 @@
                 <tbody>
                   <tr *ngFor="let request of patientsProfiles; let i = index" (click)="selectPatient(request.email.fullEmail)" [ngClass]="{ 'selected-row': selectedPatientEmail === request.email.fullEmail }">
                     <td>{{ i + 1 }}</td>
-                    <td><input class="selectRequest" type="radio" id="patient_{{ request.email.fullEmail }}" name="patientFormID" value="{{ request.email.fullEmail }}" [checked]="selectedPatientEmail === request.email.fullEmail" hidden>{{ request.id }}</td>
-                    <td>{{ request.medicalRecordNumber.number }} </td>
+                    <td><input class="selectRequest" type="radio" id="patient_{{ request.email.fullEmail }}" name="patientFormID" value="{{ request.email.fullEmail }}" [checked]="selectedPatientEmail === request.email.fullEmail" hidden>{{ request.medicalRecordNumber.number }} </td>
+
                     <td>{{ request.name.firstName }}</td>
                     <td>{{ request.name.lastName }}</td>
                     <td>{{ request.email.fullEmail }}</td>
@@ -752,26 +751,14 @@
 
       <form  class="row g-3 needs-validation" novalidate="">
         <div class="col-md-12"></div>
-          <div class="col-md-2"></div>
+          <div class="col-md-10"></div>
 
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control" id="validationCustom01"  name="searchTerm" placeHolder="Search" [(ngModel)]="searchTerm" (input)="onFilter2Change()">
-            </div>
-          </div>
           <div class="col-md-2">
             <div class="input-group">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span>
-            <select class="form-select" id="validationCustom1" [(ngModel)]="filterField"  name="filterField" (change)="onFilter2Change()" required>
-              <option selected="" disabled="" value="" hidden>Filters</option>
-              <option>Name (WIP)</option>
-              <option>Id</option>
-              <option>Medical Record Number</option>
-              <option>Email</option>
-            </select>
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterStaffModal')"> Filter </button>
+            </div>
           </div>
-          </div>
+
 
           <div class="col-md-12">
             <div class="table-wrapper w-100">
@@ -1122,6 +1109,79 @@
   </div>
 </div>
 
+<div [ngStyle]="{'display': isModalOpen('filterStaffModal') ? 'block' : 'none'}" id="filterStaffModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterStaffModal')" class="close">&times;</span>
+    <form>
+
+      <h3 class="text-center">Filter Staff</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilterStaff()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterStaffName" class="form-label">Name:</label>
+        <input type="text" id="filterStaffName" [(ngModel)]="filterStaff.name"  name="filterStaffName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffPhone" class="form-label">Phone:</label>
+        <input type="text" id="filterStaffPhone" [(ngModel)]="filterStaff.phone"  name="filterStaffPhone" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffLicense" class="form-label">License:</label>
+        <input type="text" id="filterStaffLicense" [(ngModel)]="filterStaff.license"  name="filterStaffLicense" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffRole" class="form-label">Role:</label>
+        <select id="filterStaffRole" [(ngModel)]="filterStaff.role" name="filterStaffRole" class="form-control">
+          <option value="" disabled selected hidden>Role</option>
+          <option value="DOCTOR">Doctor</option>
+          <option value="NURSE">Nurse</option>
+          <option value="TECHNICIAN">Technician</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="filterStaffSpecialization" class="form-label">Specialization:</label>
+        <select id="filterStaffSpecialization" [(ngModel)]="filterStaff.specialization" name="filterStaffSpecialization" class="form-control">
+          <option value="" disabled selected hidden>Specialization</option>
+          <option value="PEDIATRICS">Pediatrics</option>
+          <option value="SURGERY">Surgery</option>
+          <option value="CARDIOLOGY">Cardiology</option>
+          <option value="ORTHOPEDICS">Orthopedics</option>
+          <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
+          <option value="NEUROLOGY">Neurology</option>
+          <option value="ONCOLOGY">Oncology</option>
+          <option value="GYNECOLOGY">Gynecology</option>
+          <option value="OBSTETRICS">Obstetrics</option>
+          <option value="RADIOLOGY">Radiology</option>
+          <option value="UROLOGY">Urology</option>
+        </select>
+      </div>
+
+      <!-- Lista de allergies e appointment history
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="filterEmail" class="form-label">Email:</label>
+        <input type="text" id="filterEmail"  name="filterEmail" class="form-control" />
+      </div>-->
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterStaff()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
+  </div>
+</div>
+
 
 
 
@@ -1231,7 +1291,7 @@
                       <button type="button" class="btn btn-danger mt-4" (click)="removeStaff(i)">Remove</button>
                     </div>
               </div>
-              <button type="button" class="btn btn-secondary" (click)="addStaff()">Add Staff</button>
+              <button type="button" class="staff-entry" (click)="addStaff()">Add Staff</button>
             </div>
 
           <!-- Estimated Duration -->
@@ -1294,7 +1354,7 @@
 
           </div>
         </div>!-->
-        
+
 
           <div class="col-md-12">
             <div class="table-wrapper" >
@@ -1469,47 +1529,48 @@
       <span (click)="closeModal('UpdateOperationTypeModal')" class="close">&times;</span>
 
         <form [formGroup]="operationTypeUpdateForm" class="row g-3 needs-validation" novalidate="">
-          
-          <div *ngIf="operationTypeUpdate">
+
+          <div *ngIf="operationTypeUpdate" >
             <div  class="row g-3 needs-validation">
               <div class="col-md-12"></div>
                 <div class="col-md-3">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
-                      <input type="text" class="form-control" [disabled]="true" value="{{ operationTypeUpdate.name}}"  formControlName="name">
+                      <input type="text" class="form-control" [disabled]="true" value="{{ operationTypeUpdate.name}}" formControlName="name">
                   </div>
                 </div>
                 <!--TODO: Meter os forms direito, para estarem no formato de leitora no .ts-->
-      
+
                 <div class="col-md-6"></div>
-      
-                <div class="col-md-4">
+
+
+                <div class="col-md-4" formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Preparation Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.patientPreparation)" >
+                    <input type="time" class="form-control" formControlName="patientPreparation">
                   </div>
                 </div>
-      
-                <div class="col-md-4">
+
+                <div class="col-md-4" formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Surgery Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.surgery)">
+                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.surgery)" formControlName="surgery">
                   </div>
                 </div>
-      
-      
-                <div class="col-md-4">
+
+
+                <div class="col-md-4"  formGroupName="estimatedDuration">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
                     <span class="input-group-text" id="add">Cleaning Duration</span>
-                    <input type="time" class="form-control" [value]="formatTimeToISO(operationTypeUpdate.estimatedDuration.cleaning)"   >
+                    <input id="cleaning" type="time" class="form-control" value="{{operationTypeUpdate.estimatedDuration.cleaning}}" formControlName="cleaning">
                   </div>
                 </div>
-      
-               <div class="col-md-2"></div>
-      
+
+              <!-- <div class="col-md-2"></div>
+
                 <div class="col-md-8">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
@@ -1535,11 +1596,81 @@
                     </tbody>
                   </table>
                 </div>
-      
-      
-      
-                <div class="col-md-2"></div>
-      
+
+
+
+                <div class="col-md-2"></div>-->
+
+                <div class="col-md-12" formArrayName="requiredStaff">
+                  <div class="row">
+                    <div *ngFor="let staff of GetrequiredStaff.controls; let i = index" [formGroupName]="i" class="col-md-4 staff-member">
+                      <!-- Quantity -->
+                      <div class="form-group">
+                        <label for="quantity{{i}}">Quantity</label>
+                        <input id="quantity{{i}}" formControlName="quantity" class="form-control" type="number" required />
+                      </div>
+
+                      <!-- Specialization -->
+                      <div class="col-md-12">
+                        <label for="specialization_{{i}}" class="form-label">Specialization</label>
+                        <div class="input-group has-validation">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+                          <select class="form-select" formControlName="specialization" name="specialization_{{i}}" required>
+                            <option value="" disabled selected hidden>Specialization</option>
+                            <option value="PEDIATRICS">Pediatrics</option>
+                            <option value="SURGERY">Surgery</option>
+                            <option value="CARDIOLOGY">Cardiology</option>
+                            <option value="ORTHOPEDICS">Orthopedics</option>
+                            <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
+                            <option value="NEUROLOGY">Neurology</option>
+                            <option value="ONCOLOGY">Oncology</option>
+                            <option value="GYNECOLOGY">Gynecology</option>
+                            <option value="OBSTETRICS">Obstetrics</option>
+                            <option value="RADIOLOGY">Radiology</option>
+                            <option value="UROLOGY">Urology</option>
+                          </select>
+                          <div class="invalid-feedback">
+                            Please select a valid specialization.
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Role -->
+                      <div class="col-md-12">
+                        <label for="role_{{i}}" class="form-label">Role</label>
+                        <div class="input-group has-validation">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+                          <select class="form-select" formControlName="role" name="role_{{i}}" required>
+                            <option value="" disabled selected hidden>Role</option>
+                            <option value="DOCTOR">Doctor</option>
+                            <option value="NURSE">Nurse</option>
+                            <option value="TECHNICIAN">Technician</option>
+                          </select>
+                          <div class="invalid-feedback">
+                            Please select a valid role.
+                          </div>
+                        </div>
+                      </div>
+
+                      <button type="button" class="btn btn-danger" (click)="removeRequiredStaff(i)" style="margin-top:0.5cm;">Remove</button>
+                    </div>
+                  </div>
+
+                  <!-- Botão para adicionar mais staff -->
+                  <button type="button" class="btn btn-outline-primary" (click)="addRequiredStaff()" style="margin-top:1cm;margin-bottom:0.2cm">Add Staff</button>
+                </div>
+
+
+                <!-- Botão para Adicionar Staff -->
+
+
+
+
+
+
+
+
+
               </div>
 
 

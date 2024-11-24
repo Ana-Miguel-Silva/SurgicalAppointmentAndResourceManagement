@@ -7,6 +7,7 @@ import { AuthService } from '../../../Services/auth.service';
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { environment } from '../../../../environments/environment'; // Importa o environment correto
 
 interface RequiredStaff {
   quantity: number;
@@ -46,8 +47,8 @@ export class AdminComponent {
     }
   };
 
-  private staffUrl = "https://localhost:5001/api/Staff";
-  private patientUrl = "https://localhost:5001/api/Patients";
+  private staffUrl = `${environment.apiBaseUrl}/Staff`;
+  private patientUrl = `${environment.apiBaseUrl}/Patients`;
 
   constructor(private fb: FormBuilder, private modalService: ModalService,
     private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private router: Router) {
@@ -88,7 +89,6 @@ export class AdminComponent {
         patientPreparation: ['', Validators.required],
         surgery: ['', Validators.required],
       }),
-      agree: [false, Validators.requiredTrue],
       requiredStaff: this.fb.array([]),
     });
 
@@ -195,6 +195,15 @@ export class AdminComponent {
     medicalRecordNumber: '',
     allergies: '',
     appointmentHistory: ''
+  } as const;
+
+  filteredStaffs: any[] = [];
+  filterStaff = {
+    name: '',
+    phone: '',
+    license: '',
+    role: '',
+    specialization: '',
   } as const;
 
   
@@ -663,6 +672,23 @@ export class AdminComponent {
     };
   }
 
+  onFilterStaff(){
+    console.log('filter staff: ',this.filterStaff);
+    console.log('filter : ', this.filter);
+    this.getAllstaffsProfiles();
+    this.closeModal('filterStaffModal');
+  }
+
+  cleanFilterStaff() {
+    this.filterStaff = {
+      name: '',
+      phone: '',
+      license: '',
+      role: '',
+      specialization: '',
+    };
+  }
+
 
   deactivatePatient(){
     const token = this.authService.getToken();
@@ -1080,25 +1106,31 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      console.log("abc");
       this.errorMessage = 'You are not logged in!';
       this.router.navigate(['/']);
     }
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
     this.getAllstaffsProfiles();
     this.getAllOperationTypes();
+
+      if (!this.operationTypeUpdateForm.get('requiredStaff')) {
+        this.operationTypeUpdateForm.addControl('requiredStaff', this.fb.array([]));
+      }
   }
 
   // Novo método para atualizar a lista ao mudar o filtro
   onFilterChange() {
     this.getAllpatientsProfiles();
   }
-  onFilter2Change() {
+
+  onFilterStaffChange() {
     this.getAllstaffsProfiles();
   }
+
   onFilterOperationTypesChange() {
     this.getAllOperationTypes();
   }
+
   // Method to fetch all patients profiles
   getAllpatientsProfiles() {
     const token = this.authService.getToken();
@@ -1136,8 +1168,6 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           this.patientsProfiles = response;
-          console.log(response);
-          console.log(params);
         },
         error: (error) => {
           console.error('Error fetching  profiles:', error);
@@ -1158,9 +1188,22 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
 
-    const params = new HttpParams()
+    type FilterKeys = keyof typeof this.filterStaff; // Restringe as chaves às do objeto filter
+
+
+    let params = new HttpParams();
+
+  Object.keys(this.filterStaff).forEach(key => {
+    const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+    const value = this.filterStaff[typedKey].toLowerCase().replace(/\s+/g, ''); // Acessar o valor usando a chave tipada
+    if (value) { // Só adiciona se o valor estiver preenchido
+      params = params.set(key, value);
+    }
+  });
+
+    /*const params = new HttpParams()
   .set(this.filterField.toLowerCase().replace(/\s+/g, '')  // Converte para minúsculas e remove os espaços
-, this.searchTerm || '');
+, this.searchTerm || '');*/
 
 
 
@@ -1168,8 +1211,6 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           this.staffsProfiles = response;
-          console.log(response);
-          console.log(params);
         },
         error: (error) => {
           console.error('Error fetching  profiles:', error);
@@ -1277,7 +1318,6 @@ export class AdminComponent {
           console.log('Operation Type ',response);
 
           this.OperationTypesProfiles = response;
-          console.log(response);
           console.log("params Operation Types: ", params);
         },
         error: (error) => {
@@ -1361,29 +1401,58 @@ export class AdminComponent {
     }
   }
 
-  populateOperationTUpdateForm(): void {
+  get GetrequiredStaff(): FormArray {
+    return this.operationTypeUpdateForm.get('requiredStaff') as FormArray;
+  }
+
+  populateOperationTUpdateForm(estimatedDuration: EstimatedDuration): void {
+
     this.operationTypeUpdateForm.patchValue({
         name: this.operationTypeUpdate.name,
-        estimatedDuration: {
-          patientPreparation: this.operationTypeUpdate.estimatedDuration.patientPreparation,
-          surgery: this.operationTypeUpdate.estimatedDuration.surgery,
-          cleaning: this.operationTypeUpdate.estimatedDuration.cleaning
-        }
+        estimatedDuration: estimatedDuration
+
 
     });
 
-    const requiredStaffControl = this.operationTypeUpdateForm.get('requiredStaff') as FormArray;
+
+    
+
+    const requiredStaffControl = this.GetrequiredStaff;
+    
     requiredStaffControl.clear(); // Limpar quaisquer dados antigos no FormArray
   
+    
     this.operationTypeUpdate.requiredStaff.forEach((staff: any) => {
-      requiredStaffControl.push(this.fb.group({
-        quantity: [staff.quantity, Validators.required],
-        specialization: [staff.specialization, Validators.required],
-        role: [staff.role, Validators.required],
-      }));
+      requiredStaffControl.push(this.createStaffGroup(staff));
     });
 
+  
+
+
     //TODO: Fazer o array dos required staff atualizar automaticamente e ir buscar o codigo de adicionar o staff
+
+  }
+
+  // Método para criar um FormGroup para cada membro da equipe
+  createStaffGroup(staff: any): FormGroup {
+    
+    return this.fb.group({
+      quantity: [staff.quantity, Validators.required],
+      specialization: [staff.specialization, Validators.required],
+      role: [staff.role, Validators.required]
+    });
+  }
+
+  // Método para adicionar um novo membro da equipe
+  addRequiredStaff() {
+    const requiredStaffArray = this.operationTypeUpdateForm.get('requiredStaff') as FormArray;
+    requiredStaffArray.push(this.createStaffGroup({ quantity: '', specialization: '', role: '' }));
+  }
+
+  // Método para remover um membro da equipe
+  removeRequiredStaff(index: number) {
+    const requiredStaffArray = this.operationTypeUpdateForm.get('requiredStaff') as FormArray;
+    requiredStaffArray.removeAt(index);
 
   }
 
@@ -1424,10 +1493,8 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
 
-          console.log('Operation to edit',response);
           this.operationTypeUpdate = response;
-
-          this.populateOperationTUpdateForm();
+          this.populateOperationTUpdateForm(response.estimatedDuration);
 
 
           const updateOpertTypeData = this.operationTypeUpdateForm.value;
@@ -1444,6 +1511,27 @@ export class AdminComponent {
 
 
   }
+
+  formatTimeToZeroZero(time: string): string {
+    // Verifica se o valor do tempo tem o formato "HH:mm:ss"
+    if (time.includes(":")) {
+      const timeParts = time.split(":");
+  
+      // Se o tempo tiver apenas "HH:mm", adiciona ":00" para completar
+      if (timeParts.length === 2) {
+        time += ":00";
+      }
+    } else {
+      // Se não tiver o caractere ":", então retorna o valor sem mudanças
+      return time;
+    }
+  
+    // Retorna o valor já formatado como "HH:mm:ss"
+    return time;
+  }
+  
+
+  
 
 
   onUpdateOperationType() {
@@ -1465,9 +1553,21 @@ export class AdminComponent {
       return;
     }
 
-    this.populateOperationTUpdateForm();
 
-    console.log('before update:',this.operationTypeUpdateForm.value);
+    //console.log('before update:',this.operationTypeUpdateForm.value);
+
+    const upForm = this.operationTypeUpdateForm.value.estimatedDuration;
+
+    upForm.patientPreparation = this.formatTimeToZeroZero(upForm.patientPreparation)
+    upForm.surgery = this.formatTimeToZeroZero(upForm.surgery)
+    upForm.cleaning = this.formatTimeToZeroZero(upForm.cleaning)
+
+
+
+    /*this.operationTypeUpdateForm.value.estimatedDuration.patientPreparation += ":00";
+    this.operationTypeUpdateForm.value.estimatedDuration.surgery += ":00";
+    this.operationTypeUpdateForm.value.estimatedDuration.cleaning += ":00";*/
+    
     
     this.operationTypesService.UpdateOperationType(this.selectOperationTypeId,this.operationTypeUpdateForm.value)
       
@@ -1489,34 +1589,26 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error editing Operation Type:', error);
-      
-          if (error.status === 400) {
-            // Erro 400 específico
-            Swal.fire({
-              icon: "error",
-              title: "Não podes editar um operation type desativado",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false,
-            });
+        
+          if (error.error && error.error.errors) {
+            // Exibir erros detalhados de validação, se disponíveis
+            const validationErrors = error.error.errors;
+            for (const key in validationErrors) {
+              if (validationErrors.hasOwnProperty(key)) {
+                console.error(`Validation error - ${key}:`, validationErrors[key]);
+              }
+            }
           } else {
-            // Outros erros
             Swal.fire({
               icon: "error",
-              title: "Não foi possível atualizar o operation type.",
+              title: "Failed to update Operation Type.",
+              text: error.message || 'An unknown error occurred.',
               toast: true,
               position: "top-end",
               timer: 3000,
-              showConfirmButton: false,
+              showConfirmButton: false
             });
           }
-      
-          // Ajustar mensagens de erro internas
-          /*this.errorMessage = error.status === 400
-            ? 'Erro de validação! Verifique os dados inseridos.'
-            : 'Ocorreu um erro ao atualizar o Operation Type!';
-          this.successMessage = null;*/
         },
       });
   }
@@ -1559,7 +1651,36 @@ export class AdminComponent {
       });
 
     } else {
+
+      if (document.getElementById("active_"+this.selectOperationTypeId+"_false")){
+        Swal.fire({
+          icon: "error",
+          title: "Operação já está desativada.",
+          toast: true,
+          position: "bottom-right",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return
+      }
+      Swal.fire({
+        icon: "warning",
+        iconColor: '#d33',
+        title: "Desativar esta operação?",
+        text: "Não é possível reverter esta decisão.",
+        showCancelButton: true,
+        confirmButtonText: "Desativar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
+
+      if(this.selectOperationTypeId)
+
       this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
@@ -1572,6 +1693,9 @@ export class AdminComponent {
             timer: 3000,
             showConfirmButton: false
           });
+
+          this.getAllOperationTypes();
+
         },
         error: (error) => {
           console.error('Error viewing operation type:', error);
@@ -1586,6 +1710,10 @@ export class AdminComponent {
           });
         }
       });
+         } else if (result.isDenied) {
+        }
+      });
+
     }
   }
 
