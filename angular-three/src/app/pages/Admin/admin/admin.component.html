@@ -810,8 +810,8 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <button class="fs-5 btn btn-outline-info" (click)="viewStaff()">View <i class="bi bi-info-square-fill"></i></button>
-            <button class="fs-5 btn btn-outline-warning" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
-            <button class="fs-5 btn btn-outline-danger" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
+            <button class="fs-5 btn btn-outline-warning" id="editStaffButoon" (click)="editStaff()">Edit <i class="bi bi-pencil-square"></i></button>
+            <button class="fs-5 btn btn-outline-danger" id="disableStaffButoon" (click)="deactivateStaff()">Deactivate <i class="bi bi-archive-fill"></i></button>
           </div>
         </form>
       </div>
@@ -925,7 +925,7 @@
             </div>
           </div>
           <div class="col-12">
-            <button class="fs-5 btn btn-outline-primary" type="submit" [disabled]="staffCreationForm.invalid">Add Staff Profile <i class="bi bi-plus-square-fill"></i></button>
+            <button class="fs-5 btn btn-outline-primary" id="staffCreateSubmit" type="submit" [disabled]="staffCreationForm.invalid">Add Staff Profile <i class="bi bi-plus-square-fill"></i></button>
           </div>
         </form>
       </div>
@@ -1066,7 +1066,7 @@
           <div class="col-md-4">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-              <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
+              <select class="form-select" id="validationSpecializationEdit" formControlName="specialization" required="">
                 <option selected="" disabled="" value="" hidden>Specialization</option>
                 <option value="PEDIATRICS">Pediatrics</option>
                 <option value="SURGERY">Surgery</option>
@@ -1100,16 +1100,16 @@
           <div class="col-md-8">
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityStart" formControlName="startTime">
-              <input type="datetime-local" class="form-control" id="validationStaffAvailabilityEnd" formControlName="endTime">
-              <span class="input-group-text" id="add" (click)="addDate3()" ><i class="bi bi-plus-lg"></i></span>
+              <input type="datetime-local" class="form-control" id="EvalidationStaffAvailabilityStart" formControlName="startTime">
+              <input type="datetime-local" class="form-control" id="EvalidationStaffAvailabilityEnd" formControlName="endTime">
+              <span class="input-group-text" id="add2" (click)="addDate3()" ><i class="bi bi-plus-lg"></i></span>
               <div class="valid-feedback">
                 Looks good!
               </div>
             </div>
           </div>
           <div class="col-12">
-            <button class="fs-5 btn btn-outline-warning" type="submit" [disabled]="staffEditionForm.invalid">Update Staff Profile <i class="bi bi-arrow-down-left-square-fill"></i></button>
+            <button class="fs-5 btn btn-outline-warning" id="staffEditSubmit" type="submit" [disabled]="staffEditionForm.invalid">Update Staff Profile <i class="bi bi-arrow-down-left-square-fill"></i></button>
           </div>
         </form>
       </div>
