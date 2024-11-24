@@ -5,7 +5,6 @@
   "exclude": ["cypress"],
   "compileOnSave": false,
   "compilerOptions": {
-    "allowJs": true,
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
