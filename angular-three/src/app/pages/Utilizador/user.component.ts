@@ -32,7 +32,7 @@ export class UserComponent {
         email: ['', [Validators.required, Validators.email]],
         phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         gender: ['', Validators.required],
-        agree: [false, Validators.requiredTrue]
+       // agree: [false, Validators.requiredTrue]
       });
 
 
@@ -55,6 +55,7 @@ export class UserComponent {
     errorMessage: string | null = null;
 
     ngOnInit() {
+      this.openModal('registerPatientModal');
       const token = this.authService.getToken();
 
       if (!token) {
@@ -78,6 +79,7 @@ export class UserComponent {
 
 
   onSubmit() {
+   
 
       const formData = this.myForm.value;
 

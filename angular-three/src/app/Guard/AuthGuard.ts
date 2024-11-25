@@ -11,6 +11,14 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
 
+
+    const exemptedRoutes = ['/user']; 
+
+    if (exemptedRoutes.includes(route.routeConfig?.path || '')) {
+      return true; 
+    }
+
+
     const expectedRole = route.data['role'];
     const token = route.queryParams['token'];
       

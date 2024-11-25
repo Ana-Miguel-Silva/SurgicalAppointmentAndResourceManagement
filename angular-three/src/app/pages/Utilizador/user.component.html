@@ -11,30 +11,24 @@
 </head>
 <body>
 
-    <div class="container-xxl ">
-
-        <h1 class="h1 title glow" style="padding: 1cm; color:white"> User </h1>
-        <!--TODO: Alterar o formato de como esta a organização/divisão das divs par aficar de forma mas dinamica-->
-        <div class="row g-3">
-          <div class="container col-md-4">
-            <div class="container-lg  selectionDiv" (click)="openModal('registerPatientModal')">
-              <div class="form-floating mb-3">
-                  <h3 class="title" >Register Patient Profile</h3>
-              </div>
-            </div>
+  <div class="container-xxl">
+    <h1 class="h1 title glow" style="padding: 1cm; color:white"> User </h1>
+    <div class="row g-3">
+      <div class="container col-md-4">
+        <div class="container-lg selectionDiv" (click)="openModal('registerPatientModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">Register Patient Profile</h3>
           </div>
-
-
-
+        </div>
       </div>
-</div>
-
-
-
- <div [ngStyle]="{'display': isModalOpen('registerPatientModal') ? 'block' : 'none'}" id="registerPatientModal" class="modal" >
+    </div>
+  </div>
+  
+  <div [ngStyle]="{'display': isModalOpen('registerPatientModal') ? 'block' : 'none'}" id="registerPatientModal" class="modal">
     <div class="modal-content">
-        <span (click)="closeModal('registerPatientModal')" class="close">&times;</span>
-        <div>
+      <span (click)="closeModal('registerPatientModal')" class="close">&times;</span>
+   
+   
 
           <form [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate="">
             <div class="col-md-4">
@@ -96,7 +90,7 @@
             </div>
 
           
-            <div class="col-12">
+            <!--<div class="col-12">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="invalidCheck" formControlName="agree" required="">
                 <label class="form-check-label" for="invalidCheck">
@@ -106,13 +100,13 @@
                   You must agree before submitting.
                 </div>
               </div>
-            </div>
+            </div>!-->
 
             <div class="col-12">
-              <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid">Submit form</button>
+              <button class="btn btn-primary" type="submit" >Submit form</button>
             </div>
           </form>
-        </div>
+        
 
     </div>
 </div>

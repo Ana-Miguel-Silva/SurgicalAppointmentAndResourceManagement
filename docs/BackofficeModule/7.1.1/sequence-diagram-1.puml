@@ -13,9 +13,9 @@ AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : info to create user(email, username, role)
+AD -> SYS : info to login(username, password)
 activate SYS
-SYS --> AD : success and data
+SYS --> AD : success and access to their funtionalities.
 
 deactivate SYS
 
