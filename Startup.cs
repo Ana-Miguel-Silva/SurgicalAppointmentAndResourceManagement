@@ -60,7 +60,7 @@ namespace DDDSample1
             ConfigureMyServices(services);*/
 
             services.AddDbContext<DDDSample1DbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
+                options.UseMySql(Configuration.GetConnectionString("MySql5Connection"),
                     new MySqlServerVersion(new Version(8, 0, 0))
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
@@ -186,6 +186,7 @@ namespace DDDSample1
 
             SeedAdminUser(app.ApplicationServices);
             SeedPatientUser(app.ApplicationServices);
+            SeedDoctorUser(app.ApplicationServices);
             SeedPatient(app.ApplicationServices);
         }
 
@@ -261,6 +262,28 @@ namespace DDDSample1
                 if (existingAdmin == null)
                 {
                     var adminDto = new CreatingUserDto(adminUsername, adminEmail.FullEmail, adminRole);
+
+                    await userService.AddAsync(adminDto);
+                }
+
+            }
+        }
+
+         public async Task SeedDoctorUser(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+                var doctorUsername = "doctor";
+                var doctorEmail = new Email("1221003@isep.ipp.pt");
+                var doctorRole = "Doctor";
+
+                User existingDoctor = await userService.GetByUsernameAsync(doctorUsername);
+
+                if (existingDoctor == null)
+                {
+                    var adminDto = new CreatingUserDto(doctorUsername, doctorEmail.FullEmail, doctorRole);
 
                     await userService.AddAsync(adminDto);
                 }

@@ -74,7 +74,7 @@ describe('UserComponent', () => {
       email: 'test@example.com',
       phone: '123456789',
       gender: 'male',
-      agree: true
+    
     };
     component.myForm.setValue(formData);
     mockPatientService.registerPatient.and.returnValue(throwError('Error occurred'));
