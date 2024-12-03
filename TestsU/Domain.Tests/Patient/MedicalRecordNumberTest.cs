@@ -38,7 +38,7 @@ namespace Domain.Tests
         public void GenerateMedicalRecordNumber_FormatsCorrectly()
         {
             // Arrange
-            var registrationDate = new DateTime(2024, 11, 1);
+            var registrationDate = new DateTime(2024, 12, 1);
             var medicalRecordNumber = new MedicalRecordNumber();
 
             // Act
