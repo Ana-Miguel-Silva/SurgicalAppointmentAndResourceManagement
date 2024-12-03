@@ -68,7 +68,8 @@ namespace DDDSample1
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowLocalhost4200",
-                    builder => builder.WithOrigins("http://"+Configuration.GetConnectionString("HostID") +":" + Configuration.GetConnectionString("PortID"))
+                    builder => builder.WithOrigins(//"http://"+Configuration.GetConnectionString("HostID") +":" + Configuration.GetConnectionString("PortID")
+                    "http://localhost:4200")
                                     .AllowAnyMethod()
                                     .AllowAnyHeader());
             });
