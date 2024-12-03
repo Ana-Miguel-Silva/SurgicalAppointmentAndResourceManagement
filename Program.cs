@@ -11,8 +11,8 @@ namespace DDDSample1
         
         public static void Main(string[] args)
         {
-            HostID = args[1];
-            PortID = args[2];
+            HostID = args[0];
+            PortID = args[1];
             CreateWebHostBuilder(args).Build().Run();
         }
 
