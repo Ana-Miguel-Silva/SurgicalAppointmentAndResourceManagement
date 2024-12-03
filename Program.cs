@@ -11,21 +11,31 @@ namespace DDDSample1
         
         public static void Main(string[] args)
         {
-            HostID = args[0];
-            PortID = args[1];
-            CreateWebHostBuilder(args).Build().Run();
+            if(args.Length != 0){
+                HostID = args[0];
+                PortID = args[1];
+                 CreateWebHostBuilder2(args).Build().Run();
+            }else{
+                CreateWebHostBuilder(args).Build().Run();
+            }
+           
         }
 
-       public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .UseStartup<Startup>();
+
+       public static IWebHostBuilder CreateWebHostBuilder2(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)            
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    // Adiciona as configurações de HostID e PortID no Configuration
+                  
                     var settings = new Dictionary<string, string>
                     {
                         { "HostID", HostID },
                         { "PortID", PortID }
                     };
+                  
 
                     config.AddInMemoryCollection(settings);
                 })
