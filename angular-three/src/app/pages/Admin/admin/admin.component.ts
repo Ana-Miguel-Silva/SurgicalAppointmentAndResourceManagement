@@ -9,6 +9,8 @@ import { OperationTypesService } from '../../../Services/operationTypes.service.
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment'; // Importa o environment correto
+import { StaffService } from '../../../Services/staff.service';
+import { PatientService } from '../../../Services/patient.service';
 
 interface RequiredStaff {
   quantity: number;
@@ -50,11 +52,9 @@ export class AdminComponent {
 
   scheduledAppointmentMessage: string = '';
 
-  private staffUrl = `${environment.apiBaseUrl}/Staff`;
-  private patientUrl = `${environment.apiBaseUrl}/Patients`;
-
+   
   constructor(private fb: FormBuilder, private modalService: ModalService,
-    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService ,
+    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
     private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
@@ -374,10 +374,12 @@ export class AdminComponent {
 
       // Obtém os valores do formulário
       const formData = this.myForm.value;
-      const apiUrl = `${this.patientUrl}/register`
+      
 
       // Enviar os dados diretamente com HttpClient
-      this.http.post(apiUrl, formData, { headers })
+  
+     // this.http.post(apiUrl, formData, { headers })
+     this.patientService.adminRegisterPatient(formData)
         .subscribe(
           response => {
             Swal.fire({
@@ -467,7 +469,18 @@ export class AdminComponent {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           console.log(`Deactivating staff ID: ${this.selectedStaffId}`);
-          this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+          //this.http.delete<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+
+          if (!this.selectedStaffId) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Nenhum paciente selecionado.',
+            });
+            return;
+          }      
+
+          this.staffService.deactivateStaff(this.selectedStaffId)
           .subscribe({
             next: (response) => {
               this.getAllstaffsProfiles();
@@ -530,7 +543,8 @@ export class AdminComponent {
       });
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
-      this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+     // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+      this.staffService.viewStaff(this.selectedStaffId)
       .subscribe({
         next: (response) => {
           this.staffProfileSingle = response;
@@ -577,7 +591,8 @@ export class AdminComponent {
       });
     }else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
-      this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+      //this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+      this.patientService.adminGetPatient(this.selectedPatientEmail)
       .subscribe({
         next: (response) => {
           this.patientProfileUpdate = response;
@@ -653,7 +668,18 @@ export class AdminComponent {
     });
 
 
-    this.http.patch(`${this.patientUrl}/adjust/update/${this.selectedPatientEmail}`, this.patientUpdateForm.value , { headers })
+    if (!this.selectedPatientEmail) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum paciente selecionado.',
+      });
+      return;
+    }
+
+    const updatedPatientData = this.patientUpdateForm.value;
+
+    this.patientService.adminUpdatePatient(this.selectedPatientEmail, updatedPatientData )
       .subscribe({
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
@@ -771,8 +797,19 @@ export class AdminComponent {
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
+
+          if (!this.selectedPatientEmail) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Nenhum paciente selecionado.',
+            });
+            return;
+          }
+
           console.log(`Deactivating Patient Email: ${this.selectedPatientEmail}`);
-          this.http.delete<string>(`${this.patientUrl}/${this.selectedPatientEmail}`, { headers })
+          //this.http.delete<string>(`${this.patientUrl}/${this.selectedPatientEmail}`, { headers })
+          this.patientService.adminDeletePatient(this.selectedPatientEmail)
           .subscribe({
             next: (response) => {
               this.getAllpatientsProfiles();
@@ -839,7 +876,8 @@ export class AdminComponent {
 
     } else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
-      this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+     // this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
+      this.patientService.adminGetPatient(this.selectedPatientEmail)
       .subscribe({
         next: (response) => {
           this.patientProfileSingle = response;
@@ -886,7 +924,8 @@ export class AdminComponent {
       });
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
-      this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+      //this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+      this.staffService.viewStaff(this.selectedStaffId)
       .subscribe({
         next: (response) => {
           this.staffProfileSingle = response;
@@ -931,7 +970,19 @@ export class AdminComponent {
     const toCreate = newSlots.filter((value: any) => !commonElements.includes(value));
     this.slotsForm.patchValue({slots: toCreate});
     const formDataA = this.slotsForm.value;
-    this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsAdd`, JSON.stringify(formDataA).replaceAll("Time",""), { headers })
+    
+    //this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsAdd`, JSON.stringify(formDataA).replaceAll("Time",""), { headers })
+
+    if (!this.selectedStaffId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum paciente selecionado.',
+      });
+      return;
+    }
+
+    this.staffService.editStaffPostB(this.selectedStaffId, formDataA)
       .subscribe({
         next: () => {
           this.successMessage = 'Time Slots Added!';
@@ -962,7 +1013,9 @@ export class AdminComponent {
       });
       this.slotsForm.patchValue({slots: toRemove});
       const formDataB = this.slotsForm.value;
-      this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsRemove`, JSON.stringify(formDataB).replaceAll("Time",""), { headers })
+
+      //this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsRemove`, JSON.stringify(formDataB).replaceAll("Time",""), { headers })
+      this.staffService.removeStaffPostB(this.selectedStaffId, formDataB)
         .subscribe({
           next: () => {
             this.successMessage = 'Time Slots Removed!';
@@ -991,8 +1044,9 @@ export class AdminComponent {
             this.successMessage = null;
           }
         });
-    this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
-      .subscribe({
+    //this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
+    this.staffService.editStaffPostA(this.selectedStaffId, formData)  
+    .subscribe({
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
           this.errorMessage = null;
@@ -1190,7 +1244,8 @@ export class AdminComponent {
 
 
 
-    this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
+    //this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
+    this.patientService.getAllPatientProfiles(params)
       .subscribe({
         next: (response) => {
           this.patientsProfiles = response;
@@ -1233,7 +1288,8 @@ export class AdminComponent {
 
 
 
-    this.http.get<any[]>(`${this.staffUrl}`, { headers, params })
+    //this.http.get<any[]>(`${this.staffUrl}`, { headers, params })
+    this.staffService.getStaff(params)
       .subscribe({
         next: (response) => {
           this.staffsProfiles = response;
@@ -1282,7 +1338,8 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);
-    this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
+   // this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
+    this.staffService.createStaff(formData)
       .subscribe({
         next: () => {
           this.successMessage = 'Staff Profile Created!';

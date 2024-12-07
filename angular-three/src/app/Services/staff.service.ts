@@ -32,6 +32,14 @@ export class StaffService {
     return this.http.get<any>(`${this.staffUrl}/${id}`, { headers });
     }
 
+    getStaff(params: any): Observable<any>{
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+      return this.http.get<any[]>(`${this.staffUrl}`, { headers, params });
+    }
+
   createStaff(formData: any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
@@ -47,12 +55,23 @@ export class StaffService {
     });
     return this.http.put<any>(`${this.staffUrl}/${id}`, JSON.stringify(formData), { headers });
   }
+
+
   editStaffPostB(id:string, formData:any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.put<any>(`${this.staffUrl}/${id}/SlotsAdd`, JSON.stringify(formData), { headers });
+    return this.http.put<any>(`${this.staffUrl}/${id}/SlotsAdd`, JSON.stringify(formData).replaceAll("Time",""), { headers });
+
+  }
+
+  removeStaffPostB(id:string, formData:any): Observable<any>{
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<any>(`${this.staffUrl}/${id}/SlotsRemove`, JSON.stringify(formData).replaceAll("Time",""), { headers });
 
   }
 

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class OperationTypesService {
-  private apiUrl = 'https://localhost:5001/api/OperationTypes';
+  private apiUrl = `${environment.apiBaseUrl}/OperationTypes`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

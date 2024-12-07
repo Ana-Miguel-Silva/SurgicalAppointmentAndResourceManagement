@@ -1,0 +1,33 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Repository" as REPO <<component>>
+participant "Domain" as DOM <<component>>
+
+
+
+-> CTRL : ResetPassword(password)
+activate CTRL
+CTRL -> SERV: UpdatePassword(tokenUser, password)
+activate SERV
+SERV->REPO:GetByUsernameAsync(tokenUser)
+activate REPO
+SERV <-- REPO: user
+deactivate REPO
+SERV -> DOM :SetPassword(password)
+activate DOM
+SERV <-- DOM: success
+deactivate DOM
+CTRL <-- SERV: success
+deactivate SERV
+<-- CTRL: success
+deactivate CTRL
+
+
+@enduml

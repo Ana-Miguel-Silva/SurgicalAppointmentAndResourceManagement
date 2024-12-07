@@ -1,0 +1,33 @@
+@startuml 5.1.10
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Patient" as AD
+participant "SAaRM System" as SYS <<system>>
+
+
+
+activate AD
+
+AD -> SYS: access page
+
+activate SYS
+
+SYS --> AD: data input
+
+deactivate SYS
+
+AD -> SYS : confirmation to delete patient profile(id)
+activate SYS
+SYS --> AD : success and data
+
+deactivate SYS
+
+deactivate AD
+
+
+
+@enduml

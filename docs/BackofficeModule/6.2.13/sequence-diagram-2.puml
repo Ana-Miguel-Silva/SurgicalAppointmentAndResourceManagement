@@ -1,0 +1,23 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+-> FE: access page
+activate FE
+FE -> BE: GetAll(filters)
+activate BE
+BE --> FE: staffDTOList
+deactivate BE
+<--FE: list of staff profiles
+deactivate FE
+
+
+@enduml

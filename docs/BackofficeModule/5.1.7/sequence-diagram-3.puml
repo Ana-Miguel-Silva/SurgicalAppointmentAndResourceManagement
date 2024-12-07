@@ -1,0 +1,58 @@
+@startuml 5.1.7
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Repository" as REPO <<component>>
+
+' -> CTRL: getCreateForm()
+'activate CTRL
+'<-- CTRL  : form
+'deactivate CTRL
+
+-> CTRL: Login Get Request
+activate CTRL
+CTRL -> SERV: Call GetPatientByEmailAsync method
+activate SERV
+
+SERV -> REPO: Get Patient through ClaimedEmail
+activate REPO
+
+REPO --> SERV: Return Patient
+deactivate REPO
+
+SERV --> CTRL: Return Patient
+deactivate SERV
+
+
+CTRL -> SERV: Call GeBbyEmailAsync method
+activate SERV
+
+SERV -> REPO: Get User through PatientUserEmail
+activate REPO
+
+REPO --> SERV: Return UserDTO
+deactivate REPO
+
+SERV --> CTRL: Return UserDTO
+deactivate SERV
+
+
+CTRL -> SERV: Call GenerateToken method
+activate SERV
+
+SERV --> CTRL: Token to login
+deactivate SERV
+
+
+<-- CTRL  : Success and Token to login
+deactivate CTRL
+
+
+
+
+@enduml

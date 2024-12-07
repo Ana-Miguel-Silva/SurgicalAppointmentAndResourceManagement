@@ -1,0 +1,84 @@
+@startuml 5.1.4
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "component" as CM <<component>>
+participant "Service" as SERV <<component>>
+
+
+
+-> FE : update info of Patient
+activate FE
+
+ FE -> HT : onClick()
+ activate HT
+
+ HT -> CM : onUpdatePatient(email, PatientDto)
+activate CM
+CM -> SERV : updatePatient(email, PatientDto)
+activate SERV
+SERV ->: update(email, PatientDto)
+
+SERV <-- : success
+
+SERV --> CM : success
+
+deactivate SERV
+
+alt sensitive data
+SERV <-- : message
+activate SERV
+
+SERV --> CM : message
+
+
+CM --> HT : message
+deactivate CM
+
+HT -->FE : message
+
+deactivate HT
+
+<-- FE : message
+
+deactivate FE
+
+-> FE : confimation
+activate FE
+
+FE -> HT : onClick()
+activate HT
+
+
+HT -> CM : confirmation(actionId, selectedPatientEmail)
+activate CM
+
+CM -> SERV : confirmAction(actionId, selectedPatientEmail)
+
+SERV --> CM : success
+
+deactivate SERV
+end alt
+
+deactivate SERV
+CM --> HT: success
+
+deactivate CM
+
+HT --> FE : success
+deactivate HT
+
+<-- FE : success
+
+
+deactivate FE
+
+
+
+
+@enduml

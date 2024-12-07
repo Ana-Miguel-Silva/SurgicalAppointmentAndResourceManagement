@@ -1,0 +1,47 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "component" as CM <<component>>
+participant "Service" as SERV <<component>>
+
+ -> FE: access page
+activate FE
+
+FE -> HT : onClick()
+activate HT
+HT -> CM : getAllStaffProfiles()
+activate CM
+
+CM -> SERV : getAllStaffProfiles(params)
+activate SERV
+
+
+SERV -> : getAll(params)
+
+
+
+SERV <-- : StaffDTOList
+
+
+SERV --> CM : StaffDTOList
+deactivate SERV
+CM --> HT : StaffDTOList
+deactivate CM
+
+HT --> FE : StaffDTOList
+deactivate HT
+
+<-- FE : list of Patients
+
+deactivate FE
+
+
+
+
+@enduml

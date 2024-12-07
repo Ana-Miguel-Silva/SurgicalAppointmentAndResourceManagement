@@ -1,0 +1,22 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Admin" as AD
+participant "SAaRM System" as SYS <<system>>
+
+activate AD
+AD -> SYS: access page
+activate SYS
+SYS --> AD : success of operation
+
+deactivate SYS
+
+deactivate AD
+
+
+
+@enduml

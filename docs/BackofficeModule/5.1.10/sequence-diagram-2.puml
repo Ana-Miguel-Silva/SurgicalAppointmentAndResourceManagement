@@ -1,0 +1,38 @@
+@startuml 5.1.10
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+-> FE: access page
+
+activate FE
+
+FE -> BE: getCreateForm()
+activate BE
+BE --> FE: form
+deactivate BE
+<--FE: data input
+
+deactivate FE
+
+-> FE : confirmation to delete patient Profile(id)
+activate FE
+FE -> BE: delete patient Profile(id)
+activate BE
+BE --> FE: success
+deactivate BE
+<-- FE  : success and data
+
+deactivate FE
+
+
+
+
+@enduml

@@ -1,0 +1,53 @@
+@startuml 5.1.4
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "PatientController" as CTRL <<component>>
+participant "AuthorizationService" as ASERV <<component>>
+participant "PatientService" as SERV <<component>>
+participant "LogService" as LSERV <<component>>
+participant "GmailService" as GSERV <<component>>
+participant "PatientRepository" as REPO <<component>>
+participant "LogRepository" as LREPO <<component>>
+
+
+
+
+
+ -> CTRL: update(string email, PatientDto dto)
+activate CTRL
+CTRL -> ASERV: ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> {Role.ADMIN, Role.PATIENT}).Result
+activate ASERV
+ASERV -> CTRL : true
+deactivate ASERV
+CTRL -> SERV: UpdateAsync(dto)
+activate SERV
+SERV -> REPO: GetByEmailAsync(dto.Email.FullEmail)
+activate REPO
+REPO --> SERV: patient
+deactivate REPO
+SERV -> REPO: UpdateInfo(info)
+activate REPO
+REPO --> SERV: sucess
+deactivate REPO
+
+SERV -> GSERV: SendConfirmationEmail(patient)
+activate GSERV
+deactivate GSERV
+SERV-> CTRL : patientProfile
+deactivate SERV
+CTRL -> LSERV: LogAsync("Patient", "Updated", patientProfile.Id, JsonConvert.SerializeObject(patientProfile))
+activate LSERV
+LSERV -> LREPO : AddAsync(logEntry)
+activate LREPO
+deactivate LREPO
+deactivate LSERV
+deactivate SERV
+<-- CTRL  : patientProfile
+
+
+
+@enduml

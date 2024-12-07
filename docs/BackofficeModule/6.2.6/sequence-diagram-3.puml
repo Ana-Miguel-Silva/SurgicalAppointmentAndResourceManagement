@@ -1,0 +1,47 @@
+@startuml 6.2.6
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "Component" as CM <<component>>
+participant "Service" as SERV <<component>>
+
+
+
+
+
+-> FE : Info to create Patient Profile
+activate FE
+
+FE -> HT : onClick()
+activate HT
+
+HT -> CM : onSubmit(fromData)
+activate CM
+
+CM -> SERV : createPatient(formData)
+activate SERV
+
+SERV -> : Create Patient Profile
+
+ SERV <--: success and data
+
+
+ SERV--> CM : success and data
+
+deactivate  SERV
+
+ CM --> HT : success and data
+  deactivate CM
+ HT --> FE : success and data
+
+deactivate HT
+
+
+<-- FE   : success and data
+deactivate FE
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "User" as AD
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+activate AD
+AD -> FE: access password recovery page
+activate FE
+FE -> BE: getPasswordRecoveryForm()
+activate BE
+BE --> FE: form
+deactivate BE
+FE --> AD : password recovery data input
+deactivate FE
+AD -> FE : email for recovery
+activate FE
+FE -> BE : sendRecoveryEmail(email)
+activate BE
+BE --> FE: success
+deactivate BE
+FE --> AD : success sending recovery email
+deactivate FE
+AD -> FE: access email link
+activate FE
+FE -> BE: getNewPasswordForm()
+activate BE
+BE --> FE: form
+deactivate BE
+FE --> AD : new password data input
+deactivate FE
+AD -> FE : new password
+activate FE
+FE -> BE : ResetPassword(password)
+activate BE
+BE --> FE: success
+deactivate BE
+FE --> AD : success of update
+deactivate FE
+deactivate AD
+
+
+@enduml

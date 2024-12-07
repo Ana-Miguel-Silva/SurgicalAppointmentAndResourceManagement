@@ -1,0 +1,56 @@
+@startuml 5.1.17
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Domain" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "MySql DB" as BDD <<component>>
+
+-> CTRL: Submit Operation Request Update Request
+activate CTRL
+
+CTRL -> SERV: Call UpdateAsync method
+activate SERV
+
+SERV -> REPO: Get OperationRequest through DTO Id
+activate REPO
+
+REPO --> SERV: Return OperationRequest
+deactivate REPO
+
+SERV -> DOM: Update OperationRequest with OperationRequestDTO Info
+activate DOM
+
+DOM --> SERV: Return OperationRequest
+deactivate DOM
+
+SERV -> REPO : Save updated Operation Request
+activate REPO
+
+REPO -> BDD : Save Entity
+activate BDD
+
+BDD --> REPO : Confirm Save
+deactivate BDD
+
+REPO --> SERV : Return Success
+deactivate REPO
+
+SERV -> DOM : Create OperationRequestDTO
+activate DOM
+
+DOM --> SERV : Return Updated DTO
+deactivate DOM
+
+SERV --> CTRL : Return Updated DTO
+deactivate SERV
+
+<-- CTRL  : Return Updated DTO
+deactivate CTRL
+
+@enduml

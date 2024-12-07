@@ -1,0 +1,115 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+'skinparam shadowing false
+
+
+'title Use Case Diagram Example
+
+left to right direction
+
+actor "Admin" as ADM
+actor "Backoffice User" as BOU
+actor "Staff" as STF
+actor "Doctor" as DOC
+actor "Patient" as PAT
+actor "Nurse" as NU
+
+
+usecase "UC1 - I want to register new backoffice users " as UC1
+usecase "UC2 - I want to reset my password" as UC2
+usecase "UC3 - I want to register for the healthcare application " as UC3
+usecase "UC4 - I want to update my user profile" as UC4
+usecase "UC5 - I want to delete my account and all associated data" as UC5
+usecase "UC6 - I want to log in to the system using my credentials" as UC6
+usecase "UC7 - I want to log in to the healthcare system using my external IAM credentials" as UC7
+usecase "UC8 - I want to create a new patient profile" as UC8
+usecase "UC9 - I want to edit an existing patient profile" as UC9
+usecase "UC10 - I want to delete a patient profile" as UC10
+usecase "UC11 - I want to list/search patient profiles by different attributes" as UC11
+usecase "UC12 - I want to create a new staff profile" as UC12
+usecase "UC13 - I want to edit a staff’s profile " as UC13
+usecase "UC14 - I want to deactivate a staff profile" as UC14
+usecase "UC15 - I want to list/search staff profiles" as UC15
+usecase "UC16 - I want to request an operation" as UC16
+usecase "UC17 - I want to update an operation requisition" as UC17
+usecase "UC18 - I want to remove an operation requisition" as UC18
+usecase "UC19 - I want to list/search operation requisitions" as UC19
+usecase "UC20 - I want to add new types of operations" as UC20
+usecase "UC21 - I want to edit existing operation types" as UC21
+usecase "UC22 - I want to remove obsolete or no longer performed operation types" as UC22
+usecase "UC23 - I want to list/search operation types" as UC23
+usecase "UC24 - I want to have an integrated UI for all modules of the system" as UC24
+usecase "UC25 - I want the application menu to adjust according to my role" as UC25
+usecase "UC26 - I want the information show on the 3D visualization module about room availability" as UC26
+usecase "UC27 - I want the information about healthcare staff, operation types, and operation requests" as UC27
+usecase "UC28 - I want the information about staff’s availability and operation schedule" as UC28
+usecase "UC29 - I want obtain the better scheduling of a set of operations (surgeries) in a certain operation room in a specific day." as UC29
+usecase "UC30 - I want to know till what dimension in terms of number of surgeries is possible to ask for the better solution." as UC30
+usecase "UC31 - I want to obtain a good schedule, not necessarily the better, in useful time to be adopted." as UC31
+usecase "UC32 - I want the deployment of one of the RFP modules in a DEI VM to be systematic, validating it on a scheduled basis with the test plan." as UC32
+usecase "UC33 - I only want  clients on the DEI's internal network (wired or via VPN) to be able to access the solution." as UC33
+usecase "UC34 - I want tt the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file." as UC34
+usecase "UC35 - I want to identify and quantify the risks involved in the recommended solution." as UC35
+usecase "UC36 - I want to define the MBCO (Minimum Business Continuity Objective) to propose to stakeholders" as UC36
+usecase "UC37 - I want a backup strategy to be proposed, justified and implemented that minimizes RPO (Recovery Point Objective) and WRT (Work Recovery Time)." as UC37
+usecase "UC38 - I want to define a public folder for all users registered on the system, where they can read whatever is placed there" as UC38
+usecase "UC39 - I want  to get users with more than 3 incorrect accesses attempts." as UC39
+usecase "UC40 - I want to see a 3D representation of the hospital/clinic floor." as UC40
+usecase "UC41 - I want to see appropriate textures (that is, suitable for use in representing a hospital or clinic) mapped onto the floor, walls, and so on." as UC41
+usecase "UC42 - I want to see the hospital/clinic floor illuminated with ambient and directional light." as UC42
+usecase "UC43 - I want to control the camera with the mouse." as UC43
+usecase "UC44 - I want to be sure that the team has good knowledge of the project, how it may affect patients' personal data and if the processing is done according to the law." as UC44
+usecase "UC45 - I want to notify both users and the responsible authority in case of a data breach, so that I comply with GDPR’s breach notification requirements." as UC45
+
+'TODO: adicionar as US da UI
+
+
+
+ADM --> UC1
+BOU --> UC2
+PAT --> UC3
+PAT --> UC4
+PAT --> UC5
+BOU --> UC6
+PAT --> UC7
+ADM --> UC8
+ADM --> UC9
+ADM --> UC10
+ADM --> UC11
+ADM --> UC12
+ADM --> UC13
+ADM --> UC14
+ADM --> UC15
+DOC --> UC16
+DOC --> UC17
+DOC --> UC18
+DOC --> UC19
+ADM --> UC20
+ADM --> UC21
+ADM --> UC22
+ADM --> UC23
+BOU --> UC24
+BOU --> UC25
+STF --> UC26
+ADM --> UC27
+ADM --> UC28
+ADM --> UC29
+ADM --> UC30
+ADM --> UC31
+ADM --> UC32
+ADM --> UC33
+ADM --> UC34
+ADM --> UC35
+ADM --> UC36
+ADM --> UC37
+ADM --> UC38
+ADM --> UC39
+STF --> UC40
+STF --> UC41
+STF --> UC42
+STF --> UC43
+ADM --> UC44
+ADM --> UC45
+
+@enduml

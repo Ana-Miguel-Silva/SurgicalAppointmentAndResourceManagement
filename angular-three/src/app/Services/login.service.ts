@@ -3,18 +3,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 
 @Injectable()
-export class LoginService {
+export class LoginService {  
 
-  
-  private apiUrl = 'http://'+ '10.9.22.151:5000' +'/api/Users/login';
-  //private apiUrl = 'https://'+ '10.9.22.9.219' +':5001/api/Users/login';
- //private apiUrl = 'https://localhost:5001/api/Users/login';
+
+ private apiUrl = `${environment.apiBaseUrl}/Users/login`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

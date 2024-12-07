@@ -1,0 +1,33 @@
+@startuml 5.1.9
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+-> FE: access page
+activate FE
+FE -> BE: getEditForm(email)
+activate BE
+BE --> FE: PatientDto
+deactivate BE
+<-- FE : provide edit form
+deactivate FE
+-> FE : edit info of Patient
+activate FE
+FE -> BE: updatePatient(email, PatientDTO)
+activate BE
+
+BE --> FE: success
+deactivate BE
+<-- FE : success and data
+
+deactivate FE
+
+
+
+
+@enduml

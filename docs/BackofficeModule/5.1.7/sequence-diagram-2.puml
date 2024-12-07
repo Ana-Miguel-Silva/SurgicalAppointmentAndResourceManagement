@@ -1,0 +1,24 @@
+@startuml 5.1.7
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Frontend" as FE <<component>>
+participant "DM Backend" as BE <<component>>
+
+
+
+ -> FE: access page
+activate FE
+FE -> BE : login with external IAM credentials
+activate BE
+
+
+BE --> FE: success and token to login
+deactivate BE
+
+<-- FE   : success and token to login
+
+
+@enduml

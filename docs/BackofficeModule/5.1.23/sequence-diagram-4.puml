@@ -1,0 +1,42 @@
+@startuml 5.1.4
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "OperationTypesController" as CTRL <<component>>
+participant "AuthorizationService" as ASERV <<component>>
+participant "OperationTypesService" as SERV <<component>>
+participant "OperationTypeRepository" as REPO <<component>>
+
+
+
+
+
+
+ -> CTRL: GetAllFiltered(name, specialization, status)
+activate CTRL
+CTRL -> ASERV: ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN }).Result
+activate ASERV
+ASERV -> CTRL : true
+deactivate ASERV
+CTRL -> SERV: GetAllFilteredAsync(name, specialization, status)
+activate SERV
+SERV -> REPO: GetAllAsync();
+activate REPO
+REPO --> SERV: operationTypes
+deactivate REPO
+SERV -> SERV : filter by each filter
+
+
+deactivate REPO
+SERV-> CTRL : operationTypes
+deactivate SERV
+
+deactivate SERV
+<-- CTRL  : operationTypes
+
+
+
+@enduml

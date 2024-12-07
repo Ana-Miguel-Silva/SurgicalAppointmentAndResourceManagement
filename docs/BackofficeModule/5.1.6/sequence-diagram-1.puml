@@ -1,0 +1,27 @@
+@startuml 5.1.6
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "BackOfficeUser" as AD
+participant "SAaRM System" as SYS <<system>>
+
+
+
+activate AD
+
+activate AD
+AD -> SYS: access page
+
+activate SYS
+SYS --> AD : success and token to login
+
+deactivate SYS
+
+deactivate AD
+
+
+
+@enduml

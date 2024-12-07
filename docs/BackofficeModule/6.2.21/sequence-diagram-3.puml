@@ -1,0 +1,47 @@
+@startuml 5.1.4
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "WebAplication" as FE <<component>>
+participant "HTML+CSS" as HT <<component>>
+participant "component" as CM <<component>>
+participant "Service" as SERV <<component>>
+
+ -> FE: access page
+activate FE
+
+FE -> HT : onClick()
+activate HT
+HT -> CM : getAllOperationTypes()
+activate CM
+
+CM -> SERV : getAllOperationTypes()
+activate SERV
+
+
+SERV -> : getOperationTypes()
+
+
+
+SERV <-- : OperationTypesDTOList
+
+
+SERV --> CM : OperationTypesDTOList
+deactivate SERV
+CM --> HT : OperationTypesDTOList
+deactivate CM
+
+HT --> FE : OperationTypesDTOList
+deactivate HT
+
+<-- FE : list of OperationTypes
+
+deactivate FE
+
+
+
+
+@enduml
