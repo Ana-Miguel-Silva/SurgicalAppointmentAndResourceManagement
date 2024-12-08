@@ -1,0 +1,112 @@
+import { Service, Inject } from 'typedi';
+import config from "../../config";
+import IAllergieDTO from '../dto/IAllergieDTO';
+
+import IAllergieRepo from './IRepos/IAllergieRepo';
+import IAllergieService from './IServices/IAllergieService';
+import { Result } from "../core/logic/Result";
+import { AllergieMap } from "../mappers/AllergieMap";
+import { Allergie } from '../domain/allergie';
+
+@Service()
+export default class AllergieService implements IAllergieService {
+
+  
+
+  constructor(
+      @Inject(config.repos.allergie.name) private AllergieRepo : IAllergieRepo
+  ) {}
+
+  public async createAllergieDefault(allergy: { designacao: string; descricao: string; }) {
+    const AllergieOrError = await Allergie.create( allergy );
+
+      if (AllergieOrError.isFailure) {
+        return Result.fail<IAllergieDTO>(AllergieOrError.errorValue());
+      }
+
+      const AllergieResult = AllergieOrError.getValue();
+
+      await this.AllergieRepo.save(AllergieResult);
+
+      const AllergieDTOResult = AllergieMap.toDTO( AllergieResult ) as IAllergieDTO;
+      return Result.ok<IAllergieDTO>( AllergieDTOResult )
+    
+  }
+
+
+  public async getAllergieById( AllergieId: string): Promise<Result<IAllergieDTO>> {
+    try {
+
+      const Allergie = await this.AllergieRepo.findById(AllergieId);
+
+      if (Allergie === null) {
+        return Result.fail<IAllergieDTO>("Allergie not found");
+      }
+      else {
+        const AllergieDTOResult = AllergieMap.toDTO( Allergie ) as IAllergieDTO;
+        return Result.ok<IAllergieDTO>( AllergieDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  public async getAllergie( allergie: string): Promise<Result<IAllergieDTO>> {
+    try {
+
+      const Allergie = await this.AllergieRepo.findAllergie(allergie);
+
+      if (Allergie === null) {
+        return Result.fail<IAllergieDTO>("Allergie not found");
+      }
+      else {
+        const AllergieDTOResult = AllergieMap.toDTO( Allergie ) as IAllergieDTO;
+        return Result.ok<IAllergieDTO>( AllergieDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  public async createAllergie(AllergieDTO: IAllergieDTO): Promise<Result<IAllergieDTO>> {
+    try {
+
+      const AllergieOrError = await Allergie.create( AllergieDTO );
+
+      if (AllergieOrError.isFailure) {
+        return Result.fail<IAllergieDTO>(AllergieOrError.errorValue());
+      }
+
+      const AllergieResult = AllergieOrError.getValue();
+
+      await this.AllergieRepo.save(AllergieResult);
+
+      const AllergieDTOResult = AllergieMap.toDTO( AllergieResult ) as IAllergieDTO;
+      return Result.ok<IAllergieDTO>( AllergieDTOResult )
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /*public async updateAllergie(AllergieDTO: IAllergieDTO): Promise<Result<IAllergieDTO>> {
+    try {
+      const Allergie = await this.AllergieRepo.findById(AllergieDTO.id);
+
+      if (Allergie === null) {
+        return Result.fail<IAllergieDTO>("Allergie not found");
+      }
+      else {
+        Allergie.descricao = AllergieDTO.descricao;
+        Allergie.designacao = AllergieDTO.designacao;
+        await this.AllergieRepo.save(Allergie);
+
+        const AllergieDTOResult = AllergieMap.toDTO( Allergie ) as IAllergieDTO;
+        return Result.ok<IAllergieDTO>( AllergieDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }*/
+
+}
