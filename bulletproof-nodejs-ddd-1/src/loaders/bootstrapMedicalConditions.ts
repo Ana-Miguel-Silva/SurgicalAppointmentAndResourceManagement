@@ -1,13 +1,13 @@
 import { Container } from 'typedi';
 import Logger from './logger';
 import MedicalConditionService from '../services/medicalConditionService';
-import { defaultmedicalConditions } from './defaultMedicalConditions';
+import { defaultMedicalConditions } from './defaultMedicalConditions';
 
-export const bootstrapmedicalConditions = async () => {
+export const bootstrapMedicalConditions = async () => {
   const medicalConditionService: MedicalConditionService = Container.get('MedicalConditionService');
 
   try {
-    for (const medicalCondition of defaultmedicalConditions) {
+    for (const medicalCondition of defaultMedicalConditions) {
       const existingAllergy = await medicalConditionService.getMedicalCondition(medicalCondition.codigo);
 
       if (existingAllergy.errorValue()) {

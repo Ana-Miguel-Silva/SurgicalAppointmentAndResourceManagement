@@ -6,7 +6,8 @@ import Logger from './logger';
 import config from '../../config';
 import allergieSchema from '../persistence/schemas/allergieSchema';
 import { bootstrapAllergies } from './bootstrapAllergies';
-import { bootstrapmedicalConditions } from './bootstrapMedicalConditions';
+import { bootstrapMedicalConditions } from './bootstrapMedicalConditions';
+import { bootstrapMedicalRecords } from './bootstrapMedicalRecord';
 
 export default async ({ expressApp }) => {
   const mongoConnection = await mongooseLoader();
@@ -139,7 +140,8 @@ export default async ({ expressApp }) => {
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
 
   await bootstrapAllergies();
-  await bootstrapmedicalConditions();
+  await bootstrapMedicalConditions();
+  await bootstrapMedicalRecords();
 
   await expressLoader({ app: expressApp });
   Logger.info('✌️ Express loaded');

@@ -4,5 +4,6 @@ import IMedicalRecordDTO from "../../dto/IMedicalRecordDTO";
 
 export default interface IMedicalRecordService  {
   createMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO):  Promise<Result<IMedicalRecordDTO>>;
+  getMedicalRecordById (medicalrecordId: string): Promise<Result<IMedicalRecordDTO>>; 
   getMedicalRecord (medicalrecordId: string): Promise<Result<IMedicalRecordDTO>>; 
 }

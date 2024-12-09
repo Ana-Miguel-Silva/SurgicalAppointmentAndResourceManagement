@@ -36,7 +36,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   }
 
   public async save (MedicalRecord: MedicalRecord): Promise<MedicalRecord> {
-    const query = { _id: MedicalRecord.id.toString() }; 
+    const query = { medicalRecordId: MedicalRecord.id.toString() }; 
 
     const MedicalRecordDocument = await this.MedicalRecordSchema.findOne( query );
 
@@ -77,5 +77,43 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
     }
     else
       return null;
+  }
+
+  public async findMedicalRecord (medicalRecord: string | { staff?: string; patientId?: string; allergie?: string; medicalCondition?: string; descricao?: string; id?: string }
+	): Promise<MedicalRecord | null> {
+
+     try {
+      let query: any = {};
+  
+      if (typeof medicalRecord === 'string') {
+        query = {
+          $or: [
+            { allergieId: medicalRecord },      
+            { staff: medicalRecord },
+            { patientId: medicalRecord },
+            { allergie: medicalRecord },
+            { medicalCondition: medicalRecord },
+            { descricao: medicalRecord }
+          ]
+        };
+       } else {
+        if (medicalRecord.id) query.medicalRecordId = medicalRecord.id;       
+        if (medicalRecord.staff) query.staff = medicalRecord.staff;
+        if (medicalRecord.patientId) query.patientId = medicalRecord.patientId;
+        if (medicalRecord.allergie) query.allergie = medicalRecord.allergie;
+        if (medicalRecord.medicalCondition) query.medicalCondition = medicalRecord.medicalCondition;
+        if (medicalRecord.descricao) query.descricao = medicalRecord.descricao;
+      }
+  
+      const medicalRecordFind = await this.MedicalRecordSchema.findOne(query);
+  
+      if (medicalRecordFind != null) {
+        return MedicalRecordMap.toDomain(medicalRecordFind);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 }

@@ -15,14 +15,48 @@ export default class MedicalRecordService implements IMedicalRecordService {
   constructor(
       @Inject(config.repos.medicalRecord.name) private MedicalRecordRepo : IMedicalRecordRepo
   ) {}
+
+  public async createMedicalRecordDefault(medicalRecord: { date: Date; staff: string; patientId: string; allergies: string[]; medicalConditions: string[]; descricao: string; }) {
+  
+    const MedicalRecordOrError = await MedicalRecord.create( medicalRecord );
+
+      if (MedicalRecordOrError.isFailure) {
+        return Result.fail<IMedicalRecordDTO>(MedicalRecordOrError.errorValue());
+      }
+
+      const MedicalRecordResult = MedicalRecordOrError.getValue();
+
+      await this.MedicalRecordRepo.save(MedicalRecordResult);
+
+      const MedicalRecordDTOResult = MedicalRecordMap.toDTO( MedicalRecordResult ) as IMedicalRecordDTO;
+      return Result.ok<IMedicalRecordDTO>( MedicalRecordDTOResult )    
+  }
+
   
 
-  public async getMedicalRecord( MedicalRecordId: string): Promise<Result<IMedicalRecordDTO>> {
+  public async getMedicalRecordById( MedicalRecordId: string): Promise<Result<IMedicalRecordDTO>> {
     try {
       const MedicalRecord = await this.MedicalRecordRepo.findById(MedicalRecordId);
 
       if (MedicalRecord === null) {
         return Result.fail<IMedicalRecordDTO>("MedicalRecord not found");
+      }
+      else {
+        const MedicalRecordDTOResult = MedicalRecordMap.toDTO( MedicalRecord ) as IMedicalRecordDTO;
+        return Result.ok<IMedicalRecordDTO>( MedicalRecordDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  public async getMedicalRecord( medicalRecord: string): Promise<Result<IMedicalRecordDTO>> {
+    try {
+
+      const MedicalRecord = await this.MedicalRecordRepo.findMedicalRecord(medicalRecord);
+
+      if (MedicalRecord === null) {
+        return Result.fail<IMedicalRecordDTO>("Medical Record not found");
       }
       else {
         const MedicalRecordDTOResult = MedicalRecordMap.toDTO( MedicalRecord ) as IMedicalRecordDTO;

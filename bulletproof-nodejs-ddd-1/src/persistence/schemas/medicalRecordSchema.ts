@@ -8,6 +8,7 @@ const MedicalRecord = new mongoose.Schema(
     date: {
       type: Date,
       required: [true, 'Please provide a date for the medical record'],
+      default: Date.now()
     },
 
     staff: {
@@ -22,20 +23,20 @@ const MedicalRecord = new mongoose.Schema(
 
     allergies: [
       {
-        type: String,
-        
+        type: [String],
+        default: []      
       },
     ],
 
     medicalConditions: [
       {
-        type: String, // Assuming medical conditions are stored as strings
+        type: [String],
+        default: []
       },
     ],
 
     descricao: {
-      type: String
-      
+      type: String      
     },
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically

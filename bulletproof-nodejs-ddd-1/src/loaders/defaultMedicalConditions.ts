@@ -1,4 +1,4 @@
-export const defaultmedicalConditions = [
+export const defaultMedicalConditions = [
   { codigo: "A04.0",descricao: "Cholera" },
   { codigo: "A08.0",descricao: "Rotavirus enteritis" },
   { codigo: "B20",descricao: "Human Immunodeficiency Virus (HIV) disease" },

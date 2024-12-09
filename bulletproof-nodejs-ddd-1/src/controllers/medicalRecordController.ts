@@ -13,7 +13,24 @@ import IMedicalRecordController from './IControllers/IMedicalRecordController';
 export default class MedicalRecordController implements IMedicalRecordController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
       @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
-  ) {}
+  ) {} 
+
+  public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
+    try {
+      const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IMedicalRecordDTO>;
+
+      if (MedicalRecordOrError.isFailure) {
+        return res.status(404).send();
+      }
+
+      const MedicalRecordDTO = MedicalRecordOrError.getValue();
+      return res.status(201).json( MedicalRecordDTO );
+    }
+    catch (e) {
+      return next(e);
+    }
+  };
+  
 
   public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
@@ -31,7 +48,7 @@ export default class MedicalRecordController implements IMedicalRecordController
     }
   };
 
-  public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
+  public async getMedicalRecordById(req: Request, res: Response, next: NextFunction) {
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IMedicalRecordDTO>;
 
