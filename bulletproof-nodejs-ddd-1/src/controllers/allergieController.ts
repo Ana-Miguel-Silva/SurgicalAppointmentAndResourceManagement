@@ -41,7 +41,7 @@ export default class AllergieController implements IAllergieController /* TODO: 
       }
 
       const AllergieDTO = AllergieOrError.getValue();
-      return res.status(201).json( AllergieDTO );
+      return res.status(200).json( AllergieDTO );
     }
     catch (e) {
       return next(e);
@@ -50,7 +50,7 @@ export default class AllergieController implements IAllergieController /* TODO: 
 
   public async getAllergie(req: Request, res: Response, next: NextFunction) {
     try {
-      const AllergieOrError = await this.allergieServiceInstance.getAllergie(req.body as string) as Result<IAllergieDTO>;
+      const AllergieOrError = await this.allergieServiceInstance.getAllergies(req.body as string) as Result<IAllergieDTO>;
 
       if (AllergieOrError.isFailure) {
         return res.status(404).send();

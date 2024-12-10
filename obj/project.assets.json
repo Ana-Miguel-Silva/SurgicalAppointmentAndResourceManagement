@@ -8078,19 +8078,22 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\avlis\\.nuget\\packages\\": {}
+    "C:\\Users\\dmopm\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
       "projectName": "DDDNetCore",
-      "projectPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-      "packagesPath": "C:\\Users\\avlis\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\avlis\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
+      "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+      "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\avlis\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -8113,8 +8116,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -8224,7 +8226,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
