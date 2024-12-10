@@ -81,36 +81,40 @@ export default class AllergieRepo implements IAllergieRepo {
     }
  }
 
- public async findAllergie( allergie: string | { designacao?: string; descricao?: string; id?: string }
-): Promise<Allergie | null> {
+ public async findAllergies(
+  filter: string | { designacao?: string; descricao?: string; id?: string }
+): Promise<Allergie[]> {
   try {
     let query: any = {};
 
-    if (typeof allergie === 'string') {
+    if (typeof filter === 'string') {
       query = {
         $or: [
-          { allergieId: allergie },
-          { designacao: allergie },
-          { descricao: allergie }
+          { allergieId: filter },
+          { designacao: filter },
+          { descricao: filter }
         ]
       };
-     } else {
-      if (allergie.id) query.allergieId = allergie.id;
-      if (allergie.designacao) query.designacao = allergie.designacao;
-      if (allergie.descricao) query.descricao = allergie.descricao;
-    }
-
-    const allergieRecord = await this.allergieSchema.findOne(query);
-
-    if (allergieRecord != null) {
-      return AllergieMap.toDomain(allergieRecord);
     } else {
-      return null;
+      if (filter.id) query.allergieId = filter.id;
+      if (filter.designacao) query.designacao = filter.designacao;
+      if (filter.descricao) query.descricao = filter.descricao;
     }
+
+    const allergieRecords = await this.allergieSchema.find(query);
+
+    // Transformação assíncrona
+    const allergies = await Promise.all(
+      allergieRecords.map(async record => await AllergieMap.toDomain(record))
+    );
+
+    return allergies;
   } catch (e) {
     throw e;
   }
 }
+
+
 
   
 }

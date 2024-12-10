@@ -404,7 +404,7 @@ export class AdminComponent {
                 position: "top-end",
                 timer: 3000,
                 showConfirmButton: false
-              });
+              }); 
               this.errorMessage = 'Failed to edit patient!';
               this.successMessage = null;
           }

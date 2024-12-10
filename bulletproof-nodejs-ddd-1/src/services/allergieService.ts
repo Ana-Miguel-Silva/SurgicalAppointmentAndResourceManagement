@@ -51,18 +51,21 @@ export default class AllergieService implements IAllergieService {
     }
   }
 
-  public async getAllergie( allergie: string): Promise<Result<IAllergieDTO>> {
+  public async getAllergies( allergie: string): Promise<Result<IAllergieDTO[] | IAllergieDTO>> {
     try {
 
-      const Allergie = await this.AllergieRepo.findAllergie(allergie);
+      const allergies = await this.AllergieRepo.findAllergies(allergie);
 
-      if (Allergie === null) {
+      if (!allergies || allergies.length === 0) {
         return Result.fail<IAllergieDTO>("Allergie not found");
       }
       else {
-        const AllergieDTOResult = AllergieMap.toDTO( Allergie ) as IAllergieDTO;
-        return Result.ok<IAllergieDTO>( AllergieDTOResult )
-        }
+        const AllergieDTOResult = allergies.map( allergie => 
+        AllergieMap.toDTO( allergie ) as IAllergieDTO);
+
+        return Result.ok<IAllergieDTO[]>( AllergieDTOResult )
+        
+      }
     } catch (e) {
       throw e;
     }

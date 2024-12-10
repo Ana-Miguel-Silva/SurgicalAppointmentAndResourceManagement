@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "c31koYBDpgg=",
+  "dgSpecHash": "dDSD3rOpx8w=",
   "success": true,
-  "projectFilePath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+  "projectFilePath": "C:\\Users\\dmopm\\Documents\\VscodeReps\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dmopm\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\dmopm\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
