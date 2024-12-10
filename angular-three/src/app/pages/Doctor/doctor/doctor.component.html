@@ -12,7 +12,7 @@
 <body>
   <h1 class="h1 title glow" (click)="ngOnInit()" style="padding: 1cm; color:white"> Doctor </h1>
   <button id="mapButton" class="hospMapBtn" (click)="openModal('mapModal')">
-      Hospital Map 
+      Hospital Map
       <span class="icon">📍</span>
     </button>
     <div class="container">
@@ -60,6 +60,14 @@
                   </tr>
                 </tbody>
               </table>
+        </div>
+
+        <div class="container col-md-4">
+          <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
+            <div class="form-floating mb-3">
+                <h3 class="title" >List Allergies</h3>
+            </div>
+          </div>
         </div>
     </div>
 
@@ -132,22 +140,22 @@
       <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
       <form (ngSubmit)="onFilterRequests()">
         <h3 class="text-center">Filter Operation Requests</h3>
-  
+
         <div class="mb-3">
           <label for="filterDoctorEmail" class="form-label">Doctor Email:</label>
           <input type="text" id="filterDoctorEmail" [(ngModel)]="filter.emailDoctor" name="filterDoctorEmail" class="form-control" />
         </div>
-  
+
         <div class="mb-3">
           <label for="filterPatientEmail" class="form-label">Patient Email:</label>
           <input type="text" id="filterPatientEmail" [(ngModel)]="filter.emailPatient" name="filterPatientEmail" class="form-control" />
         </div>
-  
+
         <div class="mb-3">
           <label for="filterOperationType" class="form-label">Operation Type:</label>
           <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeName" name="filterOperationType" class="form-control" />
         </div>
-  
+
         <div class="mb-3">
           <label for="filterPriority" class="form-label">Priority:</label>
           <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select">
@@ -157,7 +165,7 @@
             <option value="Emergency">Emergency</option>
           </select>
         </div>
-  
+
         <button type="submit" class="btn btn-primary">Apply Filter</button>
       </form>
     </div>
@@ -256,7 +264,7 @@
                   </tr>
                 </table>
               </div>
-            
+
               <div id="help-panel" hidden>
                 <table class="help" id="help-table">
                   <tr>
@@ -290,7 +298,7 @@
                   </tr>
                 </table>
               </div>
-            
+
               <div id="subwindows-panel" hidden>
                 <table class="subwindows">
                   <tr>
@@ -330,6 +338,65 @@
       </div>
     </div>
 
+    <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
+      <div id="mapModalContent" class="modal-content" style="height: 75vh;">
+          <span (click)="closeModal('listAllergies')" class="close">&times;</span>
+          <div>
+
+            <form  class="row g-3 needs-validation" novalidate="">
+                <div class="col-md-10"></div>
+
+              <div class="col-md-2">
+                <div class="input-group">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
+              </div>
+            </div>
+
+                <div class="col-md-12">
+                  <div class="table-wrapper" >
+                    <div class="table-title">
+                    <form class="row g-3 needs-validation" novalidate="">
+                    <table class="table table-striped table-hover table-over">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let request of allergiesList; let i = index" >
+                          <td>{{ i + 1 }}</td>
+                          <!--<td><input class="selectRequest" type="radio" id="patient_{{ request.email.fullEmail }}" name="patientFormID" value="{{ request.email.fullEmail }}" [checked]="selectedAllergieId === request.email.fullEmail" hidden>{{ request.allergieId }} </td>-->
+
+                          <td>{{ request.designacao }}</td>
+                          <td>{{ request.descricao }}</td>
+                          <!--<td id="active_{{ request.email.fullEmail }}_{{request.active}}">
+                            <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
+                            <ng-template #failure>
+                              <span class="badge rounded-pill bg-danger">No</span>
+                            </ng-template>
+                          </td>-->
+                        </tr>
+                      </tbody>
+                    </table>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-9"></div>
+              <div class="col-md-3">
+                <button class="fs-5 btn btn-outline-info" >View <i class="bi bi-info-square-fill"></i></button>
+                <button class="fs-5 btn btn-outline-warning" > Edit <i class="bi bi-pencil-square"></i></button>
+                <button class="fs-5 btn btn-outline-danger" > Deactivate <i class="bi bi-archive-fill"></i></button>
+              </div>
+              </form>
+            </div>
+
+      </div>
+    </div>
+
 
 
 
@@ -345,7 +412,7 @@
       <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
           <h3 class="text-center">Insert New Medical Record</h3>
 
-   
+
           <!-- Patient Email -->
           <div class="col-md-6">
               <label for="patientEmail" class="form-label">Patient Email</label>
@@ -390,13 +457,13 @@
               <table class="table table-striped table-hover table-over">
                 <thead>
                   <tr>
-             
+
                     <th>Date</th>
                     <th>Staff</th>
                     <th>Patient Email</th>
                     <th>Allergies</th>
                     <th>Medical Conditions</th>
-                    <th>Description</th>                   
+                    <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -443,10 +510,10 @@
 
       <h3 class="text-center">Filter Medical Record</h3>
       <div class="input-group" style="padding:1cm">
-       
+
      </div>
 
-     
+
      <div class="mb-3">
       <label for="filterAllergies" class="form-label">Allergies:</label>
       <input type="text" id="filterAllergies" [(ngModel)]="filterMedicalRecord.allergieDesignacao" name="filterAllergies" class="form-control" />
@@ -458,7 +525,7 @@
         <input type="text" id="filterMedicalCondition" [(ngModel)]="filterMedicalRecord.medicalConditionDescricao"  name="filterMedicalCondition" class="form-control" />
       </div>
 
-     
+
 
       <div class="input-group" style="padding:1cm">
         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
@@ -473,11 +540,11 @@
     <div class="container-xxl">
       <button class="btn-right" (click)="logout()">Logout</button>
     </div>
-    
 
 
 
-    
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

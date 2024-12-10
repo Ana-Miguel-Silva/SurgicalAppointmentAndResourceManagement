@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
+import { AllergiesService } from '../../../Services/allergies.service';
 import * as THREE from "three";
 import { MedicalRecordService } from '../../../Services/medicalRecordservice';
 //import Orientation from './map/orientation';
@@ -145,7 +146,7 @@ export class DoctorComponent implements OnInit {
   };
 
 
-  medicalRecordRequest: CreatingMedicalRecordUIDto ={    
+  medicalRecordRequest: CreatingMedicalRecordUIDto ={
     staff: '',
     patientEmail: '',
     allergieDesignacao: [],
@@ -158,19 +159,21 @@ export class DoctorComponent implements OnInit {
     private http: HttpClient,
     private authService: AuthService,
     private operationRequestsService: OperationRequestsService,
+    private allergiesService: AllergiesService,
     private medicalRecordService: MedicalRecordService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.getAllOperationRequests();
-    this.getAllMedicalRecords();
+    //this.getAllMedicalRecords();
+    this.getAllAllergies();
   }
 
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); 
+    this.router.navigate(['/login']);
   }
 
 
@@ -218,6 +221,42 @@ export class DoctorComponent implements OnInit {
       return matchesPriority && matchesOperationType && matchesEmailPatient && matchesEmailDoctor;
     });
   }
+
+  allergiesList: any[] = [];
+  selectedAllergieId: string | null = null;
+  errorMessage: string | null = null;
+
+  selectPatient(id: string){}
+
+
+  getAllAllergies() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+
+
+    //this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
+    this.allergiesService.getAllAllergies()
+      .subscribe({
+        next: (response) => {
+          this.allergiesList = response;
+          console.log("teste: ", response);
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+  }
+
 
   onFilterRequests() {
     this.getAllOperationRequests();
@@ -388,12 +427,12 @@ export class DoctorComponent implements OnInit {
 
     payload.staff = this.authService.getEmail();
 
-    
+
 
     this.medicalRecordService.createMedicalRecord(payload).subscribe({
       next: () => {
        // this.getAllOperationRequests;
-        
+
         this.cleanMedicalRecordRegister();
         Swal.fire({
           icon: 'success',
@@ -404,7 +443,7 @@ export class DoctorComponent implements OnInit {
         });
         this.modalService.closeModal('registerMedicalRecordModal');
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('Error creating Medical Record:', error);
         Swal.fire({
           icon: 'error',
@@ -428,7 +467,7 @@ export class DoctorComponent implements OnInit {
 
     this.medicalRecordService.getAllMedicalRecord().subscribe({
       next: (response: MedicalRecordRequest[]) => {
-        console.log("Medical Records: "+ response);        
+        console.log("Medical Records: "+ response);
         this.medicalRecordRequests = response;
 
        // this.applyMedicalRecordFilter();
@@ -452,7 +491,7 @@ export class DoctorComponent implements OnInit {
         medicalCondition.toLowerCase().includes(this.filterMedicalRecord.medicalConditionDescricao.toLowerCase())
         )
       : true;
-     
+
       return matchesAllergie && matchesMedicalCondition;
     });
   }
