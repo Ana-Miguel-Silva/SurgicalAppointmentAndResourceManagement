@@ -35,7 +35,6 @@ export default (app: Router) => {
     '/get',
     celebrate({
       body: Joi.object({
-        id: Joi.string(),
         staff: Joi.string(),
         patientId: Joi.string(),  
         allergies: Joi.string(),      

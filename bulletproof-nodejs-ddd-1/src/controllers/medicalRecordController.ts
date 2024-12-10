@@ -15,9 +15,12 @@ export default class MedicalRecordController implements IMedicalRecordController
       @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
   ) {} 
 
+
   public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IMedicalRecordDTO>;
+
+      
 
       if (MedicalRecordOrError.isFailure) {
         return res.status(404).send();
@@ -30,7 +33,8 @@ export default class MedicalRecordController implements IMedicalRecordController
       return next(e);
     }
   };
-  
+
+
 
   public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {

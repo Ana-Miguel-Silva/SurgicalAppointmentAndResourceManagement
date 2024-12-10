@@ -18,7 +18,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
     @Inject('medicalRecordSchema') private MedicalRecordSchema : Model<IMedicalRecordPersistence & Document>,
     @Inject('logger') private logger
   ) { }
-
+ 
   private createBaseQuery (): any {
     return {
       where: {},
@@ -116,4 +116,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
       throw e;
     }
   }
+
+  
+
 }

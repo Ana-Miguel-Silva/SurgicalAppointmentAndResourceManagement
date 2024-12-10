@@ -66,7 +66,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       throw e;
     }
   }
-
+ 
 
   public async createMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {

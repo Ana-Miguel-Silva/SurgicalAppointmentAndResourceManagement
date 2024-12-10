@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin US's</title>
+    <title>Doctor US's</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -61,6 +61,22 @@
                 </tbody>
               </table>
         </div>
+    </div>
+
+    <div class="container col-md-4">
+      <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
+        <div class="form-floating mb-3">
+            <h3 class="title" >Register Medical Record</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="container col-md-4">
+      <div class="container-lg  selectionDiv" (click)="openModal('listMedicalRecordModal')">
+        <div class="form-floating mb-3">
+            <h3 class="title" >List Medical Record</h3>
+        </div>
+      </div>
     </div>
 
 <!-- Create Operation Request Modal -->
@@ -314,10 +330,152 @@
       </div>
     </div>
 
+
+
+
+
+
+
+
+
+    <!-- Create Operation Request Modal -->
+<div [ngStyle]="{'display': isModalOpen('registerMedicalRecordModal') ? 'block' : 'none'}" id="registerMedicalRecordModal" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('registerMedicalRecordModal')" class="close">&times;</span>
+      <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
+          <h3 class="text-center">Insert New Medical Record</h3>
+
+   
+          <!-- Patient Email -->
+          <div class="col-md-6">
+              <label for="patientEmail" class="form-label">Patient Email</label>
+              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientEmail" name="patientEmail" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
+
+          <!-- Operation Type Name -->
+          <div class="col-md-6">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input type="text" class="form-control" id="descricao" [(ngModel)]="medicalRecordRequest.descricao" name="descricao" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
+
+           <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" type="submit">Create Request</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<div  [ngStyle]="{'display': isModalOpen('listMedicalRecordModal') ? 'block' : 'none'}" id="listMedicalRecordModal" class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('listMedicalRecordModal')" class="close">&times;</span>
+      <div>
+
+      <form  class="row g-3 needs-validation" novalidate="">
+          <div class="col-md-10"></div>
+
+
+        <div class="col-md-2">
+          <div class="input-group">
+          <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterMedicalRecordRequestModal')"> Filter </button>
+        </div>
+      </div>
+
+
+          <div class="col-md-12">
+            <div class="table-wrapper" >
+              <div class="table-title">
+              <table class="table table-striped table-hover table-over">
+                <thead>
+                  <tr>
+             
+                    <th>Date</th>
+                    <th>Staff</th>
+                    <th>Patient Email</th>
+                    <th>Allergies</th>
+                    <th>Medical Conditions</th>
+                    <th>Description</th>                   
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let medicalRecordRequest of medicalRecordRequests">
+                    <td>{{ medicalRecordRequest.date | date:'mediumDate' }}</td>
+                    <td>{{ medicalRecordRequest.staff }}</td>
+                    <td>{{ medicalRecordRequest.patientEmail }}</td>
+                    <td>{{ medicalRecordRequest.allergieDesignacao }}</td>
+                    <td>{{ medicalRecordRequest.medicalConditionDescricao }}</td>
+                    <td>{{ medicalRecordRequest.descricao }}</td>
+                    <td>
+                     <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
+                        <i class="bi bi-trash"></i>
+                      </button>-->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-9"></div>
+       <!-- <div class="col-md-3">
+          <button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>
+          <button class="fs-5 btn btn-outline-warning" (click)="editPatient()">Edit <i class="bi bi-pencil-square"></i></button>
+          <button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>
+        </div>-->
+        </form>
+      </div>
+
+  </div>
+</div>
+
+
+<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterMedicalRecordRequestModal')" class="close">&times;</span>
+    <form (ngSubmit)="onFilterMedicalRecordRequests()">
+
+      <h3 class="text-center">Filter Medical Record</h3>
+      <div class="input-group" style="padding:1cm">
+       
+     </div>
+
+     
+     <div class="mb-3">
+      <label for="filterAllergies" class="form-label">Allergies:</label>
+      <input type="text" id="filterAllergies" [(ngModel)]="filterMedicalRecord.allergieDesignacao" name="filterAllergies" class="form-control" />
+    </div>
+
+
+      <div class="mb-3">
+        <label for="filterMedicalCondition" class="form-label">Medical Condition:</label>
+        <input type="text" id="filterMedicalCondition" [(ngModel)]="filterMedicalRecord.medicalConditionDescricao"  name="filterMedicalCondition" class="form-control" />
+      </div>
+
+     
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterMedicalRecordRequests()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
+  </div>
+</div>
+
+
     <div class="container-xxl">
       <button class="btn-right" (click)="logout()">Logout</button>
     </div>
     
+
+
 
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
