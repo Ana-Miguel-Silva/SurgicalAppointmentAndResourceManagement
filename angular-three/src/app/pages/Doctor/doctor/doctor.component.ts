@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
 import * as THREE from "three";
-import { MedicalRecordService } from '../../../Services/medicalRecord.service';
+import { MedicalRecordService } from '../../../Services/medicalRecordservice';
 //import Orientation from './map/orientation';
 //import ThumbRaiser from './map/hospital';
 
@@ -404,7 +404,7 @@ export class DoctorComponent implements OnInit {
         });
         this.modalService.closeModal('registerMedicalRecordModal');
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error creating Medical Record:', error);
         Swal.fire({
           icon: 'error',
@@ -427,13 +427,13 @@ export class DoctorComponent implements OnInit {
     }
 
     this.medicalRecordService.getAllMedicalRecord().subscribe({
-      next: (response) => {
-        console.log("Medical Records: "+ response.values);        
+      next: (response: MedicalRecordRequest[]) => {
+        console.log("Medical Records: "+ response);        
         this.medicalRecordRequests = response;
 
        // this.applyMedicalRecordFilter();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching requests:', error);
       }
     });
