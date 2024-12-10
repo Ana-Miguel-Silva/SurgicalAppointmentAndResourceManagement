@@ -10,6 +10,7 @@ namespace DDDSample1.Infrastructure.Specializations
         {
             //builder.ToTable("Specializations", SchemaNames.DDDSample1);
             builder.HasKey(b => b.Id);
+            builder.HasIndex(ot => ot.SpecializationName).IsUnique();
         }
     }
 
