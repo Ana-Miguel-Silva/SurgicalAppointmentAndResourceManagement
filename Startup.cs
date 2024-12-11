@@ -33,6 +33,9 @@ using DDDSample1.ApplicationService.Shared;
 using DDDSample1.ApplicationService.Appointments;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Infrastructure.Appointments;
+using DDDSample1.ApplicationService.Specializations;
+using DDDSample1.Domain.Specializations;
+using DDDSample1.Infrastructure.Specializations;
 using DDDSample1.ApplicationService.SurgeryRooms;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.SurgeryRooms;
@@ -227,6 +230,9 @@ namespace DDDSample1
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
+
+            services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+            services.AddTransient<SpecializationService>();
 
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             services.AddTransient<OperationTypeService>();
