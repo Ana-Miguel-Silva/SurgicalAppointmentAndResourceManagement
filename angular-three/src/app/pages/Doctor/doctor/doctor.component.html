@@ -148,8 +148,8 @@
         </div>
 
         <div class="mb-3">
-          <label for="filterPatientEmail" class="form-label">Patient Email:</label>
-          <input type="text" id="filterPatientEmail" [(ngModel)]="filter.emailPatient" name="filterPatientEmail" class="form-control" />
+          <label for="filterpatientId" class="form-label">Patient Email:</label>
+          <input type="text" id="filterpatientId" [(ngModel)]="filter.emailPatient" name="filterpatientId" class="form-control" />
         </div>
 
         <div class="mb-3">
@@ -503,7 +503,7 @@
 </div>
 
 
-<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">
+<!--<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">
   <div class="modal-content">
 
     <span (click)="closeModal('filterMedicalRecordRequestModal')" class="close">&times;</span>
@@ -517,13 +517,13 @@
 
      <div class="mb-3">
       <label for="filterAllergies" class="form-label">Allergies:</label>
-      <input type="text" id="filterAllergies" [(ngModel)]="filterMedicalRecord.allergieDesignacao" name="filterAllergies" class="form-control" />
+      <input type="text" id="filterAllergies" [(ngModel)]="filterMedicalRecord.allergies" name="filterAllergies" class="form-control" />
     </div>
 
 
       <div class="mb-3">
         <label for="filterMedicalCondition" class="form-label">Medical Condition:</label>
-        <input type="text" id="filterMedicalCondition" [(ngModel)]="filterMedicalRecord.medicalConditionDescricao"  name="filterMedicalCondition" class="form-control" />
+        <input type="text" id="filterMedicalCondition" [(ngModel)]="filterMedicalRecord.medicalConditions"  name="filterMedicalCondition" class="form-control" />
       </div>
 
 
@@ -535,7 +535,7 @@
 
     </form>
   </div>
-</div>
+</div>-->
 
 
     <div class="container-xxl">

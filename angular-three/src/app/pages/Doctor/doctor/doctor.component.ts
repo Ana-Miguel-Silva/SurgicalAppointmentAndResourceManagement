@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild} from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
@@ -167,7 +167,7 @@ export class DoctorComponent implements OnInit {
 
   ngOnInit() {
     this.getAllOperationRequests();
-    //this.getAllMedicalRecords();
+  //  this.getAllMedicalRecords();
     this.getAllAllergies();
   }
 
@@ -226,24 +226,16 @@ export class DoctorComponent implements OnInit {
   allergiesList: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
-
   selectPatient(id: string){}
-
-
   getAllAllergies() {
     const token = this.authService.getToken();
-
     if (!token) {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-
-
-
     //this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
     this.allergiesService.getAllAllergies()
       .subscribe({
@@ -444,7 +436,7 @@ export class DoctorComponent implements OnInit {
         });
         this.modalService.closeModal('registerMedicalRecordModal');
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error creating Medical Record:', error);
         Swal.fire({
           icon: 'error',
