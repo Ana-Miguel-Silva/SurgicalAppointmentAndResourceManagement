@@ -5,6 +5,7 @@
   "exclude": ["cypress"],
   "compileOnSave": false,
   "compilerOptions": {
+    "allowJs": true,
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -25,8 +26,8 @@
       "ES2022",
       "dom"
     ],
-    "allowSyntheticDefaultImports": true,    
-    
+    "allowSyntheticDefaultImports": true,
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -34,7 +35,7 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  
-  
-  
+
+
+
 }
