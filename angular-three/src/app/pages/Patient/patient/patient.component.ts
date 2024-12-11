@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 
 
@@ -27,7 +28,7 @@ export class PatientComponent {
   patientUpdateForm!: FormGroup;
 
   selectedPatientEmail: string | undefined;
-  private patientUrl = "https://localhost:5001/api/Patients";
+  private patientUrl = `${environment.apiMongoUrl}/Patients`;
   actionId: any;
   allergies: string[] = [];
 

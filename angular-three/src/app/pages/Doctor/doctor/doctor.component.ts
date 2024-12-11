@@ -224,9 +224,15 @@ export class DoctorComponent implements OnInit {
   }
 
   allergiesList: any[] = [];
+  filteredOptions: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
+  filterText: string = '';
+  showDropdown: boolean = false; // Adicionado aqui
+  
   selectPatient(id: string){}
+
+
   getAllAllergies() {
     const token = this.authService.getToken();
     if (!token) {
@@ -248,6 +254,25 @@ export class DoctorComponent implements OnInit {
           this.errorMessage = 'Failed to fetch patients profiles!';
         }
       });
+  }
+
+
+  filterOptions(): void {
+    const filterValue = this.filterText.toLowerCase();
+    this.filteredOptions = this.allergiesList.filter(option =>
+      option.designacao.toLowerCase().includes(filterValue),
+      
+    );
+  }
+
+  selectOption(option: string): void {
+    this.filterText = option;
+    this.showDropdown = false;
+  }
+
+  hideDropdown(): void {
+    // Pequeno atraso para evitar esconder antes de selecionar
+    setTimeout(() => this.showDropdown = false, 200);
   }
 
 

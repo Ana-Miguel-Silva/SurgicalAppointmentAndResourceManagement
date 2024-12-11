@@ -63,14 +63,15 @@
               </table>
         </div>
 
+        <div class="row g-3">
+
         <div class="container col-md-4">
           <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
             <div class="form-floating mb-3">
                 <h3 class="title" >List Allergies</h3>
             </div>
+            </div>
           </div>
-        </div>
-    </div>
 
     <div class="container col-md-4">
       <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
@@ -87,6 +88,8 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
 
 <!-- Create Operation Request Modal -->
 <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
@@ -393,6 +396,26 @@
                 <button class="fs-5 btn btn-outline-danger" > Deactivate <i class="bi bi-archive-fill"></i></button>
               </div>
               </form>
+
+
+              <div class="dropdown">
+                <input 
+                  type="text" 
+                  placeholder="Escolha uma opção"
+                  [(ngModel)]="filterText"
+                  (input)="filterOptions()" 
+                  (focus)="showDropdown = true"
+                  (blur)="hideDropdown()"
+                />
+                <ul *ngIf="showDropdown" class="dropdown-list">
+                  <li 
+                    *ngFor="let option of filteredOptions" 
+                    (mousedown)="selectOption(option.designacao)">
+                    {{ option.designacao }}
+                  </li>
+                </ul>
+              </div>
+              
             </div>
 
       </div>

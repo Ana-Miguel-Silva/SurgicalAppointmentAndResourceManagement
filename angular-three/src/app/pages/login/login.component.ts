@@ -6,6 +6,7 @@ import { AuthService } from '../../Services/auth.service';
 import { LoginService } from '../../Services/login.service';
 import e from 'express';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -77,6 +78,8 @@ export class LoginComponent {
   // Login pelo Google
   onGoogleLogin() {
     // Redireciona para o backend Google OAuth endpoint
-    window.location.href = 'https://localhost:5001/api/Patients/ExternalIAM';
+    window.location.href = `${environment.apiMongoUrl}/Patients/ExternalIAM`;
+    
+    
   }
 }
