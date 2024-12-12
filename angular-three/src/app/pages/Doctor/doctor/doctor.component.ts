@@ -227,10 +227,13 @@ export class DoctorComponent implements OnInit {
   filteredOptions: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
-  filterText: string = '';
+  filterText: string = '' ;
   showDropdown: boolean = false; // Adicionado aqui
-  
-  selectPatient(id: string){}
+  selectedAllergie: string | null =null;
+
+  selectAllergie(id: string){
+      this.selectedAllergie = this.selectedAllergie === id ? null : id;
+  }
 
 
   getAllAllergies() {
@@ -250,8 +253,8 @@ export class DoctorComponent implements OnInit {
           console.log("teste: ", response);
         },
         error: (error) => {
-          console.error('Error fetching  profiles:', error);
-          this.errorMessage = 'Failed to fetch patients profiles!';
+          console.error('Error fetching allergies:', error);
+          this.errorMessage = 'Failed to fetch allergies list!';
         }
       });
   }

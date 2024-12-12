@@ -369,12 +369,13 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let request of allergiesList; let i = index" >
+                        <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
+                        <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.id)" [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
                           <td>{{ i + 1 }}</td>
-                          <!--<td><input class="selectRequest" type="radio" id="patient_{{ request.email.fullEmail }}" name="patientFormID" value="{{ request.email.fullEmail }}" [checked]="selectedAllergieId === request.email.fullEmail" hidden>{{ request.allergieId }} </td>-->
+                          <td><input class="selectRequest" type="radio" id="allergie_{{ request.id }}" name="id" value="{{ request.id }}" [checked]="selectedAllergie === request.id" hidden>{{ request.designacao }} </td>
 
-                          <td>{{ request.designacao }}</td>
                           <td>{{ request.descricao }}</td>
+                          <!--<td>{{ request.descricao }}</td>-->
                           <!--<td id="active_{{ request.email.fullEmail }}_{{request.active}}">
                             <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
                             <ng-template #failure>

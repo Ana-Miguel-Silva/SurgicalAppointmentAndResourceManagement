@@ -1730,7 +1730,7 @@
 <div [ngStyle]="{'display': isModalOpen('insertAllergies') ? 'block' : 'none'}" id="insertAllergies" class="modal">
   <div class="modal-content">
       <span (click)="closeModal('insertAllergies')" class="close">&times;</span>
-      <form (ngSubmit)="onCreateOperationType(operationType)" class="row g-3 needs-validation" novalidate>
+      <form [formGroup]="allergieForm" (ngSubmit)="onInsertAllergie()" class="row g-3 needs-validation" novalidate>
          
           <div class="col-md-6">
             <label for="surgery" class="form-label">Designation</label>
