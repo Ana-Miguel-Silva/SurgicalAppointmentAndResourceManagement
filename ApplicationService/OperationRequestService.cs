@@ -200,8 +200,14 @@ namespace DDDSample1.ApplicationService.OperationRequests
 
         private async Task CheckSpecializationsAsync(OperationType operationType, StaffProfile doctor)
         {
-            if (operationType.Name.ToLower() != doctor.Specialization.ToLower())
+            List<string> specializations = operationType.GetAllSpecializations(operationType.RequiredStaff);
+
+            if (!specializations.Contains(doctor.Specialization))
                 throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
+
+
+            //if (operationType.Name.ToLower() != doctor.Specialization.ToLower())
+                //throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
         }
 
         private static void CheckDate(DateTime date)
