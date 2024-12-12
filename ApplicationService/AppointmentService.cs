@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using DDDSample1.Domain.Staff;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Appointments.Dto;
 
 namespace DDDSample1.ApplicationService.Appointments
 {
@@ -17,11 +19,13 @@ namespace DDDSample1.ApplicationService.Appointments
         private readonly IAppointmentRepository _repo;
         private readonly ISurgeryRoomRepository _repoRooms;
         private readonly IOperationRequestRepository _repoOpReq;
+        private readonly IStaffRepository _repoStaff;
+        private readonly IOperationTypeRepository _repoOpTy;
         private readonly HttpClient _httpClient;
         public IConfiguration configuration { get; }
 
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IConfiguration configuration)
+        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IStaffRepository repoStaff, IOperationTypeRepository repoOpTy, IConfiguration configuration)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -29,6 +33,8 @@ namespace DDDSample1.ApplicationService.Appointments
             this._repoOpReq = repoOperationRequests;
             _httpClient = new HttpClient();
             this.configuration = configuration;
+            this._repoStaff = repoStaff;
+            this._repoOpTy = repoOpTy;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()
@@ -56,7 +62,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             var url = configuration.GetValue<string>("PrologPath");
 
-            var st = PostToPrologServer(url, "").Result;
+            var st = PostToPrologServer(configuration.GetValue<string>("PrologPath"), "").Result;
 
             var s = await FormatSurgerySchedules(st);
 
@@ -65,14 +71,120 @@ namespace DDDSample1.ApplicationService.Appointments
 
         public async Task<string> ScheduleAppointments2()
         {
+            //DateTime date = new DateTime(2025, 10, 10);
+            DateTime date = new DateTime(2025, 10, 10);
+
+            PrologDto prologDto = new PrologDto("20251010", 0.5, 0.5, 6, 6);
+
+            List<StaffProfile> staff = await _repoStaff.GetAllAsync();
+            List<OperationRequest> request = await _repoOpReq.GetAllAsync();
+            List<OperationType> types = await _repoOpTy.GetAllAsync();
+            List<SurgeryRoom> rooms = await _repoRooms.GetAllAsync();
+            List<Appointment> appointments = await _repo.GetAllAsync();
+
+
+            List<StaffToProlog> prologStaff = new List<StaffToProlog>();
+
+            foreach (var sta in staff)
+            {
+                List<int> slots = new List<int>();
+
+                foreach (var slot in sta.AvailabilitySlots)
+                {
+                    if (slot.StartTime.Day == date.Day)
+                    {
+                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
+                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
+                    }
+                }
+
+                if (slots.Count != 0)
+                    prologStaff.Add(new StaffToProlog(sta.StaffId, sta.Role, sta.Specialization, slots));
+            }
+
+            List<RoomToProlog> prologRooms = new List<RoomToProlog>();
+
+            foreach (var room in rooms)
+            {
+                List<int> slots = new List<int>();
+
+                foreach (var slot in room.MaintenanceSlots)
+                {
+                    if (slot.StartTime.Date == date.Date)
+                    {
+                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
+                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
+                    }
+                }
+
+                foreach (var app in appointments)
+                {
+                    if (app.RoomId == room.Id || app.Date.StartTime.Date == date.Date)
+                    {
+                        slots.Add(app.Date.StartTime.Hour * 60 + app.Date.StartTime.Minute);
+                        slots.Add(app.Date.EndTime.Hour * 60 + app.Date.EndTime.Minute);
+                    }
+                }
+
+                prologRooms.Add(new RoomToProlog(room.Id.Value, slots));
+            }
+
+            List<RequestToProlog> prologRequests = new List<RequestToProlog>();
+
+            foreach (var req in request)
+            {
+                prologRequests.Add(new RequestToProlog(req.Id.Value, req.OperationTypeId.Value));
+            }
+
+            List<OperationTypeToProlog> prologTypes = new List<OperationTypeToProlog>();
+            List<RequiredStaffToProlog> prologRequiredStaff = new List<RequiredStaffToProlog>();
+
+            foreach (var type in types)
+            {
+
+                var anethesia = type.EstimatedDuration.PatientPreparation.Minute + type.EstimatedDuration.PatientPreparation.Hour * 60;
+                var surgery = type.EstimatedDuration.Surgery.Minute + type.EstimatedDuration.Surgery.Hour * 60;
+                var cleaning = type.EstimatedDuration.Cleaning.Minute + type.EstimatedDuration.Cleaning.Hour * 60;
+
+                prologTypes.Add(new OperationTypeToProlog(type.Id.Value, anethesia, surgery, cleaning));
+
+                foreach (var staf in type.RequiredStaff)
+                {
+                    prologRequiredStaff.Add(new RequiredStaffToProlog(type.Id.Value, staf.Quantity, staf.Specialization, staf.Role));
+                }
+            }
+
+            var data = new
+            {
+                day = prologDto.Day,
+                prob_CrossOver = prologDto.Prob_CrossOver,
+                prob_Mutation = prologDto.Prob_Mutation,
+                n_Generations = prologDto.N_Generations,
+                base_Population = prologDto.Base_Population,
+                staffInfo = prologStaff,
+                roomsInfo = prologRooms,
+                operationRequests = prologRequests,
+                opType = prologTypes,
+                specializationAssignments = prologRequiredStaff
+            };
 
             var url = configuration.GetValue<string>("PrologPath2");
 
-            var st = PostToPrologServer(url, "").Result;
+            var json = JsonConvert.SerializeObject(data);
 
-            var s = await FormatSurgerySchedules2(st);
+            Console.WriteLine(json);
 
-            return s;
+            var response = await PostToPrologServer(url, data);
+
+            Console.WriteLine(response);
+
+            //json
+
+
+
+            //var s = await FormatSurgerySchedules2(st);
+
+            return "Sui";
         }
 
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)

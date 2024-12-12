@@ -40,7 +40,7 @@ namespace DDDSample1.ApplicationService.OperationTypes
         public async Task<OperationTypeDto> AddAsync(CreatingOperationTypeDto dto)
         {
 
-            CheckName(dto.Name);
+            //CheckName(dto.Name);
             CheckEstimatedTime(dto.EstimatedDuration);
             CheckRequiredStaff(dto.RequiredStaff);
 
