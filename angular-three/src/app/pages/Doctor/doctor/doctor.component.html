@@ -447,59 +447,70 @@
           <div class="dropdown">        
           
           
-            <div class="dropdown">        
-              <!-- Tag input field for Allergies -->
-              <label for="input-tag" class="form-label">Allergies</label>
-              <input
-                id="input-tag"
-                type="text"
-                placeholder="Add allergy"
-                [(ngModel)]="newAllergy"
-                name="allergyInput"
-               (keydown.ctrl)="handleEnter($event, 'addTag')"
-              />            
-            
-              <div class="tags-container">
-                <span *ngFor="let tag of medicalRecordRequest.allergies" class="tag">
-                  {{ tag }}
-                  <button
-                    type="button"
-                    class="delete-button"
-                    (click)="removeAllergy(tag)"
-                  >
-                    X
-                  </button>
-                </span>
+            <div class="dropdown">
+              <label for="tag-filter" class="form-label">Allergies</label>
+              <div class="tags-input">
+                <ul id="tags">
+                  <li *ngFor="let tag of tags; let i = index" class="tag">
+                    {{ tag }}
+                    <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>
+                  </li>
+                </ul>
+                <input
+                  id="tag-filter"
+                  type="text"
+                  [(ngModel)]="filterText"
+                  placeholder="Choose an allergie"
+                  (input)="filterOptions()"
+                  (keydown)="addTagFromInput($event)"
+                  (focus)="showDropdown = true"
+                  (blur)="onBlur()"
+                />
               </div>
+              <ul *ngIf="showDropdown" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredOptions"
+                  (mousedown)="selectOptionTag(option.designacao)">
+                  {{ option.designacao }}
+                </li>
+              </ul>
             </div>
+
+   
+
+          </div>  
             
-            <div class="col-md-6">
-              <!-- Input for Medical Conditions -->
-              <label for="medicalConditions" class="form-label">Medical Conditions</label>
-              <input
-                type="text"
-                class="form-control"
-                id="medicalConditions"
-                placeholder="Add condition"
-                [(ngModel)]="newMedicalCondition"
-                name="medicalConditionInput"
-                (keydown.ctrl)="handleEnter($event, 'addCondition')"
-              />
-              
-              <!-- Display Medical Conditions -->
-              <div class="conditions-container">
-                <span *ngFor="let condition of medicalRecordRequest.medicalConditions" class="condition">
-                  {{ condition }}
-                  <button
-                    type="button"
-                    class="delete-button"
-                    (click)="removeMedicalCondition(condition)"
-                  >
-                    X
-                  </button>
-                </span>
+          <div class="col-md-4">
+            <div class="dropdown2">
+              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
+              <div class="tagsConditions-input">
+                <ul id="tagsConditions">
+                  <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
+                    {{ condition }}
+                    <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
+                  </li>
+                </ul>
+                <input
+                  id="condition-filter"
+                  type="text"
+                  [(ngModel)]="filterTextCondition"
+                  placeholder="Choose an medical condition"
+                  (input)="filterOptionsMedicalConditions()"
+                  (keydown)="addTagConditionFromInput($event)"
+                  (focus)="showDropdown2 = true"
+                  (blur)="onBlur()"
+                />
               </div>
+              <ul *ngIf="showDropdown2" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredOptionsConditions"
+                  (mousedown)="selectOptionMedicalCondition(option.descricao)">
+                  {{ option.descricao }}
+                </li>
+              </ul>
             </div>
+          </div>
+            
             
 
           <div class="col-md-6">
@@ -511,7 +522,7 @@
           <div class="col-12">
               <button class="btn btn-primary" type="submit">Create Request</button>
           </div>
-        </div>
+     
       </form>
   </div>
 </div>

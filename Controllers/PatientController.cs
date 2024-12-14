@@ -247,8 +247,7 @@ namespace DDDSample1.Controllers
                                 Id = dto.Id,
                                 DateOfBirth = dto.DateOfBirth,
                                 medicalRecordNumber = dto.medicalRecordNumber,
-                                gender = dto.gender,
-                                Allergies = dto.Allergies,
+                                gender = dto.gender,                               
                                 AppointmentHistory = dto.AppointmentHistory,
                                 nameEmergency = dto.nameEmergency,
                                 phoneEmergency = dto.phoneEmergency,
@@ -317,8 +316,7 @@ namespace DDDSample1.Controllers
                         var transformedDto = new
                             {                                  
                                 name = dto.name,                                                  
-                                gender = dto.gender,
-                                Allergies = dto.Allergies,
+                                gender = dto.gender,                          
                                 AppointmentHistory = dto.AppointmentHistory,
                                 nameEmergency = dto.nameEmergency,
                                 phoneEmergency = dto.phoneEmergency,
@@ -518,7 +516,6 @@ namespace DDDSample1.Controllers
             [FromQuery] DateTime? DateOfBirth,
             [FromQuery] string? medicalRecordNumber,
             [FromQuery] string? email,
-            [FromQuery] List<string>? Allergies,
             [FromQuery] List<string>? AppointmentHistory
 
             )
@@ -534,7 +531,7 @@ namespace DDDSample1.Controllers
                 //MedicalRecordNumber? medicalRecordNumber = !string.IsNullOrEmpty(patientId) ? new MedicalRecordNumber(patientId) : null;
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
-                var operationRequests = await _service.GetAllFilteredAsync(id,name, email, DateOfBirth, Allergies, medicalRecordNumber, AppointmentHistory);
+                var operationRequests = await _service.GetAllFilteredAsync(id,name, email, DateOfBirth, medicalRecordNumber, AppointmentHistory);
                 
 
                 return operationRequests;

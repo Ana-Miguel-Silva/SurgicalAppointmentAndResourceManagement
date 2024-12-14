@@ -23,14 +23,14 @@ namespace Domain.Tests
             var phoneEmergency = new PhoneNumber("987654321");
             var emailEmergency = new Email("jane.doe@example.com");
             var gender = "Male";
-            var allergies = new List<string> { "Peanuts", "Penicillin" };
+ 
             var appointmentHistory = new List<string> { "Checkup", "Follow-up" };
             var active = true;
 
 
             // Act
             var patientDto = new PatientDto(id, name, medicalRecordNumber, dateOfBirth, phone, email, userEmail, 
-                                             nameEmergency, phoneEmergency, emailEmergency, gender, allergies, appointmentHistory, active);
+                                             nameEmergency, phoneEmergency, emailEmergency, gender,  appointmentHistory, active);
 
             // Assert
             Assert.Equal(id, patientDto.Id);
@@ -44,7 +44,6 @@ namespace Domain.Tests
             Assert.Equal(phoneEmergency, patientDto.phoneEmergency);
             Assert.Equal(emailEmergency, patientDto.emailEmergency);
             Assert.Equal(gender, patientDto.gender);
-            Assert.Equal(allergies, patientDto.Allergies);
             Assert.Equal(appointmentHistory, patientDto.AppointmentHistory);
         }
 

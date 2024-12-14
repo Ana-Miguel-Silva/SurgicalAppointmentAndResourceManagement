@@ -1348,7 +1348,9 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);
-   // this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
+   
+
+    //this.http.post(`${environment.apiBaseUrl}/Staff`, JSON.stringify(formData), { headers })
     this.staffService.createStaff(formData)
       .subscribe({
         next: () => {

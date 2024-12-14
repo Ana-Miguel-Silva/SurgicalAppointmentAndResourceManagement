@@ -9,7 +9,7 @@ public class UpdatePatientDto
         public string? name { get;  set; }
 
         public string? gender { get; set; }  
-        public List<string>? Allergies { get; set; } 
+        
         public List<string>? AppointmentHistory { get; set; }  
        
          public string? nameEmergency { get;   set; }
@@ -23,13 +23,13 @@ public class UpdatePatientDto
 
          public string? UserEmail { get;   set; }
 
-    public UpdatePatientDto( string? name = null, string? gender = null, List<string>? allergies = null,
+    public UpdatePatientDto( string? name = null, string? gender = null,
         List<string>? appointmentHistory = null, string? nameEmergency = null, string? phoneEmergency = null, string? emailEmergency = null, string? phone = null, string? email = null, string? userEmail = null)
     {
         
         this.name = name;
         this.gender = gender;
-        this.Allergies = allergies;
+       
         this.AppointmentHistory = appointmentHistory;
         this.nameEmergency = nameEmergency;
         this.phoneEmergency = phoneEmergency;

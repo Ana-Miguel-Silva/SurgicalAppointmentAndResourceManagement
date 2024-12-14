@@ -37,7 +37,7 @@ namespace DDDSample1.ApplicationService.Patients
             
             List<PatientDto> listDto = list.ConvertAll<PatientDto>(prod => 
                 new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active));
+                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.AppointmentHistory, prod.Active));
 
             return listDto;
         }
@@ -52,7 +52,7 @@ namespace DDDSample1.ApplicationService.Patients
               
 
             return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active);
+                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender,  prod.AppointmentHistory, prod.Active);
 
         }
 
@@ -91,7 +91,7 @@ namespace DDDSample1.ApplicationService.Patients
 
             await this._unitOfWork.CommitAsync();
 
-             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.medicalRecordNumber, Patient.DateOfBirth, Patient.Phone, Patient.Email, Patient.UserEmail, Patient.nameEmergency,Patient.phoneEmergency , Patient.emailEmergency, Patient.gender, Patient.Allergies, Patient.AppointmentHistory, Patient.Active);
+             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.medicalRecordNumber, Patient.DateOfBirth, Patient.Phone, Patient.Email, Patient.UserEmail, Patient.nameEmergency,Patient.phoneEmergency , Patient.emailEmergency, Patient.gender,Patient.AppointmentHistory, Patient.Active);
 
              if (string.IsNullOrEmpty(dto.Name))
             {
@@ -179,10 +179,6 @@ namespace DDDSample1.ApplicationService.Patients
                 patient.ChangeEmailEmergency(dto.emailEmergency);
             }
 
-            if (dto.Allergies != null && dto.Allergies.Any())
-            {
-                patient.ChangeAllergies(dto.Allergies);
-            }
 
             if (!string.IsNullOrWhiteSpace(dto.gender))
             {
@@ -203,7 +199,7 @@ namespace DDDSample1.ApplicationService.Patients
                 patient.Phone, patient.Email, patient.UserEmail, 
                 patient.nameEmergency, patient.phoneEmergency, 
                 patient.emailEmergency, patient.gender, 
-                patient.Allergies, patient.AppointmentHistory, patient.Active
+               patient.AppointmentHistory, patient.Active
             );
         }
 
@@ -286,10 +282,7 @@ namespace DDDSample1.ApplicationService.Patients
                 patient.ChangeEmailEmergency(new Email(dto.emailEmergency));
             }
 
-            if (dto.Allergies != null && dto.Allergies.Any())
-            {
-                patient.ChangeAllergies(dto.Allergies);
-            }
+
 
             if (!string.IsNullOrWhiteSpace(dto.gender))
             {
@@ -308,7 +301,7 @@ namespace DDDSample1.ApplicationService.Patients
 
             return new UpdatePatientDto( 
              patient.name.GetFullName(), patient.gender, 
-                patient.Allergies, patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency.Number, 
+               patient.AppointmentHistory, patient.nameEmergency, patient.phoneEmergency.Number, 
                 patient.emailEmergency.FullEmail,
                 patient.Phone.Number, patient.Email.FullEmail, patient.UserEmail.FullEmail
                 
@@ -328,10 +321,10 @@ namespace DDDSample1.ApplicationService.Patients
             await this._unitOfWork.CommitAsync();
 
             /*return new PatientDto(prod.Id.AsGuid(), prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender, prod.Allergies, prod.AppointmentHistory);*/
+                   prod.Phone, prod.Email, prod.UserEmail, prod.EmergencyContact.Name.GetFullName(),prod.EmergencyContact.Phone , prod.EmergencyContact.Email, prod.gender,  prod.AppointmentHistory);*/
 
             return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active);
+                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender,  prod.AppointmentHistory, prod.Active);
 
         }
 
@@ -391,7 +384,7 @@ namespace DDDSample1.ApplicationService.Patients
             await this._unitOfWork.CommitAsync();
 
             return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active);
+                   prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender,  prod.AppointmentHistory, prod.Active);
 
         }
 
@@ -419,7 +412,7 @@ namespace DDDSample1.ApplicationService.Patients
                 await this._unitOfWork.CommitAsync();
 
                 return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
-                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active);
+                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender,  prod.AppointmentHistory, prod.Active);
 
             }                    
 
@@ -475,7 +468,6 @@ namespace DDDSample1.ApplicationService.Patients
     string? nameFull,
     string? email,
     DateTime? DateOfBirth,
-    List<string>? Allergies,
     string medicalRecordNumber,
     List<string>? AppointmentHistory
 )
@@ -494,11 +486,7 @@ namespace DDDSample1.ApplicationService.Patients
     if (DateOfBirth.HasValue)
         patientsProfile = patientsProfile.Where(o => o.DateOfBirth.Date == DateOfBirth.Value.Date).ToList();
 
-    if (Allergies != null && Allergies.Any())
-        patientsProfile = patientsProfile.Where(o => 
-            o.Allergies != null && o.Allergies.Any(a => Allergies.Any(al => 
-                string.Equals(a, al, StringComparison.OrdinalIgnoreCase)))).ToList();
-
+   
     if (!string.IsNullOrEmpty(medicalRecordNumber))
         patientsProfile = patientsProfile.Where(o => 
             string.Equals(o.medicalRecordNumber.number, medicalRecordNumber, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -526,7 +514,6 @@ namespace DDDSample1.ApplicationService.Patients
             patients.phoneEmergency,
             patients.emailEmergency,
             patients.gender,
-            patients.Allergies,
             patients.AppointmentHistory,
             patients.Active
         )

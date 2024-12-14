@@ -1,6 +1,9 @@
 import { ChangeDetectorRef,Component, inject } from '@angular/core';
 import { AuthService } from '../../../Services/auth.service';
 import { PatientService } from '../../../Services/patient.service';
+import { MedicalRecordService } from '../../../Services/medicalRecordservice';
+import { MedicalConditionService } from '../../../Services/medicalCondition.service';
+import { AllergiesService } from '../../../Services/allergies.service';
 import { ModalService } from '../../../Services/modal.service';
 import { NgModule } from '@angular/core';
 import { FormBuilder, FormControl,FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
@@ -9,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { forkJoin } from 'rxjs';
 
 
 
@@ -27,14 +31,16 @@ export class PatientComponent {
   myForm!: FormGroup;
   patientUpdateForm!: FormGroup;
 
-  selectedPatientEmail: string | undefined;
+  selectedPatientEmail!: string | '';
   private patientUrl = `${environment.apiMongoUrl}/Patients`;
   actionId: any;
-  allergies: string[] = [];
+  allergiesList: any[] = [];
+  medicalConditions : any[] = [];
 
 
 
-  constructor(  private route: ActivatedRoute,   private http: HttpClient, private modalService: ModalService,private authService: AuthService,  private router: Router, private fb: FormBuilder, private patientService: PatientService, private cdr: ChangeDetectorRef) {
+
+  constructor(  private route: ActivatedRoute,   private http: HttpClient, private modalService: ModalService,private authService: AuthService,  private router: Router, private fb: FormBuilder, private patientService: PatientService, private medicalRecordService : MedicalRecordService,private allergieService : AllergiesService, private medicalConditionService : MedicalConditionService, private cdr: ChangeDetectorRef) {
 
     this.myForm = this.fb.group({
       name: ['', Validators.required],
@@ -62,7 +68,7 @@ export class PatientComponent {
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       //agree: [false, Validators.requiredTrue],
       appointmentHistory: this.fb.array([]),
-      allergies: this.fb.array([])
+     // allergies: this.fb.array([])
     });
     this.patientForm = this.fb.group({});
   }
@@ -88,12 +94,13 @@ export class PatientComponent {
     nameEmergency: "",
     emailEmergency: { fullEmail: "" },
     phoneEmergency: { number: "" },
-    allergies: [],
     appointmentHistory: [],
     medicalRecordNumber: { number: "" },
     dateOfBirth: "",
   };
 
+  selectedAllergie: string | null =null;
+  selectedMedicalCondition: string | null =null;
 
 
   openModal(modalId: string): void {
@@ -156,13 +163,13 @@ export class PatientComponent {
     appointmentHistoryControl.removeAt(index);
   }
   
-  addTag(event: KeyboardEvent) {
+ /* addTag(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value.trim();
   
     if (event.key === 'Enter' && value) {
-      event.preventDefault(); // Impede o envio do formulário
-      this.tags.push(value); // Adiciona ao array local
+      event.preventDefault(); 
+      this.tags.push(value); 
   
       // Adiciona ao FormArray
       const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
@@ -180,9 +187,64 @@ export class PatientComponent {
     // Remove do FormArray
     const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
     allergiesControl.removeAt(index);
-  }
-  
+  }*/
 
+  getMedicalRecord() {
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+    console.log("Entrei get medical record");
+
+    forkJoin({
+      patient: this.patientService.getPatientByEmail(this.selectedPatientEmail)        
+    }).subscribe({
+      next: ({ patient }) => {
+  
+        const getPatientId = patient.id.value;   
+        console.log("patient id " , getPatientId);      
+  
+        this.medicalRecordService.getAllMedicalRecordByPatientId(getPatientId)
+          .subscribe({            
+            next: (response) => {    
+
+              this.allergiesList = response[0].allergies.flat();
+
+              console.log("allergies: ", this.allergiesList);
+
+              this.medicalConditions = response[0].medicalConditions.flat();
+
+              console.log("medical conditions: ", this.medicalConditions);
+
+
+              this.openModal('ViewMedicalRecord');
+            },
+            error: (error) => {
+              console.error('Error fetching  allergies:', error);
+              this.errorMessage = 'Failed to fetch allergies!';
+            }
+          });
+        },
+        error: (error: any) => {
+          console.error('Error fetching patient:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to fetch patient information.',
+          });
+        },
+      });
+    }
+
+
+  selectAllergie(id: string){
+    this.selectedAllergie = this.selectedAllergie === id ? null : id;
+  }
+
+  selectMedicalCondtion(id: string){
+    this.selectedMedicalCondition = this.selectedMedicalCondition === id ? null : id;
+  }
 
 
 
@@ -308,9 +370,9 @@ export class PatientComponent {
     
 
     const appointmentHistoryArray = this.patientUpdateForm.get('appointmentHistory') as FormArray;
-    const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
+    //const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
     appointmentHistoryArray.clear();
-    allergiesArray.clear();
+    //allergiesArray.clear();
   
     // Popula o FormArray de appointmentHistory
     if (this.patientProfileSingle.appointmentHistory) {
@@ -321,12 +383,12 @@ export class PatientComponent {
     }
   
 
-    if (this.patientProfileSingle.allergies) {
+    /*if (this.patientProfileSingle.allergies) {
       this.patientProfileSingle.allergies.forEach((allergy: string) => {
         allergiesArray.push(new FormControl(allergy));
       });
       this.tags = [...this.patientProfileSingle.allergies]; 
-    }
+    }*/
 
     
 }

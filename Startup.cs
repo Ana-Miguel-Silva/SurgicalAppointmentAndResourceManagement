@@ -40,6 +40,7 @@ using DDDSample1.ApplicationService.SurgeryRooms;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.SurgeryRooms;
 using System.Security.Claims;
+using DDDSample1.Domain.Shared;
 
 
 namespace DDDSample1
@@ -192,6 +193,7 @@ namespace DDDSample1
             SeedPatientUser(app.ApplicationServices);
             SeedDoctorUser(app.ApplicationServices);
             SeedPatient(app.ApplicationServices);
+            SeedDoctorStaff(app.ApplicationServices);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -298,6 +300,34 @@ namespace DDDSample1
             }
         }
 
+        public async Task SeedDoctorStaff(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<StaffService>();
+
+                var doctorUsername = "doc";
+                var doctorEmail = new Email("doc@gmail.com");
+                var doctorPhone = "96866520";
+                var doctorRole = "Doctor";
+                var doctorSpetialization = "PEDIATRICS";
+                List<Domain.Staff.DateDTO> slots = [];              
+
+                var licenseNumber = "96866520";
+
+                StaffDto existingDoctor = await userService.GetStaffByEmailAsync(doctorEmail.FullEmail);
+
+                if (existingDoctor == null)
+                {
+                    var adminDto = new CreatingStaffDto(doctorUsername, doctorEmail.FullEmail, doctorPhone, licenseNumber, doctorRole,doctorSpetialization, slots);
+
+                    await userService.AddAsync(adminDto);
+                }
+
+            }
+        }
+
+   
         public async Task SeedPatientUser(IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())

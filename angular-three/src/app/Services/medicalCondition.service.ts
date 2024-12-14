@@ -10,38 +10,38 @@ import { environment } from '../../environments/environment';
 })
 
 @Injectable()
-export class MedicalRecordService {
-
-  private apiUrl = `${environment.apiMongoUrl}/medicalRecord`;
-
-  private apiBEUrl = `${environment.apiBaseUrl}/Patients`;
+export class MedicalConditionService {
+  private apiUrl = `${environment.apiMongoUrl}/medicalCondition`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-createMedicalRecord(medicalRecord : any): Observable<any> {
+/*createOperationRequests(operationRequest : any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.post(`${this.apiUrl}/create`, medicalRecord, { headers })
+  return this.http.post(`${this.apiUrl}`, operationRequest, { headers })
 }
 
+updateOperationRequests(operationRequest: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-getAllMedicalRecord(): Observable<any[]> {
+  return this.http.patch(`${this.apiUrl}/${operationRequest.id}`, operationRequest, { headers });
+}
+
+deleteOperationRequests(id: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.delete(`${this.apiUrl}/${id}`, { headers });
+}*/
+
+
+getAllMedicalConditions(): Observable<any[]> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
   return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
 }
-
-getAllMedicalRecordByPatientId(patientId : any): Observable<any[]> {
-  const token = this.authService.getToken();
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-  return this.http.get<any[]>(`${this.apiUrl}/get?patientId=${patientId}`, { headers });
-}
-
-
-
-
 
 }

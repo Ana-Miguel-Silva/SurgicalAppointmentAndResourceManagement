@@ -111,7 +111,8 @@ body {
 }
 
 /* Tags Input */
-.tags-input {
+.tags-input, 
+.tagsConditions-input {
   position: relative;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -120,13 +121,15 @@ body {
   width: 100%;
 }
 
-.tags-input ul {
+.tags-input ul,
+.tagsConditions-input ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.tags-input li {
+.tags-input li,
+.tagsConditions-input li {
   display: inline-block;
   background-color: #f2f2f2;
   border-radius: 20px;
@@ -134,7 +137,8 @@ body {
   margin: 0 5px 5px 0;
 }
 
-.tags-input input[type="text"] {
+.tags-input input[type="text"],
+.tagsConditions-input input[type="text"] {
   border: none;
   width: 100%;
   padding: 5px;
@@ -350,18 +354,18 @@ canvas {
 
 
 
-.dropdown {
+.dropdown, .dropdown2{
   position: relative;
   width: 300px;
 }
 
-.dropdown input {
+.dropdown input, .dropdown2 input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
 
-.dropdown-list {
+.dropdown-list, .dropdown2-list {
   position: absolute;
   width: 100%;
   background: white;
@@ -375,11 +379,12 @@ canvas {
   list-style: none;
 }
 
-.dropdown-list li {
+.dropdown-list li, 
+.dropdown2 .dropdown-list li  {
   padding: 8px;
   cursor: pointer;
 }
 
-.dropdown-list li:hover {
+.dropdown-list li:hover,  .dropdown2-list li:hover{
   background: #f0f0f0;
 }

@@ -50,7 +50,6 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
                     AppointmentHistory: new List<string> { "2024-10-24" }                   
                 )
             };
@@ -79,7 +78,7 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
+                  
                     AppointmentHistory: new List<string> { "" }                   
                 );
             var PatientId = patient.Id;
@@ -119,7 +118,7 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
+                  
                     AppointmentHistory: new List<string> { "" }                   
                 );
 
@@ -154,7 +153,7 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
+                  
                     AppointmentHistory: new List<string> { "" },
                     Active: true                
                 );
@@ -169,7 +168,7 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
+                  
                     AppointmentHistory: new List<string> { "" }                   
                 );
 
@@ -198,7 +197,7 @@ namespace Backend.Tests.Services
                     phoneEmergency: new PhoneNumber("966652872"),
                     emailEmergency: new Email("emergency@example.com"),
                     gender: "Male",
-                    Allergies: new List<string> { "Peanuts" },
+                  
                     AppointmentHistory: new List<string> { "" }                   
                 );
             var PatientId = Patient.Id;
@@ -228,7 +227,7 @@ namespace Backend.Tests.Services
                 phoneEmergency: new PhoneNumber("966652872"),
                 emailEmergency: new Email("emergency@example.com"),
                 gender: "Male",
-                Allergies: new List<string> { "Peanuts" },
+              
                 AppointmentHistory: new List<string> { "" }                   
             );
             Patient.Deactivate();

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241128161905_init")]
-    partial class init
+    [Migration("20241214155943_patientTables")]
+    partial class patientTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,10 +143,6 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Allergies")
-                        .HasColumnType("longtext")
-                        .HasColumnName("Allergies");
-
                     b.Property<string>("AppointmentHistory")
                         .HasColumnType("longtext")
                         .HasColumnName("AppointmentHistory");
@@ -184,6 +180,23 @@ namespace DDDNetCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PendingActions");
+                });
+
+            modelBuilder.Entity("DDDSample1.Domain.Specializations.Specialization", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("SpecializationName")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpecializationName")
+                        .IsUnique();
+
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("DDDSample1.Domain.Staff.StaffProfile", b =>

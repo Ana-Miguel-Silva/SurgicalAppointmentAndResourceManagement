@@ -98,7 +98,7 @@ namespace DDDSample1.ApplicationService.Staff
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
             var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID, dto.License);
-
+         
             await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();

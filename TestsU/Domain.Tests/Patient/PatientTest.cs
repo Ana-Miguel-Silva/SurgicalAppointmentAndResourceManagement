@@ -17,13 +17,13 @@ namespace Domain.Tests
             var email = new Email("john.doe@example.com");
             var userEmail = new Email("john.doe.user@example.com");
             var gender = "Male";
-            var allergies = new List<string> { "Peanuts", "Dust" };
+
             var appointmentHistory = new List<string> { "2024-01-01", "2024-02-01" };
             var emergencyName = "Jane Doe";
             var emergencyPhone = new PhoneNumber("987654321");
             var emergencyEmail = new Email("jane.doe@example.com");
 
-            var patient = new Patient(name, dateOfBirth, phone, email, userEmail, emergencyName, emergencyPhone, emergencyEmail, gender, allergies, appointmentHistory);
+            var patient = new Patient(name, dateOfBirth, phone, email, userEmail, emergencyName, emergencyPhone, emergencyEmail, gender,  appointmentHistory);
 
             Assert.Equal(name, patient.name.GetFullName());
             Assert.Equal(dateOfBirth, patient.DateOfBirth);
@@ -31,7 +31,7 @@ namespace Domain.Tests
             Assert.Equal(email, patient.Email);
             Assert.Equal(userEmail, patient.UserEmail);
             Assert.Equal(gender, patient.gender);
-            Assert.Equal(allergies, patient.Allergies);
+
             Assert.Equal(appointmentHistory, patient.AppointmentHistory);
             Assert.Equal(emergencyName, patient.nameEmergency);
             Assert.Equal(emergencyPhone, patient.phoneEmergency);
@@ -44,7 +44,7 @@ namespace Domain.Tests
         [Fact]
         public void ChangeName_UpdatesName_WhenCalled()
         {
-            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>(), new List<string>());
+            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>());
             var newName = new FullName("Jane Doe");
 
             patient.ChangeName(newName);
@@ -55,7 +55,7 @@ namespace Domain.Tests
         [Fact]
         public void ChangeEmail_UpdatesEmail_WhenCalled()
         {
-            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>(), new List<string>());
+            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>());
             var newEmail = new Email("new.email@example.com");
 
             patient.ChangeEmail(newEmail);
@@ -66,7 +66,7 @@ namespace Domain.Tests
         [Fact]
         public void Deactivate_UpdatesActiveStatus_WhenCalled()
         {
-            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>(), new List<string>());
+            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>());
 
             patient.Deactivate();
 
@@ -75,15 +75,6 @@ namespace Domain.Tests
             Assert.True(patient.ExpirationDate > DateTime.Now);
         }
 
-        [Fact]
-        public void ChangeAllergies_UpdatesAllergies_WhenCalled()
-        {
-            var patient = new Patient("John Doe", DateTime.Now, new PhoneNumber("123456789"), new Email("email@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>(), new List<string>());
-            var newAllergies = new List<string> { "Penicillin", "Shellfish" };
-
-            patient.ChangeAllergies(newAllergies);
-
-            Assert.Equal(newAllergies, patient.Allergies);
-        }
+        
     }
 }
