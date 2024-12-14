@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 
 using System.Net.Http;
+using DDDSample1.Domain.Appointments.Dto;
 
 namespace DDDSample1.Controllers
 {
@@ -77,28 +78,12 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/Appointments/pmodule
-        [HttpPost("pmodule")]
-        public async Task<IActionResult> Pmodule()
-        {
-            try
-            {
-                var appointment = await _service.ScheduleAppointments();
-
-                return Ok(new { message = appointment });
-            }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
-
-        // POST: api/Appointments/pmodule
         [HttpPost("pmodule2")]
-        public async Task<IActionResult> Pmodule2()
+        public async Task<IActionResult> Pmodule2(DateInputModel date)
         {
             try
             {
-                var appointment = await _service.ScheduleAppointments2();
+                var appointment = await _service.ScheduleAppointments2(date.Date);
 
                 return Ok(new { message = appointment });
             }
