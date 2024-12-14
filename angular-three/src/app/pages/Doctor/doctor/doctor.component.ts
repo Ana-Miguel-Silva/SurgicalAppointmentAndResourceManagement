@@ -167,7 +167,7 @@ export class DoctorComponent implements OnInit {
     private http: HttpClient,
     private authService: AuthService,
     private operationRequestsService: OperationRequestsService,
-    private allergiesService: AllergiesService,    
+    private allergiesService: AllergiesService,
     private medicalRecordService: MedicalRecordService,
     private patientService : PatientService,
     private staffService : StaffService,
@@ -241,6 +241,13 @@ export class DoctorComponent implements OnInit {
   errorMessage: string | null = null;
   filterText: string = '';
   showDropdown: boolean = false; // Adicionado aqui
+  selectedAllergie: string | null =null;
+
+  selectAllergie(id: string){
+      this.selectedAllergie = this.selectedAllergie === id ? null : id;
+  }
+
+
 
   selectPatient(id: string){}
   getAllAllergies() {
@@ -444,9 +451,9 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     const staffEmail = this.authService.getEmail();
-  
+
     // Obtém os IDs de staff e patient em paralelo
     forkJoin({
       patient: this.patientService.getPatientByEmail(requestData.patientId),
@@ -456,18 +463,18 @@ export class DoctorComponent implements OnInit {
         console.log("STAFF: ", staff);
         const getPatientId = patient.id.value;
         const staffId = staff.id;
-  
+
         const payload: CreatingMedicalRecordUIDto = {
           staff: staffId,
           patientId: getPatientId,
-          allergies: this.selectedTags, 
+          allergies: this.selectedTags,
           medicalConditions: requestData.medicalConditions,
           descricao: requestData.descricao,
         };
-  
+
         console.log("Medical record payload:", payload);
-  
-     
+
+
         this.medicalRecordService.createMedicalRecord(payload).subscribe({
           next: () => {
             this.cleanMedicalRecordRegister();
@@ -501,18 +508,18 @@ export class DoctorComponent implements OnInit {
       },
     });
   }
-  
+
 
 
   handleEnter(event: KeyboardEvent, action: string): void {
-    event.preventDefault(); 
+    event.preventDefault();
     if (action === 'addTag') {
       this.addAllergy();
     } else if (action === 'addCondition') {
       this.addMedicalCondition();
     }
   }
-  
+
 
   addAllergy() {
     if (this.newAllergy.trim() && !this.medicalRecordRequest.allergies.includes(this.newAllergy.trim())) {
@@ -548,10 +555,9 @@ export class DoctorComponent implements OnInit {
     this.medicalRecordRequest.medicalConditions = this.medicalRecordRequest.medicalConditions.filter(c => c !== condition);
   }
 
-  
+
 
   getAllMedicalRecords() {
-    console.log("Entrei get all medical records")
     const token = this.authService.getToken();
     if (!token) {
       Swal.fire({
@@ -566,26 +572,26 @@ export class DoctorComponent implements OnInit {
     .subscribe({
       next: async (response) => {
         this.medicalRecordRequests = response;
-     
+
 
         this.medicalRecordRequests.forEach(async element => {
            this.patientService.getPatientEmailById(element.patientEmail).subscribe({
-            next: (res) => {                  
+            next: (res) => {
               element.patientEmail =  res[0].email.fullEmail;
             },
           });
 
           this.staffService.getStaff(element.staff).subscribe({
-            next: (res) => {                                
+            next: (res) => {
               element.staff =  res[0].email.fullEmail;
             },
           });
-          
-        });      
-        
+
+        });
+
         console.log("medical records: " , response);
-        
-       
+
+
       },
       error: (error) => {
         console.error('Error fetching requests:', error);

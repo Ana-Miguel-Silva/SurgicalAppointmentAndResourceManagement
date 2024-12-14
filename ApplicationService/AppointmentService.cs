@@ -4,9 +4,7 @@ using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Appointments;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using DDDSample1.Domain.Staff;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Appointments.Dto;
@@ -57,140 +55,13 @@ namespace DDDSample1.ApplicationService.Appointments
             return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot);
         }
 
-        public async Task<string> ScheduleAppointments()
-        {
-
-            var url = configuration.GetValue<string>("PrologPath");
-
-            var st = PostToPrologServer(configuration.GetValue<string>("PrologPath"), "").Result;
-
-            var s = await FormatSurgerySchedules(st);
-
-            return s;
-        }
-
-        public async Task<string> ScheduleAppointments2()
-        {
-            //DateTime date = new DateTime(2025, 10, 10);
-            DateTime date = new DateTime(2025, 10, 10);
-
-            PrologDto prologDto = new PrologDto("20251010", 0.5, 0.5, 6, 6);
-
-            List<StaffProfile> staff = await _repoStaff.GetAllAsync();
-            List<OperationRequest> request = await _repoOpReq.GetAllAsync();
-            List<OperationType> types = await _repoOpTy.GetAllAsync();
-            List<SurgeryRoom> rooms = await _repoRooms.GetAllAsync();
-            List<Appointment> appointments = await _repo.GetAllAsync();
-
-
-            List<StaffToProlog> prologStaff = new List<StaffToProlog>();
-
-            foreach (var sta in staff)
-            {
-                List<int> slots = new List<int>();
-
-                foreach (var slot in sta.AvailabilitySlots)
-                {
-                    if (slot.StartTime.Day == date.Day)
-                    {
-                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
-                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
-                    }
-                }
-
-                if (slots.Count != 0)
-                    prologStaff.Add(new StaffToProlog(sta.StaffId, sta.Role, sta.Specialization, slots));
-            }
-
-            List<RoomToProlog> prologRooms = new List<RoomToProlog>();
-
-            foreach (var room in rooms)
-            {
-                List<int> slots = new List<int>();
-
-                foreach (var slot in room.MaintenanceSlots)
-                {
-                    if (slot.StartTime.Date == date.Date)
-                    {
-                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
-                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
-                    }
-                }
-
-                foreach (var app in appointments)
-                {
-                    if (app.RoomId == room.Id || app.Date.StartTime.Date == date.Date)
-                    {
-                        slots.Add(app.Date.StartTime.Hour * 60 + app.Date.StartTime.Minute);
-                        slots.Add(app.Date.EndTime.Hour * 60 + app.Date.EndTime.Minute);
-                    }
-                }
-
-                prologRooms.Add(new RoomToProlog(room.Id.Value, slots));
-            }
-
-            List<RequestToProlog> prologRequests = new List<RequestToProlog>();
-
-            foreach (var req in request)
-            {
-                prologRequests.Add(new RequestToProlog(req.Id.Value, req.OperationTypeId.Value));
-            }
-
-            List<OperationTypeToProlog> prologTypes = new List<OperationTypeToProlog>();
-            List<RequiredStaffToProlog> prologRequiredStaff = new List<RequiredStaffToProlog>();
-
-            foreach (var type in types)
-            {
-
-                var anethesia = type.EstimatedDuration.PatientPreparation.Minute + type.EstimatedDuration.PatientPreparation.Hour * 60;
-                var surgery = type.EstimatedDuration.Surgery.Minute + type.EstimatedDuration.Surgery.Hour * 60;
-                var cleaning = type.EstimatedDuration.Cleaning.Minute + type.EstimatedDuration.Cleaning.Hour * 60;
-
-                prologTypes.Add(new OperationTypeToProlog(type.Id.Value, anethesia, surgery, cleaning));
-
-                foreach (var staf in type.RequiredStaff)
-                {
-                    prologRequiredStaff.Add(new RequiredStaffToProlog(type.Id.Value, staf.Quantity, staf.Specialization, staf.Role));
-                }
-            }
-
-            var data = new
-            {
-                day = prologDto.Day,
-                prob_CrossOver = prologDto.Prob_CrossOver,
-                prob_Mutation = prologDto.Prob_Mutation,
-                n_Generations = prologDto.N_Generations,
-                base_Population = prologDto.Base_Population,
-                staffInfo = prologStaff,
-                roomsInfo = prologRooms,
-                operationRequests = prologRequests,
-                opType = prologTypes,
-                specializationAssignments = prologRequiredStaff
-            };
-
-            var url = configuration.GetValue<string>("PrologPath2");
-
-            var json = JsonConvert.SerializeObject(data);
-
-            Console.WriteLine(json);
-
-            var response = await PostToPrologServer(url, data);
-
-            Console.WriteLine(response);
-
-            //json
-
-
-
-            //var s = await FormatSurgerySchedules2(st);
-
-            return "Sui";
-        }
-
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
         {
 
             var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus, dto.AppointmentSlot);
+
+            await checkRoomIdAsync(dto.RoomId);
+            await checkOperationRequestIdAsync(dto.OperationRequestId);
 
             await this._repo.AddAsync(appointment);
 
@@ -264,213 +135,221 @@ namespace DDDSample1.ApplicationService.Appointments
                 throw new BusinessRuleValidationException("Invalid OperationRequest Id.");
         }
 
-        private static void CheckDate(Slot date)
-        {
-            if (date == null)
-                throw new BusinessRuleValidationException("Invalid Appointment Date.");
-        }
-
         private static void CheckStatus(String status)
         {
             if (!AppointmentStatus.IsValid(status.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public Task<string> FormatSurgerySchedules(string jsonString)
+        public async Task<string> ScheduleAppointments2(DateTime date)
         {
-            var data = JObject.Parse(jsonString);
+            PrologDto prologDto = new PrologDto(date.ToString("yyyyMMdd"), 0.5, 0.5, 6, 6);
 
-            var s = ProcessSchedule(data);
+            List<StaffProfile> staff = await _repoStaff.GetAllAsync();
+            List<OperationRequest> request = await _repoOpReq.GetAllAsync();
+            List<OperationType> types = await _repoOpTy.GetAllAsync();
+            List<SurgeryRoom> rooms = await _repoRooms.GetAllAsync();
+            List<Appointment> appointments = await _repo.GetAllAsync();
 
-            return s;
-        }
 
-        public Task<string> FormatSurgerySchedules2(string jsonString)
-        {
-            var data = JObject.Parse(jsonString);
+            List<StaffToProlog> prologStaff = new List<StaffToProlog>();
 
-            var s = ProcessRoomSchedules(data);
+            foreach (var sta in staff)
+            {
+                List<int> slots = new List<int>();
 
-            return s;
-        }
+                foreach (var slot in sta.AvailabilitySlots)
+                {
+                    if (slot.StartTime.Day == date.Day && slot.StartTime.Month == date.Month && slot.StartTime.Year == date.Year)
+                    {
+                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
+                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
+                    }
+                }
 
-        public async Task<string> ProcessSchedule(JObject data)
-        {
+                if (slots.Count != 0)
+                    prologStaff.Add(new StaffToProlog(sta.Id.Value, sta.Role, sta.Specialization, slots));
+            }
 
-            var roomId = data["room"].ToString();
-            var date = (int)data["day"];
-            var rooms = data["rooms"];
-            var doctors = data["doctors"];
-
-            var operations = new Dictionary<string, AppointmentPlaningModuleHelper>();
-
-            DateTime dateTime = new DateTime(date / 10000, date / 100 % 100, date % 100);
+            List<RoomToProlog> prologRooms = new List<RoomToProlog>();
 
             foreach (var room in rooms)
             {
-                var operationId = room["idDaOperacao"].ToString();
-                var operationStart = (int)room["instanteInicial"];
-                var operationEnd = (int)room["instanteFinal"];
+                List<int> slots = new List<int>();
 
-                if (!operations.ContainsKey(operationId))
+                foreach (var slot in room.MaintenanceSlots)
                 {
-                    operations[operationId] = new AppointmentPlaningModuleHelper
+                    if (slot.StartTime.Date == date.Date)
                     {
-                        Start = operationStart,
-                        End = operationEnd
-                    };
-                }
-
-                foreach (var doctor in doctors)
-                {
-                    var staffId = doctor["staffId"].ToString();
-                    var agendaArray = doctor["agenda_array"];
-
-                    foreach (var agenda in agendaArray)
-                    {
-                        if (agenda["idDaOperecao"].ToString() == operationId)
-                        {
-                            var staffStart = (int)agenda["instanteInicial"];
-                            var staffEnd = (int)agenda["instanteFinal"];
-                            operations[operationId].Staff.Add(new StaffHelper
-                            {
-                                StaffId = staffId,
-                                Start = staffStart,
-                                End = staffEnd
-                            });
-                        }
+                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
+                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
                     }
                 }
-            }
 
-            SurgeryRoomId roomCustomId = new SurgeryRoomId(Guid.NewGuid());
-
-            string formatedString = "Room: " + roomId + "\nDay: " + dateTime.ToString("dd-MM-yyyy") + "\n";
-
-            foreach (var operation in operations)
-            {
-                formatedString += "\n\nOperation " + operation.Key;
-                formatedString += " | Duration: " + dateTime.AddMinutes(operation.Value.Start).TimeOfDay + " - " + dateTime.AddMinutes(operation.Value.End).TimeOfDay;
-                formatedString += "\nRequired Staff:";
-
-                var list = new List<AppointmentSlot>();
-
-                foreach (var staff in operation.Value.Staff)
+                foreach (var app in appointments)
                 {
-                    list.Add(new AppointmentSlot(new Slot(dateTime.AddMinutes(staff.Start), dateTime.AddMinutes(staff.End)), new StaffGuid(staff.StaffId + "6dba-0b3d-4248-9c44-ccde4b07d1eb")));
-
-                    formatedString += "\n" + staff.StaffId + " | Schedule: " + dateTime.AddMinutes(staff.Start).TimeOfDay + " - " + dateTime.AddMinutes(staff.End).TimeOfDay;
-
+                    if (app.RoomId == room.Id || app.Date.StartTime.Date == date.Date)
+                    {
+                        slots.Add(app.Date.StartTime.Hour * 60 + app.Date.StartTime.Minute);
+                        slots.Add(app.Date.EndTime.Hour * 60 + app.Date.EndTime.Minute);
+                    }
                 }
 
-                var dto = new CreatingAppointmentDto(roomCustomId, new OperationRequestId(Guid.NewGuid()), new Slot(dateTime.AddMinutes(operation.Value.Start), dateTime.AddMinutes(operation.Value.End)), list);
-
-                await AddAsync(dto);
-
+                prologRooms.Add(new RoomToProlog(room.Id.Value, slots));
             }
 
-            return formatedString;
+            List<RequestToProlog> prologRequests = new List<RequestToProlog>();
 
+            foreach (var req in request)
+            {
+                if (req.Active)
+                    prologRequests.Add(new RequestToProlog(req.Id.Value, req.OperationTypeId.Value));
+            }
+
+            List<OperationTypeToProlog> prologTypes = new List<OperationTypeToProlog>();
+            List<RequiredStaffToProlog> prologRequiredStaff = new List<RequiredStaffToProlog>();
+
+            foreach (var type in types)
+            {
+
+                var anethesia = type.EstimatedDuration.PatientPreparation.Minute + type.EstimatedDuration.PatientPreparation.Hour * 60;
+                var surgery = type.EstimatedDuration.Surgery.Minute + type.EstimatedDuration.Surgery.Hour * 60;
+                var cleaning = type.EstimatedDuration.Cleaning.Minute + type.EstimatedDuration.Cleaning.Hour * 60;
+
+                prologTypes.Add(new OperationTypeToProlog(type.Id.Value, anethesia, surgery, cleaning));
+
+                foreach (var staf in type.RequiredStaff)
+                {
+                    prologRequiredStaff.Add(new RequiredStaffToProlog(type.Id.Value, staf.Quantity, staf.Specialization, staf.Role));
+                }
+            }
+
+            var data = new
+            {
+                day = prologDto.Day,
+                prob_CrossOver = prologDto.Prob_CrossOver,
+                prob_Mutation = prologDto.Prob_Mutation,
+                n_Generations = prologDto.N_Generations,
+                base_Population = prologDto.Base_Population,
+                staffInfo = prologStaff,
+                roomsInfo = prologRooms,
+                operationRequests = prologRequests,
+                opType = prologTypes,
+                specializationAssignments = prologRequiredStaff
+            };
+
+            var url = configuration.GetValue<string>("PrologPath2");
+
+            var response = await PostToPrologServer(url, data);
+
+            var s = await FormatGeneticAlg(response, date);
+
+            //Console.WriteLine(s);
+
+            return s;
         }
 
-        public async Task<string> ProcessRoomSchedules(JObject data)
+        public async Task<string> FormatGeneticAlg(string jsonString, DateTime dateOfAppointments)
         {
-            var date = (int)data["day"];
-            var roomSchedules = data["rooms"];
+            var data = JArray.Parse(jsonString);
+            var result = new StringBuilder();
 
-            DateTime dateTime = new DateTime(date / 10000, date / 100 % 100, date % 100);
-
-            var operationsByRoom = new Dictionary<string, List<AppointmentPlaningModuleHelper>>();
-
-            foreach (var room in roomSchedules)
+            foreach (var room in data)
             {
-                var roomId = room["roomId"].ToString();
-                var roomSchedule = room["roomSchedule"];
-                var doctorSchedule = room["doctorSchedule"];
+                string roomId = room["roomId"].ToString();
+                var specificRoom = await _repoRooms.GetByIdAsync(new SurgeryRoomId(roomId));
+                result.AppendLine($"Room: {specificRoom.RoomNumber}");
 
-                var operations = new Dictionary<string, AppointmentPlaningModuleHelper>();
-
-                foreach (var operation in roomSchedule)
+                var appointments = room["appointmentJson_array"];
+                foreach (var appointment in appointments)
                 {
-                    var operationId = operation["idDaOperacao"].ToString();
-                    var operationStart = (int)operation["instanteInicial"];
-                    var operationEnd = (int)operation["instanteFinal"];
+                    string operationRequestId = appointment["operationRequestId"].ToString();
+                    int start = appointment["instanteInicial"].ToObject<int>();
+                    int end = appointment["instanteFinal"].ToObject<int>();
 
-                    if (!operations.ContainsKey(operationId))
+                    result.AppendLine($"Operation Request: {operationRequestId}");
+
+                    result.AppendLine($"Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
+
+
+                    var date = new Slot(dateOfAppointments.AddMinutes(start), dateOfAppointments.AddMinutes(end));
+
+                    var staffArray = appointment["staffArray"];
+                    var appointmentSlots = new List<AppointmentSlot>();
+
+                    foreach (var staff in staffArray)
                     {
-                        operations[operationId] = new AppointmentPlaningModuleHelper
-                        {
-                            Start = operationStart,
-                            End = operationEnd
-                        };
+                        string staffId = staff["staffId"].ToString();
+                        int staffStart = staff["instanteInicial"].ToObject<int>();
+                        int staffEnd = staff["instanteFinal"].ToObject<int>();
+
+                        var staffGuid = new StaffGuid(staffId);
+
+                        var staffSlot = new Slot(dateOfAppointments.AddMinutes(staffStart), dateOfAppointments.AddMinutes(staffEnd));
+
+                        var appointmentSlot = new AppointmentSlot(staffSlot, staffGuid);
+                        appointmentSlots.Add(appointmentSlot);
+
+                        var staffProfile = await _repoStaff.GetByIdAsync(staffGuid);
+
+                        RemoveOccupiedSlotFromAvailability(staffProfile, staffSlot);
+
+
                     }
 
-                    foreach (var doctor in doctorSchedule)
-                    {
-                        var staffId = doctor["staffId"].ToString();
-                        var agendaArray = doctor["agenda_array"];
+                    var operationRequestIdObj = new OperationRequestId(operationRequestId);
+                    await InactivateAsync(operationRequestIdObj);
+                    var roomIdObj = new SurgeryRoomId(roomId);
 
-                        foreach (var agenda in agendaArray)
-                        {
-                            if (agenda["idDaOperecao"].ToString() == operationId)
-                            {
-                                var staffStart = (int)agenda["instanteInicial"];
-                                var staffEnd = (int)agenda["instanteFinal"];
-                                operations[operationId].Staff.Add(new StaffHelper
-                                {
-                                    StaffId = staffId,
-                                    Start = staffStart,
-                                    End = staffEnd
-                                });
-                            }
-                        }
-                    }
-                }
-
-                operationsByRoom[roomId] = operations.Values.ToList();
-            }
-
-            string formattedString = $"Day: {dateTime:dd-MM-yyyy}\n";
-
-            foreach (var roomEntry in operationsByRoom)
-            {
-                var roomId = roomEntry.Key;
-                var operations = roomEntry.Value;
-
-                formattedString += $"\nRoom: {roomId}\n";
-
-                SurgeryRoomId roomCustomId = new SurgeryRoomId(Guid.NewGuid());
-
-                foreach (var operation in operations)
-                {
-                    formattedString += $"\nOperation Duration: {dateTime.AddMinutes(operation.Start).TimeOfDay} - {dateTime.AddMinutes(operation.End).TimeOfDay}";
-                    formattedString += "\nRequired Staff:";
-
-                    var list = new List<AppointmentSlot>();
-
-                    foreach (var staff in operation.Staff)
-                    {
-                        list.Add(new AppointmentSlot(
-                            new Slot(dateTime.AddMinutes(staff.Start), dateTime.AddMinutes(staff.End)),
-                            new StaffGuid(staff.StaffId + "6dba-0b3d-4248-9c44-ccde4b07d1eb")
-                        ));
-
-                        formattedString += $"\n{staff.StaffId} | Schedule: {dateTime.AddMinutes(staff.Start).TimeOfDay} - {dateTime.AddMinutes(staff.End).TimeOfDay}";
-                    }
-
-                    var dto = new CreatingAppointmentDto(
-                        roomCustomId,
-                        new OperationRequestId(Guid.NewGuid()),
-                        new Slot(dateTime.AddMinutes(operation.Start), dateTime.AddMinutes(operation.End)),
-                        list
-                    );
-
-                    await AddAsync(dto);
+                    await AddAsync(new CreatingAppointmentDto(roomIdObj, operationRequestIdObj, date, appointmentSlots));
                 }
             }
 
-            return formattedString;
+            return await Task.FromResult(result.ToString());
         }
 
+        private void RemoveOccupiedSlotFromAvailability(StaffProfile staffProfile, Slot occupiedSlot)
+        {
+            var availableSlots = staffProfile.AvailabilitySlots;
+
+            for (int i = availableSlots.Count - 1; i >= 0; i--)
+            {
+                var availableSlot = availableSlots[i];
+
+                if (availableSlot.StartTime < occupiedSlot.EndTime && availableSlot.EndTime > occupiedSlot.StartTime)
+                {
+
+                    availableSlots.RemoveAt(i);
+
+                    if (availableSlot.StartTime < occupiedSlot.StartTime)
+                    {
+                        availableSlots.Add(new Slot(availableSlot.StartTime, occupiedSlot.StartTime));
+                    }
+
+                    if (availableSlot.EndTime > occupiedSlot.EndTime)
+                    {
+                        availableSlots.Add(new Slot(occupiedSlot.EndTime, availableSlot.EndTime));
+                    }
+                }
+            }
+        }
+
+        public async Task<bool> InactivateAsync(OperationRequestId id)
+        {
+            var operationRequest = await this._repoOpReq.GetByIdAsync(id);
+
+            if (operationRequest == null)
+                return false;
+
+            operationRequest.MarkAsInative();
+
+            return true;
+        }
+
+        private static string FormattedDate(DateTime date, string format = "yyyy-MM-dd HH:mm:ss")
+        {
+            string formattedDate = date.ToString(format);
+            return formattedDate;
+        }
     }
 }
