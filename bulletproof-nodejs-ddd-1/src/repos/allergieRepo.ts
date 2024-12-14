@@ -40,8 +40,7 @@ export default class AllergieRepo implements IAllergieRepo {
     const query = { allergieId: Allergie.id.toString() }; 
 
     const AllergieDocument = await this.allergieSchema.findOne( query );
-    console.log(AllergieDocument);
-
+  
     try {
       if (AllergieDocument === null ) {
         const rawAllergie: any = AllergieMap.toPersistence(Allergie);
@@ -64,16 +63,10 @@ export default class AllergieRepo implements IAllergieRepo {
 
   public async findById(allergieId: AllergieId | string): Promise<Allergie | null> {
 
-    const idX = typeof allergieId === 'string' ? allergieId : allergieId.id;
-
-    if (typeof idX !== "string") {
-        throw new Error("Invalid allergieId format: Expected a string UUID");
-    }
-
-    const query = { allergieId: idX };
+    const query = { allergieId: allergieId };
 
     const allergieRecord = await this.allergieSchema.findOne(query);
-
+   
     if (allergieRecord != null) {
         return AllergieMap.toDomain(allergieRecord);
     } else {
@@ -114,6 +107,35 @@ export default class AllergieRepo implements IAllergieRepo {
   }
 }
 
+public async  getAllergieId (filter: string | { designacao?: string; descricao?: string; id?: string }
+): Promise<string> {
+  try {
+    let query: any = {};
+
+    if (typeof filter === 'string') {
+      query = {
+        $or: [
+          { allergieId: filter },
+          { designacao: filter },
+          { descricao: filter }
+        ]
+      };
+    } else {
+      if (filter.id) query.allergieId = filter.id;
+      if (filter.designacao) query.designacao = filter.designacao;
+      if (filter.descricao) query.descricao = filter.descricao;
+    }
+
+    const allergieRecords = await this.allergieSchema.findOne(query);
+
+    
+    const allergies = await AllergieMap.toDomain(allergieRecords);
+
+    return allergies.allergieId.id.toString();
+  } catch (e) {
+    throw e;
+  }
+}
 
 
   

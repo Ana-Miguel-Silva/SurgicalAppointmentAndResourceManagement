@@ -30,14 +30,14 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
 
     const idX = medicalCondition instanceof MedicalConditionId ? (<MedicalConditionId>medicalCondition.MedicalConditionId).id.toValue() : MedicalCondition;
 
-    const query = { medicalConditionId: idX}; 
+    const query = { medicalConditionId: idX};
     const MedicalConditionDocument = await this.MedicalConditionSchema.findOne( query );
 
     return !!MedicalConditionDocument === true;
   }
 
   public async save (MedicalCondition: MedicalCondition): Promise<MedicalCondition> {
-    const query = { medicalConditionId: MedicalCondition.id.toString() }; 
+    const query = { medicalConditionId: MedicalCondition.id.toString() };
 
     const MedicalConditionDocument = await this.MedicalConditionSchema.findOne( query );
 
@@ -63,10 +63,8 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
 
   public async findById (medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition> {
 
-    const idX = typeof medicalConditionId === 'string' ? medicalConditionId : medicalConditionId.id;
+    const query = { medicalConditionId: medicalConditionId };
     
-
-    const query = { medicalConditionId: idX }; 
     const MedicalConditionRecord = await this.MedicalConditionSchema.findOne( query );
 
     if( MedicalConditionRecord != null) {
@@ -77,10 +75,10 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
   }
 
   public async findMedicalCondition( medicalCondition: string | { designacao?: string; codigo?: string; id?: string }
-  ): Promise<MedicalCondition | null> {
+  ): Promise<MedicalCondition[] > {
     try {
       let query: any = {};
-  
+
       if (typeof medicalCondition === 'string') {
         query = {
           $or: [
@@ -94,14 +92,15 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
         if (medicalCondition.designacao) query.designacao = medicalCondition.designacao;
         if (medicalCondition.codigo) query.codigo = medicalCondition.codigo;
       }
-  
-      const medicalConditionRecord = await this.MedicalConditionSchema.findOne(query);
-  
-      if (medicalConditionRecord != null) {
-        return MedicalConditionMap.toDomain(medicalConditionRecord);
-      } else {
-        return null;
-      }
+
+      const medicalConditionRecord = await this.MedicalConditionSchema.find(query);
+
+      const medicalConditions = await Promise.all(
+        medicalConditionRecord.map(async record => await MedicalConditionMap.toDomain(record))
+      );
+
+      return medicalConditions;
+
     } catch (e) {
       throw e;
     }

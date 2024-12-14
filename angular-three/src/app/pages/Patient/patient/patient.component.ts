@@ -320,12 +320,12 @@ export class PatientComponent {
       this.appointmentHistory = [...this.patientProfileSingle.appointmentHistory]; // Sincroniza com o array local
     }
   
-    // Popula o FormArray de allergies
+
     if (this.patientProfileSingle.allergies) {
       this.patientProfileSingle.allergies.forEach((allergy: string) => {
         allergiesArray.push(new FormControl(allergy));
       });
-      this.tags = [...this.patientProfileSingle.allergies]; // Sincroniza com o array local
+      this.tags = [...this.patientProfileSingle.allergies]; 
     }
 
     

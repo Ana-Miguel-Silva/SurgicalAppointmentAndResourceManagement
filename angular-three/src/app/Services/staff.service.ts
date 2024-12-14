@@ -40,6 +40,14 @@ export class StaffService {
       return this.http.get<any[]>(`${this.staffUrl}`, { headers, params });
     }
 
+    getStaffByEmail(params: any): Observable<any>{
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+      return this.http.get<any>(`${this.staffUrl}/email/${params}`, { headers });
+    }
+
   createStaff(formData: any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({

@@ -26,6 +26,13 @@ namespace DDDSample1.Infrastructure.Staff
             .Where(s => s.StaffId.Equals(StaffId))
             .FirstOrDefaultAsync();
         }
+
+         public async Task<StaffProfile> GetByEmailAsync(string email)
+        {
+            var staffs = await _context.StaffProfiles.ToListAsync();
+
+            return staffs.FirstOrDefault(p => p.Email.FullEmail.Contains(email));
+        }
         
         public async Task<StaffProfile> UpdateAsync(StaffProfile obj){
             var existing = await _context.StaffProfiles.FindAsync(obj.Id);

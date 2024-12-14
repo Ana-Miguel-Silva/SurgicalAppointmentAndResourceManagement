@@ -12,7 +12,7 @@ const route = Router();
 
 
 export default (app: Router) => {
-  
+
   app.use('/medicalRecord', route);
 
   const ctrl = Container.get(config.controllers.medicalRecord.name) as IMedicalRecordController;
@@ -22,24 +22,25 @@ export default (app: Router) => {
     celebrate({
       body: Joi.object({
         staff: Joi.string(),
-        patientId: Joi.string(),  
-        allergies: Joi.string(),      
-        medicalConditions: Joi.string(),      
-        descricao: Joi.string(),    
+        patientId: Joi.string(),
+        allergies: Joi.array().items(Joi.string()).required(),
+        medicalConditions: Joi.array().items(Joi.string()).required(),
+        descricao: Joi.string(),
       }),
     }),
     (req, res, next) => ctrl.createMedicalRecord(req, res, next) );
-    
+
 
   route.get(
     '/get',
     celebrate({
       body: Joi.object({
+        id: Joi.string(),
         staff: Joi.string(),
-        patientId: Joi.string(),  
-        allergies: Joi.string(),      
-        medicalConditions: Joi.string(),      
-        descricao: Joi.string(),          
+        patientId: Joi.string(),
+        allergies: Joi.array().items(Joi.string()).required(),
+        medicalConditions: Joi.array().items(Joi.string()).required(),
+        descricao: Joi.string(),
       }),
     }),
     (req, res, next) => ctrl.getMedicalRecord(req, res, next) );
@@ -48,9 +49,9 @@ export default (app: Router) => {
       '/getById',
       celebrate({
         body: Joi.object({
-          id: Joi.string()         
+          id: Joi.string()
         }),
       }),
       (req, res, next) => ctrl.getMedicalRecordById(req, res, next) );
- 
+
 };

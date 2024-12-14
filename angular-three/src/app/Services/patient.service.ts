@@ -23,6 +23,14 @@ getPatientById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/Patients/${id}`, { headers });
 }
 
+getPatientEmailById(id: string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+
+  return this.http.get<any>(`${this.apiUrl}/Patients/search?id=${id}`, { headers, });
+}
+
 getAllPatientProfiles(params: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

@@ -183,6 +183,21 @@ namespace DDDSample1.Controllers
             return Ok(user);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN},{Role.PATIENT}, {Role.DOCTOR}")]
+
+        [HttpGet("{id}/email")]
+        public async Task<ActionResult<string>> GetPatientEmailById( [FromQuery] string? id)
+        {
+            var user = await _service.GetByIdAsync(new  PatientId(id));
+            if (user == null)
+            {
+                return NotFound();
+            }      
+
+            return Ok( user.Email.FullEmail );
+        }
+
+
 
         [HttpGet("email/{email}")]
         public async Task<ActionResult<PatientDto>> GetByEmail(string email)
@@ -495,7 +510,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Patients/search
-       [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+       [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}, {Role.DOCTOR}")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllFiltered(
             [FromQuery] string? name,
@@ -520,6 +535,7 @@ namespace DDDSample1.Controllers
                 //OperationTypeId? opTypeId = operationTypeId.HasValue ? new OperationTypeId(operationTypeId.Value) : null;
 
                 var operationRequests = await _service.GetAllFilteredAsync(id,name, email, DateOfBirth, Allergies, medicalRecordNumber, AppointmentHistory);
+                
 
                 return operationRequests;
             }

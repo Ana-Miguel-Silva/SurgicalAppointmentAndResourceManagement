@@ -8,5 +8,7 @@ export default interface IAllergieRepo extends Repo<Allergie> {
 	findById (id: AllergieId | string): Promise<Allergie>;
 	findAllergies (allergie: string | { designacao?: string; descricao?: string; id?: string }
 	): Promise<Allergie[]> 
+	getAllergieId (allergie: string | { designacao?: string; descricao?: string; id?: string }
+	): Promise<string> 
 }
   

@@ -49,32 +49,14 @@ namespace DDDSample1.ApplicationService.Patients
             if(prod == null)
                 return null;
 
+              
+
             return new PatientDto( prod.Id.AsGuid(),prod.name.GetFullName(), prod.medicalRecordNumber, prod.DateOfBirth, 
                    prod.Phone, prod.Email, prod.UserEmail, prod.nameEmergency,prod.phoneEmergency , prod.emailEmergency, prod.gender, prod.Allergies, prod.AppointmentHistory, prod.Active);
 
         }
 
-        /*public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
-        {
-
-            CheckGender(dto.Gender);
-
-            var emailObject = new Email(dto.Email);
-            var emailUserObject = new Email(dto.UserEmail);
-            var emergencyContactObject = new EmergencyContact(dto.EmergencyContact.Name, new PhoneNumber(dto.EmergencyContact.Phone), new Email(dto.EmergencyContact.Email));
-            var phoneNumberObject = new PhoneNumber(dto.EmergencyContact.Phone);
-
-
-            var Patient = new Patient( dto.Name, dto.DateOfBirth, 
-                   phoneNumberObject, emailObject, emailUserObject, emergencyContactObject, dto.Gender, dto.Allergies, dto.AppointmentHistory);
-
-            await this._repo.AddAsync(Patient);
-
-            await this._unitOfWork.CommitAsync();
-
-            return new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.DateOfBirth, 
-                   Patient.Phone, Patient.Email,Patient.UserEmail, Patient.EmergencyContact, Patient.gender, Patient.Allergies, Patient.AppointmentHistory);
-        }*/
+    
 
         public async Task<PatientDto> AddAsync(CreatingPatientDto dto, string userRole)
         {
@@ -552,7 +534,7 @@ namespace DDDSample1.ApplicationService.Patients
 }
 
 
-        public async Task<Patient> GetPatientByEmailAsync(string? emailClaim)
+        public async Task<Patient> GetPatientByEmailAsync(string emailClaim)
         {
              var patient = await this._repo.GetByEmailAsync(emailClaim);
 
@@ -564,6 +546,7 @@ namespace DDDSample1.ApplicationService.Patients
             return patient;
         }
 
+       
 
 
         /*

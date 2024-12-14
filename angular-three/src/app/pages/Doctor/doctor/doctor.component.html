@@ -73,7 +73,7 @@
             </div>
           </div>
 
-    <div class="container col-md-4">
+   <div class="container col-md-4">
       <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
         <div class="form-floating mb-3">
             <h3 class="title" >Register Medical Record</h3>
@@ -399,23 +399,23 @@
 
 
               <div class="dropdown">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="Escolha uma opção"
                   [(ngModel)]="filterText"
-                  (input)="filterOptions()" 
+                  (input)="filterOptions()"
                   (focus)="showDropdown = true"
                   (blur)="hideDropdown()"
                 />
                 <ul *ngIf="showDropdown" class="dropdown-list">
-                  <li 
-                    *ngFor="let option of filteredOptions" 
+                  <li
+                    *ngFor="let option of filteredOptions"
                     (mousedown)="selectOption(option.designacao)">
                     {{ option.designacao }}
                   </li>
                 </ul>
               </div>
-              
+
             </div>
 
       </div>
@@ -435,26 +435,82 @@
       <span (click)="closeModal('registerMedicalRecordModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
           <h3 class="text-center">Insert New Medical Record</h3>
-
-
-          <!-- Patient Email -->
+       
           <div class="col-md-6">
               <label for="patientEmail" class="form-label">Patient Email</label>
-              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientEmail" name="patientEmail" required />
+              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientId" name="patientEmail" required />
               <div class="valid-feedback">Looks good!</div>
           </div>
 
-          <!-- Operation Type Name -->
+          
+          <div class="dropdown">        
+          
+          
+            <div class="dropdown">        
+              <!-- Tag input field for Allergies -->
+              <label for="input-tag" class="form-label">Allergies</label>
+              <input
+                id="input-tag"
+                type="text"
+                placeholder="Add allergy"
+                [(ngModel)]="newAllergy"
+                name="allergyInput"
+               (keydown.ctrl)="handleEnter($event, 'addTag')"
+              />            
+            
+              <div class="tags-container">
+                <span *ngFor="let tag of medicalRecordRequest.allergies" class="tag">
+                  {{ tag }}
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="removeAllergy(tag)"
+                  >
+                    X
+                  </button>
+                </span>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <!-- Input for Medical Conditions -->
+              <label for="medicalConditions" class="form-label">Medical Conditions</label>
+              <input
+                type="text"
+                class="form-control"
+                id="medicalConditions"
+                placeholder="Add condition"
+                [(ngModel)]="newMedicalCondition"
+                name="medicalConditionInput"
+                (keydown.ctrl)="handleEnter($event, 'addCondition')"
+              />
+              
+              <!-- Display Medical Conditions -->
+              <div class="conditions-container">
+                <span *ngFor="let condition of medicalRecordRequest.medicalConditions" class="condition">
+                  {{ condition }}
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="removeMedicalCondition(condition)"
+                  >
+                    X
+                  </button>
+                </span>
+              </div>
+            </div>
+            
+
           <div class="col-md-6">
               <label for="descricao" class="form-label">Descrição</label>
               <input type="text" class="form-control" id="descricao" [(ngModel)]="medicalRecordRequest.descricao" name="descricao" required />
               <div class="valid-feedback">Looks good!</div>
           </div>
 
-           <!-- Submit Button -->
           <div class="col-12">
               <button class="btn btn-primary" type="submit">Create Request</button>
           </div>
+        </div>
       </form>
   </div>
 </div>
@@ -468,11 +524,11 @@
           <div class="col-md-10"></div>
 
 
-        <div class="col-md-2">
-          <div class="input-group">
-          <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterMedicalRecordRequestModal')"> Filter </button>
+          <div class="col-md-2">
+            <div class="input-group">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
+          </div>
         </div>
-      </div>
 
 
           <div class="col-md-12">
@@ -481,7 +537,7 @@
               <table class="table table-striped table-hover table-over">
                 <thead>
                   <tr>
-
+                    <th>#</th>
                     <th>Date</th>
                     <th>Staff</th>
                     <th>Patient Email</th>
@@ -491,21 +547,22 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let medicalRecordRequest of medicalRecordRequests">
-                    <td>{{ medicalRecordRequest.date | date:'mediumDate' }}</td>
-                    <td>{{ medicalRecordRequest.staff }}</td>
-                    <td>{{ medicalRecordRequest.patientEmail }}</td>
-                    <td>{{ medicalRecordRequest.allergieDesignacao }}</td>
-                    <td>{{ medicalRecordRequest.medicalConditionDescricao }}</td>
-                    <td>{{ medicalRecordRequest.descricao }}</td>
-                    <td>
+                  <tr *ngFor="let request of medicalRecordRequests; let i = index" >
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ request.date | date:'mediumDate' }}</td>
+                    <td>{{ request.staff }}</td>
+                    <td>{{ request.patientEmail }}</td>
+                    <td>{{ request.allergies}}</td>
+                    <td>{{ request.medicalConditions }}</td>
+                    <td>{{ request.descricao }}</td>
+                   <!--<td>-->
                      <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
                         <i class="bi bi-pencil"></i>
                       </button>
                       <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
                         <i class="bi bi-trash"></i>
                       </button>-->
-                    </td>
+                    <!--</td>-->
                   </tr>
                 </tbody>
               </table>

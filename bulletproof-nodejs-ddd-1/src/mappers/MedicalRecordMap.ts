@@ -6,6 +6,8 @@ import IMedicalRecordDTO from '../dto/IMedicalRecordDTO';
 
 import { MedicalRecord } from "../domain/medicalRecord";
 import { UniqueEntityID } from "../core/domain/UniqueEntityID";
+import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
+import MedicalRecordService from '../services/medicalRecordService';
 
 
 export class MedicalRecordMap extends Mapper<MedicalRecord> {
@@ -21,6 +23,18 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       medicalConditions: medicalRecord.medicalConditions,
       descricao: medicalRecord.descricao
     } as IMedicalRecordDTO;
+  }
+
+  public static toFEDTO(medicalRecord: MedicalRecord): IFEMedicalRecordDTO {
+    return {
+      id: medicalRecord.id.toString(),
+      date: medicalRecord.date,
+      staff: medicalRecord.staff,
+      patientEmail: medicalRecord.patientId,
+      allergies: medicalRecord.allergies,
+      medicalConditions: medicalRecord.medicalConditions,
+      descricao: medicalRecord.descricao
+    } as IFEMedicalRecordDTO;
   }
 
 

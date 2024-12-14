@@ -8,28 +8,30 @@ import IMedicalRecordDTO from '../dto/IMedicalRecordDTO';
 
 import { Result } from "../core/logic/Result";
 import IMedicalRecordController from './IControllers/IMedicalRecordController';
+import AllergieService from '../services/allergieService';
+import IAllergieService from '../services/IServices/IAllergieService';
+import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
+import IMedicalConditionService from '../services/IServices/IMedicalConditionService';
+import { MedicalCondition } from '../domain/medicalCondition';
 
 @Service()
 export default class MedicalRecordController implements IMedicalRecordController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
-      @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
+      @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService,
   ) {}
 
 
   public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IMedicalRecordDTO>;
-
-      console.log("GET medical records:" + MedicalRecordOrError.getValue())
+      const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IFEMedicalRecordDTO>;
 
       if (MedicalRecordOrError.isFailure) {
         return res.status(404).send();
       }
 
-      const MedicalRecordDTO = MedicalRecordOrError.getValue();
-      console.log("GET medical records:" + MedicalRecordDTO.date);
+      const MedicalRecordDTO = MedicalRecordOrError.getValue();   
 
-      return res.status(201).json( MedicalRecordDTO );
+      return res.status(200).json( MedicalRecordDTO );
     }
     catch (e) {
       return next(e);
@@ -56,7 +58,7 @@ export default class MedicalRecordController implements IMedicalRecordController
 
   public async getMedicalRecordById(req: Request, res: Response, next: NextFunction) {
     try {
-      const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IMedicalRecordDTO>;
+      const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IFEMedicalRecordDTO>;
 
       if (MedicalRecordOrError.isFailure) {
         return res.status(404).send();

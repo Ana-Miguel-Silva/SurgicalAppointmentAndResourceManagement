@@ -4,7 +4,7 @@ import { IMedicalRecordPersistence } from '../../dataschema/IMedicalRecordPersis
 const MedicalRecord = new mongoose.Schema(
   {
     medicalRecordId: { type: String, unique: true },
-   
+
     date: {
       type: Date,
       required: [true, 'Please provide a date for the medical record'],
@@ -19,12 +19,13 @@ const MedicalRecord = new mongoose.Schema(
     patientId: {
       type: String,
       required: [true, 'Please specify the patient ID'],
+      unique: true,
     },
 
     allergies: [
       {
         type: [String],
-        default: []      
+        default: []
       },
     ],
 
@@ -36,7 +37,7 @@ const MedicalRecord = new mongoose.Schema(
     ],
 
     descricao: {
-      type: String      
+      type: String
     },
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically
