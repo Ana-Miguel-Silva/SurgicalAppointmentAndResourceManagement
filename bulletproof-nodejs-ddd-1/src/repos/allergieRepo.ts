@@ -60,10 +60,36 @@ export default class AllergieRepo implements IAllergieRepo {
     }
   }
 
+  public async update(allergieId: string, updateData: Partial<{ designacao: string; descricao: string }>): Promise<Allergie | null> {
+    try {
+      const query = { allergieId };
+  
+      const allergieDocument = await this.allergieSchema.findOne(query);
+  
+      if (!allergieDocument) {
+        this.logger.warn(`Allergie with id ${allergieId} not found`);
+        return null;
+      }
+  
+      if (updateData.designacao) allergieDocument.designacao = updateData.designacao;
+      if (updateData.descricao) allergieDocument.descricao = updateData.descricao;
+  
+      const updatedDocument = await allergieDocument.save();
+  
+      return AllergieMap.toDomain(updatedDocument);
+    } catch (error) {
+      this.logger.error('Error updating allergie:', error);
+      throw error;
+    }
+  }
+
+
 
   public async findById(allergieId: AllergieId | string): Promise<Allergie | null> {
 
-    const query = { allergieId: allergieId };
+    const idX = typeof allergieId === 'string' ? allergieId : allergieId.id;
+
+    const query = { allergieId: idX };
 
     const allergieRecord = await this.allergieSchema.findOne(query);
    

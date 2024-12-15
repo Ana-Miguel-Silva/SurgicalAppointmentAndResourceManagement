@@ -1844,15 +1844,38 @@ export class AdminComponent {
     }
 
 
+    const formData = this.allergieForm.value;
 
-    this.allergiesService.getAllAllergies()
+    this.allergiesService.insertAllergies(formData)
       .subscribe({
         next: (response) => {
-          console.log("teste: ", response);
+
+          Swal.fire({
+            icon: "success",
+            title: "Allergie created with success",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+
+          this.modalService.closeModal('insertAllergies');
+
         },
         error: (error) => {
-          console.error('Error fetching  profiles:', error);
-          this.errorMessage = 'Failed to fetch patients profiles!';
+          console.error('Error fetched:', error);
+          this.errorMessage = 'Failed to create a allergie  !';
+          Swal.fire({
+            icon: "error",
+            title: "Already exist a allergie with this name",
+            //It was not possible create the allergie
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+
+          
         }
       });
 

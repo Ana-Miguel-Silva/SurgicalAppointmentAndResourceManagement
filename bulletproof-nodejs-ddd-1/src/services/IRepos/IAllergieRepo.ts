@@ -10,5 +10,8 @@ export default interface IAllergieRepo extends Repo<Allergie> {
 	): Promise<Allergie[]> 
 	getAllergieId (allergie: string | { designacao?: string; descricao?: string; id?: string }
 	): Promise<string> 
+
+	update(allergieId: string, updateData: Partial<{ designacao: string; descricao: string }>): Promise<Allergie | null>;
+
 }
   

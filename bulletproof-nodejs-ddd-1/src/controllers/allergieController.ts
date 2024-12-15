@@ -48,6 +48,33 @@ export default class AllergieController implements IAllergieController /* TODO: 
     }
   };
 
+  public async update(req: Request, res: Response, next: NextFunction) {
+    try {
+
+      const allergieId = req.query.id as string;
+
+      if (!allergieId) {
+        return res.status(400).json({ error: "ID is required in the URL." });
+      }
+
+      const allergieUpdateData = req.body as Partial<IAllergieDTO>; 
+  
+      
+      const AllergieOrError = await this.allergieServiceInstance.updateAllergie(allergieId, allergieUpdateData) as Result<IAllergieDTO>;
+  
+      if (AllergieOrError.isFailure) {
+        return res.status(404).json({ error: AllergieOrError.errorValue() });
+      }
+  
+      const AllergieDTO = AllergieOrError.getValue();
+  
+      return res.status(200).json(AllergieDTO);
+    } catch (e) {
+      next(e); 
+    }
+  }
+
+
   public async getAllergie(req: Request, res: Response, next: NextFunction) {
     try {
       const AllergieOrError = await this.allergieServiceInstance.getAllergies(req.body as string) as Result<IAllergieDTO>;

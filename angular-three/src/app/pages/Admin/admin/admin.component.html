@@ -1733,13 +1733,13 @@
       <form [formGroup]="allergieForm" (ngSubmit)="onInsertAllergie()" class="row g-3 needs-validation" novalidate>
          
           <div class="col-md-6">
-            <label for="surgery" class="form-label">Designation</label>
-            <input type="text" class="form-control" id="surgery" [(ngModel)]="operationType.estimatedDuration.surgery" name="surgery" required step="2" />
+            <label for="allergieDesignation" class="form-label">Designation</label>
+            <input type="text" class="form-control" id="allergieDesignation" formControlName="designacao"   name="allergieDesignation" required step="1" />
          </div>
 
           <div class="col-md-6">
-              <label for="patientPreparation" class="form-label">Description</label>
-              <input type="text" class="form-control" id="patientPreparation" [(ngModel)]="operationType.estimatedDuration.patientPreparation" name="patientPreparation" required step="2" />
+              <label for="allergieDescription" class="form-label">Description</label>
+              <input type="text" class="form-control" id="allergieDescription" formControlName="descricao"  name="allergieDescription" required step="2" />
           </div>
 
           

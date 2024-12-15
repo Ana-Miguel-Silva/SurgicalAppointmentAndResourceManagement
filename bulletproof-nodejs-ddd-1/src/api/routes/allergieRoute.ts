@@ -28,6 +28,17 @@ export default (app: Router) => {
       }),
     }),
     (req, res, next) => ctrl.createAllergie(req, res, next) );
+
+
+    route.patch(
+      '',
+      celebrate({
+        body: Joi.object({
+          designacao: Joi.string(),
+          descricao: Joi.string(),
+        }),
+      }),
+      (req, res, next) => ctrl.update(req, res, next) );
     
 
   route.get(

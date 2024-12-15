@@ -15,14 +15,14 @@ export class AllergiesService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-/*createOperationRequests(operationRequest : any): Observable<any> {
+insertAllergies(params : any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.post(`${this.apiUrl}`, operationRequest, { headers })
+  return this.http.post(`${this.apiUrl}/create`, params, { headers })
 }
 
-updateOperationRequests(operationRequest: any): Observable<any> {
+/*updateOperationRequests(operationRequest: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 

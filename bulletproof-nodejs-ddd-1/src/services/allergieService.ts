@@ -34,6 +34,33 @@ export default class AllergieService implements IAllergieService {
     
   }
 
+  public async updateAllergie(allergieId: string, AllergieDTO: Partial<IAllergieDTO>): Promise<Result<IAllergieDTO>> {
+    try {
+      
+      const existingAllergie = await this.AllergieRepo.findById(allergieId);
+  
+      if (!existingAllergie) {
+        return Result.fail<IAllergieDTO>(`Allergie with id ${allergieId} not found`);
+      }
+  
+      const updatedAllergie = await this.AllergieRepo.update(allergieId, {
+        designacao: AllergieDTO.designacao,
+        descricao: AllergieDTO.descricao,
+      });
+  
+      if (!updatedAllergie) {
+        return Result.fail<IAllergieDTO>('Failed to update allergie');
+      }
+  
+      const AllergieDTOResult = AllergieMap.toDTO(updatedAllergie) as IAllergieDTO;
+      return Result.ok<IAllergieDTO>(AllergieDTOResult);
+    } catch (error) {
+      throw error;
+      //return Result.fail<IAllergieDTO>(error.message);
+    }
+  }
+  
+
 
   public async getAllergieById( AllergieId: string): Promise<Result<IAllergieDTO>> {
     try {
