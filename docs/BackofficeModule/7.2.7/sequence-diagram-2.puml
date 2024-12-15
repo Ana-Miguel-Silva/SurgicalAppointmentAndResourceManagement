@@ -4,30 +4,28 @@ skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
-participant "DM Backend" as BE <<component>>
+participant "DM Backend2" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+ -> FE: access page
 activate FE
 FE -> BE: getCreateForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+--> FE : data input
 deactivate FE
-AD -> FE : info to login(username, password)
+ -> FE : search allergie/medical condition in medical record
 activate FE
-FE -> BE : login(username, password)
+FE -> BE : searchAllergies(allergieDescription)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and access to their funtionalities.
+--> FE: success and view medical record updated.
 deactivate FE
-deactivate AD
+
 
 
 @enduml

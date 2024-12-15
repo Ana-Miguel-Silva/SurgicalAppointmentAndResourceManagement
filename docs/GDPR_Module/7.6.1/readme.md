@@ -14,6 +14,7 @@ This is the first time this task has been assigned for development.
 **Acceptance Criteria:** 
 
 - Patients can request to download their medical history via their profile.
+- Format like XML or JSON: all medical, personal, information must be exported
 
 [//]: # ()
 [//]: # (**Customer Specifications and Clarifications:**)

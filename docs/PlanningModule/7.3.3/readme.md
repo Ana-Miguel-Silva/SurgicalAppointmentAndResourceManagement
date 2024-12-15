@@ -1,24 +1,20 @@
-# US 6.3.2
+# US 7.3.3
 
 
 ## 1. Context
 
-These functionalities are essential to allow administrators to now till what dimension in terms of number of surgeries is possible to ask for the better solution.
+These functionalities are essential to study the state of the art of application of Robots and Computer Vision in Hospitals, namely in the context of surgeries
 This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 6.3.2** As an Admin, I want to know till what dimension in terms of number of surgeries is possible to ask for the better solution
+**7.3.3** As an Hospital Manager I want a study of state of the art of application of Robots and Computer Vision in Hospitals, namely in the context of surgeries. 
 
 **Acceptance Criteria:** 
 
--  Perform a complexity analysis of the problem to understand to which dimension it is feasible to
-ask for the better solution. Document your results and findings.
+-  The combination of human-based study and Generative AI is adequate. However, it must be clear what was done by each
 
 
-**INFO**
-
-To see the complexity analysis please look for the report in the folder "Planning Module".
 
 [//]: # (**Customer Specifications and Clarifications:**)
 
@@ -28,13 +24,6 @@ To see the complexity analysis please look for the report in the folder "Plannin
 [//]: # (>)
 
 [//]: # (>**Answer:** )
-
-**Dependencies/References:**
-
-
-* There is a dependency to "6.3.1 As an Admin, I want to obtain the better scheduling of a set of operations (surgeries) in a certain operation room in a specific day"
-
-* There is a dependency to "6.3.3 As an Admin, I want to obtain a good schedule, not necessarily the better, in useful time to be adopted."
 
 
 [//]: # (**Input and Output Data**)

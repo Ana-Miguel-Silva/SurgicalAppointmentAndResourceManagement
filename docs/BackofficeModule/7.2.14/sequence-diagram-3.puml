@@ -1,4 +1,4 @@
-@startuml 5.1.1
+@startuml 7.2.6
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -18,32 +18,38 @@ FE -> HT : onClick()
 activate HT
 
 
-HT -> CM : onLogin(loginObj)
+HT -> CM : onViewedicalRecord(patientEmail)
 
 activate CM
 
-CM -> SERV : postLogin(loginObj)
+CM -> SERV : postViewMedicalRecord(patientEmail)
 
  activate SERV
 
-  SERV -> : Login Post Request
+   SERV -> : Patient Post Request
 
- SERV <-- : Success and Token to login
+  SERV <-- : Success and Patient
 
-SERV --> CM : Success
+  note right: this a reference to GetPatientByEmail (already implemented)
+
+  SERV -> : Medical Record Get Request
+
+ SERV <-- : Success and Medical Record
+
+SERV --> CM : Success and Medical Record
 
 
 deactivate SERV
 
-CM --> HT : Success
+CM --> HT : Success and Medical Record
 deactivate CM
 
 
 
-HT --> FE : Success
+HT --> FE : Success and Medical Record
 deactivate HT
 
-<--- FE : success and access to their funtionalities.
+<--- FE : success and view medical record view
 
 deactivate FE
 

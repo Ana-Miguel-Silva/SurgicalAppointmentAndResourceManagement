@@ -14,7 +14,7 @@ This module must be implemented in Node.js, Express and MongoDB SGBD.
 
 **Acceptance Criteria:** 
 
-- 
+- This module must be implemented in Node.js, Express and MongoDB SGBD.
 
 [//]: # ()
 [//]: # (**Customer Specifications and Clarifications:**)
@@ -25,15 +25,6 @@ This module must be implemented in Node.js, Express and MongoDB SGBD.
 [//]: # (>)
 
 [//]: # (>**Answer:** )
-
-**Dependencies/References:**
-
-
-* There is a dependency to "US 6.2.2- As a Patient, I want to update my user profile, so that I can change my personal details and preferences."
-
-
-
-* There is a dependency to "US 6.2.1- As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online."
 
 [//]: # ()  
 [//]: # (**Input and Output Data**)
@@ -71,35 +62,47 @@ This module must be implemented in Node.js, Express and MongoDB SGBD.
 [//]: # (### 3.1. Domain Model)
 
 [//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
+[//]: # ()
+[//]: # (## 4. Design)
 
-## 4. Design
+[//]: # ()
+[//]: # ()
+[//]: # (**Domain Class/es:** Email, User, UserDto, Role)
 
+[//]: # ()
+[//]: # (**Controller:** UserController)
 
-**Domain Class/es:** Email, User, UserDto, Role
+[//]: # ()
+[//]: # (**UI:** )
 
-**Controller:** UserController
+[//]: # ()
+[//]: # (**Repository:**	UserRepository)
 
-**UI:** 
+[//]: # ()
+[//]: # (**Service:** UserService, AuthorizationService)
 
-**Repository:**	UserRepository
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.1. Sequence Diagram)
 
-**Service:** UserService, AuthorizationService
+[//]: # ()
+[//]: # (**Login User Level 1**)
 
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-1.svg "Login User"&#41;)
 
+[//]: # ()
+[//]: # (**Login User Level 2**)
 
-### 4.1. Sequence Diagram
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-2.svg "Login User"&#41;)
 
-**Login User Level 1**
+[//]: # ()
+[//]: # (**Login User Level 3**)
 
-![Login User](sequence-diagram-1.svg "Login User")
-
-**Login User Level 2**
-
-![Login User](sequence-diagram-2.svg "Login User")
-
-**Login User Level 3**
-
-![Login User](sequence-diagram-3.svg "Login User")
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-3.svg "Login User"&#41;)
 
 
 

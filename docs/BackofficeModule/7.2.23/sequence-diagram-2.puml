@@ -1,0 +1,31 @@
+@startuml 5.1.1
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Frontend" as FE <<component>>
+participant "DM Backend2" as BE <<component>>
+
+
+
+ -> FE: access page
+activate FE
+FE -> BE: getCreateForm()
+activate BE
+BE --> FE: form
+deactivate BE
+--> FE : data input
+deactivate FE
+ -> FE : update medical record(text)
+activate FE
+FE -> BE : updateMedicalRecord(text)
+activate BE
+BE --> FE: success
+deactivate BE
+--> FE: success and view medical record updated.
+deactivate FE
+
+
+
+@enduml

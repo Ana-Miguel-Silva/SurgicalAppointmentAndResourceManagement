@@ -5,17 +5,17 @@ skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
-participant "SAaRM System" as SYS <<system>>
+actor "Doctor" as AD
+participant "SARM System" as SYS <<system>>
 
 activate AD
 AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : info to login(username, password)
+AD -> SYS : search allergie/medical condition in medical record
 activate SYS
-SYS --> AD : success and access to their funtionalities.
+SYS --> AD : success and view allergie/medical conditions.
 
 deactivate SYS
 

@@ -1,0 +1,40 @@
+@startuml 7.2.6
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Schema" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+participant "Mongo DB" as BDD <<component>>
+
+-> CTRL: Submit Medical Record Get Request
+activate CTRL
+
+CTRL -> SERV: Call GetMedicalRecord method
+activate SERV
+
+SERV -> REPO: Get medicalRecord through patientId
+activate REPO
+
+REPO --> SERV: medicalRecord
+deactivate REPO
+
+
+
+SERV -> DOM : Create MedicalRecordDTO
+activate DOM
+
+DOM --> SERV : Return DTO
+deactivate DOM
+
+SERV --> CTRL : Return DTO
+deactivate SERV
+
+<-- CTRL  : Return DTO
+deactivate CTRL
+
+@enduml
