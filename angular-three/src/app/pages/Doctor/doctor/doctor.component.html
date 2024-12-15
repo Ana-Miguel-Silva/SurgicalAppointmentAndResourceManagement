@@ -444,41 +444,35 @@
           </div>
 
           
-          <div class="dropdown">        
-          
-          
-            <div class="dropdown">
-              <label for="tag-filter" class="form-label">Allergies</label>
-              <div class="tags-input">
-                <ul id="tags">
-                  <li *ngFor="let tag of tags; let i = index" class="tag">
-                    {{ tag }}
-                    <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>
-                  </li>
-                </ul>
-                <input
-                  id="tag-filter"
-                  type="text"
-                  [(ngModel)]="filterText"
-                  placeholder="Choose an allergie"
-                  (input)="filterOptions()"
-                  (keydown)="addTagFromInput($event)"
-                  (focus)="showDropdown = true"
-                  (blur)="onBlur()"
-                />
-              </div>
-              <ul *ngIf="showDropdown" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredOptions"
-                  (mousedown)="selectOptionTag(option.designacao)">
-                  {{ option.designacao }}
+          <div class="dropdown">
+            <label for="tag-filter" class="form-label">Allergies</label>
+            <div class="tags-input">
+              <ul id="tags">
+                <li *ngFor="let tag of tags; let i = index" class="tag">
+                  {{ tag }}
+                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>
                 </li>
               </ul>
+              <input
+                id="tag-filter"
+                type="text"
+                [(ngModel)]="filterText"
+                placeholder="Choose an allergy"
+                (input)="filterOptions()"
+                (keydown)="addTagFromInput($event)"
+                (focus)="showDropdown = true"
+                (blur)="onBlur()"
+              />
             </div>
-
-   
-
-          </div>  
+            <ul *ngIf="showDropdown" class="dropdown-list">
+              <li
+                *ngFor="let option of filteredOptions"
+                (mousedown)="selectOptionTag(option.designacao)">
+                {{ option.designacao }}
+              </li>
+            </ul>
+          </div>
+          
             
           <div class="col-md-4">
             <div class="dropdown2">
@@ -536,11 +530,11 @@
           <div class="col-md-10"></div>
 
 
-          <div class="col-md-2">
+          <!--<div class="col-md-2">
             <div class="input-group">
             <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
           </div>
-        </div>
+        </div>-->
 
 
           <div class="col-md-12">
@@ -559,7 +553,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let request of medicalRecordRequests; let i = index" >
+                  <tr *ngFor="let request of medicalRecordRequests; let i = index" (click)="selectMedicalRecord(request.patientEmail)" [ngClass]="{ 'selected-row': selectedPatientEmailMedicalRecord === request.patientEmail }">
                     <td>{{ i + 1 }}</td>
                     <td>{{ request.date | date:'mediumDate' }}</td>
                     <td>{{ request.staff }}</td>
@@ -583,16 +577,158 @@
         </div>
 
         <div class="col-md-9"></div>
-       <!-- <div class="col-md-3">
-          <button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>
-          <button class="fs-5 btn btn-outline-warning" (click)="editPatient()">Edit <i class="bi bi-pencil-square"></i></button>
-          <button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>
-        </div>-->
+       <div class="col-md-3">
+          <!--<button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>-->
+          <button class="fs-5 btn btn-outline-warning" (click)="editMedicalRecord()">Edit <i class="bi bi-pencil-square"></i></button>
+          <!--<button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
+        </div>
         </form>
       </div>
 
   </div>
 </div>
+
+<div [ngStyle]="{'display': isModalOpen('UpdateMedicalRecordModal') ? 'block' : 'none'}" id="UpdateMedicalRecordModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeModal('UpdateMedicalRecordModal')" class="close">&times;</span>
+
+    <form [formGroup]="medicalRecordUpdate" class="row g-3 needs-validation" novalidate="">
+      <div *ngIf="medicalRecordProfileUpdate">
+        <div class="row g-3 needs-validation">
+          <div class="col-md-12"></div>
+
+          <!-- Description Field -->
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control"
+               placeholder="Description">
+            </div>
+          </div>
+
+          <hr>
+          <div class="col-md-2"></div>
+
+          <!-- Medical Conditions Section -->
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <span class="input-group-text" style="width:60%" id="add">Medical Condition</span>
+            </div>
+            <table class="table table-striped table-hover table-over-update">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let condition of tagsConditions; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ condition }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-4">
+            <div class="dropdown2">
+              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
+              <div class="tagsConditions-input">
+                <ul id="tagsConditions">
+                  <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
+                    {{ condition }}
+                    <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
+                  </li>
+                </ul>
+                <input
+                  id="condition-filter"
+                  type="text"
+                  [(ngModel)]="filterTextCondition"
+                  placeholder="Choose an medical condition"
+                  (input)="filterOptionsMedicalConditions()"
+                  (keydown)="addTagConditionFromInput($event)"
+                  (focus)="showDropdown2 = true"
+                  (blur)="onBlur()"
+                />
+              </div>
+              <ul *ngIf="showDropdown2" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredOptionsConditions"
+                  (mousedown)="selectOptionMedicalCondition(option.descricao)">
+                  {{ option.descricao }}
+                </li>
+              </ul>
+            </div>
+          </div>
+            
+
+        
+          <div class="col-md-1"></div>
+
+          <div class="col-md-2"></div>
+
+          <div class="col-md-2"></div>
+
+          <!-- Allergies Section -->
+          <div class="col-md-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
+              <span class="input-group-text" style="width:60%" id="add">Allergies</span>
+            </div>
+            <table class="table table-striped table-hover table-over-update">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let allergy of tags; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ allergy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tags Input for Allergies -->
+          <div class="dropdown">
+            <label for="tag-filter" class="form-label">Allergies</label>
+            <div class="tags-input">
+              <ul id="tags">
+                <li *ngFor="let tag of tags; let i = index" class="tag">
+                  {{ tag }}
+                  <button type="button" class="delete-button" (click)="removeTag(i)">X</button>
+                </li>
+              </ul>
+              <input
+                id="tag-filter"
+                type="text"
+                [(ngModel)]="filterText"
+                placeholder="Choose an allergy"
+                (input)="filterOptions()"
+                (keydown)="addTagFromInput($event)"
+                (focus)="showDropdown = true"
+                (blur)="onBlur()"
+              />
+            </div>
+            <ul *ngIf="showDropdown" class="dropdown-list">
+              <li *ngFor="let option of filteredOptions" (mousedown)="selectOptionTag(option.designacao)">
+                {{ option.designacao }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-md-1"></div>
+        </div>
+
+        <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit form</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
 <!--<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">

@@ -14,6 +14,7 @@ import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
 import { Allergie } from '../domain/allergie';
 import IMedicalConditionService from './IServices/IMedicalConditionService';
 import { forEach } from 'lodash';
+import IUpdateMedicalRecordDTO from '../dto/IUpdateMedicalRecordDTO';
 
 
 
@@ -237,17 +238,19 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
-  /*public async updateMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
+  public async updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
-      const MedicalRecord = await this.MedicalRecordRepo.findById(MedicalRecordDTO.id);
+      const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(MedicalRecordDTO.patientId);
+      const MedicalRecord = MedicalRecords[0];
 
       if (MedicalRecord === null) {
         return Result.fail<IMedicalRecordDTO>("MedicalRecord not found");
       }
       else {
         MedicalRecord.descricao = MedicalRecordDTO.descricao;
-        MedicalRecord.designacao = MedicalRecordDTO.designacao;
-        await this.MedicalRecordRepo.save(MedicalRecord);
+        MedicalRecord.allergies = MedicalRecordDTO.allergies;
+        MedicalRecord.medicalConditions = MedicalRecordDTO.medicalConditions;
+        await this.MedicalRecordRepo.update(MedicalRecord);
 
         const MedicalRecordDTOResult = MedicalRecordMap.toDTO( MedicalRecord ) as IMedicalRecordDTO;
         return Result.ok<IMedicalRecordDTO>( MedicalRecordDTOResult )
@@ -255,6 +258,6 @@ export default class MedicalRecordService implements IMedicalRecordService {
     } catch (e) {
       throw e;
     }
-  }*/
+  }
 
 }

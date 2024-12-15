@@ -13,6 +13,7 @@ import IAllergieService from '../services/IServices/IAllergieService';
 import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
 import IMedicalConditionService from '../services/IServices/IMedicalConditionService';
 import { MedicalCondition } from '../domain/medicalCondition';
+import IUpdateMedicalRecordDTO from '../dto/IUpdateMedicalRecordDTO';
 
 @Service()
 export default class MedicalRecordController implements IMedicalRecordController /* TODO: extends ../core/infra/BaseController */ {
@@ -43,6 +44,22 @@ export default class MedicalRecordController implements IMedicalRecordController
   public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
+
+      if (MedicalRecordOrError.isFailure) {
+        return res.status(402).send();
+      }
+
+      const MedicalRecordDTO = MedicalRecordOrError.getValue();
+      return res.json( MedicalRecordDTO ).status(201);
+    }
+    catch (e) {
+      return next(e);
+    }
+  };
+
+  public async updateMedicalRecord(req: Request, res: Response, next: NextFunction) {
+    try {
+      const MedicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IUpdateMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
       if (MedicalRecordOrError.isFailure) {
         return res.status(402).send();

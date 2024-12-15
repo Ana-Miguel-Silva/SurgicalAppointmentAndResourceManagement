@@ -40,6 +40,13 @@ getAllMedicalRecordByPatientId(patientId : any): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/get?patientId=${patientId}`, { headers });
 }
 
+updateMedicalRecord(params : any): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch<any>(`${this.apiUrl}/update`, params , { headers });
+}
+
 
 
 
