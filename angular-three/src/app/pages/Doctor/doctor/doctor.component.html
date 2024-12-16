@@ -217,9 +217,10 @@
     </div>
 
 
-    <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal">
-      <div id="mapModalContent" class="modal-content" style="height: 75vh;">
+    <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
+      <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
+          <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="">
           <div #canvasContainer class="canvas-container" id="canvasContainer">
             <div id="parent" hidden>
               <div id="views-panel" hidden>

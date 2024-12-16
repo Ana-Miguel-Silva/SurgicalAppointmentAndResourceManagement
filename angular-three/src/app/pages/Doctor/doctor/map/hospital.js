@@ -179,7 +179,11 @@ export default class ThumbRaiser {
         this.scene3D = new THREE.Scene();
         this.raycaster = new THREE.Raycaster();
         this.pointer = new THREE.Vector2();
-        this.highlightMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+        this.highlightMaterial = new THREE.MeshStandardMaterial({
+            color: 0xFF0000, // Any color
+            opacity: 0,     // Fully transparent
+            transparent: true
+        });
         this.originalMaterials = new Map();
 
         // Create the maze
@@ -451,8 +455,11 @@ export default class ThumbRaiser {
                 }
             }
         } else {
-            this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-            this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            const modalBounds = this.renderer.domElement.getBoundingClientRect();
+
+            this.pointer.x = ((event.clientX - modalBounds.left) / modalBounds.width) * 2 - 1;
+            this.pointer.y = -((event.clientY - modalBounds.top) / modalBounds.height) * 2 + 1;
             this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
 
             console.log("Pointer " + this.pointer);
@@ -464,10 +471,10 @@ export default class ThumbRaiser {
             if (intersects.length > 0) {
 
                 const intersectionPoint = intersects[0].point; // Intersection point
-                console.log("Intersection Point:", intersectionPoint);
+                //console.log("Intersection Point:", intersectionPoint);
 
                 // Create geometry for the line
-                const points = [
+                /*const points = [
                     this.activeViewCamera.perspective.position.clone(), // Start at the camera position
                     intersectionPoint.clone()     // End at the intersection point
                 ];
@@ -478,7 +485,7 @@ export default class ThumbRaiser {
 
                 // Create the line and add it to the scene
                 const line = new THREE.Line(lineGeometry, lineMaterial);
-                this.scene3D.add(line);
+                this.scene3D.add(line);*/
 
 
                 const intersectedObject = intersects[0].object;
@@ -490,6 +497,7 @@ export default class ThumbRaiser {
         
                 // Apply highlight material
                 intersectedObject.material = this.highlightMaterial;
+                intersectedObject.material.opacity = 0.5;
         
                 // Revert back after a short delay
                 setTimeout(() => {
@@ -498,14 +506,14 @@ export default class ThumbRaiser {
                         this.originalMaterials.delete(intersectedObject);
                     }
                 }, 500); // Highlight for 500ms
-                console.log(intersectedObject);
+                //console.log(intersectedObject);
                 const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
-                console.log("Index is: "+intersectedIndex);
+                //console.log("Index is: "+intersectedIndex);
                 const modelPosition = this.maze.RoomArr[intersectedIndex].position;
-                console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
-                console.log(this.activeViewCamera.target);
+                /*console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
+                console.log(this.activeViewCamera.target);*/
                 this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
-                console.log(this.activeViewCamera.target);
+                //console.log(this.activeViewCamera.target);
             }
         }
     }
