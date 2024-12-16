@@ -15,11 +15,11 @@ export class AppointmentService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  scheduleAppointments(): Observable<any> {
+  scheduleAppointments(formData: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.post<any>(`${this.apiUrl}/pmodule`, {headers});
+  return this.http.post<any>(`${this.apiUrl}/pmodule2`, formData ,{headers});
 }
 
 }

@@ -65,7 +65,7 @@ namespace DDDSample1.Controllers
                     string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
 
-                    await _logService.LogAsync("OperationRequest", "Created", operationType.Id, JsonConvert.SerializeObject(dto), userEmail);
+                    await _logService.LogAsync("OperationType", "Created", operationType.Id, JsonConvert.SerializeObject(dto), userEmail);
 
                     return CreatedAtAction(nameof(GetGetById), new { id = operationType.Id }, operationType);
                 }

@@ -141,8 +141,9 @@ namespace DDDSample1.ApplicationService.Appointments
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public async Task<string> ScheduleAppointments2(DateTime date)
+        public async Task<string> ScheduleAppointments2(DateInputModel info)
         {
+            DateTime date = info.Date;
             PrologDto prologDto = new PrologDto(date.ToString("yyyyMMdd"), 0.5, 0.5, 6, 6);
 
             List<StaffProfile> staff = await _repoStaff.GetAllAsync();
@@ -258,9 +259,10 @@ namespace DDDSample1.ApplicationService.Appointments
             {
                 string roomId = room["roomId"].ToString();
                 var specificRoom = await _repoRooms.GetByIdAsync(new SurgeryRoomId(roomId));
-                result.AppendLine($"Room: {specificRoom.RoomNumber}");
 
                 var appointments = room["appointmentJson_array"];
+                if (appointments != null && appointments.Count() > 0)
+                    result.AppendLine($"Room: {specificRoom.RoomNumber}");
                 foreach (var appointment in appointments)
                 {
                     string operationRequestId = appointment["operationRequestId"].ToString();
@@ -268,6 +270,8 @@ namespace DDDSample1.ApplicationService.Appointments
                     int end = appointment["instanteFinal"].ToObject<int>();
 
                     result.AppendLine($"Operation Request: {operationRequestId}");
+                    var operationRequestIdObj = new OperationRequestId(operationRequestId);
+                    var specificOperationReequest = await InactivateAsync(operationRequestIdObj);
 
                     result.AppendLine($"Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
 
@@ -297,8 +301,6 @@ namespace DDDSample1.ApplicationService.Appointments
 
                     }
 
-                    var operationRequestIdObj = new OperationRequestId(operationRequestId);
-                    await InactivateAsync(operationRequestIdObj);
                     var roomIdObj = new SurgeryRoomId(roomId);
 
                     await AddAsync(new CreatingAppointmentDto(roomIdObj, operationRequestIdObj, date, appointmentSlots));
@@ -334,19 +336,19 @@ namespace DDDSample1.ApplicationService.Appointments
             }
         }
 
-        public async Task<bool> InactivateAsync(OperationRequestId id)
+        public async Task<OperationRequest> InactivateAsync(OperationRequestId id)
         {
             var operationRequest = await this._repoOpReq.GetByIdAsync(id);
 
             if (operationRequest == null)
-                return false;
+                return null;
 
             operationRequest.MarkAsInative();
 
-            return true;
+            return operationRequest;
         }
 
-        private static string FormattedDate(DateTime date, string format = "yyyy-MM-dd HH:mm:ss")
+        private static string FormattedDate(DateTime date, string format = "HH:mm:ss")
         {
             string formattedDate = date.ToString(format);
             return formattedDate;

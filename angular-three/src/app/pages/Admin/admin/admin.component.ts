@@ -31,6 +31,10 @@ interface CreatingOperationTypeDto {
   estimatedDuration: EstimatedDuration;
 }
 
+interface PlanningModelDto {
+  date: string;
+}
+
 // or via CommonJS
 @Component({
   selector: 'app-admin',
@@ -50,6 +54,10 @@ export class AdminComponent {
       cleaning: ''
     }
   };
+
+  scheduleDate: string = '';
+
+  minDate: string = '';
 
   scheduledAppointmentMessage: string = '';
 
@@ -280,8 +288,15 @@ export class AdminComponent {
     }
   }
 
+  setMinDate(): void {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    this.minDate = `${year}-${month}-${day}`;
+  }
 
-  onScheduleAppointment() {
+  onScheduleAppointment(scheduleData : PlanningModelDto) {
     const token = this.authService.getToken();
     if (!token) {
       Swal.fire({
@@ -292,16 +307,38 @@ export class AdminComponent {
       return;
     }
 
-    this.appointmentService.scheduleAppointments().subscribe({
+    if (!scheduleData.date) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Date',
+        text: 'Please select a valid date.',
+      });
+      return;
+    }
+
+    const payload: PlanningModelDto = {
+      date: scheduleData.date,
+    };
+
+    this.appointmentService.scheduleAppointments(payload).subscribe({
       next: (response: any) => {
         this.scheduledAppointmentMessage = response.message.replace(/\n/g, '<br>');
+
+        if (this.scheduledAppointmentMessage == null || this.scheduledAppointmentMessage == '') {
+          Swal.fire({
+            icon: 'warning',
+            title: 'No Data in the System for the designated date',
+            text: 'Please select a valid date.',
+          });
+        }else{
+
         Swal.fire({
           icon: 'success',
           title: 'Success',
           text: 'Appointment scheduled successfully!',
           showConfirmButton: false,
           timer: 1500,
-        });
+        });}
       },
       error: (error) => {
         console.error('Error scheduling appointment:', error);
@@ -1202,6 +1239,7 @@ export class AdminComponent {
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
     this.getAllstaffsProfiles();
     this.getAllOperationTypes();
+    this.setMinDate();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
         this.operationTypeUpdateForm.addControl('requiredStaff', this.fb.array([]));
