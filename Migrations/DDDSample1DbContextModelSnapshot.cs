@@ -140,10 +140,6 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Allergies")
-                        .HasColumnType("longtext")
-                        .HasColumnName("Allergies");
-
                     b.Property<string>("AppointmentHistory")
                         .HasColumnType("longtext")
                         .HasColumnName("AppointmentHistory");

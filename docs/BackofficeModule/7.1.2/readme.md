@@ -1,26 +1,19 @@
-# US 6.2.4
-
+# US 7.1.2
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow on-authenticated users to log in to the system.
+As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface.
+
 
 ## 2. Requirements
 
-**US 6.2.4** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
-
+**7.1.2** As user I want the application menu to adjust according to my role so that it only presents me the options I may access
 
 **Acceptance Criteria:** 
 
-- Backoffice users log in using their username and password.
+- The user interface of the system will integrate the interaction of the different modules in a
+  seamless way.
 
-- Role-based access control ensures that users only have access to features appropriate to their
-role (e.g., doctors can manage appointments, admins can manage users and settings).
-
-- After five failed login attempts, the user account is temporarily locked, and a notification is
-sent to the admin.
-
-- Login sessions expire after a period of inactivity to ensure security.
 
 [//]: # ()
 [//]: # (**Customer Specifications and Clarifications:**)
@@ -32,30 +25,40 @@ sent to the admin.
 
 [//]: # (>**Answer:** )
 
-**Dependencies/References:**
+[//]: # (**Dependencies/References:**)
 
+[//]: # ()
+[//]: # ()
+[//]: # (* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users &#40;e.g., doctors, nurses, technicians, admins&#41; via an out-of-band process, so that they can access the)
 
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions."
+[//]: # (backoffice system with appropriate permissions.")
 
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (* There is a dependency to "US 5.1.6- As a &#40;non-authenticated&#41; Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role.")
 
+[//]: # ()
+[//]: # ()
+[//]: # (**Input and Output Data**)
 
-* There is a dependency to "US 5.1.6- As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+[//]: # ()
+[//]: # (**Input Data:**)
 
+[//]: # ()
+[//]: # (* Typed data:)
 
-**Input and Output Data**
+[//]: # (    * E-mail)
 
-**Input Data:**
+[//]: # (    * Password)
 
-* Typed data:
-    * E-mail
-    * Password
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (**Output Data:**)
 
-
-
-
-**Output Data:**
-* Display the success of the operation
+[//]: # (* Display the success of the operation)
 
 [//]: # ()
 [//]: # (## 3. Analysis)
@@ -72,36 +75,49 @@ backoffice system with appropriate permissions."
 [//]: # (### 3.1. Domain Model)
 
 [//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
+[//]: # ()
+[//]: # (## 4. Design)
 
-## 4. Design
+[//]: # ()
+[//]: # ()
+[//]: # (**Domain Class/es:** Email, User, UserDto, Role)
 
+[//]: # ()
+[//]: # (**Controller:** UserController)
 
-**Domain Class/es:** Email, User, UserDto, Role
+[//]: # ()
+[//]: # (**UI:** )
 
-**Controller:** UserController
+[//]: # ()
+[//]: # (**Repository:**	UserRepository)
 
-**UI:** 
+[//]: # ()
+[//]: # (**Service:** UserService, AuthorizationService)
 
-**Repository:**	UserRepository
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (### 4.1. Sequence Diagram)
 
-**Service:** UserService, AuthorizationService
+[//]: # ()
+[//]: # (**Login User Level 1**)
 
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-1.svg "Login User"&#41;)
 
+[//]: # ()
+[//]: # (**Login User Level 2**)
 
-### 4.1. Sequence Diagram
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-2.svg "Login User"&#41;)
 
-**Login User Level 1**
+[//]: # ()
+[//]: # (**Login User Level 3**)
 
-![Login User](sequence-diagram-1.svg "Login User")
+[//]: # ()
+[//]: # (![Login User]&#40;sequence-diagram-3.svg "Login User"&#41;)
 
-**Login User Level 2**
-
-![Login User](sequence-diagram-2.svg "Login User")
-
-**Login User Level 3**
-
-![Login User](sequence-diagram-3.svg "Login User")
-
+[//]: # ()
 
 
 [//]: # (### 4.2. Class Diagram)

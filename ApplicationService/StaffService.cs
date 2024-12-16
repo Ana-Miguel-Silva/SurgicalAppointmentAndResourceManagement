@@ -51,6 +51,18 @@ namespace DDDSample1.ApplicationService.Staff
     
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
+
+         public async Task<StaffDto> GetStaffByEmailAsync(string emailClaim)
+        {
+             var staff = await this._repo.GetByEmailAsync(emailClaim);
+
+            if (staff == null)
+            {
+                return null; 
+            }
+
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
+        }
         public async Task<StaffDto> GetByStaffIDAsync(string id)
         {
             var staff = await this._repo.GetByStaffIDAsync(id);
@@ -86,7 +98,7 @@ namespace DDDSample1.ApplicationService.Staff
             if(roleId!='D'&&roleId!='N') roleId='O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
             var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID, dto.License);
-
+         
             await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();

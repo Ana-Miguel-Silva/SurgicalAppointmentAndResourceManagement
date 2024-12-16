@@ -8,7 +8,7 @@ export const bootstrapAllergies = async () => {
 
   try {
     for (const allergy of defaultAllergies) {
-      const existingAllergy = await allergieService.getAllergie(allergy.designacao);
+      const existingAllergy = await allergieService.getAllergies(allergy.designacao);
 
       if (existingAllergy.errorValue()) {
         await allergieService.createAllergieDefault(allergy);

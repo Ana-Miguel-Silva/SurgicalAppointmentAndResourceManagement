@@ -7,6 +7,7 @@ import IMedicalConditionService from './IServices/IMedicalConditionService';
 import { Result } from "../core/logic/Result";
 import { MedicalConditionMap } from "../mappers/MedicalConditionMap";
 import { MedicalCondition } from '../domain/medicalCondition';
+import { MedicalConditionId } from '../domain/medicalConditionId';
 
 
 @Service()
@@ -15,7 +16,24 @@ export default class MedicalConditionService implements IMedicalConditionService
       @Inject(config.repos.medicalCondtion.name) private MedicalConditionRepo : IMedicalConditionRepo
   ) {}
 
-  public async getMedicalCondition( MedicalConditionId: string): Promise<Result<IMedicalConditionDTO>> {
+  public async getMedicalConditionById( MedicalConditionId: string): Promise<Result<IMedicalConditionDTO>> {
+    try {
+      const MedicalCondition = await this.MedicalConditionRepo.findById(MedicalConditionId);
+
+      if (MedicalCondition === null) {
+        return Result.fail<IMedicalConditionDTO>("Medical Condition not found");
+      }
+      else {
+        const MedicalRecordDTOResult = MedicalConditionMap.toDTO( MedicalCondition ) as IMedicalConditionDTO;
+        return Result.ok<IMedicalConditionDTO>( MedicalRecordDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  public async getMedicalCondition( MedicalConditionId: string): Promise<Result<IMedicalConditionDTO[]| IMedicalConditionDTO>> {
     try {
       const MedicalCondition = await this.MedicalConditionRepo.findMedicalCondition(MedicalConditionId);
 
@@ -23,25 +41,48 @@ export default class MedicalConditionService implements IMedicalConditionService
         return Result.fail<IMedicalConditionDTO>("MedicalCondition not found");
       }
       else {
-        const MedicalConditionDTOResult = MedicalConditionMap.toDTO( MedicalCondition ) as IMedicalConditionDTO;
-        return Result.ok<IMedicalConditionDTO>( MedicalConditionDTOResult )
+        const MedicalConditionDTOResult = MedicalCondition.map( medicalRecord =>
+          MedicalConditionMap.toDTO( medicalRecord ) as IMedicalConditionDTO);
+
+          return Result.ok<IMedicalConditionDTO[]>( MedicalConditionDTOResult )
         }
+
     } catch (e) {
       throw e;
     }
   }
 
-  public async getMedicalConditionAll( medicalCondition: string): Promise<Result<IMedicalConditionDTO>> {
+
+   public async getMedicalConditionId( MedicalConditionId: string): Promise<Result<MedicalConditionId>> {
+      try {
+  
+        const medicalCondition = await this.MedicalConditionRepo.findMedicalCondition(MedicalConditionId);
+  
+        if (!MedicalCondition ) {
+          return Result.fail<MedicalConditionId>("Medical Condition not found");
+        }
+        else {
+          return Result.ok<MedicalConditionId>( medicalCondition[0].MedicalConditionId);
+          
+        }
+      } catch (e) {
+        throw e;
+      }
+    }
+
+  public async getMedicalConditionAll( medicalCondition: string): Promise<Result<IMedicalConditionDTO[] | IMedicalConditionDTO>> {
     try {
 
       const MedicalCondition = await this.MedicalConditionRepo.findMedicalCondition(medicalCondition);
 
-      if (MedicalCondition === null) {
+      if (!MedicalCondition || MedicalCondition.length === 0) {
         return Result.fail<IMedicalConditionDTO>("MedicalCondition not found");
       }
       else {
-        const MedicalConditionTOResult = MedicalConditionMap.toDTO( MedicalCondition ) as IMedicalConditionDTO;
-        return Result.ok<IMedicalConditionDTO>( MedicalConditionTOResult )
+          const MedicalConditionTOResult = MedicalCondition.map( medicalCondition =>
+          MedicalConditionMap.toDTO( medicalCondition ) as IMedicalConditionDTO);
+
+          return Result.ok<IMedicalConditionDTO[]>( MedicalConditionTOResult )
         }
     } catch (e) {
       throw e;
@@ -60,7 +101,7 @@ export default class MedicalConditionService implements IMedicalConditionService
       await this.MedicalConditionRepo.save(MedicalConditionResult);
 
       const MedicalConditionDTOResult = MedicalConditionMap.toDTO( MedicalConditionResult ) as IMedicalConditionDTO;
-      return Result.ok<IMedicalConditionDTO>( MedicalConditionDTOResult )    
+      return Result.ok<IMedicalConditionDTO>( MedicalConditionDTOResult )
   }
 
 

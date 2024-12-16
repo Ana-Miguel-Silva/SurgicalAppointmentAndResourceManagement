@@ -4,44 +4,18 @@
 ## 1. Context
 
 
-As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+As system administrator, I want a disaster recovery plan, that meets the MBCO defined in sprint B
 
 ## 2. Requirements
 
-**US 6.4.3** As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
-
-**Acceptance Criteria:**
-
--
+**7.4.1** As the organization's administrator, I want a disaster recovery plan that meets the MBCO defined in sprint B
 
 **Customer Specifications and Clarifications:**
 
-> **Question:**
+> **Question:** Should the disaster recovery plan account for both natural disasters and cybersecurity incidents? What types of disruptions/topics should be focused on?
 >
->**Answer:**
-
-
-**Dependencies/References:**
-
-* There are no dependencies to other US.
-
-**Input and Output Data**
-
-**Input Data:**
-
-* Typed data:
-  *
-
-
-**Output Data:**
-* Display the success of the operation and the data.
-
-
-## 3. Analysis
-
-
-## 4. Design
-
+>**Answer:** The DRP should cover all catastrophes that may occur, provided they are adequately included.
+Disruptions/topics are those that are thought likely to occur, jeopardising the company's normal behaviour and business.
 
 
 [//]: # (### 4.2. Class Diagram)

@@ -1,4 +1,4 @@
-# US 6.2.4
+# US 7.2.6
 
 
 ## 1. Context
@@ -7,20 +7,12 @@ As part of the development of the software system, it is necessary to implement 
 
 ## 2. Requirements
 
-**US 6.2.4** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
+**US 7.2.6** As a Doctor, I want to update the Patient Medical Record, namely respecting Medical Conditions and Allergies.
 
+[//]: # (**Acceptance Criteria:** )
 
-**Acceptance Criteria:** 
-
-- Backoffice users log in using their username and password.
-
-- Role-based access control ensures that users only have access to features appropriate to their
-role (e.g., doctors can manage appointments, admins can manage users and settings).
-
-- After five failed login attempts, the user account is temporarily locked, and a notification is
-sent to the admin.
-
-- Login sessions expire after a period of inactivity to ensure security.
+[//]: # ()
+[//]: # (- )
 
 [//]: # ()
 [//]: # (**Customer Specifications and Clarifications:**)
@@ -34,22 +26,25 @@ sent to the admin.
 
 **Dependencies/References:**
 
-
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions."
-
+* There is a dependency to "US 7.2.5 As a Doctor, I want to search for Medical Conditions, so that I can use it to update
+  the Patient Medical Record."
 
 
-* There is a dependency to "US 5.1.6- As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
+* There is a dependency to "US 7.2.4- As an Admin, I want to add new Medical Condition, so that the Doctors can use it
+  to update the Patient Medical Record."
 
+
+
+* There is a dependency to "US 7.2.2- As an Admin, I want to add new Allergy, so that the Doctors can use it to update
+  the Patient Medical Record."
 
 **Input and Output Data**
 
 **Input Data:**
 
 * Typed data:
-    * E-mail
-    * Password
+    * allergie (description)
+    * medical condition (code/description)
 
 
 
@@ -76,32 +71,35 @@ backoffice system with appropriate permissions."
 ## 4. Design
 
 
-**Domain Class/es:** Email, User, UserDto, Role
+**Domain Class/es:** Allergie, Medical Condition, Medical Record
 
-**Controller:** UserController
+**Controller:** MedicalRecordController
 
-**UI:** 
+**UI:** DoctorComponent
 
-**Repository:**	UserRepository
+**Repository:**	MedicalRecordRepositiory
 
-**Service:** UserService, AuthorizationService
+**Service:** MedicalRecordService, AuthorizationService
 
 
 
 ### 4.1. Sequence Diagram
 
-**Login User Level 1**
+**Update Medical Record Level 1**
 
-![Login User](sequence-diagram-1.svg "Login User")
+![Update Medical Record](sequence-diagram-1.svg "Update Medical Record")
 
-**Login User Level 2**
+**Update Medical Record Level 2**
 
-![Login User](sequence-diagram-2.svg "Login User")
+![Update Medical Record](sequence-diagram-2.svg "Update Medical Record")
 
-**Login User Level 3**
+**Update Medical Record Level 3 FrontEnd**
 
-![Login User](sequence-diagram-3.svg "Login User")
+![Update Medical Record](sequence-diagram-3.svg "Update Medical Record")
 
+**Update Medical Record Level 3 BackEnd**
+
+![Update Medical Record](sequence-diagram-3-BE.svg "Update Medical Record")
 
 
 [//]: # (### 4.2. Class Diagram)

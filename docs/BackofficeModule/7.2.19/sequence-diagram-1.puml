@@ -1,0 +1,26 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Doctor" as AD
+participant "SARM System" as SYS <<system>>
+
+activate AD
+AD -> SYS: access page
+activate SYS
+SYS --> AD : data input
+deactivate SYS
+AD -> SYS : update medical record(medicalCondition)
+activate SYS
+SYS --> AD : success and view medical record updated.
+
+deactivate SYS
+
+deactivate AD
+
+
+
+@enduml

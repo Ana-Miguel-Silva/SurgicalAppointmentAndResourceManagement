@@ -18,7 +18,6 @@ namespace DDDSample1.Controllers
     public class StaffController : ControllerBase
     {
 
-        private readonly string RoleAdmin = "Admin";
         private readonly StaffService _service;
         private readonly LogService _logService;
 
@@ -36,7 +35,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Staff?name=x&id=1&license=b&phone=999999999
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}, {Role.DOCTOR}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll([FromQuery] GetStaffQueryObject request)
         {
@@ -44,6 +43,22 @@ namespace DDDSample1.Controllers
             //var user = await _userService.GetByIdAsync(new UserId(userId));           
         
             return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role, request.active);
+            
+        }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}, {Role.DOCTOR}")]
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<StaffDto>> GetByEmail(string email)
+        { 
+        
+            var user = await _service.GetStaffByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
             
         }
 

@@ -15,8 +15,6 @@ namespace DDDSample1.Domain.Patients
 
         public string gender { get;  private set; }
 
-        public List<string> Allergies { get;  private set; }
-
         public List<string>? AppointmentHistory { get;  private set; }
 
         //public EmergencyContact EmergencyContact { get;  private set; }
@@ -39,14 +37,13 @@ namespace DDDSample1.Domain.Patients
 
 
         public Patient(string name, DateTime dateOfBirth, 
-                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender, List<string> Allergies, List<string> AppointmentHistory)
+                   PhoneNumber phone,Email email, Email userEmail, string nameEmergency, PhoneNumber phoneEmergency ,Email emailEmergency, string gender,List<string> AppointmentHistory)
         {
 
         //Validação para se não forem nulls
         this.Id = new PatientId(Guid.NewGuid());
         this.medicalRecordNumber = new MedicalRecordNumber();
         this.name = new FullName(name);
-        this.Allergies = Allergies;
         this.AppointmentHistory = AppointmentHistory;
         this.Phone = phone;
         this.DateOfBirth = dateOfBirth;
@@ -72,7 +69,7 @@ namespace DDDSample1.Domain.Patients
             this.Email = emailObject;
             this.UserEmail = emailUserObject;
             this.gender = gender;
-            this.Allergies =  new List<string>();  
+          //  this.Allergies =  new List<string>();  
             this.AppointmentHistory = new List<string>();
             this.nameEmergency = "default dd";
             this.phoneEmergency = new PhoneNumber("999999999");
@@ -142,10 +139,10 @@ namespace DDDSample1.Domain.Patients
             this.gender = gender;
         }
 
-        public void ChangeAllergies(List<string> allergiesList)
+        /*public void ChangeAllergies(List<string> allergiesList)
         {            
             this.Allergies = allergiesList;
-        }
+        }*/
 
         public void ChangeAppointmentHistory(List<string> AppointmentHistoryList)
         {            
@@ -173,7 +170,7 @@ namespace DDDSample1.Domain.Patients
                 this.phoneEmergency,
                 this.emailEmergency,
                 this.gender,
-                this.Allergies,
+               // this.Allergies,
                 this.AppointmentHistory,
                 this.Active
             );

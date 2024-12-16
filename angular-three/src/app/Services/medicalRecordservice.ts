@@ -11,8 +11,10 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class MedicalRecordService {
-  
+
   private apiUrl = `${environment.apiMongoUrl}/medicalRecord`;
+
+  private apiBEUrl = `${environment.apiBaseUrl}/Patients`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -30,5 +32,23 @@ getAllMedicalRecord(): Observable<any[]> {
 
   return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
 }
+
+getAllMedicalRecordByPatientId(patientId : any): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any[]>(`${this.apiUrl}/get?patientId=${patientId}`, { headers });
+}
+
+updateMedicalRecord(params : any): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch<any>(`${this.apiUrl}/update`, params , { headers });
+}
+
+
+
+
 
 }

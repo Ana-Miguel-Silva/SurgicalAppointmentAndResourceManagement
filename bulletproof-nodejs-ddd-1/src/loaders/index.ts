@@ -141,7 +141,7 @@ export default async ({ expressApp }) => {
 
   await bootstrapAllergies();
   await bootstrapMedicalConditions();
-  await bootstrapMedicalRecords();
+ // await bootstrapMedicalRecords();
 
   await expressLoader({ app: expressApp });
   Logger.info('✌️ Express loaded');

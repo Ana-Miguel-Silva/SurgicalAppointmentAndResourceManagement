@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild} from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
@@ -8,8 +8,12 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
 import { AllergiesService } from '../../../Services/allergies.service';
+import { MedicalConditionService } from '../../../Services/medicalCondition.service';
+import { PatientService } from '../../../Services/patient.service';
+import { StaffService } from '../../../Services/staff.service';
 import * as THREE from "three";
 import { MedicalRecordService } from '../../../Services/medicalRecordservice';
+import { forkJoin } from 'rxjs';
 //@ts-ignore
 import Orientation from './map/orientation';
 //@ts-ignore
@@ -43,30 +47,33 @@ interface MedicalRecordRequest {
   date: Date;
   staff: string;
   patientEmail: string;
-  allergieDesignacao: string[];
-  medicalConditionDescricao: string[];
+  allergies: string[];
+  medicalConditions: string[];
   descricao: string
 }
 
 
 interface CreatingMedicalRecordUIDto {
   staff: string;
-  patientEmail: string;
-  allergieDesignacao: string[];
-  medicalConditionDescricao: string[];
-  descricao: string
+  patientId: string;
+  allergies: string[];
+  medicalConditions: string[];
+  descricao?: string
 }
+
+
 
 @Component({
   selector: 'app-operation-request',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './doctor.component.html',
   styleUrls: ['./doctor.component.scss']
 })
 export class DoctorComponent implements OnInit {
   @ViewChild('myCanvas') private canvasRef!: ElementRef
   thumbRaiser: any;
+
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -91,6 +98,8 @@ export class DoctorComponent implements OnInit {
       { view: "mini-map", multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(180.0, -90.0), initialZoom: 0.64 } // Mini-map view camera parameters
     );
   }
+  tags: string[] = [];
+  tagsConditions: string[] = [];
 
   animate() {
     requestAnimationFrame(() => this.animate());
@@ -138,39 +147,57 @@ export class DoctorComponent implements OnInit {
   };
 
   medicalRecordRequests: MedicalRecordRequest[] = [];
+  medicalRecordPatientEmail: string = '';
   filteredMedicalRecordRequests: MedicalRecordRequest[] = [];
   filterMedicalRecord = {
     date: '',
     staff: '',
     patientEmail: '',
-    allergieDesignacao: '',
-    medicalConditionDescricao: '',
+    allergies: '',
+    medicalConditions: '',
     descricao: ''
   };
 
 
   medicalRecordRequest: CreatingMedicalRecordUIDto ={
     staff: '',
-    patientEmail: '',
-    allergieDesignacao: [],
-    medicalConditionDescricao: [],
+    patientId: '',
+    allergies: [],
+    medicalConditions: [],
     descricao: ''
   }
 
   constructor(
+    private fb: FormBuilder,
     private modalService: ModalService,
     private http: HttpClient,
     private authService: AuthService,
     private operationRequestsService: OperationRequestsService,
     private allergiesService: AllergiesService,
+    private medicalConditionService: MedicalConditionService,
     private medicalRecordService: MedicalRecordService,
+    private patientService : PatientService,
+    private staffService : StaffService,
     private router: Router
-  ) {}
+  ) {
+
+    this.medicalRecordUpdate = this.fb.group({
+      patientId: "",
+      descricao: ['', Validators.required],
+      //agree: [false, Validators.requiredTrue],
+      medicalConditions: this.fb.array([]),
+      allergies: this.fb.array([])
+    });
+  }
+
+  medicalRecordUpdate!: FormGroup;
+  medicalRecordProfileUpdate: any = null;
 
   ngOnInit() {
     this.getAllOperationRequests();
-    //this.getAllMedicalRecords();
+    this.getAllMedicalRecords();
     this.getAllAllergies();
+    this.getAllMedicalConditions();
   }
 
 
@@ -226,26 +253,42 @@ export class DoctorComponent implements OnInit {
   }
 
   allergiesList: any[] = [];
+  medicalConditionsList: any[] = [];
+  //medicalRecordList: any[] = [];
+  newMedicalCondition: string = '';
+  newAllergy: string = '';
+  filteredOptions: any[] = [];
+  filteredOptionsConditions: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
+  filterText: string = '';
+  filterTextCondition: string = '';
+  showDropdown: boolean = false;
+  showDropdown2: boolean = false;
+  selectedAllergie: string | null =null;
+  selectedPatientEmailMedicalRecord: string | null =null;
+  successMessage: string | null = null;
+
+  selectAllergie(id: string){
+      this.selectedAllergie = this.selectedAllergie === id ? null : id;
+  }
+
+  selectMedicalRecord(email: string){
+    this.selectedPatientEmailMedicalRecord = this.selectedPatientEmailMedicalRecord === email ? null :email;
+}
+
+
 
   selectPatient(id: string){}
-
-
   getAllAllergies() {
     const token = this.authService.getToken();
-
     if (!token) {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-
-
-
     //this.http.get<any[]>(`${this.patientUrl}/search`, { headers, params })
     this.allergiesService.getAllAllergies()
       .subscribe({
@@ -254,10 +297,57 @@ export class DoctorComponent implements OnInit {
           console.log("teste: ", response);
         },
         error: (error) => {
-          console.error('Error fetching  profiles:', error);
-          this.errorMessage = 'Failed to fetch patients profiles!';
+          console.error('Error fetching  allergies:', error);
+          this.errorMessage = 'Failed to fetch allergies!';
         }
       });
+  }
+
+  getAllMedicalConditions() {
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    this.medicalConditionService.getAllMedicalConditions()
+      .subscribe({
+        next: (response) => {
+          this.medicalConditionsList = response;
+          console.log("teste: ", response);
+        },
+        error: (error) => {
+          console.error('Error fetching  medical conditions:', error);
+          this.errorMessage = 'Failed to fetch medical conditions!';
+        }
+      });
+  }
+
+
+  filterOptions(): void {
+    const filterValue = this.filterText.toLowerCase();
+    this.filteredOptions = this.allergiesList.filter(option =>
+      option.designacao.toLowerCase().includes(filterValue),
+
+    );
+  }
+
+  filterOptionsMedicalConditions(): void {
+    const filterValueCondition = this.filterTextCondition.toLowerCase();
+    this.filteredOptionsConditions = this.medicalConditionsList.filter(option =>
+      option.descricao.toLowerCase().includes(filterValueCondition),
+
+    );
+  }
+
+  selectOption(option: string): void {
+    this.filterText = option;
+    this.showDropdown = false;
+  }
+
+  hideDropdown(): void {
+    // Pequeno atraso para evitar esconder antes de selecionar
+    setTimeout(() => this.showDropdown = false, 200);
   }
 
 
@@ -267,11 +357,11 @@ export class DoctorComponent implements OnInit {
     this.closeModal('filterRequestModal');
   }
 
-  onFilterMedicalRecordRequests() {
+  /*onFilterMedicalRecordRequests() {
     this.getAllMedicalRecords();
-    //this.applyMedicalRecordFilter();
-    //this.closeModal('filterMedicalRecordRequestModal');
-  }
+    this.applyMedicalRecordFilter();
+    this.closeModal('filterMedicalRecordRequestModal');
+  }*/
 
   onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
@@ -409,7 +499,7 @@ export class DoctorComponent implements OnInit {
     });
   }
 
-  onCreateMedicalRecord(requestData: CreatingMedicalRecordUIDto) {
+  async onCreateMedicalRecord(requestData: CreatingMedicalRecordUIDto) {
     const token = this.authService.getToken();
     if (!token) {
       Swal.fire({
@@ -420,42 +510,135 @@ export class DoctorComponent implements OnInit {
       return;
     }
 
-    const payload: CreatingMedicalRecordUIDto = {
-      staff: requestData.staff,
-      patientEmail: requestData.patientEmail,
-      allergieDesignacao: requestData.allergieDesignacao,
-      medicalConditionDescricao: requestData.medicalConditionDescricao,
-      descricao: requestData.descricao
-    };
-
-    payload.staff = this.authService.getEmail();
+    const staffEmail = this.authService.getEmail();
 
 
+    forkJoin({
+      patient: this.patientService.getPatientByEmail(requestData.patientId),
+      staff: this.staffService.getStaffByEmail(staffEmail),
+    }).subscribe({
+      next: ({ patient, staff }) => {
+        console.log("STAFF: ", staff);
+        const getPatientId = patient.id.value;
+        const staffId = staff.id;
 
-    this.medicalRecordService.createMedicalRecord(payload).subscribe({
-      next: () => {
-       // this.getAllOperationRequests;
+        const payload: CreatingMedicalRecordUIDto = {
+          staff: staffId,
+          patientId: getPatientId,
+          allergies: this.tags,
+          medicalConditions: this.tagsConditions
+        };
 
-        this.cleanMedicalRecordRegister();
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Medical Record created successfully!',
-          showConfirmButton: false,
-          timer: 1500
+        if (requestData.descricao) {
+          payload.descricao = requestData.descricao;
+        }
+
+        console.log("Medical record payload:", payload);
+
+
+        this.medicalRecordService.createMedicalRecord(payload).subscribe({
+          next: () => {
+            this.cleanMedicalRecordRegister();
+            this.getAllMedicalRecords();
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Medical Record created successfully!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            this.modalService.closeModal('registerMedicalRecordModal');
+          },
+          error: (error: any) => {
+            console.error('Error creating Medical Record:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to create Medical Record.',
+            });
+          },
         });
-        this.modalService.closeModal('registerMedicalRecordModal');
       },
-      error: (error) => {
-        console.error('Error creating Medical Record:', error);
+      error: (error: any) => {
+        console.error('Error fetching patient or staff:', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Failed to create Medical Record.',
+          text: 'Failed to fetch patient or staff information.',
         });
-      }
+      },
     });
   }
+
+
+  selectOptionTag(option: string) {
+    if (!this.tags.includes(option)) {
+      this.tags.push(option);
+    }
+    this.filterText = '';
+    this.showDropdown = false;
+  }
+
+  selectOptionMedicalCondition(option: string) {
+    if (!this.tagsConditions.includes(option)) {
+      this.tagsConditions.push(option);
+    }
+    this.filterTextCondition = '';
+    this.showDropdown2 = false;
+  }
+
+  addTagFromInput(event: KeyboardEvent) {
+    if (event.key === 'Enter' && this.filterText.trim()) {
+      const newTag = this.filterText.trim();
+      if (!this.tags.includes(newTag)) {
+        this.tags.push(newTag);
+      }
+      this.filterText = '';
+      this.showDropdown = false;
+    }
+  }
+
+  addTagConditionFromInput(event: KeyboardEvent) {
+    if (event.key === 'Enter' && this.filterTextCondition.trim()) {
+      const newTagConditon = this.filterTextCondition.trim();
+      if (!this.tagsConditions.includes(newTagConditon)) {
+        this.tagsConditions.push(newTagConditon);
+      }
+      this.filterTextCondition = '';
+      this.showDropdown2 = false;
+    }
+  }
+
+  removeTag(index: number) {
+    this.tags.splice(index, 1);
+    this.filterText = '';
+  }
+
+  removeMedicalCondition(index: number) {
+    this.tagsConditions.splice(index, 1);
+    this.filterTextCondition = '';
+  }
+
+  onBlur() {
+    setTimeout(() => (this.showDropdown = false), 200);
+    setTimeout(() => (this.showDropdown2 = false), 200);
+  }
+
+
+  addMedicalCondition() {
+    if (this.newMedicalCondition.trim() && !this.medicalRecordRequest.medicalConditions.includes(this.newMedicalCondition.trim())) {
+      this.medicalRecordRequest.medicalConditions.push(this.newMedicalCondition.trim());
+      this.newMedicalCondition = ''; // Limpa o campo de entrada
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Atenção',
+        text: 'Condição médica já adicionada ou inválida!',
+      });
+    }
+  }
+
+
 
   getAllMedicalRecords() {
     const token = this.authService.getToken();
@@ -468,14 +651,32 @@ export class DoctorComponent implements OnInit {
       return;
     }
 
-    this.medicalRecordService.getAllMedicalRecord().subscribe({
-      next: (response: MedicalRecordRequest[]) => {
-        console.log("Medical Records: "+ response);
+    this.medicalRecordService.getAllMedicalRecord()
+    .subscribe({
+      next: async (response) => {
         this.medicalRecordRequests = response;
 
-       // this.applyMedicalRecordFilter();
+
+        this.medicalRecordRequests.forEach(async element => {
+           this.patientService.getPatientEmailById(element.patientEmail).subscribe({
+            next: (res) => {
+              element.patientEmail =  res[0].email.fullEmail;
+            },
+          });
+
+          this.staffService.getStaff(element.staff).subscribe({
+            next: (res) => {
+              element.staff =  res[0].email.fullEmail;
+            },
+          });
+
+        });
+
+        console.log("medical records: " , response);
+
+
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('Error fetching requests:', error);
       }
     });
@@ -483,21 +684,162 @@ export class DoctorComponent implements OnInit {
 
   applyMedicalRecordFilter() {
     this.filteredMedicalRecordRequests = this.medicalRecordRequests.filter(request => {
-      const matchesAllergie = this.filterMedicalRecord.allergieDesignacao
-      ? (request.allergieDesignacao as string[]).some(allergie =>
-          allergie.toLowerCase().includes(this.filterMedicalRecord.allergieDesignacao.toLowerCase())
+      const matchesAllergie = this.filterMedicalRecord.allergies
+      ? (request.allergies as string[]).some(allergie =>
+          allergie.toLowerCase().includes(this.filterMedicalRecord.allergies.toLowerCase())
         )
       : true;
 
-      const matchesMedicalCondition = this.filterMedicalRecord.medicalConditionDescricao
-      ? (request.medicalConditionDescricao as string[]).some(medicalCondition =>
-        medicalCondition.toLowerCase().includes(this.filterMedicalRecord.medicalConditionDescricao.toLowerCase())
+      const matchesMedicalCondition = this.filterMedicalRecord.medicalConditions
+      ? (request.medicalConditions as string[]).some(medicalCondition =>
+        medicalCondition.toLowerCase().includes(this.filterMedicalRecord.medicalConditions.toLowerCase())
         )
       : true;
 
       return matchesAllergie && matchesMedicalCondition;
     });
   }
+
+  editMedicalRecord() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    if (this.selectedPatientEmailMedicalRecord === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a medical record.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      console.log(`Viewing Patient Id medical record: ${this.selectedPatientEmailMedicalRecord}`);
+
+      this.medicalRecordService.getAllMedicalRecordByPatientId(this.selectedPatientEmailMedicalRecord)
+        .subscribe({
+          next: (response) => {
+            this.medicalRecordProfileUpdate = response[0];
+            console.log("Medical record: ", this.medicalRecordProfileUpdate);
+
+            // Patch form data
+            this.medicalRecordUpdate.patchValue({
+              patientId: this.medicalRecordProfileUpdate.patientEmail,
+              descricao: this.medicalRecordProfileUpdate.descricao
+            });
+
+            const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
+            const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
+
+            // Clear previous values
+            medicalConditionsControl.clear();
+            allergiesControl.clear();
+
+            // Add existing conditions and allergies to the form
+            this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: string) => {
+              medicalConditionsControl.push(this.fb.control(condition));
+            });
+
+            this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions[0];
+
+            this.medicalRecordProfileUpdate.allergies.forEach((allergy: string) => {
+              allergiesControl.push(this.fb.control(allergy));
+            });
+
+            this.tags = this.medicalRecordProfileUpdate.allergies[0];
+
+            const updatedMedicalRecordData = this.medicalRecordUpdate.value;
+            console.log('Updated Patient Data:', updatedMedicalRecordData);
+
+            console.log("Updated allergies: ",this.tags.length );
+
+            this.openModal('UpdateMedicalRecordModal');
+          },
+          error: (error) => {
+            console.error('Error getting medical record:', error);
+            this.errorMessage = 'Failed to get medical record!';
+          }
+        });
+    }
+  }
+
+
+
+  onUpdateMedicalRecord() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    if (!this.selectedPatientEmailMedicalRecord) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum medical record selecionado.',
+      });
+      return;
+    }
+
+    const updatedPatientData = this.medicalRecordUpdate.value;
+
+
+    updatedPatientData.allergies = this.tags;
+    updatedPatientData.medicalConditions = this.tagsConditions;
+
+    updatedPatientData.allergies = updatedPatientData.allergies.map((allergy: any) => allergy.toString());
+
+    console.log("allergies to be updated:" ,  updatedPatientData.allergies);
+
+    updatedPatientData.medicalConditions = updatedPatientData.medicalConditions.map((condition: any) => condition.toString());
+
+    console.log("conditions to be updated:" ,  updatedPatientData.medicalConditions);
+
+    this.medicalRecordService.updateMedicalRecord(updatedPatientData)
+      .subscribe({
+        next: (response: any) => {
+          console.log("Updated medical record response: ", response);
+          Swal.fire({
+            icon: "success",
+            title: "Medical Record atualizado com sucesso!",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllMedicalRecords(); // Fetch all medical records
+          this.closeModal('UpdateMedicalRecordModal');
+        },
+        error: (error) => {
+          console.error('Error editing Medical Record:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível atualizar o Medical Record",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit Medical Record!';
+          this.successMessage = null;
+        }
+      });
+  }
+
+
 
 
   openModal(modalId: string): void {
@@ -522,11 +864,15 @@ export class DoctorComponent implements OnInit {
   }
 
   cleanMedicalRecordRegister() {
+    this.tags = [];
+    this.filterText = '';
+    this.tagsConditions = [];
+    this.filterTextCondition = '';
     this.medicalRecordRequest = {
       staff: '',
-      patientEmail: '',
-      allergieDesignacao: [],
-      medicalConditionDescricao: [],
+      patientId: '',
+      allergies: [],
+      medicalConditions: [],
       descricao: ''
     };
   }

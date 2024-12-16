@@ -4,44 +4,11 @@
 ## 1. Context
 
 
-As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+As system administrator, I want a clustering system to be implemented between the systems that implement the SPA in a justified manner.
 
 ## 2. Requirements
 
-**US 6.4.3** As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
-
-**Acceptance Criteria:**
-
--
-
-**Customer Specifications and Clarifications:**
-
-> **Question:**
->
->**Answer:**
-
-
-**Dependencies/References:**
-
-* There are no dependencies to other US.
-
-**Input and Output Data**
-
-**Input Data:**
-
-* Typed data:
-  *
-
-
-**Output Data:**
-* Display the success of the operation and the data.
-
-
-## 3. Analysis
-
-
-## 4. Design
-
+**7.4.9** As the organization's administrator, I want a clustering system to be implemented between the systems that implement the SPA in a justified manner
 
 
 [//]: # (### 4.2. Class Diagram)

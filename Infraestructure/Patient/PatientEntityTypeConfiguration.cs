@@ -76,9 +76,9 @@ namespace DDDSample1.Infrastructure.Patients
                 .HasColumnName("Gender")
                 .IsRequired();
 
-            builder.Property(u => u.Allergies)
+           /* builder.Property(u => u.Allergies)
                 .HasColumnName("Allergies")
-                .IsRequired(false);
+                .IsRequired(false);*/
 
             builder.Property(u => u.AppointmentHistory)
                 .HasColumnName("AppointmentHistory")

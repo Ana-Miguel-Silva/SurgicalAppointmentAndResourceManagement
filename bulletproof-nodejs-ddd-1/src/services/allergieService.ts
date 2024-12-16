@@ -7,6 +7,7 @@ import IAllergieService from './IServices/IAllergieService';
 import { Result } from "../core/logic/Result";
 import { AllergieMap } from "../mappers/AllergieMap";
 import { Allergie } from '../domain/allergie';
+import { AllergieId } from '../domain/allergieId';
 
 @Service()
 export default class AllergieService implements IAllergieService {
@@ -36,7 +37,6 @@ export default class AllergieService implements IAllergieService {
 
   public async getAllergieById( AllergieId: string): Promise<Result<IAllergieDTO>> {
     try {
-
       const Allergie = await this.AllergieRepo.findById(AllergieId);
 
       if (Allergie === null) {
@@ -70,6 +70,27 @@ export default class AllergieService implements IAllergieService {
       throw e;
     }
   }
+
+  
+  public async getAllergieId( allergieId: string): Promise<string> {
+    try {
+
+      const allergies = await this.AllergieRepo.getAllergieId(allergieId);
+      console.log("id allergiesss" , allergies);
+
+      if (!allergies ) {
+        return ("Allergie not found");
+      }
+      else {
+        console.log("id allergie" , allergies);
+        return allergies;
+        
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
 
 
   public async createAllergie(AllergieDTO: IAllergieDTO): Promise<Result<IAllergieDTO>> {

@@ -1,4 +1,4 @@
-# US 7.4.1
+# US 7.6.4
 
 
 ## 1. Context
@@ -8,7 +8,7 @@ This is the first time this task has been assigned for development.
 
 ## 2. Requirements
 
-**US 7.4.1** As a Patient, I want to know for how long my personal data will be kept.
+**US 7.6.4** As a Patient, I want to know for how long my personal data will be kept.
 
 **Acceptance Criteria:** 
 

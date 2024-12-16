@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment'; // Importa o environment correto
 import { StaffService } from '../../../Services/staff.service';
 import { PatientService } from '../../../Services/patient.service';
+import { AllergiesService } from '../../../Services/allergies.service';
 
 interface RequiredStaff {
   quantity: number;
@@ -53,7 +54,10 @@ export class AdminComponent {
   scheduledAppointmentMessage: string = '';
 
    
-  constructor(private fb: FormBuilder, private modalService: ModalService,
+  constructor(
+    private fb: FormBuilder, 
+    private modalService: ModalService,
+    private allergiesService: AllergiesService,
     private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
     private router: Router) {
     // Define os controles do formulário com validações
@@ -94,6 +98,11 @@ export class AdminComponent {
         surgery: ['', Validators.required],
       }),
       requiredStaff: this.fb.array([]),
+    });
+
+    this.allergieForm = this.fb.group({
+      designacao: ['', Validators.required],
+      descricao: ['', Validators.required],
     });
 
 
@@ -161,6 +170,7 @@ export class AdminComponent {
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
   operationTypeUpdateForm!: FormGroup;
+  allergieForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -1338,7 +1348,9 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);
-   // this.http.post(`${this.staffUrl}`, JSON.stringify(formData), { headers })
+   
+
+    //this.http.post(`${environment.apiBaseUrl}/Staff`, JSON.stringify(formData), { headers })
     this.staffService.createStaff(formData)
       .subscribe({
         next: () => {
@@ -1798,6 +1810,74 @@ export class AdminComponent {
 
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onInsertAllergie(){
+    
+    const token = this.authService.getToken();
+
+    // Check if the user is logged in
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+
+
+    this.allergiesService.getAllAllergies()
+      .subscribe({
+        next: (response) => {
+          console.log("teste: ", response);
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   logout(): void {
     this.authService.logout();
