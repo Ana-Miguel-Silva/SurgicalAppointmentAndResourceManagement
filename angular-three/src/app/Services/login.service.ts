@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 })
 
 @Injectable()
-export class LoginService {  
+export class LoginService {
 
 
  private apiUrl = `${environment.apiBaseUrl}/Users/login`;

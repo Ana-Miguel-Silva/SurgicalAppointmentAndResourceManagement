@@ -25,6 +25,9 @@ export default class Maze {
             this.exitLocation = this.cellToCartesian(description.exitLocation);
 
             this.object = new THREE.Group();
+            this.RoomArr = [];
+            this.RoomArrCoord = [];
+            this.Lobby = null;
 
             let roomData = await this.fetchRoomNum(description); 
             let roomNum = roomData?roomData.length:description.room_number;
@@ -119,17 +122,43 @@ export default class Maze {
                     }
                     if(rooms[j][i] == 6) {
                         if (roomData[0].status == "AVAILABLE") {
-                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                            const door = new Decor({ url: 'assets/models/gltf/hospital_table_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
+
+                                const geometryc = new THREE.BoxGeometry(3.0, 3.0, 5.0);
+                                const materialc = new THREE.MeshBasicMaterial({
+                                    color: 0xFF00FF, // Any color
+                                    //opacity: 0,     // Fully transparent
+                                    transparent: true
+                                });
+                                
+                                const cube = new THREE.Mesh(geometryc, materialc);
+                                cube.position.set(i - actual_width / 2.0, 2.0, j - actual_height / 2 + 0.5);
+                                this.object.add(cube); // Add to the scene
+                                this.RoomArr.push(cube);
+                                this.RoomArrCoord.push(cube.position);
                             });
                         }
                         else {
-                            const door = new Decor({ url: 'assets/models/gltf/hospital_bed_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                            const door = new Decor({ url: 'assets/models/gltf/hospital_table_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
+
+                                const geometryc = new THREE.BoxGeometry(2.7, 3.0, 5.0);
+                                const materialc = new THREE.MeshBasicMaterial({
+                                    color: 0xFF00FF, // Any color
+                                    //opacity: 0,     // Fully transparent
+                                    transparent: true
+                                });
+                                
+                                const cube = new THREE.Mesh(geometryc, materialc);
+                                cube.position.set(i - actual_width / 2.0, 2.0, j - actual_height / 2 + 0.5);
+                                this.object.add(cube); // Add to the scene
+                                this.RoomArr.push(cube);
+                                this.RoomArrCoord.push(cube.position);
                             });
                         }
                         roomData.shift();
@@ -149,7 +178,23 @@ export default class Maze {
                             doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                             doorObject.rotateY(Math.PI);
                             this.object.add(doorObject); // Add to the scene
+                            this.Lobby = doorObject;
                         });
+                    }
+                    if(rooms[j][i] == 15) {
+                            const geometryc = new THREE.BoxGeometry(7.0, 3.0, 5.0);
+                            const materialc = new THREE.MeshBasicMaterial({
+                                color: 0xFF00FF, // Any color
+                                //opacity: 0,     // Fully transparent
+                                transparent: true
+                            });
+                            
+                            const cube = new THREE.Mesh(geometryc, materialc);
+                            cube.position.set(i - actual_width / 2.0, 2.0, j - actual_height / 2 + 0.5);
+                            this.object.add(cube); // Add to the scene
+                            this.RoomArr.push(cube);
+                            this.RoomArrCoord.push(cube.position);
+                            this.Lobby = cube;
                     }
                 }
             }
