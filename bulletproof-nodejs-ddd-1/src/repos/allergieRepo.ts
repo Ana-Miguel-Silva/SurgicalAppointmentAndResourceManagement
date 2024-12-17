@@ -60,14 +60,16 @@ export default class AllergieRepo implements IAllergieRepo {
     }
   }
 
-  public async update(allergieId: string, updateData: Partial<{ designacao: string; descricao: string }>): Promise<Allergie | null> {
+  public async update(allergieDesignacao: string, updateData: Partial<{ designacao: string; descricao: string }>): Promise<Allergie | null> {
     try {
-      const query = { allergieId };
   
-      const allergieDocument = await this.allergieSchema.findOne(query);
+      console.log(allergieDesignacao)
+      const allergieDocument = await this.allergieSchema.findOne({ designacao: allergieDesignacao });
+
+      console.log(allergieDocument)
   
       if (!allergieDocument) {
-        this.logger.warn(`Allergie with id ${allergieId} not found`);
+        this.logger.warn(`Allergie with designacao ${allergieDesignacao} not found`);
         return null;
       }
   
@@ -80,6 +82,24 @@ export default class AllergieRepo implements IAllergieRepo {
     } catch (error) {
       this.logger.error('Error updating allergie:', error);
       throw error;
+    }
+  }
+
+  public async findByDesignacao(designacao: string): Promise<Allergie | null> {
+    try {
+    console.log(designacao)
+
+      const allergy = await this.allergieSchema.findOne({ designacao });
+      if (!allergy) {
+        console.log("A alergia não foi encontrada");
+        return null;
+      }
+    console.log(allergy)
+
+      return AllergieMap.toDomain(allergy) || null;  // Retorna null se não encontrar alergia
+
+    } catch (error) {
+      throw new Error('Erro ao buscar alergia por designação');
     }
   }
 

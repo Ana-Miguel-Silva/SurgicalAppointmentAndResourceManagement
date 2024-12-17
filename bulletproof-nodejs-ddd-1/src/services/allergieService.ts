@@ -34,16 +34,18 @@ export default class AllergieService implements IAllergieService {
     
   }
 
-  public async updateAllergie(allergieId: string, AllergieDTO: Partial<IAllergieDTO>): Promise<Result<IAllergieDTO>> {
+  public async updateAllergie(allergieDesignacao: string, AllergieDTO: Partial<IAllergieDTO>): Promise<Result<IAllergieDTO>> {
     try {
       
-      const existingAllergie = await this.AllergieRepo.findById(allergieId);
+      const existingAllergie = await this.AllergieRepo.findByDesignacao(allergieDesignacao);
   
       if (!existingAllergie) {
-        return Result.fail<IAllergieDTO>(`Allergie with id ${allergieId} not found`);
+        return Result.fail<IAllergieDTO>(`Allergie with designacao ${allergieDesignacao} not found`);
       }
-  
-      const updatedAllergie = await this.AllergieRepo.update(allergieId, {
+ 
+      
+      console.log("depois")
+      const updatedAllergie = await this.AllergieRepo.update(allergieDesignacao, {
         designacao: AllergieDTO.designacao,
         descricao: AllergieDTO.descricao,
       });
@@ -58,6 +60,13 @@ export default class AllergieService implements IAllergieService {
       throw error;
       //return Result.fail<IAllergieDTO>(error.message);
     }
+  }
+
+
+  public async getAllergyByDesignacao(designacao: string): Promise<Allergie | null> {
+    // Chama o repositório para buscar pela designação
+    console.log("service")
+    return await this.AllergieRepo.findByDesignacao(designacao);
   }
   
 

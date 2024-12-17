@@ -51,10 +51,10 @@ export default class AllergieController implements IAllergieController /* TODO: 
   public async update(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const allergieId = req.query.id as string;
+      const allergieId = req.query.designacao as string;
 
       if (!allergieId) {
-        return res.status(400).json({ error: "ID is required in the URL." });
+        return res.status(400).json({ error: "Designacao is required in the URL." });
       }
 
       const allergieUpdateData = req.body as Partial<IAllergieDTO>; 
@@ -71,6 +71,33 @@ export default class AllergieController implements IAllergieController /* TODO: 
       return res.status(200).json(AllergieDTO);
     } catch (e) {
       next(e); 
+    }
+  }
+
+  public async getAllergyByDesignacao(req: Request, res: Response): Promise<Response> {
+    try {
+      const designacao  = req.query.designacao;
+
+      if (!designacao || typeof designacao !== 'string') {
+        return res.status(400).json({ error: 'Designação é obrigatória na URL.' });
+      }
+
+      console.log("OLA123")
+
+
+      // Chama o serviço passando a designação
+      const allergy = await this.allergieServiceInstance.getAllergyByDesignacao(designacao);
+
+      console.log("OLA234")
+
+      if (!allergy) {
+        return res.status(404).json({ error: 'Alergia não encontrada.' });
+      }
+
+      return res.json(allergy);
+
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao buscar alergia.' });
     }
   }
 
