@@ -1,6 +1,7 @@
 using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Domain.Shared
+namespace DDDSample1.Domain.Appointments
 {
     public class AppointmentSlot : IValueObject
     {

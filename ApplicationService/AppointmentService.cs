@@ -7,7 +7,7 @@ using System.Text;
 using DDDSample1.Domain.Staff;
 using Newtonsoft.Json.Linq;
 using DDDSample1.Domain.OperationTypes;
-using DDDSample1.Domain.Appointments.Dto;
+using DDDSample1.Domain.Patients;
 
 namespace DDDSample1.ApplicationService.Appointments
 {
@@ -19,11 +19,13 @@ namespace DDDSample1.ApplicationService.Appointments
         private readonly IOperationRequestRepository _repoOpReq;
         private readonly IStaffRepository _repoStaff;
         private readonly IOperationTypeRepository _repoOpTy;
+        private readonly IPatientRepository _repoPat;
+
         private readonly HttpClient _httpClient;
         public IConfiguration configuration { get; }
 
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IStaffRepository repoStaff, IOperationTypeRepository repoOpTy, IConfiguration configuration)
+        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IStaffRepository repoStaff, IOperationTypeRepository repoOpTy, IPatientRepository repoPat, IConfiguration configuration)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -33,6 +35,7 @@ namespace DDDSample1.ApplicationService.Appointments
             this.configuration = configuration;
             this._repoStaff = repoStaff;
             this._repoOpTy = repoOpTy;
+            this._repoPat = repoPat;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()
@@ -141,7 +144,7 @@ namespace DDDSample1.ApplicationService.Appointments
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public async Task<string> ScheduleAppointments2(DataInputModel prologDto)
+        public async Task<string> ScheduleAppointments2(ScheduleInputData prologDto)
         {
             DateTime date = prologDto.Date;
 
@@ -151,78 +154,15 @@ namespace DDDSample1.ApplicationService.Appointments
             List<SurgeryRoom> rooms = await _repoRooms.GetAllAsync();
             List<Appointment> appointments = await _repo.GetAllAsync();
 
+            var helper = new PrologUtils();
 
-            List<StaffToProlog> prologStaff = new List<StaffToProlog>();
+            var prologStaff = helper.getPrologStaffList(staff, date);
 
-            foreach (var sta in staff)
-            {
-                List<int> slots = new List<int>();
+            var prologRooms = helper.getPrologRoomsList(rooms, appointments, date);
 
-                foreach (var slot in sta.AvailabilitySlots)
-                {
-                    if (slot.StartTime.Day == date.Day && slot.StartTime.Month == date.Month && slot.StartTime.Year == date.Year)
-                    {
-                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
-                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
-                    }
-                }
+            var prologRequests = helper.getPrologRequestList(request);
 
-                if (slots.Count != 0)
-                    prologStaff.Add(new StaffToProlog(sta.Id.Value, sta.Role, sta.Specialization, slots));
-            }
-
-            List<RoomToProlog> prologRooms = new List<RoomToProlog>();
-
-            foreach (var room in rooms)
-            {
-                List<int> slots = new List<int>();
-
-                foreach (var slot in room.MaintenanceSlots)
-                {
-                    if (slot.StartTime.Date == date.Date)
-                    {
-                        slots.Add(slot.StartTime.Hour * 60 + slot.StartTime.Minute);
-                        slots.Add(slot.EndTime.Hour * 60 + slot.EndTime.Minute);
-                    }
-                }
-
-                foreach (var app in appointments)
-                {
-                    if (app.RoomId == room.Id || app.Date.StartTime.Date == date.Date)
-                    {
-                        slots.Add(app.Date.StartTime.Hour * 60 + app.Date.StartTime.Minute);
-                        slots.Add(app.Date.EndTime.Hour * 60 + app.Date.EndTime.Minute);
-                    }
-                }
-
-                prologRooms.Add(new RoomToProlog(room.Id.Value, slots));
-            }
-
-            List<RequestToProlog> prologRequests = new List<RequestToProlog>();
-
-            foreach (var req in request)
-            {
-                if (req.Active)
-                    prologRequests.Add(new RequestToProlog(req.Id.Value, req.OperationTypeId.Value));
-            }
-
-            List<OperationTypeToProlog> prologTypes = new List<OperationTypeToProlog>();
-            List<RequiredStaffToProlog> prologRequiredStaff = new List<RequiredStaffToProlog>();
-
-            foreach (var type in types)
-            {
-
-                var anethesia = type.EstimatedDuration.PatientPreparation.Minute + type.EstimatedDuration.PatientPreparation.Hour * 60;
-                var surgery = type.EstimatedDuration.Surgery.Minute + type.EstimatedDuration.Surgery.Hour * 60;
-                var cleaning = type.EstimatedDuration.Cleaning.Minute + type.EstimatedDuration.Cleaning.Hour * 60;
-
-                prologTypes.Add(new OperationTypeToProlog(type.Id.Value, anethesia, surgery, cleaning));
-
-                foreach (var staf in type.RequiredStaff)
-                {
-                    prologRequiredStaff.Add(new RequiredStaffToProlog(type.Id.Value, staf.Quantity, staf.Specialization, staf.Role));
-                }
-            }
+            var (prologTypes, prologRequiredStaff) = helper.GeneratePrologData(types);
 
             var data = new
             {
@@ -239,14 +179,10 @@ namespace DDDSample1.ApplicationService.Appointments
             };
 
             var url = configuration.GetValue<string>("PrologPath2");
-
             var response = await PostToPrologServer(url, data);
+            var preview = await FormatGeneticAlg(response, date);
 
-            var s = await FormatGeneticAlg(response, date);
-
-            //Console.WriteLine(s);
-
-            return s;
+            return preview;
         }
 
         public async Task<string> FormatGeneticAlg(string jsonString, DateTime dateOfAppointments)
@@ -260,60 +196,113 @@ namespace DDDSample1.ApplicationService.Appointments
                 var specificRoom = await _repoRooms.GetByIdAsync(new SurgeryRoomId(roomId));
 
                 var appointments = room["appointmentJson_array"];
-                if (appointments != null && appointments.Count() > 0)
+                bool hasAppointments = appointments != null && appointments.Any();
+
+                if (hasAppointments)
+                {
                     result.AppendLine($"\nRoom: {specificRoom.RoomNumber}");
+                }
+
                 foreach (var appointment in appointments)
                 {
-                    string operationRequestId = appointment["operationRequestId"].ToString();
-                    int start = appointment["instanteInicial"].ToObject<int>();
-                    int end = appointment["instanteFinal"].ToObject<int>();
+                    await AppendAppointmentDetails(appointment, roomId, dateOfAppointments, result);
+                }
 
-                    result.AppendLine($"  Operation Request: {operationRequestId}");
-                    var operationRequestIdObj = new OperationRequestId(operationRequestId);
-                    var specificOperationReequest = await InactivateAsync(operationRequestIdObj);
-
-                    result.AppendLine($"  Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
-                    result.AppendLine("  Associated Staff:");
-
-
-                    var date = new Slot(dateOfAppointments.AddMinutes(start), dateOfAppointments.AddMinutes(end));
-
-                    var staffArray = appointment["staffArray"];
-                    var appointmentSlots = new List<AppointmentSlot>();
-
-                    foreach (var staff in staffArray)
-                    {
-                        string staffId = staff["staffId"].ToString();
-                        int staffStart = staff["instanteInicial"].ToObject<int>();
-                        int staffEnd = staff["instanteFinal"].ToObject<int>();
-
-                        var staffGuid = new StaffGuid(staffId);
-
-                        var staffSlot = new Slot(dateOfAppointments.AddMinutes(staffStart), dateOfAppointments.AddMinutes(staffEnd));
-
-                        var appointmentSlot = new AppointmentSlot(staffSlot, staffGuid);
-                        appointmentSlots.Add(appointmentSlot);
-
-                        var staffProfile = await _repoStaff.GetByIdAsync(staffGuid);
-
-                        string staffStartTime = FormattedDate(dateOfAppointments.AddMinutes(staffStart));
-                        string staffEndTime = FormattedDate(dateOfAppointments.AddMinutes(staffEnd));
-
-                        result.AppendLine($"    License Number: {staffProfile.LicenseNumber} – {staffStartTime} to {staffEndTime}");
-
-
-                        RemoveOccupiedSlotFromAvailability(staffProfile, staffSlot);
-
-
-                    }
-
-                    var roomIdObj = new SurgeryRoomId(roomId);
-
-                    await AddAsync(new CreatingAppointmentDto(roomIdObj, operationRequestIdObj, date, appointmentSlots));
+                if (hasAppointments)
+                {
+                    result.AppendLine("------------------------------------------------------------------------------------------");
                 }
             }
 
             return await Task.FromResult(result.ToString());
+        }
+
+        private async Task AppendAppointmentDetails(JToken appointment, string roomId, DateTime dateOfAppointments, StringBuilder result)
+        {
+            string operationRequestId = appointment["operationRequestId"].ToString();
+            int start = appointment["instanteInicial"].ToObject<int>();
+            int end = appointment["instanteFinal"].ToObject<int>();
+
+            var operationRequestIdObj = new OperationRequestId(operationRequestId);
+            var specificOperationRequest = await InactivateAsync(operationRequestIdObj);
+
+            result.AppendLine("Appointment Info:");
+            result.AppendLine($"  Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
+            result.AppendLine($"  Patient Email: {specificOperationRequest.EmailPatient}");
+            result.AppendLine($"  Priority: {specificOperationRequest.Priority}");
+            result.AppendLine($"  Operation Type: {specificOperationRequest.OperationTypeName}\n");
+            result.AppendLine("  Associated Staff:");
+
+            var date = new Slot(dateOfAppointments.AddMinutes(start), dateOfAppointments.AddMinutes(end));
+            var appointmentSlots = await AppendStaffDetails(appointment, dateOfAppointments, result);
+
+            var roomIdObj = new SurgeryRoomId(roomId);
+
+            await AddAsync(new CreatingAppointmentDto(roomIdObj, operationRequestIdObj, date, appointmentSlots));
+        }
+
+        private async Task<List<AppointmentSlot>> AppendStaffDetails(JToken appointment, DateTime dateOfAppointments, StringBuilder result)
+        {
+            var staffArray = appointment["staffArray"];
+            var appointmentSlots = new List<AppointmentSlot>();
+
+            foreach (var staff in staffArray)
+            {
+                string staffId = staff["staffId"].ToString();
+                int staffStart = staff["instanteInicial"].ToObject<int>();
+                int staffEnd = staff["instanteFinal"].ToObject<int>();
+
+                var staffGuid = new StaffGuid(staffId);
+                var staffSlot = new Slot(dateOfAppointments.AddMinutes(staffStart), dateOfAppointments.AddMinutes(staffEnd));
+                var appointmentSlot = new AppointmentSlot(staffSlot, staffGuid);
+
+                appointmentSlots.Add(appointmentSlot);
+
+                var staffProfile = await _repoStaff.GetByIdAsync(staffGuid);
+
+                string staffStartTime = FormattedDate(dateOfAppointments.AddMinutes(staffStart));
+                string staffEndTime = FormattedDate(dateOfAppointments.AddMinutes(staffEnd));
+
+                result.AppendLine($"    License Number: {staffProfile.LicenseNumber} – {staffStartTime} to {staffEndTime}");
+
+                RemoveOccupiedSlotFromAvailability(staffProfile, staffSlot);
+            }
+
+            return appointmentSlots;
+        }
+
+        public async Task<OperationRequestUIDto> InactivateAsync(OperationRequestId id)
+        {
+            var operationRequest = await _repoOpReq.GetByIdAsync(id);
+
+            if (operationRequest == null)
+            {
+                return null;
+            }
+
+            operationRequest.MarkAsInative();
+            return await Dto_to_UIDto(operationRequest);
+        }
+
+        private async Task<OperationRequestUIDto> Dto_to_UIDto(OperationRequest operationRequest)
+        {
+            var operationTypes = await _repoOpTy.GetByIdAsync(operationRequest.OperationTypeId);
+            var doctors = await _repoStaff.GetByIdAsync(operationRequest.DoctorId);
+            var patients = await _repoPat.GetByIdAsync(operationRequest.MedicalRecordNumber);
+
+            return new OperationRequestUIDto(
+                operationRequest.Id.AsGuid(),
+                patients.Email.FullEmail,
+                doctors.Email.FullEmail,
+                operationTypes.Name,
+                operationRequest.Deadline,
+                operationRequest.Priority
+            );
+        }
+
+        private static string FormattedDate(DateTime date, string format = "HH:mm:ss")
+        {
+            return date.ToString(format);
         }
 
         private void RemoveOccupiedSlotFromAvailability(StaffProfile staffProfile, Slot occupiedSlot)
@@ -326,7 +315,6 @@ namespace DDDSample1.ApplicationService.Appointments
 
                 if (availableSlot.StartTime < occupiedSlot.EndTime && availableSlot.EndTime > occupiedSlot.StartTime)
                 {
-
                     availableSlots.RemoveAt(i);
 
                     if (availableSlot.StartTime < occupiedSlot.StartTime)
@@ -342,22 +330,6 @@ namespace DDDSample1.ApplicationService.Appointments
             }
         }
 
-        public async Task<OperationRequest> InactivateAsync(OperationRequestId id)
-        {
-            var operationRequest = await this._repoOpReq.GetByIdAsync(id);
 
-            if (operationRequest == null)
-                return null;
-
-            operationRequest.MarkAsInative();
-
-            return operationRequest;
-        }
-
-        private static string FormattedDate(DateTime date, string format = "HH:mm:ss")
-        {
-            string formattedDate = date.ToString(format);
-            return formattedDate;
-        }
     }
 }
