@@ -177,6 +177,14 @@ export default class ThumbRaiser {
 
         // Create a 3D scene (the game itself)
         this.scene3D = new THREE.Scene();
+        this.raycaster = new THREE.Raycaster();
+        this.pointer = new THREE.Vector2();
+        this.highlightMaterial = new THREE.MeshStandardMaterial({
+            color: 0xFF0000, // Any color
+            opacity: 0,     // Fully transparent
+            transparent: true
+        });
+        this.originalMaterials = new Map();
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
@@ -205,7 +213,7 @@ export default class ThumbRaiser {
         document.body.appendChild(this.statistics.dom);
 
         // Create a renderer and turn on shadows in the renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true});
         if (this.generalParameters.setDevicePixelRatio) {
             this.renderer.setPixelRatio(window.devicePixelRatio);
         }
@@ -304,6 +312,10 @@ export default class ThumbRaiser {
         this.resetAll.addEventListener("click", event => this.buttonClick(event));
 
         this.activeElement = document.activeElement;
+
+        /*this.activeViewCamera.perspective.position.set(this.maze.Lobby.x, this.activeViewCamera.perspective.position.y, this.maze.Lobby.z);
+        this.activeViewCamera.target.x = this.maze.Lobby.x;
+        this.activeViewCamera.target.z = this.maze.Lobby.z;*/
     }
 
     buildHelpPanel() {
@@ -441,6 +453,67 @@ export default class ThumbRaiser {
                     this.setActiveViewCamera([this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][cameraIndex]);
                     this.changeCameraOrientation = true; // Only allow changing camera orientation for right click
                 }
+            }
+        } else {
+
+            const modalBounds = this.renderer.domElement.getBoundingClientRect();
+
+            this.pointer.x = ((event.clientX - modalBounds.left) / modalBounds.width) * 2 - 1;
+            this.pointer.y = -((event.clientY - modalBounds.top) / modalBounds.height) * 2 + 1;
+            this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
+
+            console.log("Pointer " + this.pointer);
+            console.log("Raycaster " + this.raycaster);
+            
+            const intersects = this.raycaster.intersectObjects(this.maze.RoomArr, true);
+            console.log("Intersects " + this.intersects);
+
+            if (intersects.length > 0) {
+
+                const intersectionPoint = intersects[0].point; // Intersection point
+                //console.log("Intersection Point:", intersectionPoint);
+
+                // Create geometry for the line
+                /*const points = [
+                    this.activeViewCamera.perspective.position.clone(), // Start at the camera position
+                    intersectionPoint.clone()     // End at the intersection point
+                ];
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+
+                // Create material for the line
+                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0ffff0 });
+
+                // Create the line and add it to the scene
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                this.scene3D.add(line);*/
+
+
+                const intersectedObject = intersects[0].object;
+        
+                // Store original material if not already stored
+                if (!this.originalMaterials.has(intersectedObject)) {
+                    this.originalMaterials.set(intersectedObject, intersectedObject.material);
+                }
+        
+                // Apply highlight material
+                intersectedObject.material = this.highlightMaterial;
+                intersectedObject.material.opacity = 0.5;
+        
+                // Revert back after a short delay
+                setTimeout(() => {
+                    if (this.originalMaterials.has(intersectedObject)) {
+                        intersectedObject.material = this.originalMaterials.get(intersectedObject);
+                        this.originalMaterials.delete(intersectedObject);
+                    }
+                }, 500); // Highlight for 500ms
+                //console.log(intersectedObject);
+                const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+                //console.log("Index is: "+intersectedIndex);
+                const modelPosition = this.maze.RoomArr[intersectedIndex].position;
+                /*console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
+                console.log(this.activeViewCamera.target);*/
+                this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+                //console.log(this.activeViewCamera.target);
             }
         }
     }

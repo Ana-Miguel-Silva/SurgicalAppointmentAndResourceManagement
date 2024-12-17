@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
 import { Router } from '@angular/router';
@@ -14,8 +14,10 @@ import { StaffService } from '../../../Services/staff.service';
 import * as THREE from "three";
 import { MedicalRecordService } from '../../../Services/medicalRecordservice';
 import { forkJoin } from 'rxjs';
-//import Orientation from './map/orientation';
-//import ThumbRaiser from './map/hospital';
+//@ts-ignore
+import Orientation from './map/orientation';
+//@ts-ignore
+import ThumbRaiser from './map/hospital';
 
 interface CreatingOperationRequestUIDto {
   patientEmail: string;
@@ -56,7 +58,7 @@ interface CreatingMedicalRecordUIDto {
   patientId: string;
   allergies: string[];
   medicalConditions: string[];
-  descricao: string
+  descricao?: string
 }
 
 
@@ -64,7 +66,7 @@ interface CreatingMedicalRecordUIDto {
 @Component({
   selector: 'app-operation-request',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './doctor.component.html',
   styleUrls: ['./doctor.component.scss']
 })
@@ -72,13 +74,14 @@ export class DoctorComponent implements OnInit {
   @ViewChild('myCanvas') private canvasRef!: ElementRef
   thumbRaiser: any;
 
+
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
 
   initialize() {
     // Initialize the game with necessary parameters
-    /*this.thumbRaiser = new ThumbRaiser(
+    this.thumbRaiser = new ThumbRaiser(
       {}, // General Parameters
       {scale: new THREE.Vector3(1.0, 0.5, 1.0)}, // Maze parameters
       {}, // Player parameters
@@ -93,7 +96,7 @@ export class DoctorComponent implements OnInit {
       { view: "third-person", multipleViewsViewport: new THREE.Vector4(0.0, 0.0, 0.55, 0.5), initialOrientation: new Orientation(0.0, -20.0), initialDistance: 2.0, distanceMin: 1.0, distanceMax: 4.0 }, // Third-person view camera parameters
       { view: "top", multipleViewsViewport: new THREE.Vector4(1.0, 0.0, 0.45, 0.5), initialOrientation: new Orientation(0.0, -90.0), initialDistance: 4.0, distanceMin: 1.0, distanceMax: 16.0 }, // Top view camera parameters
       { view: "mini-map", multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(180.0, -90.0), initialZoom: 0.64 } // Mini-map view camera parameters
-    );*/
+    );
   }
   tags: string[] = [];
   tagsConditions: string[] = [];
@@ -101,10 +104,10 @@ export class DoctorComponent implements OnInit {
   animate() {
     requestAnimationFrame(() => this.animate());
     // Update the game (call update method of thumbRaiser)
-    //this.thumbRaiser.update();
+    this.thumbRaiser.update();
   }
 
-  /*ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     this.initialize();
     this.animate();
 
@@ -117,7 +120,7 @@ export class DoctorComponent implements OnInit {
       console.error('Target div not found.');
 
     }
-  }*/
+  }
 
 
 
@@ -165,6 +168,7 @@ export class DoctorComponent implements OnInit {
   }
 
   constructor(
+    private fb: FormBuilder,
     private modalService: ModalService,
     private http: HttpClient,
     private authService: AuthService,
@@ -175,7 +179,19 @@ export class DoctorComponent implements OnInit {
     private patientService : PatientService,
     private staffService : StaffService,
     private router: Router
-  ) {}
+  ) {
+
+    this.medicalRecordUpdate = this.fb.group({
+      patientId: "",
+      descricao: ['', Validators.required],
+      //agree: [false, Validators.requiredTrue],
+      medicalConditions: this.fb.array([]),
+      allergies: this.fb.array([])
+    });
+  }
+
+  medicalRecordUpdate!: FormGroup;
+  medicalRecordProfileUpdate: any = null;
 
   ngOnInit() {
     this.getAllOperationRequests();
@@ -245,15 +261,21 @@ export class DoctorComponent implements OnInit {
   filteredOptionsConditions: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
-  filterText: string = ''; 
+  filterText: string = '';
   filterTextCondition: string = '';
-  showDropdown: boolean = false; 
-  showDropdown2: boolean = false; 
+  showDropdown: boolean = false;
+  showDropdown2: boolean = false;
   selectedAllergie: string | null =null;
+  selectedPatientEmailMedicalRecord: string | null =null;
+  successMessage: string | null = null;
 
   selectAllergie(id: string){
       this.selectedAllergie = this.selectedAllergie === id ? null : id;
   }
+
+  selectMedicalRecord(email: string){
+    this.selectedPatientEmailMedicalRecord = this.selectedPatientEmailMedicalRecord === email ? null :email;
+}
 
 
 
@@ -287,7 +309,7 @@ export class DoctorComponent implements OnInit {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-    
+
     this.medicalConditionService.getAllMedicalConditions()
       .subscribe({
         next: (response) => {
@@ -490,7 +512,7 @@ export class DoctorComponent implements OnInit {
 
     const staffEmail = this.authService.getEmail();
 
-    
+
     forkJoin({
       patient: this.patientService.getPatientByEmail(requestData.patientId),
       staff: this.staffService.getStaffByEmail(staffEmail),
@@ -504,9 +526,12 @@ export class DoctorComponent implements OnInit {
           staff: staffId,
           patientId: getPatientId,
           allergies: this.tags,
-          medicalConditions: this.tagsConditions,
-          descricao: requestData.descricao,
+          medicalConditions: this.tagsConditions
         };
+
+        if (requestData.descricao) {
+          payload.descricao = requestData.descricao;
+        }
 
         console.log("Medical record payload:", payload);
 
@@ -544,25 +569,6 @@ export class DoctorComponent implements OnInit {
       },
     });
   }
-
-
-
-
-  /*addAllergy(event: KeyboardEvent) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value.trim();
-    if (event.key === 'Enter' && value) {    
-          event.preventDefault(); 
-          this.tags.push(value);       
-          
-          input.value = '';        
-    }
-
-  }
-
-  removeAllergy(index: number) {
-    this.tags.splice(index, 1);
-  }*/
 
 
   selectOptionTag(option: string) {
@@ -613,7 +619,7 @@ export class DoctorComponent implements OnInit {
     this.filterTextCondition = '';
   }
 
-  onBlur() {   
+  onBlur() {
     setTimeout(() => (this.showDropdown = false), 200);
     setTimeout(() => (this.showDropdown2 = false), 200);
   }
@@ -631,8 +637,6 @@ export class DoctorComponent implements OnInit {
       });
     }
   }
-
-
 
 
 
@@ -695,6 +699,147 @@ export class DoctorComponent implements OnInit {
       return matchesAllergie && matchesMedicalCondition;
     });
   }
+
+  editMedicalRecord() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    if (this.selectedPatientEmailMedicalRecord === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a medical record.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      console.log(`Viewing Patient Id medical record: ${this.selectedPatientEmailMedicalRecord}`);
+
+      this.medicalRecordService.getAllMedicalRecordByPatientId(this.selectedPatientEmailMedicalRecord)
+        .subscribe({
+          next: (response) => {
+            this.medicalRecordProfileUpdate = response[0];
+            console.log("Medical record: ", this.medicalRecordProfileUpdate);
+
+            // Patch form data
+            this.medicalRecordUpdate.patchValue({
+              patientId: this.medicalRecordProfileUpdate.patientEmail,
+              descricao: this.medicalRecordProfileUpdate.descricao
+            });
+
+            const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
+            const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
+
+            // Clear previous values
+            medicalConditionsControl.clear();
+            allergiesControl.clear();
+
+            // Add existing conditions and allergies to the form
+            this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: string) => {
+              medicalConditionsControl.push(this.fb.control(condition));
+            });
+
+            this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions[0];
+
+            this.medicalRecordProfileUpdate.allergies.forEach((allergy: string) => {
+              allergiesControl.push(this.fb.control(allergy));
+            });
+
+            this.tags = this.medicalRecordProfileUpdate.allergies[0];
+
+            const updatedMedicalRecordData = this.medicalRecordUpdate.value;
+            console.log('Updated Patient Data:', updatedMedicalRecordData);
+
+            console.log("Updated allergies: ",this.tags.length );
+
+            this.openModal('UpdateMedicalRecordModal');
+          },
+          error: (error) => {
+            console.error('Error getting medical record:', error);
+            this.errorMessage = 'Failed to get medical record!';
+          }
+        });
+    }
+  }
+
+
+
+  onUpdateMedicalRecord() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    if (!this.selectedPatientEmailMedicalRecord) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum medical record selecionado.',
+      });
+      return;
+    }
+
+    const updatedPatientData = this.medicalRecordUpdate.value;
+
+
+    updatedPatientData.allergies = this.tags;
+    updatedPatientData.medicalConditions = this.tagsConditions;
+
+    updatedPatientData.allergies = updatedPatientData.allergies.map((allergy: any) => allergy.toString());
+
+    console.log("allergies to be updated:" ,  updatedPatientData.allergies);
+
+    updatedPatientData.medicalConditions = updatedPatientData.medicalConditions.map((condition: any) => condition.toString());
+
+    console.log("conditions to be updated:" ,  updatedPatientData.medicalConditions);
+
+    this.medicalRecordService.updateMedicalRecord(updatedPatientData)
+      .subscribe({
+        next: (response: any) => {
+          console.log("Updated medical record response: ", response);
+          Swal.fire({
+            icon: "success",
+            title: "Medical Record atualizado com sucesso!",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllMedicalRecords(); // Fetch all medical records
+          this.closeModal('UpdateMedicalRecordModal');
+        },
+        error: (error) => {
+          console.error('Error editing Medical Record:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Não foi possível atualizar o Medical Record",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit Medical Record!';
+          this.successMessage = null;
+        }
+      });
+  }
+
+
 
 
   openModal(modalId: string): void {

@@ -35,6 +35,20 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
     return !!MedicalRecordDocument === true;
   }
 
+  public async update(MedicalRecord: MedicalRecord): Promise<void> {
+    try {
+        const rawMedicalRecord = MedicalRecordMap.toPersistence(MedicalRecord);
+
+        await this.MedicalRecordSchema.updateOne(
+            { patientId: rawMedicalRecord.patientId }, // Match the record by patientId
+            { $set: rawMedicalRecord }, // Update the fields
+            { upsert: false } // Do not create a new record if it doesn't exist
+        );
+    } catch (e) {
+        throw e;
+    }
+}
+
   public async save (MedicalRecord: MedicalRecord): Promise<MedicalRecord> {
     const query = { medicalRecordId: MedicalRecord.id.toString() };
 

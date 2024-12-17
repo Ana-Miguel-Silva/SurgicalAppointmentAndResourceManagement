@@ -1242,19 +1242,28 @@
     <span (click)="closeModal('scheduleOperationsModal')" class="close">&times;</span>
     <h3 class="text-center">Schedule Operations</h3>
     
+    <!-- Date Input Field -->
+    <div class="text-center my-3">
+      <label for="scheduleDate">Select a Date:</label>
+      <input 
+        type="date" 
+        id="scheduleDate" 
+        [(ngModel)]="scheduleDate" 
+        [min]="minDate"
+        class="form-control"
+      />
+    </div>
+
     <!-- Generate Schedule Button -->
     <div class="text-center my-3">
-      <button class="btn btn-primary" (click)="onScheduleAppointment()">Generate Schedule</button>
+      <button class="btn btn-primary" (click)="onScheduleAppointment({ date: scheduleDate })">Generate Schedule</button>
     </div>
 
     <!-- Display Scheduled Message -->
-      <h5 class="text-center">Schedule Preview:</h5>
-      <div class="formatted-message" [innerHTML]="scheduledAppointmentMessage"></div>
-    </div>
+    <h5 class="text-center">Schedule Preview:</h5>
+    <div class="formatted-message" [innerHTML]="scheduledAppointmentMessage"></div>
+  </div>
 </div>
-
-
-
 
 <!-- Create Operation Type Modal -->
 <div [ngStyle]="{'display': isModalOpen('createOperationTypeModal') ? 'block' : 'none'}" id="createOperationTypeModal" class="modal">

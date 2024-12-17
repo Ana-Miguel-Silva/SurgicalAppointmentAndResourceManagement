@@ -8078,29 +8078,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dmopm\\.nuget\\packages\\": {},
+    "C:\\Users\\luisc\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\luisc\\OneDrive\\Documents\\.PROJINTEG3A1S\\S\\DDDNetCore.csproj",
       "projectName": "DDDNetCore",
-      "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj",
-      "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\obj\\",
+      "projectPath": "C:\\Users\\luisc\\OneDrive\\Documents\\.PROJINTEG3A1S\\S\\DDDNetCore.csproj",
+      "packagesPath": "C:\\Users\\luisc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\luisc\\OneDrive\\Documents\\.PROJINTEG3A1S\\S\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
+        "C:\\Users\\luisc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8228,7 +8230,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

@@ -25,10 +25,22 @@ export default (app: Router) => {
         patientId: Joi.string(),
         allergies: Joi.array().items(Joi.string()).required(),
         medicalConditions: Joi.array().items(Joi.string()).required(),
-        descricao: Joi.string(),
+        descricao: Joi.string().allow('').optional(),
       }),
     }),
     (req, res, next) => ctrl.createMedicalRecord(req, res, next) );
+
+    route.patch(
+      '/update',
+      celebrate({
+        body: Joi.object({    
+          patientId: Joi.string().required(),    
+          allergies: Joi.array().items(Joi.string()),
+          medicalConditions: Joi.array().items(Joi.string()),
+          descricao: Joi.string().allow('').optional(),
+        }),
+      }),
+      (req, res, next) => ctrl.updateMedicalRecord(req, res, next) );
 
 
   route.get(

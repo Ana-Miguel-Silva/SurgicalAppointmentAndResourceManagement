@@ -221,7 +221,7 @@ export default class Camera {
     }
 
     setOrientation(orientation) {
-        this.orientation.copy(orientation).clamp(this.orientationMin, this.orientationMax);
+        this.orientation.copy(orientation)/*.clamp(this.orientationMin, this.orientationMax)*/;
         this.setViewingParameters();
     }
 

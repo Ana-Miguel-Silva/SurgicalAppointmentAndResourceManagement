@@ -12,7 +12,7 @@ export default class Wall {
             this[key] = value;
         }
 
-        const texture = new THREE.TextureLoader().load("assets/textures/wall.jpg");
+        const texture = new THREE.TextureLoader().load(this.textureUrl);
         texture.colorSpace = THREE.SRGBColorSpace;
 
         texture.magFilter = THREE.LinearFilter;
