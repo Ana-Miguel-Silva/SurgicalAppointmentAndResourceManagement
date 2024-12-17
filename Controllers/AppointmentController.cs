@@ -77,13 +77,13 @@ namespace DDDSample1.Controllers
 
         }
 
-        // POST: api/Appointments/pmodule
+        // POST: api/Appointments/pmodule2
         [HttpPost("pmodule2")]
-        public async Task<IActionResult> Pmodule2(DateInputModel date)
+        public async Task<IActionResult> Pmodule2(DataInputModel data)
         {
             try
             {
-                var appointment = await _service.ScheduleAppointments2(date);
+                var appointment = await _service.ScheduleAppointments2(data);
 
                 return Ok(new { message = appointment });
             }

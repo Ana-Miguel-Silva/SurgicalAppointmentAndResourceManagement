@@ -141,10 +141,9 @@ namespace DDDSample1.ApplicationService.Appointments
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public async Task<string> ScheduleAppointments2(DateInputModel info)
+        public async Task<string> ScheduleAppointments2(DataInputModel prologDto)
         {
-            DateTime date = info.Date;
-            PrologDto prologDto = new PrologDto(date.ToString("yyyyMMdd"), 0.5, 0.5, 6, 6);
+            DateTime date = prologDto.Date;
 
             List<StaffProfile> staff = await _repoStaff.GetAllAsync();
             List<OperationRequest> request = await _repoOpReq.GetAllAsync();
@@ -227,7 +226,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             var data = new
             {
-                day = prologDto.Day,
+                day = date.ToString("yyyyMMdd"),
                 prob_CrossOver = prologDto.Prob_CrossOver,
                 prob_Mutation = prologDto.Prob_Mutation,
                 n_Generations = prologDto.N_Generations,
@@ -262,18 +261,19 @@ namespace DDDSample1.ApplicationService.Appointments
 
                 var appointments = room["appointmentJson_array"];
                 if (appointments != null && appointments.Count() > 0)
-                    result.AppendLine($"Room: {specificRoom.RoomNumber}");
+                    result.AppendLine($"\nRoom: {specificRoom.RoomNumber}");
                 foreach (var appointment in appointments)
                 {
                     string operationRequestId = appointment["operationRequestId"].ToString();
                     int start = appointment["instanteInicial"].ToObject<int>();
                     int end = appointment["instanteFinal"].ToObject<int>();
 
-                    result.AppendLine($"Operation Request: {operationRequestId}");
+                    result.AppendLine($"  Operation Request: {operationRequestId}");
                     var operationRequestIdObj = new OperationRequestId(operationRequestId);
                     var specificOperationReequest = await InactivateAsync(operationRequestIdObj);
 
-                    result.AppendLine($"Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
+                    result.AppendLine($"  Time: {FormattedDate(dateOfAppointments.AddMinutes(start))} to {FormattedDate(dateOfAppointments.AddMinutes(end))}");
+                    result.AppendLine("  Associated Staff:");
 
 
                     var date = new Slot(dateOfAppointments.AddMinutes(start), dateOfAppointments.AddMinutes(end));
@@ -295,6 +295,12 @@ namespace DDDSample1.ApplicationService.Appointments
                         appointmentSlots.Add(appointmentSlot);
 
                         var staffProfile = await _repoStaff.GetByIdAsync(staffGuid);
+
+                        string staffStartTime = FormattedDate(dateOfAppointments.AddMinutes(staffStart));
+                        string staffEndTime = FormattedDate(dateOfAppointments.AddMinutes(staffEnd));
+
+                        result.AppendLine($"    License Number: {staffProfile.LicenseNumber} – {staffStartTime} to {staffEndTime}");
+
 
                         RemoveOccupiedSlotFromAvailability(staffProfile, staffSlot);
 

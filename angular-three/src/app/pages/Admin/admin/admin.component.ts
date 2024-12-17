@@ -33,6 +33,10 @@ interface CreatingOperationTypeDto {
 
 interface PlanningModelDto {
   date: string;
+  Prob_CrossOver: number ;
+  Prob_Mutation: number ;
+  N_Generations: number; 
+  Base_Population: number; 
 }
 
 // or via CommonJS
@@ -56,6 +60,11 @@ export class AdminComponent {
   };
 
   scheduleDate: string = '';
+  probCrossOver: number = 0.50;
+  probMutation: number = 0.50;
+  nGenerations: number = 6;
+  basePopulation: number = 6;
+
 
   minDate: string = '';
 
@@ -318,6 +327,10 @@ export class AdminComponent {
 
     const payload: PlanningModelDto = {
       date: scheduleData.date,
+      Prob_CrossOver: scheduleData.Prob_CrossOver,
+      Prob_Mutation: scheduleData.Prob_Mutation,
+      N_Generations: scheduleData.N_Generations,
+      Base_Population: scheduleData.Base_Population,
     };
 
     this.appointmentService.scheduleAppointments(payload).subscribe({

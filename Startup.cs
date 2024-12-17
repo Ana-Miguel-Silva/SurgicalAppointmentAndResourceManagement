@@ -285,7 +285,7 @@ namespace DDDSample1
                 var userService = scope.ServiceProvider.GetRequiredService<UserService>();
 
                 var doctorUsername = "doctor";
-                var doctorEmail = new Email("1221003@isep.ipp.pt");
+                var doctorEmail = new Email("doc@gmail.com");
                 var doctorRole = "Doctor";
 
                 User existingDoctor = await userService.GetByUsernameAsync(doctorUsername);

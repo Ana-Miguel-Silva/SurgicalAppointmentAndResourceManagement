@@ -1241,22 +1241,93 @@
   <div class="modal-content">
     <span (click)="closeModal('scheduleOperationsModal')" class="close">&times;</span>
     <h3 class="text-center">Schedule Operations</h3>
-    
-    <!-- Date Input Field -->
-    <div class="text-center my-3">
-      <label for="scheduleDate">Select a Date:</label>
-      <input 
-        type="date" 
-        id="scheduleDate" 
-        [(ngModel)]="scheduleDate" 
-        [min]="minDate"
-        class="form-control"
-      />
+
+    <div class="container">
+      <div class="row">
+
+        <!-- Date Input Field -->
+        <div class="col-md-6 mb-3">
+          <label for="scheduleDate">Select a Date:</label>
+          <input
+            type="date"
+            id="scheduleDate"
+            [(ngModel)]="scheduleDate"
+            [min]="minDate"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Probability of Crossover Input Field -->
+        <div class="col-md-6 mb-3">
+          <label for="probCrossOver">Probability of Crossover:</label>
+          <input
+            type="number"
+            id="probCrossOver"
+            [(ngModel)]="probCrossOver"
+            placeholder="Enter crossover probability (e.g., 0.75)"
+            step="0.01"
+            min="0"
+            max="1"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Probability of Mutation Input Field -->
+        <div class="col-md-6 mb-3">
+          <label for="probMutation">Probability of Mutation:</label>
+          <input
+            type="number"
+            id="probMutation"
+            [(ngModel)]="probMutation"
+            placeholder="Enter mutation probability (e.g., 0.01)"
+            step="0.01"
+            min="0"
+            max="1"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Number of Generations Input Field -->
+        <div class="col-md-6 mb-3">
+          <label for="nGenerations">Number of Generations:</label>
+          <input
+            type="number"
+            id="nGenerations"
+            [(ngModel)]="nGenerations"
+            placeholder="Enter number of generations"
+            min="1"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Base Population Input Field -->
+        <div class="col-md-6 mb-3">
+          <label for="basePopulation">Base Population:</label>
+          <input
+            type="number"
+            id="basePopulation"
+            [(ngModel)]="basePopulation"
+            placeholder="Enter base population"
+            min="1"
+            class="form-control"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Generate Schedule Button -->
     <div class="text-center my-3">
-      <button class="btn btn-primary" (click)="onScheduleAppointment({ date: scheduleDate })">Generate Schedule</button>
+      <button
+        class="btn btn-primary"
+        (click)="onScheduleAppointment({
+          date: scheduleDate,
+          Prob_CrossOver: probCrossOver,
+          Prob_Mutation: probMutation,
+          N_Generations: nGenerations,
+          Base_Population: basePopulation
+        })">
+        Generate Schedule
+      </button>
     </div>
 
     <!-- Display Scheduled Message -->
