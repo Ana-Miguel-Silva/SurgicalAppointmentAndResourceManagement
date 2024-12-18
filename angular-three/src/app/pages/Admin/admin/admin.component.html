@@ -57,6 +57,14 @@
               </div>
             </div>
 
+            <div class="container col-md-4">
+              <div class="container-lg selectionDiv" (click)="openModal('createSpecializationModal')">
+                <div class="form-floating mb-3">
+                  <h3 class="title" >Create Specialization</h3>
+                </div>
+              </div>
+            </div>
+
         <div class="container col-md-4">
           <div class="container-lg selectionDiv" (click)="openModal('listOperationTypeModal')">
             <div class="form-floating mb-3">
@@ -1447,6 +1455,35 @@
 </div>
 
 
+
+<!-- Specialization Modal -->
+<div [ngStyle]="{'display': isModalOpen('createSpecializationModal') ? 'block' : 'none'}" id="createSpecializationModal" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('createSpecializationModal')" class="close">&times;</span>
+      <form (ngSubmit)="onCreateSpecialization(specialization)" class="row g-3 needs-validation" novalidate>
+          <h3 class="text-center">Insert New Specialization</h3>
+
+          <!-- Specialization Designation -->
+          <div class="col-md-6">
+              <label for="specializationName" class="form-label">Specialization Designation</label>
+              <input type="text" class="form-control" id="specializationName" [(ngModel)]="specialization.specializationName" name="specializationName" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
+
+          <!-- Specialization Description -->
+          <div class="col-md-6">
+              <label for="specializationDescription" class="form-label">Specialization Description</label>
+              <input type="text" class="form-control" id="specializationDescription" [(ngModel)]="specialization.specializationDescription" name="specializationDescription" required />
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+
+          <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" type="submit">Create Specialization</button>
+          </div>
+      </form>
+  </div>
+</div>
 
 
 <div  [ngStyle]="{'display': isModalOpen('listOperationTypeModal') ? 'block' : 'none'}" id="listOperationTypeModal" class="modal" >

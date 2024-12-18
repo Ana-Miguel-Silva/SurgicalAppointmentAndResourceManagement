@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../../Services/auth.service';
 import { AppointmentService } from '../../../Services/appointment.service';
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
+import { SpecializationService } from '../../../Services/specialization.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment'; // Importa o environment correto
@@ -24,6 +25,11 @@ interface EstimatedDuration {
   patientPreparation: string;
   surgery: string;
   cleaning: string;
+}
+
+interface CreatingSpecializationDto {
+  specializationName: string;
+  specializationDescription: string;
 }
 
 interface CreatingOperationTypeDto {
@@ -60,6 +66,12 @@ export class AdminComponent {
     }
   };
 
+  specialization: CreatingSpecializationDto = {
+    specializationName:  '' ,
+    specializationDescription:'' 
+  };
+
+
   scheduleDate: string = '';
   probCrossOver: number = 0.50;
   probMutation: number = 0.50;
@@ -77,7 +89,7 @@ export class AdminComponent {
     private modalService: ModalService,
     private allergiesService: AllergiesService,
     private medicalConditionService: MedicalConditionService,
-    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
+    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private specializationService: SpecializationService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
     private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
@@ -414,6 +426,51 @@ export class AdminComponent {
             icon: 'error',
             title: 'Error',
             text: 'Failed to create Operation Type.',
+          });
+        }
+      });
+  }
+
+
+  onCreateSpecialization(specializationData: CreatingSpecializationDto) {
+    const token = this.authService.getToken();
+
+    // Check if the user is logged in
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    const payload: CreatingSpecializationDto = {
+      specializationName: specializationData.specializationName,
+      specializationDescription: specializationData.specializationDescription
+    };
+
+    // Send a POST request to create the operation type
+    this.specializationService.createSpecialization(payload)
+      .subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Specialization created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          // Close the modal after success
+          this.modalService.closeModal('createSpecializationModal');
+        },
+        error: (error) => {
+          console.error('Error creating operation type:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create Specialization.',
           });
         }
       });

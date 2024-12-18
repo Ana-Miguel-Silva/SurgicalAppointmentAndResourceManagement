@@ -47,7 +47,7 @@ namespace DDDSample1.ApplicationService.Specializations
         public async Task<SpecializationDto> AddAsync(CreatingSpecializationDto dto)
         {
 
-            var specialization = new Domain.Specializations.Specialization(dto.SpecializationName);
+            var specialization = new Domain.Specializations.Specialization(dto.SpecializationName, dto.SpecializationDescription);
 
             await this._repo.AddAsync(specialization);
             await this._unitOfWork.CommitAsync();
@@ -66,7 +66,7 @@ namespace DDDSample1.ApplicationService.Specializations
         }*/
 
 
-        /*public async Task<SpecializationDto> DeleteAsync(SpecializationId id)
+        /*  public async Task<SpecializationDto> DeleteAsync(SpecializationId id)
         {
             var specialization = await this._repo.GetByIdAsync(id);
 
@@ -86,7 +86,6 @@ namespace DDDSample1.ApplicationService.Specializations
             {
                 listDto.Add(new SpecializationUIDto(specialization.SpecializationName));
             }
-
             return listDto;
         }
 
