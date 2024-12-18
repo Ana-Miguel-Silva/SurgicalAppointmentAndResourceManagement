@@ -1,5 +1,3 @@
-using DDDSample1.Domain.Staff;
-
 namespace DDDSample1.Domain.Appointments
 {
     public class StaffToProlog

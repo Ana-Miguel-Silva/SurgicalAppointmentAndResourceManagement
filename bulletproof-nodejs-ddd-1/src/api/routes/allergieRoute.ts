@@ -52,6 +52,15 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.getAllergie(req, res, next) );
 
+
+    route.get(
+      '/getByDesignacao',
+      celebrate({
+        body: Joi.object({
+        }),
+      }),
+      (req, res, next) => ctrl.getAllergyByDesignacao(req, res, next) );
+
     route.get(
       '/getById',
       celebrate({

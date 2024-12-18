@@ -84,6 +84,19 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return new OperationRequestDto(operationRequest.Id.AsGuid(), operationRequest.MedicalRecordNumber, operationRequest.DoctorId, operationRequest.OperationTypeId, operationRequest.Deadline, operationRequest.Priority);
         }
 
+        public async Task<OperationRequestUIDto> GetByIdUIAsync(OperationRequestId id)
+        {
+            var operationRequest = await this._repo.GetByIdAsync(id);
+            var list = new List<OperationRequest>
+            {
+                operationRequest
+            };
+            var listDto = await Dto_to_UIDto(list);
+
+
+            return listDto.FirstOrDefault();
+        }
+
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestUIDto dto, string authUserEmail)
         {
             var doctor = await CheckDoctorAsync(authUserEmail);
@@ -207,7 +220,7 @@ namespace DDDSample1.ApplicationService.OperationRequests
 
 
             //if (operationType.Name.ToLower() != doctor.Specialization.ToLower())
-                //throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
+            //throw new BusinessRuleValidationException("Doctor specialization does not match the OperationType specialization.");
         }
 
         private static void CheckDate(DateTime date)

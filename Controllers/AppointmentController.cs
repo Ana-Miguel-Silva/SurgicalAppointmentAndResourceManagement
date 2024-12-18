@@ -10,10 +10,6 @@ using DDDSample1.ApplicationService.Shared;
 using DDDSample1.Domain.Users;
 using Newtonsoft.Json;
 
-
-using System.Net.Http;
-using DDDSample1.Domain.Appointments.Dto;
-
 namespace DDDSample1.Controllers
 {
     [Route("api/[controller]")]
@@ -79,7 +75,7 @@ namespace DDDSample1.Controllers
 
         // POST: api/Appointments/pmodule2
         [HttpPost("pmodule2")]
-        public async Task<IActionResult> Pmodule2(DataInputModel data)
+        public async Task<IActionResult> Pmodule2(ScheduleInputData data)
         {
             try
             {
