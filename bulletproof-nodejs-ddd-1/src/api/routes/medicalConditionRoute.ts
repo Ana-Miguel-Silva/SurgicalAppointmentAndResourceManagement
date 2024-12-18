@@ -1,19 +1,15 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 
-import config from "../../../config";
+import config from '../../../config';
 import { celebrate, Joi } from 'celebrate';
 import winston = require('winston');
 
 import IMedicalConditionController from '../../controllers/IControllers/IMedicalConditionController';
 
-
-
 const route = Router();
 
-
 export default (app: Router) => {
-  
   app.use('/medicalCondition', route);
 
   const ctrl = Container.get(config.controllers.medicalCondtion.name) as IMedicalConditionController;
@@ -26,8 +22,8 @@ export default (app: Router) => {
         descricao: Joi.string().required(),
       }),
     }),
-    (req, res, next) => ctrl.createMedicalCondition(req, res, next) );
-    
+    (req, res, next) => ctrl.createMedicalCondition(req, res, next),
+  );
 
   route.get(
     '/get',
@@ -35,11 +31,9 @@ export default (app: Router) => {
       body: Joi.object({
         id: Joi.string(),
         codigo: Joi.string(),
-        descricao: Joi.string(),      
+        descricao: Joi.string(),
       }),
     }),
-    (req, res, next) => ctrl.getMedicalCondition(req, res, next) );
-
-  
- 
+    (req, res, next) => ctrl.getMedicalCondition(req, res, next),
+  );
 };

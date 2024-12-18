@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment'; // Importa o
 import { StaffService } from '../../../Services/staff.service';
 import { PatientService } from '../../../Services/patient.service';
 import { AllergiesService } from '../../../Services/allergies.service';
+import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 
 interface RequiredStaff {
   quantity: number;
@@ -75,6 +76,7 @@ export class AdminComponent {
     private fb: FormBuilder, 
     private modalService: ModalService,
     private allergiesService: AllergiesService,
+    private medicalConditionService: MedicalConditionService,
     private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
     private router: Router) {
     // Define os controles do formulário com validações
@@ -119,6 +121,11 @@ export class AdminComponent {
 
     this.allergieForm = this.fb.group({
       designacao: ['', Validators.required],
+      descricao: ['', Validators.required],
+    });
+
+    this.medicalConditionForm = this.fb.group({
+      codigo: ['', Validators.required],
       descricao: ['', Validators.required],
     });
 
@@ -188,6 +195,7 @@ export class AdminComponent {
   patientUpdateForm!: FormGroup;
   operationTypeUpdateForm!: FormGroup;
   allergieForm!: FormGroup;
+  medicalConditionForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -203,6 +211,7 @@ export class AdminComponent {
   patientsProfiles: any[] = [];
   staffsProfiles: any[] = [];
   OperationTypesProfiles: any[] = [];
+  Specializations: any[] = [];
   OperationTypeSingle: any = null;
   requiredStaffView: any[] = [];
   staffProfileSingle: any = null;
@@ -1878,7 +1887,54 @@ export class AdminComponent {
 
 
 
+  onInsertMedicalCondition(){
+    const token = this.authService.getToken();
 
+    // Check if the user is logged in
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+    const formData = this.medicalConditionForm.value;
+    console.log(formData);
+
+    this.medicalConditionService.createMedicalCondition(formData)
+    .subscribe({
+      next: (response) => {
+
+        Swal.fire({
+          icon: "success",
+          title: "Medical condition registered successfully",
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false
+        });
+
+        this.modalService.closeModal('insertMedicalCondition');
+
+      },
+      error: (error) => {
+        console.error('Error fetched:', error);
+        this.errorMessage = 'Failed to register a medical condition  !';
+        Swal.fire({
+          icon: "error",
+          title: "There is already a medical condition with this name",
+          //It was not possible create the allergie
+          toast: true,
+          position: "top-end",
+          timer: 3000,
+          showConfirmButton: false
+        });
+
+        
+      }
+    });
+  }
 
   onInsertAllergie(){
     
@@ -1942,6 +1998,7 @@ export class AdminComponent {
 
 
 
+  onSubmitSpecializations() {}
 
 
 

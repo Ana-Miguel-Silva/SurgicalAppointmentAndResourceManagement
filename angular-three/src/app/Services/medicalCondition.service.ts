@@ -15,12 +15,13 @@ export class MedicalConditionService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-/*createOperationRequests(operationRequest : any): Observable<any> {
+createMedicalCondition(medicalCondition : any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.post(`${this.apiUrl}`, operationRequest, { headers })
+  return this.http.post(`${this.apiUrl}/create`, medicalCondition, { headers })
 }
+/*
 
 updateOperationRequests(operationRequest: any): Observable<any> {
   const token = this.authService.getToken();
