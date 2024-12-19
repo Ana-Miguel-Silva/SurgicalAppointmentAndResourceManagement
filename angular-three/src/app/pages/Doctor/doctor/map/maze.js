@@ -124,12 +124,16 @@ export default class Maze {
                             doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                             doorObject.rotateY(Math.PI/2);
                             this.object.add(doorObject); // Add to the scene
+
+                           
                         });
                     }
                     if(rooms[j][i] == 5) {
                         const door = new Decor({ url: 'assets/models/gltf/double_doors.glb', scale: new THREE.Vector3(0.0033, 0.00725, 0.003) }, (doorObject) => {
                             doorObject.position.set(i - actual_width / 2.0 + 0.5, 0, j - actual_height / 2);
                             this.object.add(doorObject); // Add to the scene
+
+                           
                         });
                     }
                     if(rooms[j][i] == 6) {
@@ -151,6 +155,15 @@ export default class Maze {
                                 this.object.add(cube); // Add to the scene
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
+
+                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                                doorLight.position.set(
+                                    doorObject.position.x,
+                                    doorObject.position.y + 5, 
+                                    doorObject.position.z
+                                );
+                                doorLight.castShadow = true; 
+                                this.object.add(doorLight); 
                             });
                         }
                         else {
@@ -171,6 +184,15 @@ export default class Maze {
                                 this.object.add(cube); // Add to the scene
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
+
+                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                                doorLight.position.set(
+                                    doorObject.position.x,
+                                    doorObject.position.y + 5, 
+                                    doorObject.position.z
+                                );
+                                doorLight.castShadow = true; 
+                                this.object.add(doorLight); 
                             });
                         }
                         roomData.shift();
