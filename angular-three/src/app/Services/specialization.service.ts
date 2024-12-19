@@ -20,6 +20,13 @@ createSpecialization(specialization : any): Observable<any> {
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
   return this.http.post(`${this.apiUrl}`, specialization, { headers })
-}
+  }
+
+  getAllSpecializations(): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<any[]>(`${this.apiUrl}`, { headers });
+  }
 
 }

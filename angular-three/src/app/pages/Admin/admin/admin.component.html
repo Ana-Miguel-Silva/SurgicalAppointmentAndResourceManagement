@@ -1864,7 +1864,7 @@
   <div class="modal-content">
       <span (click)="closeModal('insertAllergies')" class="close">&times;</span>
       <form [formGroup]="allergieForm" (ngSubmit)="onInsertAllergie()" class="row g-3 needs-validation" novalidate>
-         
+
           <div class="col-md-6">
             <label for="allergieDesignation" class="form-label">Designation</label>
             <input type="text" class="form-control" id="allergieDesignation" formControlName="designacao"   name="allergieDesignation" required step="1" />
@@ -1875,7 +1875,7 @@
               <input type="text" class="form-control" id="allergieDescription" formControlName="descricao"  name="allergieDescription" required step="2" />
           </div>
 
-          
+
           <!-- Submit Button -->
           <div class="col-12">
               <button class="btn btn-primary" type="submit">Create Allergie</button>
@@ -1888,7 +1888,7 @@
   <div class="modal-content">
       <span (click)="closeModal('insertMedicalCondition')" class="close">&times;</span>
       <form [formGroup]="medicalConditionForm" (ngSubmit)="onInsertMedicalCondition()" class="row g-3 needs-validation" novalidate>
-         
+
           <div class="col-md-6">
             <label for="medicalConditionCode" class="form-label">Code</label>
             <input type="text" class="form-control" id="medicalConditionCode" formControlName="codigo"   name="medicalConditionCode" required step="1" />
@@ -1899,7 +1899,7 @@
               <input type="text" class="form-control" id="medicalConditionDescription" formControlName="descricao"  name="medicalConditionDescription" required step="2" />
           </div>
 
-          
+
           <!-- Submit Button -->
           <div class="col-12">
               <button class="btn btn-primary" type="submit">Register Medical Condition</button>
@@ -2005,9 +2005,9 @@
 
 
 
-<div  [ngStyle]="{'display': isModalOpen('listSpecializations') ? 'block' : 'none'}" id="listSpecializations" class="modal" >
+<div  [ngStyle]="{'display': isModalOpen('listSpecializationsModal') ? 'block' : 'none'}" id="listSpecializationsModal" class="modal" >
   <div class="modal-content">
-      <span (click)="closeModal('listSpecializations')" class="close">&times;</span>
+      <span (click)="closeModal('listSpecializationsModal')" class="close">&times;</span>
       <div>
 
         <form  class="row g-3 needs-validation" novalidate="">
@@ -2039,19 +2039,9 @@
                 <tbody>
                   <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.id)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.id }">
                     <td>{{ i + 1 }}</td>
-                    <td hidden><input class="selectRequest" type="radio" id="operationType_{{ request.id }}" name="SpecializationsFormID" value="{{ request.id }}" [checked]="selectSpecializationsId === request.id" hidden>{{ request.id }}</td>
-                    <td>{{ request.name }} </td>
-                    <td>{{ request.estimatedDuration.patientPreparation }}</td>
-                    <td>{{ request.estimatedDuration.surgery }}</td>
-                    <td>{{ request.estimatedDuration.cleaning }}</td>
-                    <td id="active_{{ request.id }}_{{request.active}}">
-                      <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
-                      <ng-template #failure>
-                        <span class="badge rounded-pill bg-danger">No</span>
-                      </ng-template>
-                    </td>
-                  </tr>
-                </tbody>
+                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.id }}" name="SpecializationsFormID" value="{{ request.id }}" [checked]="selectSpecializationsId === request.id" hidden>{{ request.id }}</td>
+                    <td>{{ request.specializationName }} </td>
+</tbody>
               </table>
               </form>
             </div>

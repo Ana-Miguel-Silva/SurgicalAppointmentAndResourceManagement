@@ -42,8 +42,8 @@ interface PlanningModelDto {
   date: string;
   Prob_CrossOver: number ;
   Prob_Mutation: number ;
-  N_Generations: number; 
-  Base_Population: number; 
+  N_Generations: number;
+  Base_Population: number;
 }
 
 // or via CommonJS
@@ -68,7 +68,7 @@ export class AdminComponent {
 
   specialization: CreatingSpecializationDto = {
     specializationName:  '' ,
-    specializationDescription:'' 
+    specializationDescription:''
   };
 
 
@@ -83,9 +83,9 @@ export class AdminComponent {
 
   scheduledAppointmentMessage: string = '';
 
-   
+
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private modalService: ModalService,
     private allergiesService: AllergiesService,
     private medicalConditionService: MedicalConditionService,
@@ -188,6 +188,7 @@ export class AdminComponent {
   selectedStaffId: string | null = null;
   selectOperationTypeId: string | null = null;
   selectedPatientEmail: string | null = null;
+  selectSpecializationsId: string | null = null;
 
   selectStaff(id: string) {
     this.selectedStaffId = this.selectedStaffId === id ? null : id;
@@ -200,6 +201,10 @@ export class AdminComponent {
 
   selectOperationType(id: string) {
     this.selectOperationTypeId = this.selectOperationTypeId === id ? null : id;
+  }
+
+  selectSpecialization(id: string) {
+    this.selectSpecializationsId = this.selectSpecializationsId === id ? null : id;
   }
 
 
@@ -221,9 +226,9 @@ export class AdminComponent {
   successMessage: string | null = null;
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
+  Specializations: any[] = [];
   staffsProfiles: any[] = [];
   OperationTypesProfiles: any[] = [];
-  Specializations: any[] = [];
   OperationTypeSingle: any = null;
   requiredStaffView: any[] = [];
   staffProfileSingle: any = null;
@@ -258,11 +263,11 @@ export class AdminComponent {
     specialization: '',
   } as const;
 
-  
+
   filteredOperationTypes: any[] = [];
   filterOperationTypes = {
     specialization: '',
-    status: ''    
+    status: ''
   } as const;
 
   /*onBackdropClick(event: MouseEvent) {
@@ -500,10 +505,10 @@ export class AdminComponent {
 
       // Obtém os valores do formulário
       const formData = this.myForm.value;
-      
+
 
       // Enviar os dados diretamente com HttpClient
-  
+
      // this.http.post(apiUrl, formData, { headers })
      this.patientService.adminRegisterPatient(formData)
         .subscribe(
@@ -530,7 +535,7 @@ export class AdminComponent {
                 position: "top-end",
                 timer: 3000,
                 showConfirmButton: false
-              }); 
+              });
               this.errorMessage = 'Failed to edit patient!';
               this.successMessage = null;
           }
@@ -604,7 +609,7 @@ export class AdminComponent {
               text: 'Nenhum paciente selecionado.',
             });
             return;
-          }      
+          }
 
           this.staffService.deactivateStaff(this.selectedStaffId)
           .subscribe({
@@ -1096,7 +1101,7 @@ export class AdminComponent {
     const toCreate = newSlots.filter((value: any) => !commonElements.includes(value));
     this.slotsForm.patchValue({slots: toCreate});
     const formDataA = this.slotsForm.value;
-    
+
     //this.http.put(`${this.staffUrl}/${this.selectedStaffId}/SlotsAdd`, JSON.stringify(formDataA).replaceAll("Time",""), { headers })
 
     if (!this.selectedStaffId) {
@@ -1171,7 +1176,7 @@ export class AdminComponent {
           }
         });
     //this.http.put(`${this.staffUrl}/${this.selectedStaffId}`, JSON.stringify(formData), { headers })
-    this.staffService.editStaffPostA(this.selectedStaffId, formData)  
+    this.staffService.editStaffPostA(this.selectedStaffId, formData)
     .subscribe({
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
@@ -1318,6 +1323,7 @@ export class AdminComponent {
     this.getAllpatientsProfiles(); // Fetch all profiles on component initialization
     this.getAllstaffsProfiles();
     this.getAllOperationTypes();
+    this.getAllSpecializations();
     this.setMinDate();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
@@ -1465,7 +1471,7 @@ export class AdminComponent {
     this.staffCreationForm2.patchValue({ slots: this.availabilitySlots2 });
     const formData = this.staffCreationForm2.value;
     console.log(formData);
-   
+
 
     //this.http.post(`${environment.apiBaseUrl}/Staff`, JSON.stringify(formData), { headers })
     this.staffService.createStaff(formData)
@@ -1625,18 +1631,18 @@ export class AdminComponent {
     });
 
 
-    
+
 
     const requiredStaffControl = this.GetrequiredStaff;
-    
+
     requiredStaffControl.clear(); // Limpar quaisquer dados antigos no FormArray
-  
-    
+
+
     this.operationTypeUpdate.requiredStaff.forEach((staff: any) => {
       requiredStaffControl.push(this.createStaffGroup(staff));
     });
 
-  
+
 
 
     //TODO: Fazer o array dos required staff atualizar automaticamente e ir buscar o codigo de adicionar o staff
@@ -1645,7 +1651,7 @@ export class AdminComponent {
 
   // Método para criar um FormGroup para cada membro da equipe
   createStaffGroup(staff: any): FormGroup {
-    
+
     return this.fb.group({
       quantity: [staff.quantity, Validators.required],
       specialization: [staff.specialization, Validators.required],
@@ -1726,7 +1732,7 @@ export class AdminComponent {
     // Verifica se o valor do tempo tem o formato "HH:mm:ss"
     if (time.includes(":")) {
       const timeParts = time.split(":");
-  
+
       // Se o tempo tiver apenas "HH:mm", adiciona ":00" para completar
       if (timeParts.length === 2) {
         time += ":00";
@@ -1735,13 +1741,13 @@ export class AdminComponent {
       // Se não tiver o caractere ":", então retorna o valor sem mudanças
       return time;
     }
-  
+
     // Retorna o valor já formatado como "HH:mm:ss"
     return time;
   }
-  
 
-  
+
+
 
 
   onUpdateOperationType() {
@@ -1777,10 +1783,10 @@ export class AdminComponent {
     /*this.operationTypeUpdateForm.value.estimatedDuration.patientPreparation += ":00";
     this.operationTypeUpdateForm.value.estimatedDuration.surgery += ":00";
     this.operationTypeUpdateForm.value.estimatedDuration.cleaning += ":00";*/
-    
-    
+
+
     this.operationTypesService.UpdateOperationType(this.selectOperationTypeId,this.operationTypeUpdateForm.value)
-      
+
     .subscribe({
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
@@ -1798,7 +1804,7 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error editing Operation Type:', error);
-      
+
           if (error.status === 400) {
             // Erro 400 específico
             Swal.fire({
@@ -1820,7 +1826,7 @@ export class AdminComponent {
               showConfirmButton: false,
             });
           }
-      
+
         },
       });
   }
@@ -1988,13 +1994,13 @@ export class AdminComponent {
           showConfirmButton: false
         });
 
-        
+
       }
     });
   }
 
   onInsertAllergie(){
-    
+
     const token = this.authService.getToken();
 
     // Check if the user is logged in
@@ -2039,7 +2045,7 @@ export class AdminComponent {
             showConfirmButton: false
           });
 
-          
+
         }
       });
 
@@ -2057,6 +2063,44 @@ export class AdminComponent {
 
   onSubmitSpecializations() {}
 
+  getAllSpecializations() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+
+    type FilterKeys = keyof typeof this.filter; // Restringe as chaves às do objeto filter
+
+
+    let params = new HttpParams();
+
+    Object.keys(this.filter).forEach(key => {
+      const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+      const value = this.filter[typedKey]; // Acessar o valor usando a chave tipada
+      if (value) { // Só adiciona se o valor estiver preenchido
+        params = params.set(key, value);
+      }
+    });
+
+    this.specializationService.getAllSpecializations()
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.Specializations = response;
+        },
+        error: (error) => {
+          console.error('Error fetching  profiles:', error);
+          this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+  }
 
 
 
@@ -2069,7 +2113,7 @@ export class AdminComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); 
+    this.router.navigate(['/login']);
   }
 
 
