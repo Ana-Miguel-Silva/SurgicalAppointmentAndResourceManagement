@@ -14,7 +14,9 @@ import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
 import { Allergie } from '../domain/allergie';
 import IMedicalConditionService from './IServices/IMedicalConditionService';
 import { forEach } from 'lodash';
-import IUpdateMedicalRecordDTO from '../dto/IUpdateMedicalRecordDTO';
+
+import { IMedicalConditionMedicalRecord } from '../dataschema/IMedicalConditionMedicalRecord';
+import { IAllergieMedicalRecord } from '../dataschema/IAllergieMedicalRecord';
 
 
 
@@ -26,7 +28,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       @Inject(config.services.medicalCondition.name) private medicalConditionServiceInstance : IMedicalConditionService,
   ) {}
 
-  public async createMedicalRecordDefault(medicalRecord: { date: Date; staff: string; patientId: string; allergies: string[]; medicalConditions: string[]; descricao: string; }) {
+  public async createMedicalRecordDefault(medicalRecord: { date: Date; staff: string; patientId: string; allergies: IAllergieMedicalRecord[]; medicalConditions: IMedicalConditionMedicalRecord[]; descricao: string; }) {
 
     const MedicalRecordOrError = await MedicalRecord.create( medicalRecord );
 
@@ -238,7 +240,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
-  public async updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
+  public async updateMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
       const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(MedicalRecordDTO.patientId);
       const MedicalRecord = MedicalRecords[0];

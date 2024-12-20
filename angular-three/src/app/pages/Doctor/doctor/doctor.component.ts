@@ -47,17 +47,29 @@ interface MedicalRecordRequest {
   date: Date;
   staff: string;
   patientEmail: string;
-  allergies: string[];
-  medicalConditions: string[];
+  allergies: IAllergieMedicalRecord[];
+  medicalConditions: IMedicalConditionMedicalRecord[];
   descricao: string
 }
 
 
+interface IAllergieMedicalRecord {
+  designacao: string;
+  descricao: string;
+  status: string;
+}
+
+export interface IMedicalConditionMedicalRecord {
+  codigo: string;
+  designacao: string;
+  status: string;
+}
+
 interface CreatingMedicalRecordUIDto {
   staff: string;
   patientId: string;
-  allergies: string[];
-  medicalConditions: string[];
+  allergies: IAllergieMedicalRecord[];
+  medicalConditions: IMedicalConditionMedicalRecord[];
   descricao?: string
 }
 
@@ -99,7 +111,8 @@ export class DoctorComponent implements OnInit {
     );
   }
   tags: string[] = [];
-  tagsConditions: string[] = [];
+  tagsAllergies: IAllergieMedicalRecord[] = [];
+  tagsConditions: IMedicalConditionMedicalRecord[] = [];
 
   animate() {
     requestAnimationFrame(() => this.animate());
@@ -258,10 +271,13 @@ export class DoctorComponent implements OnInit {
   newMedicalCondition: string = '';
   newAllergy: string = '';
   filteredOptions: any[] = [];
+  filteredAllergieNameOptions: any[] = [];
   filteredOptionsConditions: any[] = [];
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
   filterText: string = '';
+  filterAllergieNameText: string = '';
+  filterAllergieDescicaoText: string = '';
   filterTextCondition: string = '';
   showDropdown: boolean = false;
   showDropdown2: boolean = false;
@@ -332,10 +348,19 @@ export class DoctorComponent implements OnInit {
     );
   }
 
+
+  filterAllergieNameOptions(): void {
+    const filterValue = this.filterAllergieNameText.toLowerCase();
+    this.filteredAllergieNameOptions = this.allergiesList.filter(option =>
+      option.designacao.toLowerCase().includes(filterValue),
+    );
+  }
+
+
   filterOptionsMedicalConditions(): void {
     const filterValueCondition = this.filterTextCondition.toLowerCase();
     this.filteredOptionsConditions = this.medicalConditionsList.filter(option =>
-      option.descricao.toLowerCase().includes(filterValueCondition),
+      option.designacao.toLowerCase().includes(filterValueCondition),
 
     );
   }
@@ -344,6 +369,8 @@ export class DoctorComponent implements OnInit {
     this.filterText = option;
     this.showDropdown = false;
   }
+
+  
 
   hideDropdown(): void {
     // Pequeno atraso para evitar esconder antes de selecionar
@@ -518,14 +545,14 @@ export class DoctorComponent implements OnInit {
       staff: this.staffService.getStaffByEmail(staffEmail),
     }).subscribe({
       next: ({ patient, staff }) => {
-        console.log("STAFF: ", staff);
+       // console.log("STAFF: ", staff);
         const getPatientId = patient.id.value;
         const staffId = staff.id;
 
         const payload: CreatingMedicalRecordUIDto = {
           staff: staffId,
           patientId: getPatientId,
-          allergies: this.tags,
+          allergies: this.tagsAllergies,
           medicalConditions: this.tagsConditions
         };
 
@@ -579,13 +606,15 @@ export class DoctorComponent implements OnInit {
     this.showDropdown = false;
   }
 
-  selectOptionMedicalCondition(option: string) {
-    if (!this.tagsConditions.includes(option)) {
-      this.tagsConditions.push(option);
+  selectOptionTagAllergies(designacao: string) {
+    const selectedOption = this.allergiesList.find(option => option.designacao === designacao);
+    if (selectedOption && !this.tagsAllergies.some(tag => tag.designacao === selectedOption.designacao)) {
+      this.tagsAllergies.push({ ...selectedOption });
     }
-    this.filterTextCondition = '';
-    this.showDropdown2 = false;
+    this.cleanMedicalRecordRegister();
   }
+
+
 
   addTagFromInput(event: KeyboardEvent) {
     if (event.key === 'Enter' && this.filterText.trim()) {
@@ -598,26 +627,13 @@ export class DoctorComponent implements OnInit {
     }
   }
 
-  addTagConditionFromInput(event: KeyboardEvent) {
-    if (event.key === 'Enter' && this.filterTextCondition.trim()) {
-      const newTagConditon = this.filterTextCondition.trim();
-      if (!this.tagsConditions.includes(newTagConditon)) {
-        this.tagsConditions.push(newTagConditon);
-      }
-      this.filterTextCondition = '';
-      this.showDropdown2 = false;
-    }
-  }
+  
 
   removeTag(index: number) {
     this.tags.splice(index, 1);
     this.filterText = '';
   }
 
-  removeMedicalCondition(index: number) {
-    this.tagsConditions.splice(index, 1);
-    this.filterTextCondition = '';
-  }
 
   onBlur() {
     setTimeout(() => (this.showDropdown = false), 200);
@@ -625,7 +641,7 @@ export class DoctorComponent implements OnInit {
   }
 
 
-  addMedicalCondition() {
+ /* addMedicalCondition() {
     if (this.newMedicalCondition.trim() && !this.medicalRecordRequest.medicalConditions.includes(this.newMedicalCondition.trim())) {
       this.medicalRecordRequest.medicalConditions.push(this.newMedicalCondition.trim());
       this.newMedicalCondition = ''; // Limpa o campo de entrada
@@ -636,7 +652,7 @@ export class DoctorComponent implements OnInit {
         text: 'Condição médica já adicionada ou inválida!',
       });
     }
-  }
+  }*/
 
 
 
@@ -656,6 +672,7 @@ export class DoctorComponent implements OnInit {
       next: async (response) => {
         this.medicalRecordRequests = response;
 
+        console.log(response);
 
         this.medicalRecordRequests.forEach(async element => {
            this.patientService.getPatientEmailById(element.patientEmail).subscribe({
@@ -685,14 +702,14 @@ export class DoctorComponent implements OnInit {
   applyMedicalRecordFilter() {
     this.filteredMedicalRecordRequests = this.medicalRecordRequests.filter(request => {
       const matchesAllergie = this.filterMedicalRecord.allergies
-      ? (request.allergies as string[]).some(allergie =>
-          allergie.toLowerCase().includes(this.filterMedicalRecord.allergies.toLowerCase())
+      ? (request.allergies as IAllergieMedicalRecord[]).some(allergie =>
+          allergie.designacao.toLowerCase().includes(this.filterMedicalRecord.allergies.toLowerCase())
         )
       : true;
 
       const matchesMedicalCondition = this.filterMedicalRecord.medicalConditions
-      ? (request.medicalConditions as string[]).some(medicalCondition =>
-        medicalCondition.toLowerCase().includes(this.filterMedicalRecord.medicalConditions.toLowerCase())
+      ? (request.medicalConditions as IMedicalConditionMedicalRecord[]).some(medicalCondition =>
+        medicalCondition.designacao.toLowerCase().includes(this.filterMedicalRecord.medicalConditions.toLowerCase())
         )
       : true;
 
@@ -758,12 +775,12 @@ export class DoctorComponent implements OnInit {
               allergiesControl.push(this.fb.control(allergy));
             });
 
-            this.tags = this.medicalRecordProfileUpdate.allergies[0];
+            this.tagsAllergies = this.medicalRecordProfileUpdate.allergies[0];
 
             const updatedMedicalRecordData = this.medicalRecordUpdate.value;
             console.log('Updated Patient Data:', updatedMedicalRecordData);
 
-            console.log("Updated allergies: ",this.tags.length );
+            console.log("Updated allergies: ",this.tagsAllergies.length );
 
             this.openModal('UpdateMedicalRecordModal');
           },
@@ -797,7 +814,7 @@ export class DoctorComponent implements OnInit {
     const updatedPatientData = this.medicalRecordUpdate.value;
 
 
-    updatedPatientData.allergies = this.tags;
+    updatedPatientData.allergies = this.tagsAllergies;
     updatedPatientData.medicalConditions = this.tagsConditions;
 
     updatedPatientData.allergies = updatedPatientData.allergies.map((allergy: any) => allergy.toString());
@@ -864,7 +881,7 @@ export class DoctorComponent implements OnInit {
   }
 
   cleanMedicalRecordRegister() {
-    this.tags = [];
+    this.tagsAllergies = [];
     this.filterText = '';
     this.tagsConditions = [];
     this.filterTextCondition = '';
