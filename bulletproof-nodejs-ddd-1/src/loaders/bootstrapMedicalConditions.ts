@@ -9,7 +9,7 @@ export const bootstrapMedicalConditions = async () => {
   try {
     for (const medicalCondition of defaultMedicalConditions) {
       const existingAllergy = await medicalConditionService.getMedicalCondition(medicalCondition.codigo);
-
+      Logger.info(existingAllergy);
       if (existingAllergy.errorValue()) {
         await medicalConditionService.createMedicalConditionDefault(medicalCondition);
         Logger.info(`Added default Medical Condition: ${medicalCondition.codigo}`);

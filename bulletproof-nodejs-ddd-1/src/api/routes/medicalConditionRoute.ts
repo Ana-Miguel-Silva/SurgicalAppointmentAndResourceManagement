@@ -18,8 +18,10 @@ export default (app: Router) => {
     '/create',
     celebrate({
       body: Joi.object({
-        codigo: Joi.string().required(),
-        descricao: Joi.string().required(),
+        codigo: Joi.string(),
+        designacao: Joi.string(),
+        descricao: Joi.string(),
+        sintomas: Joi.array().items(Joi.string()),
       }),
     }),
     (req, res, next) => ctrl.createMedicalCondition(req, res, next),
@@ -31,7 +33,9 @@ export default (app: Router) => {
       body: Joi.object({
         id: Joi.string(),
         codigo: Joi.string(),
+        designacao: Joi.string(),
         descricao: Joi.string(),
+        sintomas: Joi.array().items(Joi.string()),
       }),
     }),
     (req, res, next) => ctrl.getMedicalCondition(req, res, next),

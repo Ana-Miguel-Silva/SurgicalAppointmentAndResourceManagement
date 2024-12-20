@@ -10,11 +10,22 @@ const MedicalCondition = new mongoose.Schema(
       required: [true, 'Please specify the code for the medical condition'],
       unique: true 
     },
+   
+    designacao: {
+      type: String,
+      required: [true, 'Please specify the designation for the medical condition'],
+      unique: true 
+    },
 
     descricao: {
       type: String,
       required: [true, 'Please specify the descrition for the medical condition'],     
-      unique: true  
+      unique: false  
+    },
+
+    sintomas: {
+      type: [String],
+      default: []
     },
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically

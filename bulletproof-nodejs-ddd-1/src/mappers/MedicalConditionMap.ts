@@ -15,7 +15,9 @@ export class MedicalConditionMap extends Mapper<MedicalCondition> {
     return {
       id: medicalCondition.id.toString(),
       codigo: medicalCondition.codigo,
-      descricao: medicalCondition.descricao
+      designacao: medicalCondition.designacao,
+      descricao: medicalCondition.descricao,
+      sintomas: medicalCondition.sintomas
     } as IMedicalConditionDTO;
   }
 
@@ -23,7 +25,9 @@ export class MedicalConditionMap extends Mapper<MedicalCondition> {
   public static async toDomain(raw: any): Promise<MedicalCondition> {    
     const MedicalConditionOrError = MedicalCondition.create({
       codigo: raw.codigo,
-      descricao: raw.descricao
+      designacao: raw.designacao,
+      descricao: raw.descricao,
+      sintomas: raw.sintomas
     }, new UniqueEntityID(raw.id));
 
     MedicalConditionOrError.isFailure ? console.log(MedicalConditionOrError.error) : '';
@@ -35,7 +39,9 @@ export class MedicalConditionMap extends Mapper<MedicalCondition> {
     return {
       medicalConditionId: medicalCondition.id.toString(),
       codigo: medicalCondition.codigo,
-      descricao: medicalCondition.descricao
+      designacao: medicalCondition.designacao,
+      descricao: medicalCondition.descricao,
+      sintomas: medicalCondition.sintomas
     };
   }
 }

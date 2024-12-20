@@ -138,7 +138,9 @@ export class AdminComponent {
 
     this.medicalConditionForm = this.fb.group({
       codigo: ['', Validators.required],
+      designacao: ['', Validators.required],
       descricao: ['', Validators.required],
+      sintomas: ['', Validators.required]
     });
 
 
@@ -1962,7 +1964,11 @@ export class AdminComponent {
       });
       return;
     }
-    const formData = this.medicalConditionForm.value;
+    const formDataA = this.medicalConditionForm.value;
+    console.log(formDataA);
+    let {codigo, designacao, descricao, sintomas} = this.medicalConditionForm.value;
+    sintomas = sintomas.split(';').map((item: string) => item.trim());
+    const formData = {codigo,designacao,descricao, sintomas};
     console.log(formData);
 
     this.medicalConditionService.createMedicalCondition(formData)

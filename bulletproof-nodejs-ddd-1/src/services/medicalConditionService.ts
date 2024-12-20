@@ -8,6 +8,7 @@ import { Result } from '../core/logic/Result';
 import { MedicalConditionMap } from '../mappers/MedicalConditionMap';
 import { MedicalCondition } from '../domain/medicalCondition';
 import { MedicalConditionId } from '../domain/medicalConditionId';
+import Logger from '../loaders/logger';
 
 @Service()
 export default class MedicalConditionService implements IMedicalConditionService {
@@ -33,8 +34,8 @@ export default class MedicalConditionService implements IMedicalConditionService
   ): Promise<Result<IMedicalConditionDTO[] | IMedicalConditionDTO>> {
     try {
       const MedicalCondition = await this.MedicalConditionRepo.findMedicalCondition(MedicalConditionId);
-
-      if (MedicalCondition === null) {
+      Logger.info(MedicalCondition);
+      if (!MedicalCondition || MedicalCondition.length === 0) {
         return Result.fail<IMedicalConditionDTO>('MedicalCondition not found');
       } else {
         const MedicalConditionDTOResult = MedicalCondition.map(
@@ -82,7 +83,7 @@ export default class MedicalConditionService implements IMedicalConditionService
     }
   }
 
-  public async createMedicalConditionDefault(medicalCondition: { codigo: string; descricao: string }) {
+  public async createMedicalConditionDefault(medicalCondition: { codigo: string; descricao: string; designacao: string; sintomas: string[]}) {
     const MedicalConditionOrError = await MedicalCondition.create(medicalCondition);
 
     if (MedicalConditionOrError.isFailure) {

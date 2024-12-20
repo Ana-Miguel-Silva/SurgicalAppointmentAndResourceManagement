@@ -9,7 +9,9 @@ import { Guard } from "../core/logic/Guard";
 
 interface MedicalConditionProps {
   codigo: string;
+  designacao: string;
   descricao: string;
+  sintomas: string[];
 }
 
 export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
@@ -28,6 +30,13 @@ export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
   set codigo(value: string) {
     this.props.codigo = value;
   }
+  get designacao(): string {
+    return this.props.designacao;
+  }
+
+  set designacao(value: string) {
+    this.props.designacao = value;
+  }
 
   get descricao(): string {
     return this.props.descricao;
@@ -35,6 +44,13 @@ export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
 
   set descricao(value: string) {
     this.props.descricao = value;
+  }
+  get sintomas(): string[] {
+    return this.props.sintomas;
+  }
+
+  set sintomas(value: string[]) {
+    this.props.sintomas = value;
   }
 
   private constructor(props: MedicalConditionProps, id?: UniqueEntityID) {
@@ -45,7 +61,9 @@ export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
 
     const guardedProps = [
       { argument: props.codigo, argumentName: 'codigo' },
-      { argument: props.descricao, argumentName: 'descricao' }
+      { argument: props.codigo, argumentName: 'designacao' },
+      { argument: props.codigo, argumentName: 'descricao' },
+      { argument: props.descricao, argumentName: 'sintomas' }
     ];
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);

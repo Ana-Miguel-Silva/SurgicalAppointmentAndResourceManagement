@@ -1890,14 +1890,33 @@
       <form [formGroup]="medicalConditionForm" (ngSubmit)="onInsertMedicalCondition()" class="row g-3 needs-validation" novalidate>
 
           <div class="col-md-6">
-            <label for="medicalConditionCode" class="form-label">Code</label>
-            <input type="text" class="form-control" id="medicalConditionCode" formControlName="codigo"   name="medicalConditionCode" required step="1" />
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" id="medicalConditionCode" formControlName="codigo"   name="medicalConditionCode" required step="1" placeholder="Code"/>
+            </div>
          </div>
 
           <div class="col-md-6">
-              <label for="medicalConditionDescription" class="form-label">Description</label>
-              <input type="text" class="form-control" id="medicalConditionDescription" formControlName="descricao"  name="medicalConditionDescription" required step="2" />
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" id="medicalConditionDesignation" formControlName="designacao"  name="medicalConditionDesignation" required step="2" placeholder="Designation" />
+            </div>
           </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
+              <textarea class="form-control" id="medicalConditionDescription" formControlName="descricao" name="medicalConditionDescription" required rows="1" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+              <textarea class="form-control" id="medicalConditionSymptoms" formControlName="sintomas" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a semi-colon (;)]"></textarea>
+          </div>
+        </div>
+
 
 
           <!-- Submit Button -->

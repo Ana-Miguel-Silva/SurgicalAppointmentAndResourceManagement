@@ -50,7 +50,9 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
         return MedicalConditionMap.toDomain(MedicalConditionCreated);
       } else {
         MedicalConditionDocument.descricao = MedicalCondition.descricao;
+        MedicalConditionDocument.designacao = MedicalCondition.designacao;
         MedicalConditionDocument.codigo = MedicalCondition.codigo;
+        MedicalConditionDocument.sintomas = MedicalCondition.sintomas;
         await MedicalConditionDocument.save();
 
         return MedicalCondition;
@@ -74,7 +76,7 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
       return null;
   }
 
-  public async findMedicalCondition( medicalCondition: string | { designacao?: string; codigo?: string; id?: string }
+  public async findMedicalCondition( medicalCondition: string | {id?: string; codigo?: string;  designacao?: string;  descricao?: string; sintomas?: string[] }
   ): Promise<MedicalCondition[] > {
     try {
       let query: any = {};
@@ -84,12 +86,16 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
           $or: [
             { allergieId: medicalCondition },
             { codigo: medicalCondition },
-            { descricao: medicalCondition }
+            { designacao: medicalCondition },
+            { descricao: medicalCondition },
+            { sintomas: medicalCondition }
           ]
         };
        } else {
         if (medicalCondition.id) query.allergieId = medicalCondition.id;
+        if (medicalCondition.descricao) query.descricao = medicalCondition.descricao;
         if (medicalCondition.designacao) query.designacao = medicalCondition.designacao;
+        if (medicalCondition.sintomas) query.sintomas = medicalCondition.sintomas;
         if (medicalCondition.codigo) query.codigo = medicalCondition.codigo;
       }
 

@@ -19,7 +19,7 @@ export default {
   /**
    * That long string from mlab
    */
-  databaseURL: process.env.MONGODB_URI || "mongodb+srv://admin:Password0@surgerycluster.blkwz.mongodb.net/",
+  databaseURL: process.env.MONGODB_URI || "mongodb+srv://admin:Password0@surgerycluster.blkwz.mongodb.net/SurgicalMedicalDB",
 
   /**
    * Your secret sauce
