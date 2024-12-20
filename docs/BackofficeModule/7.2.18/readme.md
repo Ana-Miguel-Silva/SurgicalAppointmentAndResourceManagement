@@ -15,14 +15,14 @@ As part of the development of the software system, it is necessary to implement 
 [//]: # (- )
 
 [//]: # ()
-[//]: # (**Customer Specifications and Clarifications:**)
+**Customer Specifications and Clarifications:**
 
-[//]: # ()
-[//]: # (> **Question:** )
 
-[//]: # (>)
+> **Question:** 
+> Do you want an allergy to be deleted, inactivated or neither?
 
-[//]: # (>**Answer:** )
+>**Answer:** 
+>since the requirement 7.2.3 is about searching an allergy while updating the medical record, I'll assume, your question is about the "medical record entry - allergy" and not about "allergy". An entry in the medical record cannot be deleted. it can however be marked as "not meaningful anymore". For instance some allergies occur during childhood but disappear as the immune system matures
 
 **Dependencies/References:**
 

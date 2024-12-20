@@ -25,16 +25,20 @@ export default class Lights {
 
         this.object.add(this.object.ambientLight);
 
+        const floorGeometry = new THREE.PlaneGeometry(100, 100);
+        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.rotation.x = -Math.PI / 2; 
+        floor.receiveShadow = true;
+
         // Create directional light
 
         const color = 0xFFFFFF;
-        const intensity = 1;
-        const light = new THREE.DirectionalLight(color, intensity);
+        const intensity = 0;
+        const light = new THREE.DirectionalLight(color, intensity);       
 
-        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
-
-        light.position.set(1, 20, 5); 
-        //light.target.position.set(0, 0, 0); 
+        light.position.set(-1, -1, 20); 
+        light.target.position.set(0, 0, 0); 
         light.target.updateMatrixWorld(); 
 
 
@@ -49,38 +53,29 @@ export default class Lights {
         this.object.add(light.target);
 
 
+        const color2 = 0xFFFFFF;
+        const intensity2 = 1;
+        const light2 = new THREE.DirectionalLight(color2, intensity2);
+
+        const floorMaterial2 = new THREE.MeshStandardMaterial({ color2: 0x888888 });
+
+        light2.position.set(-5, 17, 10); 
+        light2.target.position.set(0, 0, 0);
+        light2.target.updateMatrixWorld(); 
+
+        light2.castShadow = true;
+        floorMaterial2.receiveShadow = true;
+
+        light2.shadow.camera.near = 1;
+        light2.shadow.camera.far = 100;
+
+        this.object.directionalLight = light2; 
+        this.object.add(light2);
+        this.object.add(light2.target);
 
 
-
-        // Create the first point light and set its position in the scene
-       /*    
-        this.object.pointLight1 = new THREE.PointLight(this.pointLight1.color, this.pointLight1.intensity, this.pointLight1.distance);
-        this.object.pointLight1.position.set(this.pointLight1.position.x, this.pointLight1.position.y, this.pointLight1.position.z);
-        //Turn on shadows for this light and set its properties
-
-        this.object.pointLight1.shadow.mapSize.height = 512;
-        this.object.pointLight1.shadow.mapSize.width = 512;
-        this.object.pointLight1.shadow.camera.near = 5.0;
-        this.object.pointLight1.shadow.camera.far = 15.0;
-
-        this.object.add(this.object.pointLight1); 
-
-
-        // Create the second point light and set its position in the scene
-        this.object.pointLight2 = new THREE.PointLight(this.pointLight2.color, this.pointLight2.intensity, this.pointLight2.distance);
-        this.object.pointLight2.position.set(this.pointLight2.position.x, this.pointLight2.position.y, this.pointLight2.position.z);
-
-
-        /// Turn on shadows for this light and set its properties:
-           
-        this.object.pointLight2.castShadow = true;
-
-        this.object.pointLight2.shadow.mapSize.height = 512;
-        this.object.pointLight2.shadow.mapSize.width = 512;
-        this.object.pointLight2.shadow.camera.near = 5.0;
-        this.object.pointLight2.shadow.camera.far = 15.0;
-
-        // Add this light to the scene
-        this.object.add(this.object.pointLight2); */
     }
+
+
+
 }
