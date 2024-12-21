@@ -40,4 +40,29 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.getMedicalCondition(req, res, next),
   );
+
+  route.get(
+    '/get/:medicalConditionId',
+    celebrate({
+      params: Joi.object({
+        medicalConditionId: Joi.string().required(), 
+      }),
+    }),
+    (req, res, next) => ctrl.getMedicalConditionById(req, res, next),
+  );
+
+  route.patch(
+    '/update/:medicalConditionId',
+    celebrate({
+      params: Joi.object({
+        medicalConditionId: Joi.string().required(), 
+      }),
+      body: Joi.object({
+        designacao: Joi.string(),
+        descricao: Joi.string(),
+        sintomas: Joi.array().items(Joi.string()),
+      }),
+    }),
+    (req, res, next) => ctrl.updateMedicalConditionById(req, res, next),
+  );
 };

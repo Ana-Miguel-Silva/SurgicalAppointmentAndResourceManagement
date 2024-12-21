@@ -46,4 +46,46 @@ export default class MedicalConditionController implements IMedicalConditionCont
       return next(e);
     }
   };
+
+  public async getMedicalConditionById(req: Request, res: Response, next: NextFunction) {
+    try {
+      console.log(req.params.medicalConditionId as string);
+      const MedicalConditionOrError = await this.medicalConditionServiceInstance.getMedicalConditionById(req.params.medicalConditionId as string) as Result<IMedicalConditionDTO>;
+      console.log(MedicalConditionOrError);
+      if (MedicalConditionOrError.isFailure) {
+        return res.status(404).send();
+      }
+
+      const MedicalConditionDTO = MedicalConditionOrError.getValue();
+      return res.status(201).json( MedicalConditionDTO );
+    }
+    catch (e) {
+      return next(e);
+    }
+  };
+
+  public async updateMedicalConditionById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const medicalConditionId = req.params.medicalConditionId as string;
+      console.log(req.params.medicalConditionId as string);
+      const updateData = req.body;
+      console.log("AAAAAAAAAAAAAAAABBBBBBBBBBBBBBBB",updateData);
+      
+      const updateResult = await this.medicalConditionServiceInstance.updateMedicalConditionById(
+        medicalConditionId,
+        updateData
+      ) as Result<IMedicalConditionDTO>;
+
+      console.log(updateResult);
+      if (updateResult.isFailure) {
+        return res.status(404).json({ error: "Medical condition not found or update failed." });
+      }
+
+      const updatedMedicalConditionDTO = updateResult.getValue();
+      return res.status(200).json(updatedMedicalConditionDTO);
+    }
+    catch (e) {
+      return next(e);
+    }
+  };
 }

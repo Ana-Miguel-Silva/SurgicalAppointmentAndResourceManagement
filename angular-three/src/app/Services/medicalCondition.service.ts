@@ -21,14 +21,14 @@ createMedicalCondition(medicalCondition : any): Observable<any> {
 
   return this.http.post(`${this.apiUrl}/create`, medicalCondition, { headers })
 }
-/*
 
-updateOperationRequests(operationRequest: any): Observable<any> {
+updateMedicalCondition(id: any, operationRequest: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.patch(`${this.apiUrl}/${operationRequest.id}`, operationRequest, { headers });
+  return this.http.patch(`${this.apiUrl}/update/${id}`, operationRequest, { headers });
 }
+/*
 
 deleteOperationRequests(id: any): Observable<any> {
   const token = this.authService.getToken();
@@ -43,6 +43,12 @@ getAllMedicalConditions(): Observable<any[]> {
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
   return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
+}
+viewMedicalCondition(id: any): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any[]>(`${this.apiUrl}/get/${id}`, { headers });
 }
 
 }
