@@ -73,3 +73,4 @@ docs/global artifacts/02.analysis/sprint1/Level2/logicalView.vpp.bak_001d
 docs/global artifacts/02.analysis/sprint1/Level2/logicalView.vpp.vbak
 docs/global artifacts/02.analysis/sprint1/Level2/logicalView.vpp.vbak~1
 bin/Debug/net8.0/DDDNetCore.dll
+node_modules
