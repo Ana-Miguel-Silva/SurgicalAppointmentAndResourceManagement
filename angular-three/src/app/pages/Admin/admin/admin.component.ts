@@ -136,6 +136,12 @@ export class AdminComponent {
       descricao: ['', Validators.required],
     });
 
+
+    this.allergyUpdateForm = this.fb.group({
+      designacao: [''],
+      descricao: [''],
+    });
+
     this.medicalConditionForm = this.fb.group({
       codigo: ['', Validators.required],
       designacao: ['', Validators.required],
@@ -213,7 +219,9 @@ export class AdminComponent {
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
   operationTypeUpdateForm!: FormGroup;
+  allergyUpdateForm!: FormGroup;
   allergieForm!: FormGroup;
+  allergyUpdate: any = null;
   medicalConditionForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
@@ -244,6 +252,7 @@ export class AdminComponent {
   filterField: string = '';
   appointmentHistory: string[] = [];
   slots: string[] = [];
+  allergiesList: any[] = [];
 
 
   filteredPatients: any[] = [];
@@ -817,14 +826,8 @@ export class AdminComponent {
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
-          Swal.fire({
-            icon: "success",
-            title: "Patient atualizado com sucesso!",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Patient atualizado com sucesso!");
+
           this.getAllpatientsProfiles(); // Refresh the list after creation
           this.closeModal('UpdatePatientModal');
         },
@@ -1326,6 +1329,7 @@ export class AdminComponent {
     this.getAllstaffsProfiles();
     this.getAllOperationTypes();
     this.getAllSpecializations();
+    this.getAllAllergies();
     this.setMinDate();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
@@ -1481,14 +1485,8 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Staff Profile Created!';
           this.errorMessage = null;
-          Swal.fire({
-            icon: "success",
-            title: "Formulário submetido com sucesso",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Formulário submetido com sucesso")
+
           this.staffCreationForm.reset();
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
@@ -1565,14 +1563,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1581,14 +1572,8 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um Operation Type.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetWarning("Por favor seleciona um Operation Type.");
 
     } else {
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
@@ -1845,14 +1830,9 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetErro("Nenhuma conta com sessão ativa.")
+
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1919,14 +1899,8 @@ export class AdminComponent {
         error: (error) => {
           console.error('Error viewing operation type:', error);
           this.errorMessage = 'Failed to view operation type profile!';
-          Swal.fire({
-            icon: "error",
-            title: "Não foi possível desativar o tipo de operação",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          
+          this.sweetErro("Não foi possível desativar o tipo de operação");
         }
       });
          } else if (result.isDenied) {
@@ -1975,14 +1949,7 @@ export class AdminComponent {
     .subscribe({
       next: (response) => {
 
-        Swal.fire({
-          icon: "success",
-          title: "Medical condition registered successfully",
-          toast: true,
-          position: "top-end",
-          timer: 3000,
-          showConfirmButton: false
-        });
+        this.sweetSuccess("Medical condition registered successfully")
 
         this.modalService.closeModal('insertMedicalCondition');
 
@@ -1990,15 +1957,8 @@ export class AdminComponent {
       error: (error) => {
         console.error('Error fetched:', error);
         this.errorMessage = 'Failed to register a medical condition  !';
-        Swal.fire({
-          icon: "error",
-          title: "There is already a medical condition with this name",
-          //It was not possible create the allergie
-          toast: true,
-          position: "top-end",
-          timer: 3000,
-          showConfirmButton: false
-        });
+        
+        this.sweetErro("There is already a medical condition with this name")
 
 
       }
@@ -2026,14 +1986,9 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
 
-          Swal.fire({
-            icon: "success",
-            title: "Allergie created with success",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Allergie created with success");
+
+          
 
           this.modalService.closeModal('insertAllergies');
 
@@ -2041,15 +1996,8 @@ export class AdminComponent {
         error: (error) => {
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a allergie  !';
-          Swal.fire({
-            icon: "error",
-            title: "Already exist a allergie with this name",
-            //It was not possible create the allergie
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          
+          this.sweetErro("Already exist a allergie with this name");
 
 
         }
@@ -2057,7 +2005,141 @@ export class AdminComponent {
 
   }
 
+  selectedAllergie: string | null =null;
 
+  getAllAllergies() {
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    this.allergiesService.getAllAllergies()
+      .subscribe({
+        next: (response) => {
+          this.allergiesList = response;
+          console.log("teste: ", response);
+        },
+        error: (error) => {
+          console.error('Error fetching  allergies:', error);
+          this.errorMessage = 'Failed to fetch allergies!';
+        }
+      });
+  
+  }
+
+  selectedAllergieId: string | null = null;
+
+  updateAllergy(){
+
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    if (this.selectedAllergie === null) {
+      this.sweetWarning("Por favor seleciona uma alergia.")
+    }else {
+
+      this.allergiesService.getByDesignacao(this.selectedAllergie)
+      .subscribe({
+        next: (response) => {
+
+          console.log(response)
+
+
+
+          this.allergyUpdate = response;
+          this.populateAllergyUpdateForm();
+
+          const updateAllergyData = this.allergyUpdateForm.value;
+          console.log('Updated Allergy Data:', updateAllergyData);
+
+          this.openModal('UpdateAllergyModal');
+
+        },
+        error: (error) => {
+          console.error('Error getting allergy:', error);
+          this.errorMessage = 'Failed to getting allergy!';
+        }
+      });
+    }
+
+
+
+  }
+
+  populateAllergyUpdateForm(): void {
+
+    this.allergyUpdateForm.patchValue({
+
+        designacao: this.allergyUpdate.props.designacao,
+        descricao: this.allergyUpdate.props.descricao
+
+
+    });
+
+  }
+
+
+  onUpdateAllergy(){
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    if (!this.selectAllergie) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum operation type selecionado.',
+      });
+      return;
+    }
+    
+
+    if(this.selectedAllergie)
+
+    this.allergiesService.updateAllergie(this.selectedAllergie,this.allergyUpdateForm.value)
+    .subscribe({
+        next: (response: any) => {
+          this.sweetSuccess("Alergia atualizado com sucesso!")
+          this.getAllAllergies(); // Refresh the list after creation
+          this.closeModal('UpdateAllergyModal');
+        },
+        error: (error) => {
+          console.error('Error editing Allergy:', error);
+
+          if (error.status === 400) {
+            // Erro 400 específico
+            this.sweetErro("Não podes editar um alergia desativado ou com campos vazios")
+          } else {
+            // Outros erros
+            this.sweetErro("Não foi possível atualizar a alergia.")
+          }
+
+        },
+      });
+
+  }
+
+  selectAllergie(id: string ): void{
+    this.selectedAllergie = this.selectedAllergie === id ? null : id;
+}
 
 
 
@@ -2109,7 +2191,46 @@ export class AdminComponent {
   }
 
 
+  sweetSuccess(text: string){
 
+  Swal.fire({
+    icon: "success",
+    title: text,
+    toast: true,
+    position: "top-end",
+    timer: 3000,
+    showConfirmButton: false
+  });
+
+}
+
+sweetWarning(text: string){
+
+  Swal.fire({
+    icon: "warning",
+    title: text,
+    toast: true,
+    position: "top-end",
+    timer: 3000,
+    showConfirmButton: false
+  });
+
+}
+
+
+sweetErro(text: string){
+
+  Swal.fire({
+    icon: "error",
+    title: text,
+    //It was not possible create the allergie
+    toast: true,
+    position: "top-end",
+    timer: 3000,
+    showConfirmButton: false
+  });
+
+}
 
 
 

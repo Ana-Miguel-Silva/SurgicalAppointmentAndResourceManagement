@@ -91,6 +91,14 @@
         </div>
 
         <div class="container col-md-4">
+          <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
+            <div class="form-floating mb-3">
+                <h3 class="title" >List Allergies</h3>
+            </div>
+            </div>
+          </div>
+
+        <div class="container col-md-4">
           <div class="container-lg  selectionDiv" (click)="openModal('insertMedicalCondition')">
             <div class="form-floating mb-3">
                 <h3 class="title" >Insert Medical Condition</h3>
@@ -1883,6 +1891,120 @@
       </form>
   </div>
 </div>
+
+<div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
+  <div id="mapModalContent" class="modal-content" style="height: 75vh;">
+      <span (click)="closeModal('listAllergies')" class="close">&times;</span>
+      <div>
+
+        <form  class="row g-3 needs-validation" novalidate="">
+            <div class="col-md-10"></div>
+
+            <div class="col-md-12">
+              <div class="table-wrapper" >
+                <div class="table-title">
+                <form class="row g-3 needs-validation" novalidate="">
+                <table class="table table-striped table-hover table-over">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
+                    <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.designacao)" [ngClass]="{ 'selected-row': selectedAllergie === request.designacao }">
+                      <td>{{ i + 1 }}</td>
+                      <td><input class="selectRequest" type="radio" id="allergie_{{ request.designacao }}" name="id" value="{{ request.designacao }}" [checked]="selectedAllergie === request.designacao" hidden>{{ request.designacao }} </td>
+
+                      <td>{{ request.descricao }}</td>
+                   
+                    </tr>
+                  </tbody>
+                </table>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <button class="fs-5 btn btn-outline-warning" (click)="updateAllergy()" > Edit <i class="bi bi-pencil-square"></i></button>
+          </div>
+          </form>
+
+
+
+        </div>
+
+  </div>
+</div>
+
+
+<div [ngStyle]="{'display': isModalOpen('UpdateAllergyModal') ? 'block' : 'none'}" id="UpdateAllergyModal" class="modal" >
+  <div class="modal-content">
+      <span (click)="closeModal('UpdateAllergyModal')" class="close">&times;</span>
+
+        <form [formGroup]="allergyUpdateForm" class="row g-3 needs-validation" novalidate="">
+
+          <div *ngIf="allergyUpdate" >
+            <div  class="row g-3 needs-validation">
+
+              <div class="col-md-12"></div>
+
+                <div class="col-md-3">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-badge-fill"></i></span>
+                      <input type="text" class="form-control" value="{{ allergyUpdate.props.designacao}}" formControlName="designacao">
+                  </div>
+                </div>
+                <!--TODO: Meter os forms direito, para estarem no formato de leitora no .ts-->
+
+                <div class="col-md-12"></div>
+
+
+                <div class="col-md-3">
+                  <div class="input-group has-validation">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+                      <input type="text" class="form-control"  value="{{ allergyUpdate.props.descricao}}" formControlName="descricao">
+                  </div>
+                </div>
+
+
+                <div class="col-md-12"></div>
+
+
+                <div class="col-md-3">
+                  <button class="btn btn-primary" (click)="onUpdateAllergy()">Submit form</button>
+                </div>
+
+
+              </div>
+
+
+
+        </div>
+      </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div [ngStyle]="{'display': isModalOpen('insertMedicalCondition') ? 'block' : 'none'}" id="insertMedicalCondition" class="modal">
   <div class="modal-content">

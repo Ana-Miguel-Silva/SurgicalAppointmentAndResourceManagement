@@ -44,4 +44,25 @@ getAllAllergies(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
 }
 
+updateAllergie(selectAllergy: string, updatedData: any): Observable<any> {
+
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch(
+    `${this.apiUrl}/?designacao=${selectAllergy}`,
+    updatedData,
+    { headers, responseType: 'text' }
+  );
+}
+
+
+
+getByDesignacao(designacao: string): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any[]>(`${this.apiUrl}/getByDesignacao?designacao=${designacao}`, { headers });
+}
+
 }
