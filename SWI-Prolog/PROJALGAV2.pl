@@ -27,7 +27,9 @@
     :-dynamic stabilizedGenerations/2.
 
     :-dynamic lastGenerations/2.
-    :-dynamic surgery_room/2.
+    :- dynamic agenda_operation_room_copy/3.
+    :- dynamic surgery_room/2.
+    :- dynamic room_free_time/2.
 
 % To Json Memory Variables
 
@@ -373,27 +375,108 @@ treatAgendaData([(Ini, Fin, Id)|Agenda], [Res1|Res]) :-
     Res1 = agenda_json(Ini, Fin, Id1),
     treatAgendaData(Agenda, Res).
 
-% Assign the surgeries to the room
+
+
+
 assignSurgeriesToRoom:-
-    ( (retractall(surgery_room(_,_)),!) ; true),
+    (retractall(surgery_room(_, _)); true),
+    (retractall(agenda_operation_room_copy(_, _, _)); true),
+    (retractall(room_free_time(_, _)); true),
 
-    findall((SurgeryID*T),(surgery_id(SurgeryID,OpType),surgery(OpType,T1,T2,T3),T is T1 + T2 + T3),SurgeryInfo),
-    order_population(SurgeryInfo,SurgeryInfoOrd),
-    findall(RoomId,(agenda_operation_room(RoomId,_,_)),RoomList),
-    length(RoomList,MaxRoomNumber),
-    surgeriesToRoom(SurgeryInfoOrd,RoomList,0,MaxRoomNumber).
+    findall((SurgeryID, TotalTime),(surgery_id(SurgeryID, OpType), surgery(OpType, T1, T2, T3), TotalTime is T1 + T2 + T3),Surgeries),
 
-surgeriesToRoom([],_,_,_).
-surgeriesToRoom(E,T,D,D):-!,surgeriesToRoom(E,T,0,D).
-surgeriesToRoom([SurgeryID*_|Rest],RoomList,RoomIndex,MaxRoomNumber):-
-    getIndex(RoomList,RoomIndex,0,Room),
-    assert(surgery_room(SurgeryID,Room)),
-    RoomIndex1 is RoomIndex + 1,
-    surgeriesToRoom(Rest,RoomList,RoomIndex1,MaxRoomNumber).
+    findall((RoomID, FreeTime),(agenda_operation_room(RoomID, _, Agenda), free_agenda0(Agenda, FreeTime)),Rooms),
 
-getIndex([Room|_],Counter,Index,Room):-
-    Index == Counter,!.
-getIndex([_|RoomList],Counter,Index,Res):-Index1 is Index + 1,  getIndex(RoomList,Counter,Index1,Res).
+    copy_all_agendas,
+
+    set_room_free_time(Rooms),
+
+    sort_room_free_time_desc,
+
+    assignSurgeriesWithConstraints(Surgeries).
+
+
+
+assignSurgeriesWithConstraints([]).
+assignSurgeriesWithConstraints([(SurgeryID, Duration) | Rest]) :-
+
+    (select_room_for_surgery(Duration, SelectedRoom, Start, End),
+        SelectedRoom \= "notPossible"
+    ->  assert(surgery_room(SurgeryID, SelectedRoom)),
+
+        update_agenda_with_surgery(SelectedRoom, (Start, End, SurgeryID)),
+
+        retract(room_free_time(SelectedRoom, FreeTime)),
+        NewFreeTime is FreeTime - Duration,
+        assert(room_free_time(SelectedRoom, NewFreeTime)),
+
+        sort_room_free_time_desc,
+
+        assignSurgeriesWithConstraints(Rest)
+    ;
+        assignSurgeriesWithConstraints(Rest)
+    ).
+
+
+select_room_for_surgery(Duration, SelectedRoom, Start, End) :-
+    room_free_time(RoomID, FreeTime),
+
+    agenda_operation_room_copy(RoomID,_,Agenda),
+    free_agenda0(Agenda,LFAgRoom),
+
+    remove_unf_intervals(Duration,LFAgRoom,LRoomAvailability),
+
+    schedule_first_interval(Duration,LRoomAvailability,(Start,End)),
+
+    ( ( End > 1439 , fail) ; true),
+
+    check_eighty_percent(FreeTime, Duration),
+    SelectedRoom = RoomID.
+
+select_room_for_surgery(_, "notPossible", _, _).
+
+update_agenda_with_surgery(Room,(Start, End, OpCode)) :-
+    retract(agenda_operation_room_copy(Room, Day, Agenda)),
+    insert_agenda((Start, End, OpCode), Agenda, UpdatedAgenda),
+    assertz(agenda_operation_room_copy(Room, Day, UpdatedAgenda)).
+
+
+check_eighty_percent(FreeTime, Duration) :-
+    FullDay = 1440,
+    MinRequiredTime is 0.2 * FullDay,
+    N is FreeTime - Duration,
+    N >= MinRequiredTime.
+
+
+free_time([], 0).
+free_time([(Start, End) | Rest], FreeTime) :-
+    free_time(Rest, RestFreeTime),
+    FreeTime is RestFreeTime + (End - Start).
+
+
+set_room_free_time(Rooms) :-
+    retractall(room_free_time(_, _)),
+    forall(member((RoomID, FreeTimeIntervals), Rooms),(free_time(FreeTimeIntervals, TotalFreeTime), assertz(room_free_time(RoomID, TotalFreeTime)))).
+
+sort_room_free_time_desc :-
+    findall((RoomID, FreeTime), room_free_time(RoomID, FreeTime), RoomFreeTimeList),
+    sort(2, @>=, RoomFreeTimeList, SortedRoomFreeTimeList),
+    retractall(room_free_time(_, _)),
+    assert_sorted_room_free_times(SortedRoomFreeTimeList).
+
+
+assert_sorted_room_free_times([]).
+assert_sorted_room_free_times([(RoomID, FreeTime) | Rest]) :-
+    assertz(room_free_time(RoomID, FreeTime)),
+    assert_sorted_room_free_times(Rest).
+
+
+copy_all_agendas :-
+    agenda_operation_room(Room, Day, Agenda),
+    assertz(agenda_operation_room_copy(Room, Day, Agenda)),
+    fail.
+copy_all_agendas.
+
 
 % parameters initialization (Automatic in the moment)
 initialize(Generations,Prob_CrossOver,Prob_Mutation,Base_Pop,Day):-

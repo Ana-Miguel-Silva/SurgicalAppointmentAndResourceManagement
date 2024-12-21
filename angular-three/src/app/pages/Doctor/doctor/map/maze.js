@@ -156,14 +156,14 @@ export default class Maze {
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
 
-                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                               /* const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
                                 doorLight.position.set(
                                     doorObject.position.x,
                                     doorObject.position.y + 5, 
                                     doorObject.position.z
                                 );
                                 doorLight.castShadow = true; 
-                                this.object.add(doorLight); 
+                                this.object.add(doorLight); */
                             });
                         }
                         else {
@@ -185,14 +185,14 @@ export default class Maze {
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
 
-                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                               /*const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
                                 doorLight.position.set(
                                     doorObject.position.x,
                                     doorObject.position.y + 5, 
                                     doorObject.position.z
                                 );
                                 doorLight.castShadow = true; 
-                                this.object.add(doorLight); 
+                                this.object.add(doorLight); */
                             });
                         }
                         roomData.shift();

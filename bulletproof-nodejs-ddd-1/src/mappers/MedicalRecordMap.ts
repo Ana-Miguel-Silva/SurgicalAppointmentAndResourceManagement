@@ -8,6 +8,8 @@ import { MedicalRecord } from "../domain/medicalRecord";
 import { UniqueEntityID } from "../core/domain/UniqueEntityID";
 import IFEMedicalRecordDTO from '../dto/IFEMedicalRecordDTO';
 import MedicalRecordService from '../services/medicalRecordService';
+import { IAllergieMedicalRecord } from '../dataschema/IAllergieMedicalRecord';
+import { IMedicalConditionMedicalRecord } from '../dataschema/IMedicalConditionMedicalRecord';
 
 
 export class MedicalRecordMap extends Mapper<MedicalRecord> {
@@ -43,8 +45,8 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       date: new Date(raw.date),
       staff: raw.staff,
       patientId: raw.patientId,
-      allergies: raw.allergies as string[],
-      medicalConditions: raw.medicalConditions as string[],
+      allergies: raw.allergies as IAllergieMedicalRecord[],
+      medicalConditions: raw.medicalConditions as IMedicalConditionMedicalRecord[],
       descricao: raw.descricao
     }, new UniqueEntityID(raw.id));
 

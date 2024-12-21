@@ -6,14 +6,18 @@ import { MedicalRecordId } from "./medicalRecordId";
 
 import IMedicalRecordDTO from "../dto/IMedicalRecordDTO";
 import { Guard } from "../core/logic/Guard";
+import { IAllergieMedicalRecord } from "../dataschema/IAllergieMedicalRecord";
+import { IMedicalRecordPersistence } from "../dataschema/IMedicalRecordPersistence";
+import { IMedicalConditionPersistence } from "../dataschema/IMedicalConditionPersistence";
+import { IMedicalConditionMedicalRecord } from "../dataschema/IMedicalConditionMedicalRecord";
 
 interface MedicalRecordProps {
   date: Date;
   staff: string;
   patientId: string;
-  allergies: string[]; 
-  medicalConditions: string[];
-  descricao: string  
+  allergies: IAllergieMedicalRecord[];
+  medicalConditions: IMedicalConditionMedicalRecord[];
+  descricao: string
 }
 
 export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
@@ -50,19 +54,19 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
     this.props.patientId = value;
   }
 
-  get allergies(): string[] {
+  get allergies(): IAllergieMedicalRecord[] {
     return this.props.allergies;
   }
 
-  set allergies(value: string[]) {
+  set allergies(value: IAllergieMedicalRecord[]) {
     this.props.allergies = value;
   }
 
-  get medicalConditions(): string[] {
+  get medicalConditions(): IMedicalConditionMedicalRecord[] {
     return this.props.medicalConditions;
   }
 
-  set medicalConditions(value: string[]) {
+  set medicalConditions(value: IMedicalConditionMedicalRecord[]) {
     this.props.medicalConditions = value;
   }
 
@@ -85,7 +89,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
       { argument: props.staff, argumentName: 'staff' },
       { argument: props.patientId, argumentName: 'patientId' },
       { argument: props.medicalConditions, argumentName: 'MedicalConditions' },
-      { argument: props.allergies, argumentName: 'allergies' },      
+      { argument: props.allergies, argumentName: 'allergies' },
       { argument: props.descricao, argumentName: 'descricao' }
     ];
 
@@ -93,7 +97,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
 
     if (!guardResult.succeeded) {
       return Result.fail<MedicalRecord>(guardResult.message)
-    }     
+    }
     else {
       const user = new MedicalRecord({
         ...props
@@ -102,7 +106,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
       return Result.ok<MedicalRecord>(user);
     }
   }
-  
 
-  
+
+
 }

@@ -472,32 +472,32 @@
             <div class="tags-input">
               <ul id="tags">
                 <li *ngFor="let tag of tags; let i = index" class="tag">
-                  {{ tag }}
-                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>
+                  {{ tag.designacao }}   
+                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>               
                 </li>
+                
               </ul>
               <input
                 id="tag-filter"
                 type="text"
-                [(ngModel)]="filterText"
+                [(ngModel)]="filterAllergieNameText"
                 placeholder="Choose an allergy"
-                (input)="filterOptions()"
-                (keydown)="addTagFromInput($event)"
+                (input)="filterAllergieNameOptions()"               
                 (focus)="showDropdown = true"
                 (blur)="onBlur()"
               />
             </div>
             <ul *ngIf="showDropdown" class="dropdown-list">
               <li
-                *ngFor="let option of filteredOptions"
-                (mousedown)="selectOptionTag(option.designacao)">
+                *ngFor="let option of filteredAllergieNameOptions"
+                (mousedown)="selectOptionTagAllergies(option.designacao)">
                 {{ option.designacao }}
               </li>
             </ul>
           </div>
           
             
-          <div class="col-md-4">
+          <!--<div class="col-md-4">
             <div class="dropdown2">
               <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
               <div class="tagsConditions-input">
@@ -526,7 +526,7 @@
                 </li>
               </ul>
             </div>
-          </div>
+          </div>-->
             
             
 
