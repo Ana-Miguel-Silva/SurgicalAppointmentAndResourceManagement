@@ -37,8 +37,7 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
   }
 
   public async save (MedicalCondition: MedicalCondition): Promise<MedicalCondition> {
-    const query = { medicalConditionId: MedicalCondition.id.toString() };
-
+    const query = { codigo: MedicalCondition.codigo.toString() };
     const MedicalConditionDocument = await this.MedicalConditionSchema.findOne( query );
 
     try {
@@ -65,10 +64,9 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
 
   public async findById (medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition> {
 
-    const query = { medicalConditionId: medicalConditionId };
-    
+    const query = { codigo: medicalConditionId };
+    console.log(query);
     const MedicalConditionRecord = await this.MedicalConditionSchema.findOne( query );
-
     if( MedicalConditionRecord != null) {
       return MedicalConditionMap.toDomain(MedicalConditionRecord);
     }

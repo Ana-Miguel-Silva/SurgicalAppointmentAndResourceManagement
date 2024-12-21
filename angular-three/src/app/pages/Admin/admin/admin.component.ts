@@ -89,7 +89,13 @@ export class AdminComponent {
     private modalService: ModalService,
     private allergiesService: AllergiesService,
     private medicalConditionService: MedicalConditionService,
-    private http: HttpClient, private authService: AuthService, private operationTypesService: OperationTypesService, private specializationService: SpecializationService,private appointmentService : AppointmentService , private patientService: PatientService, private staffService: StaffService,
+    private http: HttpClient,
+    private authService: AuthService,
+    private operationTypesService: OperationTypesService,
+    private specializationService: SpecializationService,
+    private appointmentService : AppointmentService ,
+    private patientService: PatientService,
+    private staffService: StaffService,
     private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
@@ -149,6 +155,12 @@ export class AdminComponent {
       sintomas: ['', Validators.required]
     });
 
+    this.medicalConditionEditForm = this.fb.group({
+      designacao: ['', Validators.required],
+      descricao: ['', Validators.required],
+      sintomas: ['', Validators.required]
+    });
+
 
 
     this.staffForm = this.fb.group({});
@@ -197,6 +209,7 @@ export class AdminComponent {
   selectOperationTypeId: string | null = null;
   selectedPatientEmail: string | null = null;
   selectSpecializationsId: string | null = null;
+  selectConditionId: string | null = null;
 
   selectStaff(id: string) {
     this.selectedStaffId = this.selectedStaffId === id ? null : id;
@@ -215,6 +228,10 @@ export class AdminComponent {
     this.selectSpecializationsId = this.selectSpecializationsId === id ? null : id;
   }
 
+  selectCondition(id: string) {
+    this.selectConditionId = this.selectConditionId === id ? null : id;
+  }
+
 
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
@@ -223,6 +240,7 @@ export class AdminComponent {
   allergieForm!: FormGroup;
   allergyUpdate: any = null;
   medicalConditionForm!: FormGroup;
+  medicalConditionEditForm!: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -237,11 +255,13 @@ export class AdminComponent {
   errorMessage: string | null = null;
   patientsProfiles: any[] = [];
   Specializations: any[] = [];
+  Conditions: any[] = [];
   staffsProfiles: any[] = [];
   OperationTypesProfiles: any[] = [];
   OperationTypeSingle: any = null;
   requiredStaffView: any[] = [];
   staffProfileSingle: any = null;
+  MedicalConditionSingle: any = null;
   patientProfileSingle: any = null;
   patientProfileUpdate: any = null;
   operationTypeUpdate: any = null;
@@ -1330,6 +1350,7 @@ export class AdminComponent {
     this.getAllOperationTypes();
     this.getAllSpecializations();
     this.getAllAllergies();
+    this.getAllConditions();
     this.setMinDate();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
@@ -1572,7 +1593,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      
+
       this.sweetWarning("Por favor seleciona um Operation Type.");
 
     } else {
@@ -1830,7 +1851,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      
+
       this.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
@@ -1899,7 +1920,7 @@ export class AdminComponent {
         error: (error) => {
           console.error('Error viewing operation type:', error);
           this.errorMessage = 'Failed to view operation type profile!';
-          
+
           this.sweetErro("Não foi possível desativar o tipo de operação");
         }
       });
@@ -1941,7 +1962,7 @@ export class AdminComponent {
     const formDataA = this.medicalConditionForm.value;
     console.log(formDataA);
     let {codigo, designacao, descricao, sintomas} = this.medicalConditionForm.value;
-    sintomas = sintomas.split(';').map((item: string) => item.trim());
+    sintomas = sintomas.split(',').map((item: string) => item.trim());
     const formData = {codigo,designacao,descricao, sintomas};
     console.log(formData);
 
@@ -1957,7 +1978,7 @@ export class AdminComponent {
       error: (error) => {
         console.error('Error fetched:', error);
         this.errorMessage = 'Failed to register a medical condition  !';
-        
+
         this.sweetErro("There is already a medical condition with this name")
 
 
@@ -1988,7 +2009,7 @@ export class AdminComponent {
 
           this.sweetSuccess("Allergie created with success");
 
-          
+
 
           this.modalService.closeModal('insertAllergies');
 
@@ -1996,7 +2017,7 @@ export class AdminComponent {
         error: (error) => {
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a allergie  !';
-          
+
           this.sweetErro("Already exist a allergie with this name");
 
 
@@ -2027,7 +2048,7 @@ export class AdminComponent {
           this.errorMessage = 'Failed to fetch allergies!';
         }
       });
-  
+
   }
 
   selectedAllergieId: string | null = null;
@@ -2110,7 +2131,7 @@ export class AdminComponent {
       });
       return;
     }
-    
+
 
     if(this.selectedAllergie)
 
@@ -2150,6 +2171,58 @@ export class AdminComponent {
 
 
   onSubmitSpecializations() {}
+  onSubmitConditions() {}
+  onEditMedicalCondition(){
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    if (!this.MedicalConditionSingle) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum paciente selecionado.',
+      });
+      return;
+    }
+    console.log(this.MedicalConditionSingle);
+    const updatedPatientData = this.medicalConditionEditForm.value;
+
+    this.medicalConditionService.updateMedicalCondition(this.MedicalConditionSingle.codigo, updatedPatientData )
+      .subscribe({
+        next: (response: any) => {
+          Swal.fire({
+            icon: "success",
+            title: "Patient atualizado com sucesso!",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.getAllConditions(); // Refresh the list after creation
+          this.closeModal('editConditionModal');
+        },
+        error: (error) => {
+          console.error('Error editing medical condition:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Could not update medical condition",
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.errorMessage = 'Failed to edit medical condition!';
+          this.successMessage = null;
+        }
+      });
+  }
 
   getAllSpecializations() {
     const token = this.authService.getToken();
@@ -2186,6 +2259,46 @@ export class AdminComponent {
         error: (error) => {
           console.error('Error fetching  profiles:', error);
           this.errorMessage = 'Failed to fetch patients profiles!';
+        }
+      });
+  }
+
+
+  getAllConditions() {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+
+    type FilterKeys = keyof typeof this.filter; // Restringe as chaves às do objeto filter
+
+
+    let params = new HttpParams();
+
+    Object.keys(this.filter).forEach(key => {
+      const typedKey = key as FilterKeys; // Converter a chave para o tipo correto
+      const value = this.filter[typedKey]; // Acessar o valor usando a chave tipada
+      if (value) { // Só adiciona se o valor estiver preenchido
+        params = params.set(key, value);
+      }
+    });
+
+    this.medicalConditionService.getAllMedicalConditions()
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.Conditions = response;
+        },
+        error: (error) => {
+          console.error('Error fetching medical conditions:', error);
+          this.errorMessage = 'Failed to fetch medical conditions!';
         }
       });
   }
@@ -2235,7 +2348,107 @@ sweetErro(text: string){
 
 
 
+  viewMedicalCondition(){
+    const token = this.authService.getToken();
 
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectConditionId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a Medical Condition.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
+     // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
+      this.medicalConditionService.viewMedicalCondition(this.selectConditionId)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.MedicalConditionSingle = response;
+          console.log(this.MedicalConditionSingle);
+          //this.availabilitySlots = this.MedicalConditionSingle.slots;
+          this.openModal('viewConditionModal');
+        },
+        error: (error) => {
+          console.error('Error viewing staff:', error);
+          this.errorMessage = 'Failed to view staff profiles!';
+        }
+      });
+    }
+  }
+
+
+
+
+  editMedicalCondition(){
+
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Nenhuma conta com sessão ativa.",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false
+      });
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectConditionId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a Medical Condition.",
+        toast: true,
+        position: "bottom-right",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } else {
+      console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
+      this.medicalConditionService.viewMedicalCondition(this.selectConditionId)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.MedicalConditionSingle = response;
+          console.log(this.MedicalConditionSingle);
+          this.medicalConditionEditForm.get('designacao')?.setValue(this.MedicalConditionSingle.designacao);
+          this.medicalConditionEditForm.get('descricao')?.setValue(this.MedicalConditionSingle.descricao);
+          this.medicalConditionEditForm.get('sintomas')?.setValue(this.MedicalConditionSingle.sintomas);
+          this.openModal('editConditionModal');
+        },
+        error: (error) => {
+          console.error('Error viewing staff:', error);
+          this.errorMessage = 'Failed to view staff profiles!';
+        }
+      });
+    }
+  }
 
 
   logout(): void {

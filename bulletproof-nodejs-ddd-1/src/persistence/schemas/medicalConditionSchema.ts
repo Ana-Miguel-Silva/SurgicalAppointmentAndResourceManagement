@@ -19,8 +19,7 @@ const MedicalCondition = new mongoose.Schema(
 
     descricao: {
       type: String,
-      required: [true, 'Please specify the descrition for the medical condition'],     
-      unique: false  
+      required: [true, 'Please specify the descrition for the medical condition']
     },
 
     sintomas: {

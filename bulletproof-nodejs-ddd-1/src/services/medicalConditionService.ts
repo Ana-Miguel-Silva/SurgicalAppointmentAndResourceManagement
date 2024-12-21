@@ -17,11 +17,30 @@ export default class MedicalConditionService implements IMedicalConditionService
   public async getMedicalConditionById(MedicalConditionId: string): Promise<Result<IMedicalConditionDTO>> {
     try {
       const MedicalCondition = await this.MedicalConditionRepo.findById(MedicalConditionId);
-
+      console.log("AAAA", MedicalCondition);
       if (MedicalCondition === null) {
         return Result.fail<IMedicalConditionDTO>('Medical Condition not found');
       } else {
         const MedicalRecordDTOResult = MedicalConditionMap.toDTO(MedicalCondition) as IMedicalConditionDTO;
+        return Result.ok<IMedicalConditionDTO>(MedicalRecordDTOResult);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+  public async updateMedicalConditionById(MedicalConditionId: string, medicalCondition: { descricao: string; designacao: string; sintomas: string[]}): Promise<Result<IMedicalConditionDTO>> {
+    try {
+      const MedicalCondition = await this.MedicalConditionRepo.findById(MedicalConditionId);
+      console.log("AAAAC", MedicalCondition);
+      if (MedicalCondition === null) {
+        return Result.fail<IMedicalConditionDTO>('Medical Condition not found');
+      } else {
+        MedicalCondition.descricao = medicalCondition.descricao;
+        MedicalCondition.designacao = medicalCondition.designacao;
+        MedicalCondition.sintomas = medicalCondition.sintomas;
+        const updatedMedicalCondition = await this.MedicalConditionRepo.save(MedicalCondition);
+        console.log("UP",updatedMedicalCondition,"DATED");
+        const MedicalRecordDTOResult = MedicalConditionMap.toDTO(updatedMedicalCondition) as IMedicalConditionDTO;
         return Result.ok<IMedicalConditionDTO>(MedicalRecordDTOResult);
       }
     } catch (e) {
