@@ -402,13 +402,7 @@ export class AdminComponent {
           });
         }else{
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Appointment scheduled successfully!',
-          showConfirmButton: false,
-          timer: 1500,
-        });}
+        }
       },
       error: (error) => {
         console.error('Error scheduling appointment:', error);
@@ -444,13 +438,7 @@ export class AdminComponent {
     this.operationTypesService.createOperationTypes(payload)
       .subscribe({
         next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Operation Type created successfully!',
-            showConfirmButton: false,
-            timer: 1500
-          });
+          this.sweetSuccess('Operation Type created successfully!')
 
           // Close the modal after success
           this.getAllOperationTypes();
@@ -458,11 +446,7 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error creating operation type:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to create Operation Type.',
-          });
+          this.sweetErro('Failed to create Operation Type.')
         }
       });
   }
@@ -490,13 +474,7 @@ export class AdminComponent {
     this.specializationService.createSpecialization(payload)
       .subscribe({
         next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Specialization created successfully!',
-            showConfirmButton: false,
-            timer: 1500
-          });
+          this.sweetSuccess('Specialization created successfully!')
 
           // Close the modal after success
           this.modalService.closeModal('createSpecializationModal');
@@ -530,28 +508,18 @@ export class AdminComponent {
       // Define o campo allergies como um array com as tags
       //this.myForm.patchValue({ allergies: this.tags });
 
-      //const formattedAllergies = JSON.stringify(this.tags);
-      //this.myForm.patchValue({ allergies: this.tags });
       this.myForm.patchValue({ appointmentHistory: this.appointmentHistory });
 
       // Obtém os valores do formulário
       const formData = this.myForm.value;
 
 
-      // Enviar os dados diretamente com HttpClient
 
      // this.http.post(apiUrl, formData, { headers })
      this.patientService.adminRegisterPatient(formData)
         .subscribe(
           response => {
-            Swal.fire({
-              icon: "success",
-              title: "Patient adicionado com sucesso!",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false
-            });
+            this.sweetSuccess("Patient adicionado com sucesso!")
             this.myForm.reset(); // Redefinir o formulário após o envio
             this.appointmentHistory = []; // Limpar o array de tags após o envio
             this.getAllpatientsProfiles();
@@ -559,14 +527,7 @@ export class AdminComponent {
           error => {
             console.error("Erro ao submeter o formulário", error);
               console.error('Error editing patient:', error);
-              Swal.fire({
-                icon: "error",
-                title: "Não foi possível adicionar o patient devido a algum atributo",
-                toast: true,
-                position: "top-end",
-                timer: 3000,
-                showConfirmButton: false
-              });
+              this.sweetErro("Não foi possível adicionar o patient devido a algum atributo")
               this.errorMessage = 'Failed to edit patient!';
               this.successMessage = null;
           }
@@ -584,14 +545,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -600,24 +554,10 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um membro de Staff.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um membro de Staff.")
     } else {
       if (document.getElementById("active_"+this.selectedStaffId)?.innerText == "false"){
-        Swal.fire({
-          icon: "error",
-          title: "Perfil já está desativado.",
-          toast: true,
-          position: "bottom-right",
-          timer: 3000,
-          showConfirmButton: false
-        });
+        this.sweetErro("Perfil já está desativado.")
         return
       }
       Swal.fire({
@@ -646,26 +586,12 @@ export class AdminComponent {
           .subscribe({
             next: (response) => {
               this.getAllstaffsProfiles();
-              Swal.fire({
-                icon: "success",
-                title: "Perfil desativado com sucesso",
-                toast: true,
-                position: "top-end",
-                timer: 3000,
-                showConfirmButton: false
-              });
+              this.sweetSuccess("Perfil desativado com sucesso")
             },
             error: (error) => {
               console.error('Error deactivating staff:', error);
               this.errorMessage = 'Failed to deactivate staff profiles!';
-              Swal.fire({
-                icon: "error",
-                title: "Não foi possível desativar o perfil",
-                toast: true,
-                position: "top-end",
-                timer: 3000,
-                showConfirmButton: false
-              });
+              this.sweetErro("Não foi possível desativar o perfil")
             }
           });
         } else if (result.isDenied) {
@@ -679,14 +605,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -695,14 +614,9 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um membro de Staff.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+
+      this.sweetWarning("Por favor seleciona um membro de Staff.")
+    
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
      // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -727,14 +641,9 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetErro("Nenhuma conta com sessão ativa.")
+
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -743,14 +652,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um Patient.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um Patient.");
     }else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
       //this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
@@ -853,14 +755,7 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error editing patient:', error);
-          Swal.fire({
-            icon: "error",
-            title: "Não foi possível atualizar o patient",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetErro("Não foi possível atualizar o patient");
           this.errorMessage = 'Failed to edit patient!';
           this.successMessage = null;
         }
@@ -905,14 +800,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.");
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -921,24 +809,10 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um Patient.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um Patient.")
     } else {
       if (document.getElementById("active_"+this.selectedPatientEmail+"_false")){
-        Swal.fire({
-          icon: "error",
-          title: "Perfil já está desativado.",
-          toast: true,
-          position: "bottom-right",
-          timer: 3000,
-          showConfirmButton: false
-        });
+        this.sweetErro("Perfil já está desativado.")
         return
       }
       Swal.fire({
@@ -969,26 +843,13 @@ export class AdminComponent {
           .subscribe({
             next: (response) => {
               this.getAllpatientsProfiles();
-              Swal.fire({
-                icon: "success",
-                title: "Perfil desativado com sucesso",
-                toast: true,
-                position: "top-end",
-                timer: 3000,
-                showConfirmButton: false
-              });
+              this.sweetSuccess("Perfil desativado com sucesso")
+
             },
             error: (error) => {
               console.error('Error deactivating staff:', error);
               this.errorMessage = 'Failed to deactivate staff profiles!';
-              Swal.fire({
-                icon: "error",
-                title: "Não foi possível desativar o perfil",
-                toast: true,
-                position: "top-end",
-                timer: 3000,
-                showConfirmButton: false
-              });
+              this.sweetErro("Não foi possível desativar o perfil")
             }
           });
         } else if (result.isDenied) {
@@ -1005,14 +866,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1021,14 +875,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um Patient.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um Patient.")
 
     } else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
@@ -1054,14 +901,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1070,14 +910,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um membro de Staff.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um membro de Staff.")
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
       //this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -1143,26 +976,12 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Time Slots Added!';
           this.errorMessage = null;
-          Swal.fire({
-            icon: "success",
-            title: "Time Slots adicionadas com sucesso.",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Time Slots adicionadas com sucesso.")
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
         error: (error) => {
           console.error('Error editing staff:', error);
-          Swal.fire({
-            icon: "error",
-            title: "Não foi possível adicionar uma ou mais Time Slots.",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetErro("Não foi possível adicionar uma ou mais Time Slots.")
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
         }
@@ -1176,26 +995,13 @@ export class AdminComponent {
           next: () => {
             this.successMessage = 'Time Slots Removed!';
             this.errorMessage = null;
-            Swal.fire({
-              icon: "success",
-              title: "Time Slots removidas com sucesso.",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false
-            });
+            this.sweetSuccess("Time Slots removidas com sucesso.")
+
             this.getAllstaffsProfiles(); // Refresh the list after creation
           },
           error: (error) => {
             console.error('Error editing staff:', error);
-            Swal.fire({
-              icon: "error",
-              title: "Não foi possível remover uma ou mais Time Slots.",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false
-            });
+           this.sweetErro("Não foi possível remover uma ou mais Time Slots.")
             this.errorMessage = 'Failed to edit staff!';
             this.successMessage = null;
           }
@@ -1206,26 +1012,14 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
           this.errorMessage = null;
-          Swal.fire({
-            icon: "success",
-            title: "Perfil Editado com sucesso",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Perfil Editado com sucesso")
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
         error: (error) => {
           console.error('Error editing staff:', error);
-          Swal.fire({
-            icon: "error",
-            title: "Não foi possível editar o Perfil",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+
+          this.sweetErro("Não foi possível editar o Perfil")
+
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
         }
@@ -1687,14 +1481,9 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetErro("Nenhuma conta com sessão ativa.")
+
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1703,14 +1492,8 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona uma Operation Type.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetWarning("Por favor seleciona uma Operation Type.")
     }else {
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
       this.operationTypesService.getOperationTypeById(this.selectOperationTypeId)
@@ -1799,14 +1582,7 @@ export class AdminComponent {
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
-          Swal.fire({
-            icon: "success",
-            title: "Operation Type atualizado com sucesso!",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Operation Type atualizado com sucesso!")
           this.getAllOperationTypes(); // Refresh the list after creation
           this.closeModal('UpdateOperationTypeModal');
         },
@@ -1815,24 +1591,10 @@ export class AdminComponent {
 
           if (error.status === 400) {
             // Erro 400 específico
-            Swal.fire({
-              icon: "error",
-              title: "Não podes editar um operation type desativado ou com campos vazios",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false,
-            });
+            this.sweetErro("Não podes editar um operation type desativado ou com campos vazios")
           } else {
             // Outros erros
-            Swal.fire({
-              icon: "error",
-              title: "Não foi possível atualizar o operation type.",
-              toast: true,
-              position: "top-end",
-              timer: 3000,
-              showConfirmButton: false,
-            });
+            this.sweetErro("Não foi possível atualizar o operation type.")
           }
 
         },
@@ -1862,26 +1624,12 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Por favor seleciona um Operation Type.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Por favor seleciona um Operation Type.")
 
     } else {
 
       if (document.getElementById("active_"+this.selectOperationTypeId+"_false")){
-        Swal.fire({
-          icon: "error",
-          title: "Operação já está desativada.",
-          toast: true,
-          position: "bottom-right",
-          timer: 3000,
-          showConfirmButton: false
-        });
+        this.sweetErro("Operação já está desativada.")
         return
       }
       Swal.fire({
@@ -1905,14 +1653,7 @@ export class AdminComponent {
       this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
-          Swal.fire({
-            icon: "success",
-            title: "Tipo de operação desativado",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Tipo de operação desativado")
 
           this.getAllOperationTypes();
 
@@ -2197,27 +1938,13 @@ export class AdminComponent {
     this.medicalConditionService.updateMedicalCondition(this.MedicalConditionSingle.codigo, updatedPatientData )
       .subscribe({
         next: (response: any) => {
-          Swal.fire({
-            icon: "success",
-            title: "Patient atualizado com sucesso!",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetSuccess("Patient atualizado com sucesso!")
           this.getAllConditions(); // Refresh the list after creation
           this.closeModal('editConditionModal');
         },
         error: (error) => {
           console.error('Error editing medical condition:', error);
-          Swal.fire({
-            icon: "error",
-            title: "Could not update medical condition",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetErro("Could not update medical condition")
           this.errorMessage = 'Failed to edit medical condition!';
           this.successMessage = null;
         }
@@ -2352,14 +2079,7 @@ sweetErro(text: string){
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -2368,14 +2088,8 @@ sweetErro(text: string){
       'Authorization': `Bearer ${token}`
     });
     if (this.selectConditionId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please select a Medical Condition.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetWarning("Please select a Medical Condition.")
     } else {
       console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
      // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -2405,14 +2119,8 @@ sweetErro(text: string){
     const token = this.authService.getToken();
 
     if (!token) {
-      Swal.fire({
-        icon: "error",
-        title: "Nenhuma conta com sessão ativa.",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      
+      this.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -2421,14 +2129,7 @@ sweetErro(text: string){
       'Authorization': `Bearer ${token}`
     });
     if (this.selectConditionId === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please select a Medical Condition.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetWarning("Please select a Medical Condition.")
     } else {
       console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
       this.medicalConditionService.viewMedicalCondition(this.selectConditionId)
