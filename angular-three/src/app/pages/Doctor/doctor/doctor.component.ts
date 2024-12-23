@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { OperationRequestsService } from '../../../Services/operationRequest.service';
+import { AppointmentService } from '../../../Services/appointment.service';
+import { SurgeryRoomsService } from '../../../Services/surgeryRoom.service';
 import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { PatientService } from '../../../Services/patient.service';
@@ -35,11 +37,35 @@ interface OperationRequest {
   priority: string;
 }
 
+interface SurgeryRoom {
+  Id: string;
+  RoomNumber: string;
+  Type: string;
+}
+
 
 interface UpdateOperationRequestDto {
   id: string;
   deadline?: string;
   priority?: string;
+}
+
+export interface AppointmentsSlotDTO {
+  staffId: string;
+  start: string;
+  end: string;
+}
+
+export interface DateDTO {
+  start: string;
+  end: string;
+}
+
+export interface CreatingAppointmentDto {
+  roomId: string;
+  operationRequestId: string;
+  date: DateDTO;
+  appointmentSlot: AppointmentsSlotDTO[];
 }
 
 interface MedicalRecordRequest {
@@ -159,6 +185,8 @@ export class DoctorComponent implements OnInit {
     emailDoctor: ''
   };
 
+  surgeryRooms: SurgeryRoom[] = [];
+
   medicalRecordRequests: MedicalRecordRequest[] = [];
   medicalRecordPatientEmail: string = '';
   filteredMedicalRecordRequests: MedicalRecordRequest[] = [];
@@ -180,12 +208,29 @@ export class DoctorComponent implements OnInit {
     descricao: ''
   }
 
+  appointmentData = {
+    date: { start: '', end: '' },
+    appointmentSlot: [{
+      staffId: '',
+      start: '',
+      end: ''
+    }]
+  };
+
+  selectedOperationRequestId: string | null = null;
+
+  selectedSurgeryRoomId: string | null = null;
+
+
+
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
     private http: HttpClient,
     private authService: AuthService,
     private operationRequestsService: OperationRequestsService,
+    private appointmentService: AppointmentService,
+    private surgeryRoomService: SurgeryRoomsService,
     private allergiesService: AllergiesService,
     private medicalConditionService: MedicalConditionService,
     private medicalRecordService: MedicalRecordService,
@@ -219,6 +264,26 @@ export class DoctorComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  getAllSurgeryRooms() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.surgeryRoomService.getAllSurgeryRooms().subscribe({
+      next: (response: SurgeryRoom[]) => {
+        this.surgeryRooms = response;
+      },
+      error: (error) => {
+        console.error('Error fetching rooms:', error);
+      }
+    });
+  }
 
   getAllOperationRequests() {
     const token = this.authService.getToken();
@@ -390,6 +455,104 @@ export class DoctorComponent implements OnInit {
     this.closeModal('filterMedicalRecordRequestModal');
   }*/
 
+  onCreateAppointment() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+  
+    // Check if the operation request is selected
+    if (!this.selectedOperationRequestId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Operation Request',
+        text: 'Please select an operation request!',
+      });
+      return;
+    }
+
+    if (!this.selectedSurgeryRoomId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Surgery Room',
+        text: 'Please select a surgery room!',
+      });
+      return;
+    }
+  
+    // Validate appointment slots (check if staffId, start, and end are not empty)
+    for (const slot of this.appointmentData.appointmentSlot) {
+      if (!slot.staffId || !slot.start || !slot.end) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Incomplete Appointment Slot',
+          text: 'Please fill out all fields for each appointment slot!',
+        });
+        return;
+      }
+    }
+  
+    const payload: CreatingAppointmentDto = {
+      roomId: this.selectedSurgeryRoomId,
+      operationRequestId: this.selectedOperationRequestId,  // Use the selected operation request ID
+      date: {
+        start: this.appointmentData.date.start,
+        end: this.appointmentData.date.end
+      },
+      appointmentSlot: this.appointmentData.appointmentSlot.map(slot => ({
+        staffId: slot.staffId,
+        start: slot.start,
+        end: slot.end
+      }))
+    };
+  
+    console.log('Payload being sent to the server:', payload);
+  
+    this.appointmentService.createAppointments(payload).subscribe({
+      next: () => {
+        // this.getAllAppointments();
+        this.cleanRegister();
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Appointment created successfully!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        this.modalService.closeModal('createAppointmentModal');
+      },
+      error: (error) => {
+        console.error('Error creating appointment:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to create appointment.',
+        });
+      },
+    });
+  }
+  
+
+  addAppointmentSlot() {
+    this.appointmentData.appointmentSlot.push({
+      staffId: '',
+      start: '',
+      end: ''
+    });
+  }
+
+  // Remove an appointment slot
+  removeAppointmentSlot(index: number) {
+    if (this.appointmentData.appointmentSlot.length > 1) {
+      this.appointmentData.appointmentSlot.splice(index, 1);
+    }
+  }
+
   onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
     if (!token) {
@@ -431,9 +594,6 @@ export class DoctorComponent implements OnInit {
       }
     });
   }
-
-
-
 
   onUpdateRequest(requestData: UpdateOperationRequestDto) {
     if (!requestData.id) {
@@ -878,6 +1038,15 @@ export class DoctorComponent implements OnInit {
       deadline: '',
       priority: ''
     };
+  }
+
+  cleanAppointmentModal() {
+    this.appointmentData = {
+      date: { start: '', end: '' },
+      appointmentSlot: []
+    };
+    this.selectedOperationRequestId = null;
+    this.selectedSurgeryRoomId = null;
   }
 
   cleanMedicalRecordRegister() {

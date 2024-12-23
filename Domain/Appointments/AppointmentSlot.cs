@@ -7,9 +7,11 @@ namespace DDDSample1.Domain.Appointments
     {
         public Slot AppointmentTime { get; private set; }
         public StaffGuid Staff { get; private set; }
-  private AppointmentSlot() { }
 
-        public AppointmentSlot(Slot time, StaffGuid staff) {
+        private AppointmentSlot() { }
+
+        public AppointmentSlot(Slot time, StaffGuid staff)
+        {
             this.AppointmentTime = time;
             this.Staff = staff;
         }
@@ -20,13 +22,13 @@ namespace DDDSample1.Domain.Appointments
             yield return Staff;
         }
 
-        // Override Equals
+        // Correctly override Equals
         public override bool Equals(object obj)
         {
-            return Equals(obj as Slot);
+            return Equals(obj as AppointmentSlot);  // Compare with AppointmentSlot
         }
 
-        // Implement IEquatable<Slot>
+        // Implement IEquatable<AppointmentSlot>
         public bool Equals(AppointmentSlot other)
         {
             if (other == null) return false;

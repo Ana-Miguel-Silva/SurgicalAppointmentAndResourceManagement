@@ -10,19 +10,16 @@ public class CreatingAppointmentDto
 
     public OperationRequestId OperationRequestId { get;  set; }
 
-    public Slot Date { get;  set; }
-
-    public string Appstatus { get;  set; }
-    public List<AppointmentSlot> AppointmentSlot { get; private set; }
+    public DateDTO Date { get;  set; }
+    public List<AppointmentsSlotDTO> AppointmentSlot { get; private set; }
 
 
-    public CreatingAppointmentDto(SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, List<AppointmentSlot> slots)
+    public CreatingAppointmentDto(string roomId, string operationRequestId, DateDTO date, List<AppointmentsSlotDTO> appointmentSlot)
     {
-        this.RoomId = roomId;
-        this.OperationRequestId = opReqId;
+        this.RoomId = new SurgeryRoomId(roomId);
+        this.OperationRequestId = new OperationRequestId(operationRequestId);
         this.Date = date;
-        this.Appstatus = AppointmentStatus.SCHEDULED;
-        this.AppointmentSlot = slots;
+        this.AppointmentSlot = appointmentSlot;
     }
 
 }

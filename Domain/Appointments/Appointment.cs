@@ -16,7 +16,7 @@ namespace DDDSample1.Domain.Appointments
 
         public Appointment(SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, string status, List<AppointmentSlot> slots)
         {
-            if (roomId == null || opReqId == null || date == null || status == null || slots == null)
+            if (roomId == null || opReqId == null || date == null || status == null)
                 throw new BusinessRuleValidationException("One of the appointment parameters was not valid");
 
             this.Id = new AppointmentId(Guid.NewGuid());

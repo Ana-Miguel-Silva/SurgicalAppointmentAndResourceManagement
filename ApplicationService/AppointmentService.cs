@@ -61,7 +61,20 @@ namespace DDDSample1.ApplicationService.Appointments
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
         {
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, dto.Date, dto.Appstatus, dto.AppointmentSlot);
+            await checkRoomIdAsync(dto.RoomId);
+            await checkOperationRequestIdAsync(dto.OperationRequestId);
+
+            Slot converted = new Slot(dto.Date.Start, dto.Date.End);
+
+            List<AppointmentSlot> appointmentSlots = new List<AppointmentSlot>();
+
+            foreach (var slot in dto.AppointmentSlot)
+            {
+                Slot convertedSlot = new Slot(slot.Start, slot.End);
+                appointmentSlots.Add(new AppointmentSlot(convertedSlot, new StaffGuid(slot.StaffId)));
+            }
+
+            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, converted, AppointmentStatus.SCHEDULED, appointmentSlots);
 
             await checkRoomIdAsync(dto.RoomId);
             await checkOperationRequestIdAsync(dto.OperationRequestId);
@@ -73,6 +86,21 @@ namespace DDDSample1.ApplicationService.Appointments
 
             return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
+
+
+        public async Task<AppointmentDto> AddAsyncPlanningModule(SurgeryRoomId roomId, OperationRequestId operationRequestId, Slot date, List<AppointmentSlot> appointmentSlots)
+            {
+                var appointment = new Appointment(roomId, operationRequestId, date, AppointmentStatus.SCHEDULED, appointmentSlots);
+
+                await checkRoomIdAsync(roomId);
+                await checkOperationRequestIdAsync(operationRequestId);
+
+                await this._repo.AddAsync(appointment);
+
+                await this._unitOfWork.CommitAsync();
+
+                return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
+            }
 
         public async Task<string> PostToPrologServer(string url, object data)
         {
@@ -238,7 +266,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             var roomIdObj = new SurgeryRoomId(roomId);
 
-            await AddAsync(new CreatingAppointmentDto(roomIdObj, operationRequestIdObj, date, appointmentSlots));
+            await AddAsyncPlanningModule(roomIdObj, operationRequestIdObj, date, appointmentSlots);
         }
 
         private async Task<List<AppointmentSlot>> AppendStaffDetails(JToken appointment, DateTime dateOfAppointments, StringBuilder result)

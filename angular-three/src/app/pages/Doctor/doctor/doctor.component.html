@@ -59,6 +59,15 @@
         </div>
       </div>
     </div>
+
+    <div class="container col-md-4">
+      <div class="container-lg  selectionDiv" (click)="openModal('createAppointmentModal')">
+        <div class="form-floating mb-3">
+            <h3 class="title" >Create Appointment</h3>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -113,7 +122,7 @@
   </div>
 </div>
 
-<!-- Create Operation Request Modal -->
+<!-- Create Operation Request Modal -oncreate-->
 <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
   <div class="modal-content">
       <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
@@ -159,6 +168,124 @@
       </form>
   </div>
 </div>
+
+
+<!-- Create Appointment Modal -->
+<div [ngStyle]="{'display': isModalOpen('createAppointmentModal') ? 'block' : 'none'}" id="createAppointmentModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
+    <form (ngSubmit)="onCreateAppointment()">
+
+
+        <!-- Surgery Rooms Dropdown -->
+        <div class="form-group">
+          <label for="surgeryRoom">Surgery Room</label>
+          <select
+            id="surgeryRoom"
+            class="form-control"
+            [(ngModel)]="selectedsurgeryRoomId"
+            name="surgeryRoom"
+            required
+          >
+            <option value="" disabled>Select a Surgery Room</option>
+            <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.Id">
+              {{ surgeryRoom.RoomNumber }} 
+              ({{ surgeryRoom.Type }})
+            </option>
+          </select>
+        </div>
+
+      <!-- Operation Request Dropdown -->
+      <div class="form-group">
+    <label for="operationRequest">Operation Request</label>
+    <select
+      id="operationRequest"
+      class="form-control"
+      [(ngModel)]="selectedOperationRequestId"
+      name="operationRequest"
+      required
+    >
+      <option value="" disabled>Select an Operation Request</option>
+      <option *ngFor="let operationRequest of operationRequests" [value]="operationRequest.id">
+        {{ operationRequest.operationTypeName }} 
+        ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline }}
+      </option>
+    </select>
+  </div>
+    
+      <!-- Date Inputs -->
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input
+          id="startDate"
+          type="datetime-local"
+          class="form-control"
+          [(ngModel)]="appointmentData.date.start"
+          name="startDate"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date</label>
+        <input
+          id="endDate"
+          type="datetime-local"
+          class="form-control"
+          [(ngModel)]="appointmentData.date.end"
+          name="endDate"
+          required
+        />
+      </div>
+    
+      <!-- Appointment Slots -->
+      <div class="form-group" *ngFor="let slot of appointmentData.appointmentSlot; let i = index">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="staffId">Staff ID</label>
+            <input
+              id="staffId"
+              type="text"
+              class="form-control"
+              [(ngModel)]="slot.staffId"
+              name="staffId{{ i }}"
+              required
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="slotStart">Start Time</label>
+            <input
+              id="slotStart"
+              type="datetime-local"
+              class="form-control"
+              [(ngModel)]="slot.start"
+              name="slotStart{{ i }}"
+              required
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="slotEnd">End Time</label>
+            <input
+              id="slotEnd"
+              type="datetime-local"
+              class="form-control"
+              [(ngModel)]="slot.end"
+              name="slotEnd{{ i }}"
+              required
+            />
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger" (click)="removeAppointmentSlot(i)">Remove Slot</button>
+      </div>
+    
+      <!-- Add New Slot -->
+      <button type="button" class="btn btn-primary" (click)="addAppointmentSlot()">Add Slot</button>
+    
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-success">Create Appointment</button>
+    </form>
+  </div>
+</div>
+
 
    <!-- Filter Operation Requests Modal -->
 <div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
@@ -459,30 +586,30 @@
       <span (click)="closeModal('registerMedicalRecordModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
           <h3 class="text-center">Insert New Medical Record</h3>
-       
+
           <div class="col-md-6">
               <label for="patientEmail" class="form-label">Patient Email</label>
               <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientId" name="patientEmail" required />
               <div class="valid-feedback">Looks good!</div>
           </div>
 
-          
+
           <div class="dropdown">
             <label for="tag-filter" class="form-label">Allergies</label>
             <div class="tags-input">
               <ul id="tags">
                 <li *ngFor="let tag of tags; let i = index" class="tag">
-                  {{ tag.designacao }}   
-                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>               
+                  {{ tag.designacao }}
+                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>
                 </li>
-                
+
               </ul>
               <input
                 id="tag-filter"
                 type="text"
                 [(ngModel)]="filterAllergieNameText"
                 placeholder="Choose an allergy"
-                (input)="filterAllergieNameOptions()"               
+                (input)="filterAllergieNameOptions()"
                 (focus)="showDropdown = true"
                 (blur)="onBlur()"
               />
@@ -495,8 +622,8 @@
               </li>
             </ul>
           </div>
-          
-            
+
+
           <!--<div class="col-md-4">
             <div class="dropdown2">
               <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
@@ -527,8 +654,8 @@
               </ul>
             </div>
           </div>-->
-            
-            
+
+
 
           <div class="col-md-6">
               <label for="descricao" class="form-label">Descrição</label>
@@ -539,7 +666,7 @@
           <div class="col-12">
               <button class="btn btn-primary" type="submit">Create Request</button>
           </div>
-     
+
       </form>
   </div>
 </div>
@@ -684,9 +811,9 @@
               </ul>
             </div>
           </div>
-            
 
-        
+
+
           <div class="col-md-1"></div>
 
           <div class="col-md-2"></div>
