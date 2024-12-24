@@ -543,6 +543,32 @@ async function makeAttempt( pages, failedScreenshots, cleanPage, isMakeScreensho
 
 			}, renderTimeout, page.pageSize / 1024 / 1024 * parseTime * 1000 );
 
+
+			/*const waitingLoop = setInterval(() => {
+				const now = performance.now();
+				const renderTimeoutExceeded = (renderTimeout > 0) && (now - renderStart > 1000 * renderTimeout);
+
+				if (renderTimeoutExceeded) {
+					clearInterval(waitingLoop);
+					reject(new Error('Render timeout exceeded'));
+				} else if (window._renderFinished) {
+					clearInterval(waitingLoop);
+					resolve();
+				}
+			}, 10);
+		} );
+
+	}, renderTimeout, page.pageSize / 1024 / 1024 * parseTime * 1000 );
+
+			// Add a fallback for safety
+			setTimeout(() => {
+				if (waitingLoop) {
+					clearInterval(waitingLoop);
+					reject(new Error('Render timeout fallback exceeded'));
+				}
+			}, renderTimeout * 1000);*/
+
+
 		} catch ( e ) {
 
 			if ( e.includes && e.includes( 'Render timeout exceeded' ) === false ) {

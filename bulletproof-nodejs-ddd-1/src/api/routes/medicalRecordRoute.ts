@@ -23,8 +23,24 @@ export default (app: Router) => {
       body: Joi.object({
         staff: Joi.string(),
         patientId: Joi.string(),
-        allergies: Joi.array().items(Joi.string()).required(),
-        medicalConditions: Joi.array().items(Joi.string()).required(),
+        allergies: Joi.array()
+        .min(1)
+        .items(
+          Joi.object({
+            designacao: Joi.string().required(),
+            descricao: Joi.string().allow('').optional(),
+            status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+          })
+        ).required(),
+        medicalConditions: Joi.array().items(
+          Joi.object({
+            codigo: Joi.string().required(),
+            designacao: Joi.string().required(),
+            descricao: Joi.string().allow('').optional(),
+            sintomas: Joi.array().items(Joi.string()),
+            status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+          })
+        ).required(),
         descricao: Joi.string().allow('').optional(),
       }),
     }),
@@ -33,8 +49,8 @@ export default (app: Router) => {
     route.patch(
       '/update',
       celebrate({
-        body: Joi.object({    
-          patientId: Joi.string().required(),    
+        body: Joi.object({
+          patientId: Joi.string().required(),
           allergies: Joi.array().items(Joi.string()),
           medicalConditions: Joi.array().items(Joi.string()),
           descricao: Joi.string().allow('').optional(),
@@ -46,7 +62,7 @@ export default (app: Router) => {
   route.get(
     '/get',
     celebrate({
-      query: Joi.object({
+      body: Joi.object({
         id: Joi.string(),
         staff: Joi.string(),
         patientId: Joi.string(),

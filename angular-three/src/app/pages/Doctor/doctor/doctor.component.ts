@@ -88,6 +88,8 @@ interface IAllergieMedicalRecord {
 export interface IMedicalConditionMedicalRecord {
   codigo: string;
   designacao: string;
+  descricao: string;
+  sintomas: string[];
   status: string;
 }
 
@@ -98,6 +100,13 @@ interface CreatingMedicalRecordUIDto {
   medicalConditions: IMedicalConditionMedicalRecord[];
   descricao?: string
 }
+
+export enum AllergyStatus {
+  Active = 'Active',
+  NotMeaningfulAnymore = 'Not Meaningful Anymore',
+  Misdiagnosed = 'Misdiagnosed'
+}
+
 
 
 
@@ -136,9 +145,6 @@ export class DoctorComponent implements OnInit {
       { view: "mini-map", multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(180.0, -90.0), initialZoom: 0.64 } // Mini-map view camera parameters
     );
   }
-  tags: string[] = [];
-  tagsAllergies: IAllergieMedicalRecord[] = [];
-  tagsConditions: IMedicalConditionMedicalRecord[] = [];
 
   animate() {
     requestAnimationFrame(() => this.animate());
@@ -252,9 +258,9 @@ export class DoctorComponent implements OnInit {
   medicalRecordUpdate!: FormGroup;
   medicalRecordProfileUpdate: any = null;
 
-  ngOnInit() {   
+  ngOnInit() {
     this.getAllOperationRequests();
-    //this.getAllMedicalRecords();
+    this.getAllMedicalRecords();
     this.getAllAllergies();
     this.getAllMedicalConditions();
     this.getAllSurgeryRooms();
@@ -333,21 +339,37 @@ export class DoctorComponent implements OnInit {
   }
 
   allergiesList: any[] = [];
+  allergiesListStatus: string[] = ['Active', 'Not Meaningful Anymore', 'Misdiagnosed'];
+  filteredAllergieStatusOptions: string[] = [...this.allergiesListStatus];
   medicalConditionsList: any[] = [];
   //medicalRecordList: any[] = [];
   newMedicalCondition: string = '';
   newAllergy: string = '';
   filteredOptions: any[] = [];
-  filteredAllergieNameOptions: any[] = [];
-  filteredOptionsConditions: any[] = [];
+
   selectedAllergieId: string | null = null;
   errorMessage: string | null = null;
   filterText: string = '';
+  tags: string[] = [];
+
   filterAllergieNameText: string = '';
-  filterAllergieDescicaoText: string = '';
+  filterAllergieDescricaoText: string = '';
+  filterConditionDescricaoText: string = '';
+  filterAllergieStatusText: string = '';
+  filterConditionStatusText: string = '';
   filterTextCondition: string = '';
+  sintomasCodition: string = '';
+  filterConditionCodigoText: string = '';
+  tagsAllergies: IAllergieMedicalRecord[] = [];
+  tagsConditions: IMedicalConditionMedicalRecord[] = [];
+  filteredAllergieNameOptions: any[] = [];
+  filteredOptionsConditions: any[] = [];
+
   showDropdown: boolean = false;
   showDropdown2: boolean = false;
+  showDropdown3: boolean = false;
+  showDropdown4: boolean = false;
+
   selectedAllergie: string | null =null;
   selectedPatientEmailMedicalRecord: string | null =null;
   successMessage: string | null = null;
@@ -421,9 +443,23 @@ export class DoctorComponent implements OnInit {
     this.filteredAllergieNameOptions = this.allergiesList.filter(option =>
       option.designacao.toLowerCase().includes(filterValue),
     );
-   
   }
 
+  filterAllergieStatusOptions(): void {
+    const filterValue = this.filterAllergieStatusText.toLowerCase();
+    this.filteredAllergieStatusOptions = this.allergiesListStatus.filter(option =>
+      option.toLowerCase().includes(filterValue),
+    );
+
+  }
+
+  filterConditionStatusOptions(): void {
+    const filterValue = this.filterConditionStatusText.toLowerCase();
+    this.filteredAllergieStatusOptions = this.allergiesListStatus.filter(option =>
+      option.toLowerCase().includes(filterValue),
+    );
+
+  }
 
   filterOptionsMedicalConditions(): void {
     const filterValueCondition = this.filterTextCondition.toLowerCase();
@@ -438,21 +474,98 @@ export class DoctorComponent implements OnInit {
   }
 
   selectOptionTagAllergies(designacao: string) {
-    this.filterAllergieNameText = designacao;      
-    this.showDropdown2 = false;    
+    this.filterAllergieNameText = designacao;
+    this.filterAllergieDescricaoText = this.allergiesList.find(option =>
+      option.designacao.toLowerCase() === designacao.toLowerCase()
+    ).descricao;
+
+    this.showDropdown2 = false;
+  }
+
+  selectOptionTagStatusAllergies(designacao: string) {
+    this.filterAllergieStatusText = designacao;
+    this.showDropdown3 = false;
+  }
+
+  selectOptionTagStatusCondition(designacao: string) {
+    this.filterConditionStatusText = designacao;
+    this.showDropdown4 = false;
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown2 = !this.showDropdown2;
+    if (this.showDropdown2) {
+      this.filteredAllergieStatusOptions = [...this.allergiesListStatus];
+    }
   }
 
   selectOptionMedicalCondition(designacao: string) {
-    this.filterTextCondition = designacao;      
-    this.showDropdown2 = false;    
+    this.filterTextCondition = designacao;
+
+    this.filterConditionDescricaoText = this.medicalConditionsList.find(option =>
+      option.designacao.toLowerCase() === designacao.toLowerCase()
+    ).descricao;
+
+    this.filterConditionCodigoText = this.medicalConditionsList.find(option =>
+      option.designacao.toLowerCase() === designacao.toLowerCase()
+    ).codigo;
+
+    this.showDropdown2 = false;
+  }
+
+  addAllergie() {
+
+    let allergieAdd: IAllergieMedicalRecord = {
+      designacao: this.filterAllergieNameText,
+      descricao: this.filterAllergieDescricaoText,
+      status: this.filterAllergieStatusText,
+    };
+
+    let exist = this.tagsAllergies.find(option =>
+      option.designacao.toLowerCase() === this.filterAllergieNameText.toLowerCase()
+    );
+
+    if(!exist){
+      this.tagsAllergies.push(allergieAdd);
+      console.log(this.tagsAllergies);
+    }
+
   }
 
 
-  
+  addMedicalCondition() {
+    let medicalConditionAdd: IMedicalConditionMedicalRecord = {
+      codigo: this.filterConditionCodigoText,
+      designacao: this.filterTextCondition,
+      descricao: this.filterConditionDescricaoText,
+      status: this.filterConditionStatusText,
+      sintomas:  this.sintomasCodition.split(',').map((item: string) => item.trim()),
+    };
+
+    let exist = this.tagsConditions.find(option =>
+      option.designacao.toLowerCase() === this.filterTextCondition.toLowerCase()
+    );
+
+    if(!exist){
+      this.tagsConditions.push(medicalConditionAdd);
+    }
+  }
+
+  removeMedicalCondition(index: number) {
+      this.tagsConditions.splice(index, 1);
+  }
+
+  removeAllergie(index: number) {
+    this.tagsAllergies.splice(index, 1);
+}
+
+
+
 
   hideDropdown(): void {
     // Pequeno atraso para evitar esconder antes de selecionar
     setTimeout(() => this.showDropdown = false, 200);
+
   }
 
 
@@ -478,7 +591,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     // Check if the operation request is selected
     if (!this.selectedOperationRequestId) {
       Swal.fire({
@@ -497,7 +610,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     // Validate appointment slots (check if staffId, start, and end are not empty)
     for (const slot of this.appointmentData.appointmentSlot) {
       if (!slot.staffId || !slot.start || !slot.end) {
@@ -509,7 +622,7 @@ export class DoctorComponent implements OnInit {
         return;
       }
     }
-  
+
     const payload: CreatingAppointmentDto = {
       roomId: this.selectedSurgeryRoomId,  // Use the selected surgery room ID
       operationRequestId: this.selectedOperationRequestId,  // Use the selected operation request ID
@@ -523,9 +636,9 @@ export class DoctorComponent implements OnInit {
         end: slot.end
       }))
     };
-  
+
     console.log('Payload being sent to the server:', payload);
-  
+
     this.appointmentService.createAppointments(payload).subscribe({
       next: () => {
         // this.getAllAppointments();
@@ -549,7 +662,7 @@ export class DoctorComponent implements OnInit {
       },
     });
   }
-  
+
 
   addAppointmentSlot() {
     this.appointmentData.appointmentSlot.push({
@@ -731,6 +844,8 @@ export class DoctorComponent implements OnInit {
 
         if (requestData.descricao) {
           payload.descricao = requestData.descricao;
+        } else {
+          payload.descricao = "";
         }
 
         console.log("Medical record payload:", payload);
@@ -739,7 +854,7 @@ export class DoctorComponent implements OnInit {
         this.medicalRecordService.createMedicalRecord(payload).subscribe({
           next: () => {
             this.cleanMedicalRecordRegister();
-           // this.getAllMedicalRecords();
+            this.getAllMedicalRecords();
             Swal.fire({
               icon: 'success',
               title: 'Success',
@@ -794,7 +909,7 @@ export class DoctorComponent implements OnInit {
     }
   }
 
-  
+
 
   removeTag(index: number) {
     this.tags.splice(index, 1);
@@ -805,6 +920,8 @@ export class DoctorComponent implements OnInit {
   onBlur() {
     setTimeout(() => (this.showDropdown = false), 200);
     setTimeout(() => (this.showDropdown2 = false), 200);
+    setTimeout(() => (this.showDropdown3 = false), 200);
+    setTimeout(() => (this.showDropdown4 = false), 200);
   }
 
 
@@ -844,12 +961,14 @@ export class DoctorComponent implements OnInit {
         this.medicalRecordRequests.forEach(async element => {
            this.patientService.getPatientEmailById(element.patientEmail).subscribe({
             next: (res) => {
+              console.log("patient: " ,res[0]);
               element.patientEmail =  res[0].email.fullEmail;
             },
           });
 
           this.staffService.getStaff(element.staff).subscribe({
             next: (res) => {
+              console.log("staff: " ,res[0]);
               element.staff =  res[0].email.fullEmail;
             },
           });
@@ -1004,7 +1123,7 @@ export class DoctorComponent implements OnInit {
             timer: 3000,
             showConfirmButton: false
           });
-          //this.getAllMedicalRecords(); // Fetch all medical records
+          this.getAllMedicalRecords(); // Fetch all medical records
           this.closeModal('UpdateMedicalRecordModal');
         },
         error: (error) => {
@@ -1061,6 +1180,17 @@ export class DoctorComponent implements OnInit {
     this.filterText = '';
     this.tagsConditions = [];
     this.filterTextCondition = '';
+
+    this.filterAllergieNameText = '';
+    this.filterAllergieDescricaoText = '';
+    this.filterAllergieStatusText = '';
+
+    this.filterConditionCodigoText = '';
+    this.filterTextCondition = '';
+    this.filterConditionDescricaoText = '';
+    this.filterConditionStatusText = '';
+    this.sintomasCodition = '';
+
     this.medicalRecordRequest = {
       staff: '',
       patientId: '',

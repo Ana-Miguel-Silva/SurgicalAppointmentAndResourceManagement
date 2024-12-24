@@ -66,41 +66,41 @@ export default class MedicalRecordService implements IMedicalRecordService {
     public async getMedicalRecord(medicalRecord: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO>> {
       try {
         const medicalRecords = await this.MedicalRecordRepo.findMedicalRecord(medicalRecord);
-    
+
         if (!medicalRecords || medicalRecords.length === 0) {
           return Result.fail<IFEMedicalRecordDTO[]>("Medical Record not found");
         }
-    
+
         const MedicalRecordDTOResult = await Promise.all(
           medicalRecords.map(async (record) => {
-  
-           // const allergiesResult = await this.getAllergiesMedicalRecord(record);              
+
+           // const allergiesResult = await this.getAllergiesMedicalRecord(record);
             //record.allergies = allergiesResult.getValue();
 
-            
-            //const medicalConditionsResult = await this.getAllMedicalConditionsMedicalRecord(record);   
+
+            //const medicalConditionsResult = await this.getAllMedicalConditionsMedicalRecord(record);
             //record.medicalConditions = medicalConditionsResult.getValue();
-            
+
             return MedicalRecordMap.toFEDTO( record ) as IFEMedicalRecordDTO;
           })
         );
-    
+
         return Result.ok<IFEMedicalRecordDTO[]>(MedicalRecordDTOResult);
       } catch (e) {
         throw e;
       }
     }
-    
+
 
 
   public async getAllergiesMedicalRecord (medicalrecord: MedicalRecord): Promise<Result<string[]>> {
     try{
       const allergies = medicalrecord.allergies;
-   
+
       const allergiesAsString = Array.isArray(allergies)
         ? allergies.join(',')
         : allergies;
-  
+
       return await this.getAllergieDesignacao(allergiesAsString);
 
     } catch (e) {
@@ -117,10 +117,10 @@ export default class MedicalRecordService implements IMedicalRecordService {
         const allergie = await this.allergieServiceInstance.getAllergieById(record);
         return allergie.getValue().designacao;
       })
-    );  
+    );
 
-    return Result.ok<string[]>( allergiesDesignacao );   
-    
+    return Result.ok<string[]>( allergiesDesignacao );
+
   }
 
   public async getAllergieId(allergie: string): Promise<Result<string[]>> {
@@ -132,12 +132,12 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
       for (const record of allergieArray) {
         console.log("pappappa");
-        const allergieResult = await this.allergieServiceInstance.getAllergieId(record);  
+        const allergieResult = await this.allergieServiceInstance.getAllergieId(record);
         console.log("PPPPPPPPPPPPPPPPPP");
-       
+
         allergiesDesignacao.push(allergieResult);
       }
-       
+
       return Result.ok(allergiesDesignacao);
     } catch (error) {
       return Result.fail<string[]>(`Error in getting allergie id' : ${error.message}`);
@@ -149,11 +149,11 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async getAllMedicalConditionsMedicalRecord (medicalrecord: MedicalRecord): Promise<Result<string[]>> {
     try{
       const medicalConditions = medicalrecord.medicalConditions;
-   
+
       const medicalConditionsAsString = Array.isArray(medicalConditions)
         ? medicalConditions.join(',')
         : medicalConditions;
-  
+
       return await this.getMedicalConditionDescricao(medicalConditionsAsString);
 
     } catch (e) {
@@ -169,9 +169,9 @@ export default class MedicalRecordService implements IMedicalRecordService {
         const medicalCondition = await this.medicalConditionServiceInstance.getMedicalConditionById(record);
         return medicalCondition.getValue().descricao;
       })
-    );  
+    );
 
-    return Result.ok<string[]>( medicalConditionsDesignacao );   
+    return Result.ok<string[]>( medicalConditionsDesignacao );
   }
 
   public async getMedicalConditionId(medicalCondition : string): Promise<Result<string[]>> {
@@ -182,12 +182,12 @@ export default class MedicalRecordService implements IMedicalRecordService {
         medicalConditionArray.map(async (record) => {
           const medicalCondition = await this.medicalConditionServiceInstance.getMedicalConditionId(record);
           if (medicalCondition.isFailure) {
-            throw new Error("Error in getting Medical Condition id"); 
+            throw new Error("Error in getting Medical Condition id");
           }
 
           return medicalCondition.getValue().id.toString();
         })
-      );  
+      );
 
       return Result.ok(medicalConditionsDesignacao);
     } catch (error) {
@@ -198,31 +198,30 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
   public async createMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
-      console.log("Serviço allergies inicio:" , MedicalRecordDTO.allergies);
+     // console.log("Serviço allergies inicio:" , MedicalRecordDTO.allergies);
 
       /*const allergies = MedicalRecordDTO.allergies;
-   
+
       const allergiesAsString = Array.isArray(allergies)
         ? allergies.join(',')
         : allergies;
-  
-       
+
+
       MedicalRecordDTO.allergies = (await this.getAllergieId(allergiesAsString)).getValue();
 
       const medicalConditions = MedicalRecordDTO.medicalConditions;
-   
+
       const medicalConditionsAsString = Array.isArray(medicalConditions)
         ? medicalConditions.join(',')
         : medicalConditions;
-  
-       
+
+
       MedicalRecordDTO.medicalConditions = (await this.getMedicalConditionId(medicalConditionsAsString)).getValue();
       console.log("Serviço allergies fim:" , MedicalRecordDTO.allergies);*/
 
       MedicalRecordDTO.date = new Date(Date.now());
-      
+
       const MedicalRecordOrError = await MedicalRecord.create( MedicalRecordDTO );
-      console.log("Criou medical record ", MedicalRecordOrError);
 
       if (MedicalRecordOrError.isFailure) {
         return Result.fail<IMedicalRecordDTO>(MedicalRecordOrError.errorValue());
