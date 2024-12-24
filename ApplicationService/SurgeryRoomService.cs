@@ -23,9 +23,21 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             var list = await this._repo.GetAllAsync();
 
             List<SurgeryRoomDto> listDto = list.ConvertAll<SurgeryRoomDto>(surgeryRoom =>
-                new(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber ,surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots));
+                new(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots));
 
             return listDto;
+        }
+
+        public async Task<List<SurgeryRoomUIDto>> GetAllUIAsync()
+        {
+            var list = await this._repo.GetAllAsync();
+
+            List<SurgeryRoomDto> listDto = list.ConvertAll<SurgeryRoomDto>(surgeryRoom =>
+                new(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots));
+
+            var UIList = await Dto_to_UIDto(listDto);
+
+            return UIList;
         }
 
         public async Task<SurgeryRoomDto> GetByIdAsync(SurgeryRoomId id)
@@ -35,7 +47,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             if (surgeryRoom == null)
                 return null;
 
-            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber ,surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
+            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
         }
 
         public async Task<SurgeryRoomDto> AddAsync(CreatingSurgeryRoomDto dto)
@@ -56,7 +68,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
 
             await this._unitOfWork.CommitAsync();
 
-            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(),surgeryRoom.RoomNumber , surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
+            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
         }
 
         public async Task<SurgeryRoomDto> UpdateAsync(SurgeryRoomDto dto)
@@ -72,7 +84,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
 
             await this._unitOfWork.CommitAsync();
 
-            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(),surgeryRoom.RoomNumber , surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
+            return new SurgeryRoomDto(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots);
         }
 
         public async Task<SurgeryRoomDto> DeleteAsync(SurgeryRoomId id)
@@ -104,7 +116,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             var appointments = await this._appointmentRepository.GetByRoomAsync(id.Value);
 
             foreach (var appointment in appointments)
-            {   
+            {
                 if (appointment.Date.StartTime.Day == date.Date.Day || appointment.Date.EndTime.Day == date.Date.Day)
                 {
                     if (appointment.Date.StartTime.Hour <= date.Hour && appointment.Date.EndTime.Hour > date.Hour)
@@ -113,6 +125,17 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             }
 
             return true;
+        }
+
+        private async Task<List<SurgeryRoomUIDto>> Dto_to_UIDto(List<SurgeryRoomDto> list)
+        {
+            var listDto = new List<SurgeryRoomUIDto>();
+            foreach (var surgeryRoom in list)
+            {
+                listDto.Add(new SurgeryRoomUIDto(surgeryRoom.Id, surgeryRoom.RoomNumber, surgeryRoom.Type));
+            }
+
+            return listDto;
         }
 
     }

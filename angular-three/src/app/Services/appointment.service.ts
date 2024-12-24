@@ -22,4 +22,18 @@ export class AppointmentService {
   return this.http.post<any>(`${this.apiUrl}/pmodule2`, formData ,{headers});
 }
 
+createAppointments(formData : any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.post(`${this.apiUrl}`, formData, { headers })
+}
+
+updateAppointments(formData: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch(`${this.apiUrl}/${formData.id}`, formData, { headers });
+}
+
 }

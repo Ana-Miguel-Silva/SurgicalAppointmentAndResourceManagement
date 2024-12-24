@@ -24,6 +24,13 @@ namespace DDDSample1.Controllers
             return await _service.GetAllAsync();
         }
 
+        // GET: api/SurgeryRooms/UI
+        [HttpGet("UI")]
+        public async Task<ActionResult<IEnumerable<SurgeryRoomUIDto>>> GetAllUI()
+        {
+            return await _service.GetAllUIAsync();
+        }
+
         // GET: api/SurgeryRooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SurgeryRoomDto>> GetGetById(Guid id)
@@ -48,13 +55,13 @@ namespace DDDSample1.Controllers
 
                 return CreatedAtAction(nameof(GetGetById), new { id = surgeryRoom.Id }, surgeryRoom);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
-        
+
         // PUT: api/SurgeryRooms/5
         [HttpPut("{id}")]
         public async Task<ActionResult<SurgeryRoomDto>> Update(Guid id, SurgeryRoomDto dto)
@@ -67,19 +74,19 @@ namespace DDDSample1.Controllers
             try
             {
                 var surgeryRoom = await _service.UpdateAsync(dto);
-                
+
                 if (surgeryRoom == null)
                 {
                     return NotFound();
                 }
                 return Ok(surgeryRoom);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
-        
+
         // DELETE: api/SurgeryRooms/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<SurgeryRoomDto>> HardDelete(Guid id)
@@ -95,9 +102,9 @@ namespace DDDSample1.Controllers
 
                 return Ok(surgeryRoom);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-               return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }
