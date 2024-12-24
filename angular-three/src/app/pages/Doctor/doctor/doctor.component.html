@@ -183,14 +183,13 @@
           <select
             id="surgeryRoom"
             class="form-control"
-            [(ngModel)]="selectedsurgeryRoomId"
+            [(ngModel)]="selectedSurgeryRoomId"
             name="surgeryRoom"
             required
           >
             <option value="" disabled>Select a Surgery Room</option>
-            <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.Id">
-              {{ surgeryRoom.RoomNumber }}
-              ({{ surgeryRoom.Type }})
+            <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
+              {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
             </option>
           </select>
         </div>

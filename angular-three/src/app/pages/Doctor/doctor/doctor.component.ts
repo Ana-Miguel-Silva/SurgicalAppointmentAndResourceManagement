@@ -37,7 +37,7 @@ interface OperationRequest {
   priority: string;
 }
 
-interface SurgeryRoom {
+interface SurgeryRoomUIDto {
   Id: string;
   RoomNumber: string;
   Type: string;
@@ -185,7 +185,7 @@ export class DoctorComponent implements OnInit {
     emailDoctor: ''
   };
 
-  surgeryRooms: SurgeryRoom[] = [];
+  surgeryRooms: SurgeryRoomUIDto[] = [];
 
   medicalRecordRequests: MedicalRecordRequest[] = [];
   medicalRecordPatientEmail: string = '';
@@ -257,6 +257,7 @@ export class DoctorComponent implements OnInit {
     //this.getAllMedicalRecords();
     this.getAllAllergies();
     this.getAllMedicalConditions();
+    this.getAllSurgeryRooms();
   }
 
 
@@ -277,7 +278,7 @@ export class DoctorComponent implements OnInit {
     }
 
     this.surgeryRoomService.getAllSurgeryRooms().subscribe({
-      next: (response: SurgeryRoom[]) => {
+      next: (response: SurgeryRoomUIDto[]) => {
         this.surgeryRooms = response;
       },
       error: (error) => {
@@ -510,7 +511,7 @@ export class DoctorComponent implements OnInit {
     }
   
     const payload: CreatingAppointmentDto = {
-      roomId: this.selectedSurgeryRoomId,
+      roomId: this.selectedSurgeryRoomId,  // Use the selected surgery room ID
       operationRequestId: this.selectedOperationRequestId,  // Use the selected operation request ID
       date: {
         start: this.appointmentData.date.start,
