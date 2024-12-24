@@ -132,7 +132,9 @@
 				controls.target.y = 0.5;
 				controls.update();
 
-				setInterval( () => {
+				this.ngZone.runOutsideAngular(() => {
+					setInterval(() => {
+						this.ngZone.run(() => {
 
 					let index = Math.floor( Math.random() * boxes.count );
 
@@ -145,10 +147,12 @@
 
 					position.set( 0, Math.random() + 1, 0 );
 					physics.setMeshPosition( spheres, position, index );
+				});
 
-				}, 1000 / 60 );
-
-			}
+				}, 1000 / 60);
+			});
+		}
+			
 
 			function animate() {
 

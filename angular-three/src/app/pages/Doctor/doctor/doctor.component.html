@@ -239,7 +239,7 @@
     </div>
 
 
-    <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
+    <!--<div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
       <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
           <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="">
@@ -363,7 +363,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
       <div id="mapModalContent" class="modal-content" style="height: 75vh;">
@@ -471,20 +471,26 @@
             <label for="tag-filter" class="form-label">Allergies</label>
             <div class="tags-input">
               <ul id="tags">
-                <li *ngFor="let tag of tags; let i = index" class="tag">
-                  {{ tag.designacao }}   
-                  <button type="button" class="delete-button" (click)="removeTag(i); $event.preventDefault()">X</button>               
+                <li *ngFor="let tag of tagsAllergies; let i = index" class="tag">
+                  {{ tag.designacao }} - {{ tag.status }}
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="removeTag(i); $event.preventDefault()"
+                  >
+                    X
+                  </button>
                 </li>
-                
               </ul>
               <input
                 id="tag-filter"
                 type="text"
+                name="filterAllergieName"
                 [(ngModel)]="filterAllergieNameText"
                 placeholder="Choose an allergy"
-                (input)="filterAllergieNameOptions()"               
+                (input)="filterAllergieNameOptions()"
                 (focus)="showDropdown = true"
-                (blur)="onBlur()"
+                (blur)="hideDropdown()"
               />
             </div>
             <ul *ngIf="showDropdown" class="dropdown-list">
@@ -495,9 +501,10 @@
               </li>
             </ul>
           </div>
-          
+
+    
             
-          <!--<div class="col-md-4">
+          <div class="col-md-4">
             <div class="dropdown2">
               <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
               <div class="tagsConditions-input">
@@ -510,10 +517,10 @@
                 <input
                   id="condition-filter"
                   type="text"
+                  name="filterMedicalCondiitonDesignacao"
                   [(ngModel)]="filterTextCondition"
                   placeholder="Choose an medical condition"
-                  (input)="filterOptionsMedicalConditions()"
-                  (keydown)="addTagConditionFromInput($event)"
+                  (input)="filterOptionsMedicalConditions()"                
                   (focus)="showDropdown2 = true"
                   (blur)="onBlur()"
                 />
@@ -521,12 +528,12 @@
               <ul *ngIf="showDropdown2" class="dropdown-list">
                 <li
                   *ngFor="let option of filteredOptionsConditions"
-                  (mousedown)="selectOptionMedicalCondition(option.descricao)">
-                  {{ option.descricao }}
+                  (mousedown)="selectOptionMedicalCondition(option.designacao)">
+                  {{ option.designacao }}
                 </li>
               </ul>
             </div>
-          </div>-->
+          </div>
             
             
 

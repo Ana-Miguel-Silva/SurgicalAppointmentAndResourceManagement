@@ -57,14 +57,9 @@ namespace DDDSample1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*services.AddDbContext<DDDSample1DbContext>(opt =>
-                opt.UseInMemoryDatabase("DDDSample1DB")
-                .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
-
-            ConfigureMyServices(services);*/
-
+            
             services.AddDbContext<DDDSample1DbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("MySql5Connection"),
+                options.UseMySql(Configuration.GetConnectionString("MySql5ConnectionTeste"),
                     new MySqlServerVersion(new Version(8, 0, 0))
                 ).ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 

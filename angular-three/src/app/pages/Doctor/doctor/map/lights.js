@@ -57,7 +57,7 @@ export default class Lights {
         const intensity2 = 1;
         const light2 = new THREE.DirectionalLight(color2, intensity2);
 
-        const floorMaterial2 = new THREE.MeshStandardMaterial({ color2: 0x888888 });
+        const floorMaterial2 = new THREE.MeshStandardMaterial({ color: 0x888888 });
 
         light2.position.set(-5, 17, 10); 
         light2.target.position.set(0, 0, 0);

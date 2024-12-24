@@ -14,6 +14,7 @@ import { StaffService } from '../../../Services/staff.service';
 import { PatientService } from '../../../Services/patient.service';
 import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
+import { sweetAlertService } from '../../../Services/sweetAlert.service';
 
 interface RequiredStaff {
   quantity: number;
@@ -96,6 +97,7 @@ export class AdminComponent {
     private appointmentService : AppointmentService ,
     private patientService: PatientService,
     private staffService: StaffService,
+    private sweetService : sweetAlertService,
     private router: Router) {
     // Define os controles do formulário com validações
     this.myForm = this.fb.group({
@@ -438,7 +440,7 @@ export class AdminComponent {
     this.operationTypesService.createOperationTypes(payload)
       .subscribe({
         next: () => {
-          this.sweetSuccess('Operation Type created successfully!')
+          this.sweetService.sweetSuccess('Operation Type created successfully!')
 
           // Close the modal after success
           this.getAllOperationTypes();
@@ -446,7 +448,7 @@ export class AdminComponent {
         },
         error: (error) => {
           console.error('Error creating operation type:', error);
-          this.sweetErro('Failed to create Operation Type.')
+          this.sweetService.sweetErro('Failed to create Operation Type.')
         }
       });
   }
@@ -474,7 +476,7 @@ export class AdminComponent {
     this.specializationService.createSpecialization(payload)
       .subscribe({
         next: () => {
-          this.sweetSuccess('Specialization created successfully!')
+          this.sweetService.sweetSuccess('Specialization created successfully!')
 
           // Close the modal after success
           this.modalService.closeModal('createSpecializationModal');
@@ -519,7 +521,7 @@ export class AdminComponent {
      this.patientService.adminRegisterPatient(formData)
         .subscribe(
           response => {
-            this.sweetSuccess("Patient adicionado com sucesso!")
+            this.sweetService.sweetSuccess("Patient adicionado com sucesso!")
             this.myForm.reset(); // Redefinir o formulário após o envio
             this.appointmentHistory = []; // Limpar o array de tags após o envio
             this.getAllpatientsProfiles();
@@ -527,7 +529,7 @@ export class AdminComponent {
           error => {
             console.error("Erro ao submeter o formulário", error);
               console.error('Error editing patient:', error);
-              this.sweetErro("Não foi possível adicionar o patient devido a algum atributo")
+              this.sweetService.sweetErro("Não foi possível adicionar o patient devido a algum atributo")
               this.errorMessage = 'Failed to edit patient!';
               this.successMessage = null;
           }
@@ -545,7 +547,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -554,10 +556,10 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      this.sweetWarning("Por favor seleciona um membro de Staff.")
+      this.sweetService.sweetWarning("Por favor seleciona um membro de Staff.")
     } else {
       if (document.getElementById("active_"+this.selectedStaffId)?.innerText == "false"){
-        this.sweetErro("Perfil já está desativado.")
+        this.sweetService.sweetErro("Perfil já está desativado.")
         return
       }
       Swal.fire({
@@ -586,12 +588,12 @@ export class AdminComponent {
           .subscribe({
             next: (response) => {
               this.getAllstaffsProfiles();
-              this.sweetSuccess("Perfil desativado com sucesso")
+              this.sweetService.sweetSuccess("Perfil desativado com sucesso")
             },
             error: (error) => {
               console.error('Error deactivating staff:', error);
               this.errorMessage = 'Failed to deactivate staff profiles!';
-              this.sweetErro("Não foi possível desativar o perfil")
+              this.sweetService.sweetErro("Não foi possível desativar o perfil")
             }
           });
         } else if (result.isDenied) {
@@ -605,7 +607,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -615,7 +617,7 @@ export class AdminComponent {
     });
     if (this.selectedStaffId === null) {
 
-      this.sweetWarning("Por favor seleciona um membro de Staff.")
+      this.sweetService.sweetWarning("Por favor seleciona um membro de Staff.")
     
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
@@ -642,7 +644,7 @@ export class AdminComponent {
 
     if (!token) {
       
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
       return;
@@ -652,7 +654,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      this.sweetWarning("Por favor seleciona um Patient.");
+      this.sweetService.sweetWarning("Por favor seleciona um Patient.");
     }else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
       //this.http.get<string>(`${this.patientUrl}/email/${this.selectedPatientEmail}`, { headers })
@@ -748,14 +750,14 @@ export class AdminComponent {
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
-          this.sweetSuccess("Patient atualizado com sucesso!");
+          this.sweetService.sweetSuccess("Patient atualizado com sucesso!");
 
           this.getAllpatientsProfiles(); // Refresh the list after creation
           this.closeModal('UpdatePatientModal');
         },
         error: (error) => {
           console.error('Error editing patient:', error);
-          this.sweetErro("Não foi possível atualizar o patient");
+          this.sweetService.sweetErro("Não foi possível atualizar o patient");
           this.errorMessage = 'Failed to edit patient!';
           this.successMessage = null;
         }
@@ -800,7 +802,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.");
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.");
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -809,10 +811,10 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      this.sweetWarning("Por favor seleciona um Patient.")
+      this.sweetService.sweetWarning("Por favor seleciona um Patient.")
     } else {
       if (document.getElementById("active_"+this.selectedPatientEmail+"_false")){
-        this.sweetErro("Perfil já está desativado.")
+        this.sweetService.sweetErro("Perfil já está desativado.")
         return
       }
       Swal.fire({
@@ -843,13 +845,13 @@ export class AdminComponent {
           .subscribe({
             next: (response) => {
               this.getAllpatientsProfiles();
-              this.sweetSuccess("Perfil desativado com sucesso")
+              this.sweetService.sweetSuccess("Perfil desativado com sucesso")
 
             },
             error: (error) => {
               console.error('Error deactivating staff:', error);
               this.errorMessage = 'Failed to deactivate staff profiles!';
-              this.sweetErro("Não foi possível desativar o perfil")
+              this.sweetService.sweetErro("Não foi possível desativar o perfil")
             }
           });
         } else if (result.isDenied) {
@@ -866,7 +868,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -875,7 +877,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedPatientEmail === null) {
-      this.sweetWarning("Por favor seleciona um Patient.")
+      this.sweetService.sweetWarning("Por favor seleciona um Patient.")
 
     } else {
       console.log(`Viewing Patient Email: ${this.selectedPatientEmail}`);
@@ -901,7 +903,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -910,7 +912,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectedStaffId === null) {
-      this.sweetWarning("Por favor seleciona um membro de Staff.")
+      this.sweetService.sweetWarning("Por favor seleciona um membro de Staff.")
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
       //this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -976,12 +978,12 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Time Slots Added!';
           this.errorMessage = null;
-          this.sweetSuccess("Time Slots adicionadas com sucesso.")
+          this.sweetService.sweetSuccess("Time Slots adicionadas com sucesso.")
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
         error: (error) => {
           console.error('Error editing staff:', error);
-          this.sweetErro("Não foi possível adicionar uma ou mais Time Slots.")
+          this.sweetService.sweetErro("Não foi possível adicionar uma ou mais Time Slots.")
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
         }
@@ -995,13 +997,13 @@ export class AdminComponent {
           next: () => {
             this.successMessage = 'Time Slots Removed!';
             this.errorMessage = null;
-            this.sweetSuccess("Time Slots removidas com sucesso.")
+            this.sweetService.sweetSuccess("Time Slots removidas com sucesso.")
 
             this.getAllstaffsProfiles(); // Refresh the list after creation
           },
           error: (error) => {
             console.error('Error editing staff:', error);
-           this.sweetErro("Não foi possível remover uma ou mais Time Slots.")
+           this.sweetService.sweetErro("Não foi possível remover uma ou mais Time Slots.")
             this.errorMessage = 'Failed to edit staff!';
             this.successMessage = null;
           }
@@ -1012,13 +1014,13 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Staff Profile Edited!';
           this.errorMessage = null;
-          this.sweetSuccess("Perfil Editado com sucesso")
+          this.sweetService.sweetSuccess("Perfil Editado com sucesso")
           this.getAllstaffsProfiles(); // Refresh the list after creation
         },
         error: (error) => {
           console.error('Error editing staff:', error);
 
-          this.sweetErro("Não foi possível editar o Perfil")
+          this.sweetService.sweetErro("Não foi possível editar o Perfil")
 
           this.errorMessage = 'Failed to edit staff!';
           this.successMessage = null;
@@ -1300,7 +1302,7 @@ export class AdminComponent {
         next: () => {
           this.successMessage = 'Staff Profile Created!';
           this.errorMessage = null;
-          this.sweetSuccess("Formulário submetido com sucesso")
+          this.sweetService.sweetSuccess("Formulário submetido com sucesso")
 
           this.staffCreationForm.reset();
           this.getAllstaffsProfiles(); // Refresh the list after creation
@@ -1378,7 +1380,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1388,7 +1390,7 @@ export class AdminComponent {
     });
     if (this.selectOperationTypeId === null) {
 
-      this.sweetWarning("Por favor seleciona um Operation Type.");
+      this.sweetService.sweetWarning("Por favor seleciona um Operation Type.");
 
     } else {
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
@@ -1482,7 +1484,7 @@ export class AdminComponent {
 
     if (!token) {
       
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
       return;
@@ -1493,7 +1495,7 @@ export class AdminComponent {
     });
     if (this.selectOperationTypeId === null) {
       
-      this.sweetWarning("Por favor seleciona uma Operation Type.")
+      this.sweetService.sweetWarning("Por favor seleciona uma Operation Type.")
     }else {
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
       this.operationTypesService.getOperationTypeById(this.selectOperationTypeId)
@@ -1582,7 +1584,7 @@ export class AdminComponent {
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
-          this.sweetSuccess("Operation Type atualizado com sucesso!")
+          this.sweetService.sweetSuccess("Operation Type atualizado com sucesso!")
           this.getAllOperationTypes(); // Refresh the list after creation
           this.closeModal('UpdateOperationTypeModal');
         },
@@ -1591,10 +1593,10 @@ export class AdminComponent {
 
           if (error.status === 400) {
             // Erro 400 específico
-            this.sweetErro("Não podes editar um operation type desativado ou com campos vazios")
+            this.sweetService.sweetErro("Não podes editar um operation type desativado ou com campos vazios")
           } else {
             // Outros erros
-            this.sweetErro("Não foi possível atualizar o operation type.")
+            this.sweetService.sweetErro("Não foi possível atualizar o operation type.")
           }
 
         },
@@ -1614,7 +1616,7 @@ export class AdminComponent {
 
     if (!token) {
 
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
       return;
@@ -1624,12 +1626,12 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      this.sweetWarning("Por favor seleciona um Operation Type.")
+      this.sweetService.sweetWarning("Por favor seleciona um Operation Type.")
 
     } else {
 
       if (document.getElementById("active_"+this.selectOperationTypeId+"_false")){
-        this.sweetErro("Operação já está desativada.")
+        this.sweetService.sweetErro("Operação já está desativada.")
         return
       }
       Swal.fire({
@@ -1653,7 +1655,7 @@ export class AdminComponent {
       this.operationTypesService.InactivateAsync(this.selectOperationTypeId)
       .subscribe({
         next: (response) => {
-          this.sweetSuccess("Tipo de operação desativado")
+          this.sweetService.sweetSuccess("Tipo de operação desativado")
 
           this.getAllOperationTypes();
 
@@ -1662,7 +1664,7 @@ export class AdminComponent {
           console.error('Error viewing operation type:', error);
           this.errorMessage = 'Failed to view operation type profile!';
 
-          this.sweetErro("Não foi possível desativar o tipo de operação");
+          this.sweetService.sweetErro("Não foi possível desativar o tipo de operação");
         }
       });
          } else if (result.isDenied) {
@@ -1711,7 +1713,7 @@ export class AdminComponent {
     .subscribe({
       next: (response) => {
 
-        this.sweetSuccess("Medical condition registered successfully")
+        this.sweetService.sweetSuccess("Medical condition registered successfully")
 
         this.modalService.closeModal('insertMedicalCondition');
 
@@ -1720,7 +1722,7 @@ export class AdminComponent {
         console.error('Error fetched:', error);
         this.errorMessage = 'Failed to register a medical condition  !';
 
-        this.sweetErro("There is already a medical condition with this name")
+        this.sweetService.sweetErro("There is already a medical condition with this name")
 
 
       }
@@ -1748,7 +1750,7 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
 
-          this.sweetSuccess("Allergie created with success");
+          this.sweetService.sweetSuccess("Allergie created with success");
 
 
 
@@ -1759,7 +1761,7 @@ export class AdminComponent {
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a allergie  !';
 
-          this.sweetErro("Already exist a allergie with this name");
+          this.sweetService.sweetErro("Already exist a allergie with this name");
 
 
         }
@@ -1800,7 +1802,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -1810,7 +1812,7 @@ export class AdminComponent {
     });
 
     if (this.selectedAllergie === null) {
-      this.sweetWarning("Por favor seleciona uma alergia.")
+      this.sweetService.sweetWarning("Por favor seleciona uma alergia.")
     }else {
 
       this.allergiesService.getByDesignacao(this.selectedAllergie)
@@ -1879,7 +1881,7 @@ export class AdminComponent {
     this.allergiesService.updateAllergie(this.selectedAllergie,this.allergyUpdateForm.value)
     .subscribe({
         next: (response: any) => {
-          this.sweetSuccess("Alergia atualizado com sucesso!")
+          this.sweetService.sweetSuccess("Alergia atualizado com sucesso!")
           this.getAllAllergies(); // Refresh the list after creation
           this.closeModal('UpdateAllergyModal');
         },
@@ -1888,10 +1890,10 @@ export class AdminComponent {
 
           if (error.status === 400) {
             // Erro 400 específico
-            this.sweetErro("Não podes editar um alergia desativado ou com campos vazios")
+            this.sweetService.sweetErro("Não podes editar um alergia desativado ou com campos vazios")
           } else {
             // Outros erros
-            this.sweetErro("Não foi possível atualizar a alergia.")
+            this.sweetService.sweetErro("Não foi possível atualizar a alergia.")
           }
 
         },
@@ -1938,13 +1940,13 @@ export class AdminComponent {
     this.medicalConditionService.updateMedicalCondition(this.MedicalConditionSingle.codigo, updatedPatientData )
       .subscribe({
         next: (response: any) => {
-          this.sweetSuccess("Patient atualizado com sucesso!")
+          this.sweetService.sweetSuccess("Patient atualizado com sucesso!")
           this.getAllConditions(); // Refresh the list after creation
           this.closeModal('editConditionModal');
         },
         error: (error) => {
           console.error('Error editing medical condition:', error);
-          this.sweetErro("Could not update medical condition")
+          this.sweetService.sweetErro("Could not update medical condition")
           this.errorMessage = 'Failed to edit medical condition!';
           this.successMessage = null;
         }
@@ -2031,7 +2033,7 @@ export class AdminComponent {
   }
 
 
-  sweetSuccess(text: string){
+  /*sweetSuccess(text: string){
 
   Swal.fire({
     icon: "success",
@@ -2070,7 +2072,7 @@ sweetErro(text: string){
     showConfirmButton: false
   });
 
-}
+}*/
 
 
 
@@ -2079,7 +2081,7 @@ sweetErro(text: string){
     const token = this.authService.getToken();
 
     if (!token) {
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -2089,7 +2091,7 @@ sweetErro(text: string){
     });
     if (this.selectConditionId === null) {
       
-      this.sweetWarning("Please select a Medical Condition.")
+      this.sweetService.sweetWarning("Please select a Medical Condition.")
     } else {
       console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
      // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -2120,7 +2122,7 @@ sweetErro(text: string){
 
     if (!token) {
       
-      this.sweetErro("Nenhuma conta com sessão ativa.")
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
     }
@@ -2129,7 +2131,7 @@ sweetErro(text: string){
       'Authorization': `Bearer ${token}`
     });
     if (this.selectConditionId === null) {
-      this.sweetWarning("Please select a Medical Condition.")
+      this.sweetService.sweetWarning("Please select a Medical Condition.")
     } else {
       console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
       this.medicalConditionService.viewMedicalCondition(this.selectConditionId)

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild} from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild, NgZone} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
@@ -191,7 +191,8 @@ export class DoctorComponent implements OnInit {
     private medicalRecordService: MedicalRecordService,
     private patientService : PatientService,
     private staffService : StaffService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {
 
     this.medicalRecordUpdate = this.fb.group({
@@ -206,9 +207,9 @@ export class DoctorComponent implements OnInit {
   medicalRecordUpdate!: FormGroup;
   medicalRecordProfileUpdate: any = null;
 
-  ngOnInit() {
+  ngOnInit() {   
     this.getAllOperationRequests();
-    this.getAllMedicalRecords();
+    //this.getAllMedicalRecords();
     this.getAllAllergies();
     this.getAllMedicalConditions();
   }
@@ -354,6 +355,7 @@ export class DoctorComponent implements OnInit {
     this.filteredAllergieNameOptions = this.allergiesList.filter(option =>
       option.designacao.toLowerCase().includes(filterValue),
     );
+   
   }
 
 
@@ -361,7 +363,6 @@ export class DoctorComponent implements OnInit {
     const filterValueCondition = this.filterTextCondition.toLowerCase();
     this.filteredOptionsConditions = this.medicalConditionsList.filter(option =>
       option.designacao.toLowerCase().includes(filterValueCondition),
-
     );
   }
 
@@ -369,6 +370,17 @@ export class DoctorComponent implements OnInit {
     this.filterText = option;
     this.showDropdown = false;
   }
+
+  selectOptionTagAllergies(designacao: string) {
+    this.filterAllergieNameText = designacao;      
+    this.showDropdown2 = false;    
+  }
+
+  selectOptionMedicalCondition(designacao: string) {
+    this.filterTextCondition = designacao;      
+    this.showDropdown2 = false;    
+  }
+
 
   
 
@@ -566,7 +578,7 @@ export class DoctorComponent implements OnInit {
         this.medicalRecordService.createMedicalRecord(payload).subscribe({
           next: () => {
             this.cleanMedicalRecordRegister();
-            this.getAllMedicalRecords();
+           // this.getAllMedicalRecords();
             Swal.fire({
               icon: 'success',
               title: 'Success',
@@ -606,13 +618,7 @@ export class DoctorComponent implements OnInit {
     this.showDropdown = false;
   }
 
-  selectOptionTagAllergies(designacao: string) {
-    const selectedOption = this.allergiesList.find(option => option.designacao === designacao);
-    if (selectedOption && !this.tagsAllergies.some(tag => tag.designacao === selectedOption.designacao)) {
-      this.tagsAllergies.push({ ...selectedOption });
-    }
-    this.cleanMedicalRecordRegister();
-  }
+
 
 
 
@@ -837,7 +843,7 @@ export class DoctorComponent implements OnInit {
             timer: 3000,
             showConfirmButton: false
           });
-          this.getAllMedicalRecords(); // Fetch all medical records
+          //this.getAllMedicalRecords(); // Fetch all medical records
           this.closeModal('UpdateMedicalRecordModal');
         },
         error: (error) => {

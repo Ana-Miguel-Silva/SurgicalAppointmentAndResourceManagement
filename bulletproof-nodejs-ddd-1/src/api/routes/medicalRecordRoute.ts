@@ -46,12 +46,12 @@ export default (app: Router) => {
   route.get(
     '/get',
     celebrate({
-      body: Joi.object({
+      query: Joi.object({
         id: Joi.string(),
         staff: Joi.string(),
         patientId: Joi.string(),
-        allergies: Joi.array().items(Joi.string()).required(),
-        medicalConditions: Joi.array().items(Joi.string()).required(),
+        allergies: Joi.array().items(Joi.string()),
+        medicalConditions: Joi.array().items(Joi.string()),
         descricao: Joi.string(),
       }),
     }),
