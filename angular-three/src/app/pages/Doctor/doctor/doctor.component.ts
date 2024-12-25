@@ -79,6 +79,7 @@ interface IAllergieMedicalRecord {
   designacao: string;
   descricao: string;
   status: string;
+  _id?: string;
 }
 
 export interface IMedicalConditionMedicalRecord {
@@ -87,6 +88,7 @@ export interface IMedicalConditionMedicalRecord {
   descricao: string;
   sintomas: string[];
   status: string;
+  _id?: string;
 }
 
 interface CreatingMedicalRecordUIDto {
@@ -589,7 +591,10 @@ export class DoctorComponent implements OnInit {
 
     if(!exist){
       this.tagsConditions.push(medicalConditionAdd);
+      console.log("update array: ",  this.tagsConditions);
     }
+
+    
   }
 
   removeMedicalCondition(index: number) {
@@ -855,7 +860,7 @@ removeStaffMember(index: number) {
       staff: this.staffService.getStaffByEmail(staffEmail),
     }).subscribe({
       next: ({ patient, staff }) => {
-       // console.log("STAFF: ", staff);
+       
         const getPatientId = patient.id.value;
         const staffId = staff.id;
 
@@ -863,15 +868,14 @@ removeStaffMember(index: number) {
           staff: staffId,
           patientId: getPatientId,
           allergies: this.tagsAllergies,
-          medicalConditions: this.tagsConditions
+          medicalConditions: this.tagsConditions.map((condition) => ({
+            ...condition,
+            sintomas: condition.sintomas.filter((sintoma: string) => sintoma.trim() !== ''), 
+          })),
+          descricao: requestData.descricao || "",
         };
 
-        if (requestData.descricao) {
-          payload.descricao = requestData.descricao;
-        } else {
-          payload.descricao = "";
-        }
-
+       
         console.log("Medical record payload:", payload);
 
 
@@ -980,27 +984,21 @@ removeStaffMember(index: number) {
       next: async (response) => {
         this.medicalRecordRequests = response;
 
-        console.log(response);
 
         this.medicalRecordRequests.forEach(async element => {
            this.patientService.getPatientEmailById(element.patientEmail).subscribe({
             next: (res) => {
-              console.log("patient: " ,res[0]);
               element.patientEmail =  res[0].email.fullEmail;
             },
           });
 
           this.staffService.getStaff(element.staff).subscribe({
             next: (res) => {
-              console.log("staff: " ,res[0]);
               element.staff =  res[0].email.fullEmail;
             },
           });
 
         });
-
-        console.log("medical records: " , response);
-
 
       },
       error: (error) => {
@@ -1069,28 +1067,37 @@ removeStaffMember(index: number) {
 
             const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
             const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
-
-            // Clear previous values
+            
+            // Clear existing items (if needed)
             medicalConditionsControl.clear();
             allergiesControl.clear();
-
-            // Add existing conditions and allergies to the form
-            this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: string) => {
-              medicalConditionsControl.push(this.fb.control(condition));
+            
+            // Add existing conditions to the form
+            this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
+              medicalConditionsControl.push(this.fb.group({
+                codigo: [condition.codigo],
+                designacao: [condition.designacao],
+                descricao: [condition.descricao],
+                sintomas: this.fb.array(condition.sintomas || []),
+                status: [condition.status],
+              }));
             });
-
-            this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions[0];
-
-            this.medicalRecordProfileUpdate.allergies.forEach((allergy: string) => {
-              allergiesControl.push(this.fb.control(allergy));
+            
+            // Add existing allergies to the form
+            this.medicalRecordProfileUpdate.allergies.forEach((allergy: IAllergieMedicalRecord) => {
+              allergiesControl.push(this.fb.group({
+                designacao: [allergy.designacao],
+                descricao: [allergy.descricao],
+                status: [allergy.status],
+              }));
             });
-
-            this.tagsAllergies = this.medicalRecordProfileUpdate.allergies[0];
-
+            
+            this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions;
+            this.tagsAllergies = this.medicalRecordProfileUpdate.allergies;
+            
             const updatedMedicalRecordData = this.medicalRecordUpdate.value;
             console.log('Updated Patient Data:', updatedMedicalRecordData);
-
-            console.log("Updated allergies: ",this.tagsAllergies.length );
+            console.log('Updated allergies:', this.tagsAllergies);
 
             this.openModal('UpdateMedicalRecordModal');
           },
@@ -1124,16 +1131,17 @@ removeStaffMember(index: number) {
     const updatedPatientData = this.medicalRecordUpdate.value;
 
 
-    updatedPatientData.allergies = this.tagsAllergies;
-    updatedPatientData.medicalConditions = this.tagsConditions;
+  // Remover `_id` de allergies e medicalConditions
+  updatedPatientData.allergies = this.tagsAllergies.map(({ _id, ...rest }) => rest);
+  updatedPatientData.medicalConditions = this.tagsConditions.map(({ _id, ...rest }) => {
+    return {
+      ...rest,
+      sintomas: rest.sintomas.filter((sintoma: string) => sintoma.trim() !== ''), 
+    };
+  });
 
-    updatedPatientData.allergies = updatedPatientData.allergies.map((allergy: any) => allergy.toString());
 
-    console.log("allergies to be updated:" ,  updatedPatientData.allergies);
-
-    updatedPatientData.medicalConditions = updatedPatientData.medicalConditions.map((condition: any) => condition.toString());
-
-    console.log("conditions to be updated:" ,  updatedPatientData.medicalConditions);
+    console.log("to be updated:" ,  updatedPatientData);
 
     this.medicalRecordService.updateMedicalRecord(updatedPatientData)
       .subscribe({
@@ -1147,7 +1155,8 @@ removeStaffMember(index: number) {
             timer: 3000,
             showConfirmButton: false
           });
-          this.getAllMedicalRecords(); // Fetch all medical records
+          this.getAllMedicalRecords();
+          this.cleanMedicalRecordRegister();
           this.closeModal('UpdateMedicalRecordModal');
         },
         error: (error) => {

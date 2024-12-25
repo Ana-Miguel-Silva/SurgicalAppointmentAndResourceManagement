@@ -23,24 +23,27 @@ export default (app: Router) => {
       body: Joi.object({
         staff: Joi.string(),
         patientId: Joi.string(),
-        allergies: Joi.array()
-        .min(1)
+        allergies: Joi.array()       
         .items(
           Joi.object({
             designacao: Joi.string().required(),
             descricao: Joi.string().allow('').optional(),
             status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
           })
-        ).required(),
+        )
+        .allow([])
+        .optional(), 
         medicalConditions: Joi.array().items(
           Joi.object({
             codigo: Joi.string().required(),
             designacao: Joi.string().required(),
             descricao: Joi.string().allow('').optional(),
-            sintomas: Joi.array().items(Joi.string()),
+            sintomas: Joi.array().items(Joi.string()).allow([]).optional(),
             status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
           })
-        ).required(),
+        )
+        .allow([])
+        .optional(), 
         descricao: Joi.string().allow('').optional(),
       }),
     }),
@@ -51,8 +54,29 @@ export default (app: Router) => {
       celebrate({
         body: Joi.object({
           patientId: Joi.string().required(),
-          allergies: Joi.array().items(Joi.string()),
-          medicalConditions: Joi.array().items(Joi.string()),
+          allergies: Joi.array()         
+          .items(
+            Joi.object({
+              _id: Joi.string().optional(),
+              designacao: Joi.string().required(),
+              descricao: Joi.string().allow('').optional(),
+              status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+            })
+          )
+          .allow([])
+          .optional(),
+          medicalConditions: Joi.array().items(
+            Joi.object({
+              _id: Joi.string().optional(),
+              codigo: Joi.string().required(),
+              designacao: Joi.string().required(),
+              descricao: Joi.string().allow('').optional().optional(),
+              sintomas: Joi.array().items(Joi.string()).allow([]).optional(),
+              status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+            })
+          )
+          .allow([])
+          .optional(), 
           descricao: Joi.string().allow('').optional(),
         }),
       }),
