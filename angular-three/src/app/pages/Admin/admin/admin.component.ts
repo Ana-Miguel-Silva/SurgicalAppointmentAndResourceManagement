@@ -15,6 +15,7 @@ import { PatientService } from '../../../Services/patient.service';
 import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { sweetAlertService } from '../../../Services/sweetAlert.service';
+import { MedicalRecordService } from '../../../Services/medicalRecordservice';
 
 interface RequiredStaff {
   quantity: number;
@@ -50,6 +51,24 @@ interface PlanningModelDto {
   N_Generations: number;
   Base_Population: number;
 }
+
+
+interface IAllergieMedicalRecord {
+  designacao: string;
+  descricao: string;
+  status: string;
+  _id?: string;
+}
+
+export interface IMedicalConditionMedicalRecord {
+  codigo: string;
+  designacao: string;
+  descricao: string;
+  sintomas: string[];
+  status: string;
+  _id?: string;
+}
+
 
 // or via CommonJS
 @Component({
@@ -92,6 +111,9 @@ export class AdminComponent {
   scheduledAppointmentMessage: string = '';
 
 
+  
+
+
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
@@ -103,6 +125,7 @@ export class AdminComponent {
     private specializationService: SpecializationService,
     private appointmentService : AppointmentService ,
     private patientService: PatientService,
+    private medicalRecordService: MedicalRecordService,
     private staffService: StaffService,
     private sweetService : sweetAlertService,
     private router: Router) {
@@ -115,7 +138,7 @@ export class AdminComponent {
       phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       gender: ['', Validators.required],
       appointmentHistory: [''],
-      allergies: [''], // Controlador para o campo de "Allergies"
+     // allergies: [''], // Controlador para o campo de "Allergies"
       emergencyContactName: ['', Validators.required],
       emergencyContactEmail: ['', [Validators.required, Validators.email]],
       emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
@@ -242,6 +265,8 @@ export class AdminComponent {
   }
 
 
+  
+
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
   operationTypeUpdateForm!: FormGroup;
@@ -283,6 +308,10 @@ export class AdminComponent {
   slots: string[] = [];
   allergiesList: any[] = [];
 
+  medicalRecordProfile: any = null;
+  tagsConditions: IMedicalConditionMedicalRecord[] = [];
+  tagsAllergies: IAllergieMedicalRecord[] = [];
+
 
   filteredPatients: any[] = [];
   filter = {
@@ -313,6 +342,30 @@ export class AdminComponent {
   /*onBackdropClick(event: MouseEvent) {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
   }*/
+
+  isPolicyAccepted = false; 
+  showPolicyModal = false; 
+
+    
+  openPolicyModal() {
+    this.showPolicyModal = true;
+  }
+
+  closePolicyModal() {
+    this.showPolicyModal = false;
+  }
+
+  acceptPolicy() {
+    this.isPolicyAccepted = true;
+    this.closePolicyModal();
+  }
+
+  rejectPolicy() {
+    this.isPolicyAccepted = false;
+    this.closePolicyModal();
+  }
+
+
 
   openModal(modalId: string): void {
     this.modalService.openModal(modalId);
@@ -916,6 +969,44 @@ export class AdminComponent {
       .subscribe({
         next: (response) => {
           this.patientProfileSingle = response;
+
+          this.medicalRecordService.getAllMedicalRecordByPatientId(this.patientProfileSingle.Id)
+          .subscribe({            
+            next: (res) => {    
+              this.medicalRecordProfile = res[0];
+              console.log("Medical record: ", this.medicalRecordProfile);
+
+              this.medicalRecordProfile.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
+                this.tagsConditions.push({
+                  codigo: condition.codigo,
+                  designacao: condition.designacao,
+                  descricao: condition.descricao,
+                  sintomas: condition.sintomas,
+                  status: condition.status,
+                });
+              });
+              
+  
+              this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
+                this.tagsAllergies.push({
+                  designacao: allergy.designacao,
+                  descricao: allergy.descricao,
+                  status: allergy.status,
+                });
+              });
+
+              this.tagsConditions = this.medicalRecordProfile.medicalConditions;
+              this.tagsAllergies = this.medicalRecordProfile.allergies;
+
+              this.openModal('ViewMedicalRecord');
+            },
+            error: (error) => {
+              console.error('Error fetching  allergies:', error);
+              this.errorMessage = 'Failed to fetch allergies!';
+            }
+          });
+
+
 
           this.openModal('viewPatientModal');
         },

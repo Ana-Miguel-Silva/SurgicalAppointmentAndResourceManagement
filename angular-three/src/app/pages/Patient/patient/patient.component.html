@@ -10,6 +10,142 @@
 </head>
 <body>
 
+
+
+<!-- Modal para a Política -->
+<div [ngStyle]="{'display': showPolicyModal ? 'block' : 'none'}" class="modal" id="policyModal" style="z-index: 9000">
+  <div class="modal-content">
+      <span (click)="closePolicyModal()" class="close">&times;</span>
+      <h3>Policy Agreement</h3>
+      <p>
+          A sua privacidade é importante para nós. Este documento explica como recolhemos, utilizamos, partilhamos e protegemos os seus dados pessoais no âmbito do nosso projeto hospitalar, em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).
+      </p>
+
+      <h4>1. Quem Somos</h4>
+      <p>
+          Somos uma organização dedicada à prestação de cuidados de saúde e bem-estar, focada na gestão de consultas, cirurgias e recursos. Tratamos dados pessoais para garantir a melhor experiência e segurança aos nossos pacientes.
+      </p>
+      <p  style="margin-bottom: 20px;">
+        <strong>Contacte-nos:</strong> <br>
+        Encarregado de Proteção de Dados (DPO): {{ 'mtf&#64;isep.ipp.pt' }}
+      </p>
+
+      <h4>2. Dados Pessoais que Recolhemos</h4>
+      <p style="margin-bottom: 20px;">
+          Recolhemos as seguintes informações:
+          <ul>
+              <li><strong>Identificação:</strong> Nome completo, data de nascimento, género, morada.</li>
+              <li><strong>Contacto:</strong> Número de telemóvel, email.</li>
+              <li><strong>Saúde:</strong> Histórico médico, alergias, contacto de emergência, número de registo médico.</li>
+          </ul>
+          Os dados são fornecidos diretamente pelos utilizadores ou, quando aplicável, através de terceiros, como hospitais parceiros.
+        
+
+      <h4  style="margin-top: 20px;">3. Tipo de Tratamento dos Dados Pessoais</h4>
+      <p  style="margin-bottom: 20px;">
+          Os dados pessoais serão utilizados para:
+          <ul>
+              <li>Recolha: Obter dados dos utilizadores para tratamento no sistema.</li>
+              <li>Destruição: Eliminar dados quando deixarem de ser relevantes, por exemplo, a pedido do titular.</li>
+              <li>Divulgação: Partilhar dados com terceiros, como médicos responsáveis.</li>
+              <li>Conservação: Armazenar os dados na base de dados.</li>
+              <li>Consulta: Permitir acesso por utilizadores autorizados (pacientes ou médicos/staff).</li>
+              <li>Alteração: Atualizar ou corrigir dados de utilizadores.</li>
+              <li>Organização: Estruturar os dados para consultas futuras.</li>
+              <li>Limitações: Restringir o acesso com base no papel do utilizador (ex.: pacientes acessam apenas os seus próprios dados).</li>
+          </ul>
+
+
+      <h4>4. Finalidades do Tratamento dos Dados</h4>
+      <p  style="margin-bottom: 20px;">
+          Os dados pessoais recolhidos são tratados para as seguintes finalidades:
+          <ul>
+              <li><strong>Agendamento e gestão de consultas:</strong> Nome, email, número de telemóvel, alergias e histórico médico para organizar serviços clínicos.</li>
+              <li><strong>Personalização de experiências:</strong> Envio de mensagens personalizadas por email (e.g., lembretes de consultas).</li>
+              <li><strong>Emergências médicas:</strong> Contactos de emergência e informações de saúde essenciais para proteção vital.</li>
+              <li><strong>Cumprimento de obrigações legais:</strong> Conservação de nome, morada, histórico médico, e alergias por 20 anos, conforme exigido por lei.</li>
+              <li><strong>Monitorização do sistema:</strong> Nome, email, alergias e histórico de acessos para garantir a eficiência e proteção dos dados.</li>
+          </ul>
+  
+
+      <h4>5. Base Legal para o Tratamento</h4>
+      <p  style="margin-bottom: 20px;">
+          O tratamento dos dados pessoais baseia-se nos seguintes fundamentos legais, conforme o Artigo 6.º e Artigo 9.º do RGPD:
+          <ul>
+              <li><strong>Consentimento:</strong> Para comunicações personalizadas e partilha de dados com terceiros.</li>
+              <li><strong>Execução de Contrato:</strong> Para a prestação de serviços de saúde contratados.</li>
+              <li><strong>Obrigatoriedade Jurídica:</strong> Para cumprir normas legais aplicáveis ao setor da saúde e de acordo com a Constituição/lei portuguesa.</li>
+              <li><strong>Interesse Vital:</strong> Em emergências médicas, para proteger a vida ou integridade do titular dos dados.</li>
+              <li><strong>Interesse Legítimo:</strong> Para garantir a segurança do sistema e melhorar os nossos serviços.</li>
+          </ul>
+  
+
+      <h4>6. Com Quem Partilhamos os Seus Dados</h4>
+      <p  style="margin-bottom: 20px;">
+          Partilhamos os seus dados apenas quando estritamente necessário e de forma segura com:
+          <ul>
+              <li><strong>Profissionais de saúde:</strong> Médicos, enfermeiros e outros profissionais clínicos.</li>
+              <li><strong>Autoridades legais:</strong> Quando exigido por lei.</li>
+          </ul>
+          Todos os terceiros com quem colaboramos estão sujeitos a acordos de confidencialidade e ao cumprimento do RGPD.
+  
+
+      <h4  style="margin-top: 20px;">7. Tempo de Conservação dos Dados</h4>
+      <p  style="margin-bottom: 20px;">
+          Conservamos os seus dados pessoais apenas pelo tempo necessário para cumprir as finalidades descritas nesta Política:
+          <ul>
+              <li><strong>Histórico médico e alergias:</strong> Conservados por 20 anos, conforme obrigações legais.</li>
+              <li><strong>Dados de contacto:</strong> Mantidos até que o titular solicite o apagamento ou deixe de ser relevante.</li>
+              <li><strong>Outros dados:</strong> Eliminados após o período definido para cada finalidade.</li>
+          </ul>
+
+
+      <h4  style="margin-top: 20px;">8. Os Seus Direitos</h4>
+      <p  style="margin-bottom: 20px;">
+          Enquanto titular dos dados, tem os seguintes direitos garantidos pelo RGPD:
+          <ul>
+              <li><strong>Acesso:</strong> Pode solicitar informações sobre os dados pessoais que temos sobre si.</li>
+              <li><strong>Retificação:</strong> Pode corrigir dados incorretos ou incompletos.</li>
+              <li><strong>Apagamento:</strong> Tem o direito de solicitar o apagamento dos seus dados, exceto quando a lei exigir a conservação.</li>
+              <li><strong>Portabilidade:</strong> Pode pedir uma cópia dos seus dados em formato eletrônico, na aplicação.</li>
+              <li><strong>Oposição:</strong> Pode opor-se ao tratamento dos seus dados em certas situações.</li>
+              <li><strong>Limitação:</strong> Pode solicitar a limitação do tratamento dos seus dados em condições específicas.</li>
+          </ul>
+  
+
+      <p style="margin-bottom: 20px;">
+          Para exercer os seus direitos, contacte-nos através do email {{ 'mtf&#64;isep.ipp.pt' }}.
+      </p>
+
+
+      <h4  style="margin-top: 20px;"> 9. Segurança dos Dados </h4>
+      <p  style="margin-bottom: 20px;">
+        Implementamos medidas de segurança técnicas e organizacionais para proteger os seus dados pessoais contra acesso não autorizado, alteração, destruição ou divulgação. Asseguramos também a encriptação e monitorização regular do sistema. 
+      </p>
+
+      <h4  style="margin-top: 20px;"> 10. Violações de Dados </h4>
+      <p  style="margin-bottom: 20px;">
+        Em caso de violação de dados pessoais, notificaremos a Comissão Nacional de <strong> Proteção de Dados (CNPD)</strong> em até 72 horas após o incidente e informaremos os titulares dos dados quando for aplicável. 
+      </p>
+
+      <h4  style="margin-top: 20px;"> 11. Atualizações desta Política </h4>
+      <p  style="margin-bottom: 20px;">
+        Esta Política de Privacidade pode ser atualizada periodicamente para refletir mudanças legais ou operacionais. Recomendamos que consulte esta página regularmente.        
+      </p>
+
+      <p style="margin-bottom: 20px;">
+        <strong> Data da última atualização: 15 de dezembro de 2024 </strong> 
+    </p>
+         
+
+      <div class="text-center">
+          <button class="btn btn-success me-3" (click)="acceptPolicy()">Accept</button>
+          <button class="btn btn-danger" (click)="rejectPolicy()">Decline</button>
+      </div>
+  </div>
+</div>
+
+
     <div class="container-xxl">
 
         <h1 class="h1 title glow" style="padding: 1cm; color:white"> Patient </h1>
@@ -223,8 +359,16 @@
               </div>
             </div>
           </div>!-->
-      
-          <button class="btn btn-primary" (click)="onUpdatePatient()">Submit form</button>
+
+          <div class="col-12" style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+        </div>
+
+       
+
+        <div class="col-12">
+          <button class="btn btn-primary" [disabled]="!isPolicyAccepted" (click)="onUpdatePatient()">Submit form</button>
+        </div>
         </div>
       </form>
   </div>
@@ -433,7 +577,7 @@
           <!-- Medical Conditions Section -->
           <div class="col-md-10">
             <div class="input-group has-validation">
-              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
+              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
               <span class="input-group-text" style="width:60%" id="add">Medical Conditions</span>
             </div>
             <table class="table table-striped table-hover table-over-update">
