@@ -83,7 +83,12 @@ export class StaffService {
 
   }
 
-
+  getAllUIStaffs(): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.http.get<any[]>(`${this.staffUrl}/UI`, { headers });
+  }
 
 }
 

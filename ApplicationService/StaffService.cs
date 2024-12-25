@@ -37,7 +37,7 @@ namespace DDDSample1.ApplicationService.Staff
             if (phone != null) listDto = listDto.Where(x => x.PhoneNumber.Number.Contains(phone)).ToList();
             if (specialization != null) listDto = listDto.Where(x => x.Specialization.Equals(specialization.ToUpper())).ToList();
             if (role != null) listDto = listDto.Where(x => x.Role.ToUpper().Equals(role.ToUpper())).ToList();
-            if (active != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList();}
+            if (active != null) { listDto = listDto.Where(x => x.Active.Equals(active)).ToList(); }
             //else{listDto = listDto.Where(x => x.Active.Equals(true)).ToList();}
             return listDto;
         }
@@ -48,17 +48,17 @@ namespace DDDSample1.ApplicationService.Staff
 
             if (staff == null)
                 return null;
-    
+
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
-         public async Task<StaffDto> GetStaffByEmailAsync(string emailClaim)
+        public async Task<StaffDto> GetStaffByEmailAsync(string emailClaim)
         {
-             var staff = await this._repo.GetByEmailAsync(emailClaim);
+            var staff = await this._repo.GetByEmailAsync(emailClaim);
 
             if (staff == null)
             {
-                return null; 
+                return null;
             }
 
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
@@ -69,7 +69,7 @@ namespace DDDSample1.ApplicationService.Staff
 
             if (staff == null)
                 return null;
-    
+
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
@@ -84,7 +84,8 @@ namespace DDDSample1.ApplicationService.Staff
                 if ((convertedSLot.timespan().TotalMinutes % 15) != 0) flag = false;
                 converted.Add(convertedSLot);
             }
-            if(!flag) {
+            if (!flag)
+            {
                 throw new BusinessRuleValidationException("Time Slots need to be multiples of 15 minutes.");
             }
             if (string.IsNullOrEmpty(dto.Name))
@@ -95,18 +96,18 @@ namespace DDDSample1.ApplicationService.Staff
             CheckSpecialization(dto.Specialization);
             int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role, null).Result.Count();
             char roleId = dto.Role[0];
-            if(roleId!='D'&&roleId!='N') roleId='O';
+            if (roleId != 'D' && roleId != 'N') roleId = 'O';
             string finalID = dto.Role[0] + DateTime.Now.Year.ToString() + baseID;
             var staff = new StaffProfile(new FullName(dto.Name), emailObject, new PhoneNumber(dto.PhoneNumber), dto.Role, dto.Specialization, converted, finalID, dto.License);
-         
+
             await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();
-     
+
 
             if (staff == null)
                 return null;
-                
+
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, converted, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
@@ -117,13 +118,15 @@ namespace DDDSample1.ApplicationService.Staff
 
             if (staff == null)
                 return null;
-            if (dto.Email != null){
+            if (dto.Email != null)
+            {
                 var newMail = new Email(dto.Email);
-                if(staff.Email != newMail) staff.ChangeEmail(newMail);
+                if (staff.Email != newMail) staff.ChangeEmail(newMail);
             }
-            if (dto.PhoneNumber != null){
+            if (dto.PhoneNumber != null)
+            {
                 var newPhone = new PhoneNumber(dto.PhoneNumber);
-                if(staff.PhoneNumber != newPhone) staff.ChangePhone(newPhone);
+                if (staff.PhoneNumber != newPhone) staff.ChangePhone(newPhone);
             }
             //List<Slot> converted = [];
             //var flag = true;
@@ -135,8 +138,9 @@ namespace DDDSample1.ApplicationService.Staff
             //}
             //if(!flag) return null;
             //staff.UpdateSlots(converted);
-//            staff.ChangeLicenseNumber(dto.LicenseNumber);
-            if (dto.Specialization != null){
+            //            staff.ChangeLicenseNumber(dto.LicenseNumber);
+            if (dto.Specialization != null)
+            {
                 CheckSpecialization(dto.Specialization);
                 staff.UpdateSpecialization(dto.Specialization);
             }
@@ -146,29 +150,33 @@ namespace DDDSample1.ApplicationService.Staff
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
-        public async Task<StaffDto> AddSlots(string id, SlotDTO dto){
+        public async Task<StaffDto> AddSlots(string id, SlotDTO dto)
+        {
             var staff = await this._repo.GetByStaffIDAsync(id);
 
             if (staff == null)
                 return null;
-            if (dto != null){
+            if (dto != null)
+            {
                 staff.AddSlots(dto.Slots);
             }
-            
+
             await this._unitOfWork.CommitAsync();
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
 
-        public async Task<StaffDto> RemoveSlots(string id, SlotDTO dto){
+        public async Task<StaffDto> RemoveSlots(string id, SlotDTO dto)
+        {
             var staff = await this._repo.GetByStaffIDAsync(id);
 
             if (staff == null)
                 return null;
-            if (dto != null){
+            if (dto != null)
+            {
                 staff.RemoveSlots(dto.Slots);
             }
-            
-            
+
+
             await this._unitOfWork.CommitAsync();
             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
@@ -199,7 +207,7 @@ namespace DDDSample1.ApplicationService.Staff
             this._repo.Remove(staff);
             await this._unitOfWork.CommitAsync();
 
-             return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
+            return new StaffDto(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active);
         }
         private static void CheckRole(String role)
         {
@@ -210,6 +218,30 @@ namespace DDDSample1.ApplicationService.Staff
         {
             if (!Specialization.IsValid(specialization.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Specialization.");
+        }
+
+        public async Task<List<StaffUIDto>> GetAllUIAsync()
+        {
+            var list = await this._repo.GetAllAsync();
+
+            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff =>
+      new(staff.Id.AsGuid(), staff.Name, staff.Email, staff.PhoneNumber, staff.Role, staff.Specialization, staff.AvailabilitySlots, staff.StaffId, staff.LicenseNumber, staff.Active));
+
+            var UIList = await Dto_to_UIDto(listDto);
+
+            return UIList;
+        }
+
+        private async Task<List<StaffUIDto>> Dto_to_UIDto(List<StaffDto> list)
+        {
+            var listDto = new List<StaffUIDto>();
+            foreach (var staff in list)
+            {
+                if (staff.Active)
+                    listDto.Add(new StaffUIDto(staff.Id, staff.LicenseNumber, staff.Role, staff.Specialization));
+            }
+
+            return listDto;
         }
     }
 }

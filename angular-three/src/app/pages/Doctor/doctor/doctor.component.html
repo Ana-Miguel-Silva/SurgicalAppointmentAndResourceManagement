@@ -176,41 +176,40 @@
     <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
     <form (ngSubmit)="onCreateAppointment()">
 
-
-        <!-- Surgery Rooms Dropdown -->
-       <!--- <div class="form-group">
-          <label for="surgeryRoom">Surgery Room</label>
-          <select
-            id="surgeryRoom"
-            class="form-control"
-            [(ngModel)]="selectedSurgeryRoomId"
-            name="surgeryRoom"
-            required
-          >
-            <option value="" disabled>Select a Surgery Room</option>
-            <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
-              {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
-            </option>
-          </select>
-        </div>-->
+      <!-- Surgery Rooms Dropdown -->
+      <div class="form-group">
+        <label for="surgeryRoom">Surgery Room</label>
+        <select
+          id="surgeryRoom"
+          class="form-control"
+          [(ngModel)]="selectedSurgeryRoomId"
+          name="surgeryRoom"
+          required
+        >
+          <option value="" disabled>Select a Surgery Room</option>
+          <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
+            {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
+          </option>
+        </select>
+      </div>
 
       <!-- Operation Request Dropdown -->
       <div class="form-group">
-    <label for="operationRequest">Operation Request</label>
-    <select
-      id="operationRequest"
-      class="form-control"
-      [(ngModel)]="selectedOperationRequestId"
-      name="operationRequest"
-      required
-    >
-      <option value="" disabled>Select an Operation Request</option>
-      <option *ngFor="let operationRequest of operationRequests" [value]="operationRequest.id">
-        {{ operationRequest.operationTypeName }}
-        ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline }}
-      </option>
-    </select>
-  </div>
+        <label for="operationRequest">Operation Request</label>
+        <select
+          id="operationRequest"
+          class="form-control"
+          [(ngModel)]="selectedOperationRequestId"
+          name="operationRequest"
+          required
+        >
+          <option value="" disabled>Select an Operation Request</option>
+          <option *ngFor="let operationRequest of notscheduledOperationRequests" [value]="operationRequest.id">
+            {{ operationRequest.operationTypeName }}
+            ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline }}
+          </option>
+        </select>
+      </div>
 
       <!-- Date Inputs -->
       <div class="form-group">
@@ -236,49 +235,31 @@
         />
       </div>
 
-      <!-- Appointment Slots -->
-      <div class="form-group" *ngFor="let slot of appointmentData.appointmentSlot; let i = index">
+      <!-- Staff Selection -->
+      <div class="form-group" *ngFor="let staffId of appointmentData.selectedStaff; let i = index">
         <div class="row">
-          <div class="col-md-4">
-            <label for="staffId">Staff ID</label>
-            <input
-              id="staffId"
-              type="text"
+          <div class="col-md-6">
+            <label for="staffId{{ i }}">Select Staff</label>
+            <select
+              id="staffId{{ i }}"
               class="form-control"
-              [(ngModel)]="slot.staffId"
+              [(ngModel)]="appointmentData.selectedStaff[i]"
               name="staffId{{ i }}"
               required
-            />
+            >
+              <option value="" disabled>Select a Staff Member</option>
+              <option *ngFor="let staff of staffs" [value]="staff.id">
+                Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
+              </option>
+            </select>
           </div>
-          <div class="col-md-4">
-            <label for="slotStart">Start Time</label>
-            <input
-              id="slotStart"
-              type="datetime-local"
-              class="form-control"
-              [(ngModel)]="slot.start"
-              name="slotStart{{ i }}"
-              required
-            />
-          </div>
-          <div class="col-md-4">
-            <label for="slotEnd">End Time</label>
-            <input
-              id="slotEnd"
-              type="datetime-local"
-              class="form-control"
-              [(ngModel)]="slot.end"
-              name="slotEnd{{ i }}"
-              required
-            />
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger mt-4" (click)="removeStaffMember(i)">Remove Staff</button>
           </div>
         </div>
-        <button type="button" class="btn btn-danger" (click)="removeAppointmentSlot(i)">Remove Slot</button>
       </div>
-
-      <!-- Add New Slot -->
-      <button type="button" class="btn btn-primary" (click)="addAppointmentSlot()">Add Slot</button>
-
+      <button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
+      
       <!-- Submit Button -->
       <button type="submit" class="btn btn-success">Create Appointment</button>
     </form>

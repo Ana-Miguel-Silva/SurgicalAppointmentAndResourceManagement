@@ -43,6 +43,13 @@ interface SurgeryRoomUIDto {
   Type: string;
 }
 
+interface StaffUIDto {
+  Id: string;
+  LicenseNumber: string;
+  Role: string;
+  Specialization: string;
+}
+
 
 interface UpdateOperationRequestDto {
   id: string;
@@ -50,22 +57,11 @@ interface UpdateOperationRequestDto {
   priority?: string;
 }
 
-export interface AppointmentsSlotDTO {
-  staffId: string;
-  start: string;
-  end: string;
-}
-
-export interface DateDTO {
-  start: string;
-  end: string;
-}
-
 export interface CreatingAppointmentDto {
   roomId: string;
   operationRequestId: string;
-  date: DateDTO;
-  appointmentSlot: AppointmentsSlotDTO[];
+  start: string;
+  selectedStaff: string[]; 
 }
 
 interface MedicalRecordRequest {
@@ -183,6 +179,9 @@ export class DoctorComponent implements OnInit {
   };
 
   operationRequests: OperationRequest[] = [];
+
+  notscheduledOperationRequests: OperationRequest[] = [];
+
   filteredRequests: OperationRequest[] = [];
   filter = {
     priority: '',
@@ -192,6 +191,8 @@ export class DoctorComponent implements OnInit {
   };
 
   surgeryRooms: SurgeryRoomUIDto[] = [];
+
+  staffs: StaffUIDto[] = [];
 
   medicalRecordRequests: MedicalRecordRequest[] = [];
   medicalRecordPatientEmail: string = '';
@@ -216,11 +217,7 @@ export class DoctorComponent implements OnInit {
 
   appointmentData = {
     date: { start: '', end: '' },
-    appointmentSlot: [{
-      staffId: '',
-      start: '',
-      end: ''
-    }]
+    selectedStaff: ['']
   };
 
   selectedOperationRequestId: string | null = null;
@@ -264,6 +261,8 @@ export class DoctorComponent implements OnInit {
     this.getAllAllergies();
     this.getAllMedicalConditions();
     this.getAllSurgeryRooms();
+    this.getAllStaffs();
+    this.getAllNotScheduledOperationRequests();
   }
 
 
@@ -293,6 +292,27 @@ export class DoctorComponent implements OnInit {
     });
   }
 
+  getAllStaffs() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.staffService.getAllUIStaffs().subscribe({
+      next: (response: StaffUIDto[]) => {
+        this.staffs = response;
+      },
+      error: (error) => {
+        console.error('Error fetching staffs:', error);
+      }
+    });
+  }
+
   getAllOperationRequests() {
     const token = this.authService.getToken();
     if (!token) {
@@ -307,6 +327,28 @@ export class DoctorComponent implements OnInit {
     this.operationRequestsService.getAllOperationRequests().subscribe({
       next: (response: OperationRequest[]) => {
         this.operationRequests = response;
+        this.applyFilter();
+      },
+      error: (error) => {
+        console.error('Error fetching requests:', error);
+      }
+    });
+  }
+
+  getAllNotScheduledOperationRequests() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.operationRequestsService.getAllNotScheduledOperationRequests().subscribe({
+      next: (response: OperationRequest[]) => {
+        this.notscheduledOperationRequests = response;
         this.applyFilter();
       },
       error: (error) => {
@@ -591,8 +633,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-
-    // Check if the operation request is selected
+  
     if (!this.selectedOperationRequestId) {
       Swal.fire({
         icon: 'error',
@@ -601,7 +642,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-
+  
     if (!this.selectedSurgeryRoomId) {
       Swal.fire({
         icon: 'error',
@@ -610,35 +651,23 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-
-    // Validate appointment slots (check if staffId, start, and end are not empty)
-    for (const slot of this.appointmentData.appointmentSlot) {
-      if (!slot.staffId || !slot.start || !slot.end) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Incomplete Appointment Slot',
-          text: 'Please fill out all fields for each appointment slot!',
-        });
-        return;
-      }
+  
+    if (this.appointmentData.selectedStaff.length === 0 || this.appointmentData.selectedStaff.some(staffId => !staffId)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Incomplete Staff Selection',
+        text: 'Please select at least one staff member!',
+      });
+      return;
     }
-
+  
     const payload: CreatingAppointmentDto = {
-      roomId: this.selectedSurgeryRoomId,  // Use the selected surgery room ID
-      operationRequestId: this.selectedOperationRequestId,  // Use the selected operation request ID
-      date: {
-        start: this.appointmentData.date.start,
-        end: this.appointmentData.date.end
-      },
-      appointmentSlot: this.appointmentData.appointmentSlot.map(slot => ({
-        staffId: slot.staffId,
-        start: slot.start,
-        end: slot.end
-      }))
+      roomId: this.selectedSurgeryRoomId,
+      operationRequestId: this.selectedOperationRequestId,  
+      start: this.appointmentData.date.start,
+      selectedStaff: this.appointmentData.selectedStaff
     };
-
-    console.log('Payload being sent to the server:', payload);
-
+    
     this.appointmentService.createAppointments(payload).subscribe({
       next: () => {
         // this.getAllAppointments();
@@ -664,20 +693,16 @@ export class DoctorComponent implements OnInit {
   }
 
 
-  addAppointmentSlot() {
-    this.appointmentData.appointmentSlot.push({
-      staffId: '',
-      start: '',
-      end: ''
-    });
-  }
+addStaffMember() {
+  this.appointmentData.selectedStaff.push('');
+}
 
-  // Remove an appointment slot
-  removeAppointmentSlot(index: number) {
-    if (this.appointmentData.appointmentSlot.length > 1) {
-      this.appointmentData.appointmentSlot.splice(index, 1);
-    }
+
+removeStaffMember(index: number) {
+  if (this.appointmentData.selectedStaff.length > 1) {
+    this.appointmentData.selectedStaff.splice(index, 1);
   }
+}
 
   onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
@@ -1169,7 +1194,7 @@ export class DoctorComponent implements OnInit {
   cleanAppointmentModal() {
     this.appointmentData = {
       date: { start: '', end: '' },
-      appointmentSlot: []
+      selectedStaff: ['']
     };
     this.selectedOperationRequestId = null;
     this.selectedSurgeryRoomId = null;

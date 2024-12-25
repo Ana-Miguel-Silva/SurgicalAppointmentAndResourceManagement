@@ -41,17 +41,17 @@ namespace DDDSample1.Controllers
         {
             //var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             //var user = await _userService.GetByIdAsync(new UserId(userId));           
-        
+
             return await _service.GetAllFilteredAsync(request.id, request.name, request.license, request.phone, request.specialization, request.role, request.active);
-            
+
         }
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}, {Role.DOCTOR}")]
         [HttpGet("email/{email}")]
         public async Task<ActionResult<StaffDto>> GetByEmail(string email)
-        { 
-        
+        {
+
             var user = await _service.GetStaffByEmailAsync(email);
             if (user == null)
             {
@@ -59,7 +59,7 @@ namespace DDDSample1.Controllers
             }
 
             return Ok(user);
-            
+
         }
 
         public class GetStaffQueryObject
@@ -70,7 +70,7 @@ namespace DDDSample1.Controllers
             public string? phone { get; set; }
             public string? specialization { get; set; }
             public string? role { get; set; }
-            public string? active {get; set;}
+            public string? active { get; set; }
         }
 
         // GET: api/Staff/5
@@ -87,7 +87,7 @@ namespace DDDSample1.Controllers
             }
 
             return cat;
-            
+
         }
 
         // POST: api/Staff
@@ -106,7 +106,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
-           
+
         }
         // PUT: api/Staff/{id}/Slots
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
@@ -124,7 +124,7 @@ namespace DDDSample1.Controllers
             try
             {
                 //string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-               
+
 
                 var cat = await _service.AddSlots(id, dto);
 
@@ -157,7 +157,7 @@ namespace DDDSample1.Controllers
             try
             {
                 //string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-               
+
 
                 var cat = await _service.RemoveSlots(id, dto);
 
@@ -190,8 +190,8 @@ namespace DDDSample1.Controllers
 
             try
             {
-                string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-               
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
 
                 var cat = await _service.UpdateAsync(id, dto);
 
@@ -209,7 +209,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-        
+
         // Inactivate: api/Staff/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpDelete("{id}")]
@@ -224,7 +224,7 @@ namespace DDDSample1.Controllers
 
             return Ok(cat);
         }
-        
+
 
         // DELETE: api/Staff/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
@@ -233,7 +233,7 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                string userEmail =HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+                string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
                 var cat = await _service.DeleteAsync(id);
 
@@ -250,6 +250,13 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
+        }
+
+        // GET: api/Staff/UI
+        [HttpGet("UI")]
+        public async Task<ActionResult<IEnumerable<StaffUIDto>>> GetAllUI()
+        {
+            return await _service.GetAllUIAsync();
         }
     }
 }

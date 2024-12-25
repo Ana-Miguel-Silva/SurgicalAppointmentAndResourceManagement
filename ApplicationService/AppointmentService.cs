@@ -57,50 +57,50 @@ namespace DDDSample1.ApplicationService.Appointments
 
             return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot);
         }
-
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
         {
 
-            await checkRoomIdAsync(dto.RoomId);
-            await checkOperationRequestIdAsync(dto.OperationRequestId);
+            var room = await checkRoomIdAsync(dto.RoomId);
+            var operationRequest = await checkOperationRequestIdAsync(dto.OperationRequestId);
+            var operationType = await _repoOpTy.GetByIdAsync(operationRequest.OperationTypeId);
 
-            Slot converted = new Slot(dto.Date.Start, dto.Date.End);
 
-            List<AppointmentSlot> appointmentSlots = new List<AppointmentSlot>();
+            var start = DateTime.Parse(dto.Start);
+            var end = start.AddMinutes(operationType.EstimatedDuration.GetTotalDuration().ToTimeSpan().TotalMinutes);
+            Slot newAppointmentSlot = new Slot(start, end);
 
-            foreach (var slot in dto.AppointmentSlot)
-            {
-                Slot convertedSlot = new Slot(slot.Start, slot.End);
-                appointmentSlots.Add(new AppointmentSlot(convertedSlot, new StaffGuid(slot.StaffId)));
-            }
+            await CheckRoomAvailability(newAppointmentSlot, room);
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, converted, AppointmentStatus.SCHEDULED, appointmentSlots);
+            await CheckRequiredStaff(operationType.RequiredStaff, dto.SelectedStaff);
 
-            await checkRoomIdAsync(dto.RoomId);
-            await checkOperationRequestIdAsync(dto.OperationRequestId);
+            List<AppointmentSlot> appointmentSlots = await CheckStaffAvailability(dto.SelectedStaff, operationType, start);
+
+            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, newAppointmentSlot, AppointmentStatus.SCHEDULED, appointmentSlots);
+
+            InactivateAsync(dto.OperationRequestId);
 
             await this._repo.AddAsync(appointment);
 
             await this._unitOfWork.CommitAsync();
-
 
             return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
 
 
         public async Task<AppointmentDto> AddAsyncPlanningModule(SurgeryRoomId roomId, OperationRequestId operationRequestId, Slot date, List<AppointmentSlot> appointmentSlots)
-            {
-                var appointment = new Appointment(roomId, operationRequestId, date, AppointmentStatus.SCHEDULED, appointmentSlots);
+        {
+            var appointment = new Appointment(roomId, operationRequestId, date, AppointmentStatus.SCHEDULED, appointmentSlots);
 
-                await checkRoomIdAsync(roomId);
-                await checkOperationRequestIdAsync(operationRequestId);
+            await checkRoomIdAsync(roomId);
+            await checkOperationRequestIdAsync(operationRequestId);
 
-                await this._repo.AddAsync(appointment);
+            await this._repo.AddAsync(appointment);
 
-                await this._unitOfWork.CommitAsync();
+            await this._unitOfWork.CommitAsync();
 
-                return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
-            }
+            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
+        }
+
 
         public async Task<string> PostToPrologServer(string url, object data)
         {
@@ -151,19 +151,106 @@ namespace DDDSample1.ApplicationService.Appointments
             return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
         }
 
-        private async Task checkRoomIdAsync(SurgeryRoomId doctorId)
+        private async Task<SurgeryRoom> checkRoomIdAsync(SurgeryRoomId doctorId)
         {
             var category = await _repoRooms.GetByIdAsync(doctorId);
             if (category == null)
                 throw new BusinessRuleValidationException("Invalid Room Id.");
+            return category;
         }
 
 
-        private async Task checkOperationRequestIdAsync(OperationRequestId operationRequestId)
+        private async Task<OperationRequest> checkOperationRequestIdAsync(OperationRequestId operationRequestId)
         {
             var operationRequest = await _repoOpReq.GetByIdAsync(operationRequestId);
             if (operationRequest == null)
                 throw new BusinessRuleValidationException("Invalid OperationRequest Id.");
+            return operationRequest;
+        }
+
+        private async Task CheckRoomAvailability(Slot newAppointmentSlot, SurgeryRoom room)
+        {
+            var appointments = await _repo.GetAllAsync();
+            List<Slot> roomOccupiedSlots = room.MaintenanceSlots;
+
+            foreach (var app in appointments)
+            {
+                if (app.RoomId == room.Id)
+                {
+                    roomOccupiedSlots.Add(app.Date);
+                }
+            }
+
+            if (!VerifyOverlapRoom(roomOccupiedSlots, newAppointmentSlot))
+            {
+                throw new BusinessRuleValidationException("Room is not available at this time.");
+            }
+        }
+
+        private async Task CheckRequiredStaff(List<RequiredStaff> requiredStaffList, List<string> staffIds)
+        {
+            List<StaffProfile> staffList = new List<StaffProfile>();
+
+            foreach (var staffId in staffIds)
+            {
+                var staff = await _repoStaff.GetByIdAsync(new StaffGuid(staffId));
+                staffList.Add(staff);
+            }
+
+            var groupedStaff = staffList
+                .GroupBy(s => new { s.Role, s.Specialization })
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            foreach (var required in requiredStaffList)
+            {
+                var requiredStaffKey = new { Role = required.Role.ToUpper(), Specialization = required.Specialization.ToUpper() };
+
+                if (!groupedStaff.ContainsKey(requiredStaffKey) || groupedStaff[requiredStaffKey] != required.Quantity)
+                {
+                    throw new BusinessRuleValidationException("Appointment selected staff does not correspond to operation Type's required staff.");
+                }
+            }
+        }
+
+        private async Task<List<AppointmentSlot>> CheckStaffAvailability(List<string> selectedStaff, OperationType operationType, DateTime start)
+        {
+            var newAppointmentSlots = new List<AppointmentSlot>();
+
+            foreach (var staffId in selectedStaff)
+            {
+                var staff = await _repoStaff.GetByIdAsync(new StaffGuid(staffId));
+                Slot convertedSlot = null;
+
+                if (staff.Specialization == "ANAESTHETIST")
+                {
+                    convertedSlot = new Slot(start, start.AddMinutes(
+                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
+                    ));
+                }
+                else if (staff.Specialization == "ASSISTANT")
+                {
+                    convertedSlot = new Slot(start, start.AddMinutes(
+                        operationType.EstimatedDuration.Cleaning.ToTimeSpan().TotalMinutes
+                    ));
+                }
+                else
+                {
+                    convertedSlot = new Slot(start, start.AddMinutes(
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
+                    ));
+                }
+
+                if (!VerifyOverlapStaff(staff, convertedSlot))
+                {
+                    throw new BusinessRuleValidationException("Staff is not available at this time.");
+                }
+
+                RemoveOccupiedSlotFromAvailability(staff, convertedSlot);
+                newAppointmentSlots.Add(new AppointmentSlot(convertedSlot, new StaffGuid(staffId)));
+            }
+
+            return newAppointmentSlots;
         }
 
         private static void CheckStatus(String status)
@@ -172,7 +259,7 @@ namespace DDDSample1.ApplicationService.Appointments
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
-        public async Task<string> ScheduleAppointments2(ScheduleInputData prologDto)
+        public async Task<string> ScheduleAppointments(ScheduleInputData prologDto)
         {
             DateTime date = prologDto.Date;
 
@@ -357,6 +444,34 @@ namespace DDDSample1.ApplicationService.Appointments
                 }
             }
         }
+
+        private bool VerifyOverlapStaff(StaffProfile staffProfile, Slot occupiedSlot)
+        {
+            var availableSlots = staffProfile.AvailabilitySlots;
+
+            for (int i = availableSlots.Count - 1; i >= 0; i--)
+            {
+                var availableSlot = availableSlots[i];
+
+                if (occupiedSlot.StartTime >= availableSlot.StartTime && occupiedSlot.EndTime <= availableSlot.EndTime)
+                    return true;
+            }
+
+            return true;
+        }
+
+
+        private bool VerifyOverlapRoom(List<Slot> occupiedSlots, Slot newSlot)
+        {
+
+            foreach (var occupiedSlot in occupiedSlots)
+            {
+                if (occupiedSlot.StartTime < newSlot.EndTime && occupiedSlot.EndTime > newSlot.StartTime)
+                    return false;
+            }
+            return true;
+        }
+
 
 
     }

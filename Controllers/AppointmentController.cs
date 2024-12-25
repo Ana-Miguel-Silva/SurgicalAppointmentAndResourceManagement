@@ -79,7 +79,7 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var appointment = await _service.ScheduleAppointments2(data);
+                var appointment = await _service.ScheduleAppointments(data);
 
                 return Ok(new { message = appointment });
             }

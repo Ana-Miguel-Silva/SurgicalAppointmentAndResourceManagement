@@ -35,6 +35,13 @@ namespace DDDSample1.ApplicationService.OperationRequests
             return await Dto_to_UIDto(list);
         }
 
+        public async Task<List<OperationRequestUIDto>> GetAllNotScheduledAsync()
+        {
+            var list = await this._repo.GetAllNotScheduledAsync();
+
+            return await Dto_to_UIDto(list);
+        }
+
         public async Task<List<OperationRequestUIDto>> GetAllFilteredAsync(PatientId? patientId, OperationTypeId? operationTypeId, bool? status, string? priority, string? patientName, string? operationTypeName)
         {
             var operationRequests = await this._repo.GetAllAsync();

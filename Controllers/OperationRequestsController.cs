@@ -34,6 +34,23 @@ namespace DDDSample1.Controllers
 
         // GET: api/OperationRequests
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
+        [HttpGet("NotScheduled")]
+        public async Task<ActionResult<IEnumerable<OperationRequestUIDto>>> GetAllNotScheduledAsync()
+        {
+            try
+            {
+                return await _service.GetAllNotScheduledAsync();
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+
+        }
+
+
+        // GET: api/OperationRequests/UI
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.DOCTOR}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestUIDto>>> GetAll()
         {
