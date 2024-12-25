@@ -20,7 +20,7 @@ namespace DDDSample1.Domain.Specializations
                 throw new BusinessRuleValidationException("One of the operation request parameters was not valid");
 
             this.Id = new SpecializationId(Guid.NewGuid());
-            this.SpecializationName = specializationName;
+            this.SpecializationName = specializationName.ToUpper();
             this.SpecializationDescription = SpecializationDescription;
         }
     }

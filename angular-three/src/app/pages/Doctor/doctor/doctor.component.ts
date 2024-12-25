@@ -218,7 +218,7 @@ export class DoctorComponent implements OnInit {
   }
 
   appointmentData = {
-    date: { start: '', end: '' },
+    date: { start: ''},
     selectedStaff: ['']
   };
 
@@ -1235,7 +1235,7 @@ removeStaffMember(index: number) {
 
   cleanAppointmentModal() {
     this.appointmentData = {
-      date: { start: '', end: '' },
+      date: { start: ''},
       selectedStaff: ['']
     };
     this.selectedOperationRequestId = null;

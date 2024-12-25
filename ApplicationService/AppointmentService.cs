@@ -171,7 +171,7 @@ namespace DDDSample1.ApplicationService.Appointments
         private async Task CheckRoomAvailability(Slot newAppointmentSlot, SurgeryRoom room)
         {
             var appointments = await _repo.GetAllAsync();
-            List<Slot> roomOccupiedSlots = room.MaintenanceSlots;
+            List<Slot> roomOccupiedSlots = new List<Slot>(room.MaintenanceSlots);
 
             foreach (var app in appointments)
             {
@@ -191,10 +191,17 @@ namespace DDDSample1.ApplicationService.Appointments
         {
             List<StaffProfile> staffList = new List<StaffProfile>();
 
+            int totalRequiredStaff = requiredStaffList.Sum(r => r.Quantity);
+
             foreach (var staffId in staffIds)
             {
                 var staff = await _repoStaff.GetByIdAsync(new StaffGuid(staffId));
                 staffList.Add(staff);
+            }
+
+            if (staffList.Count != totalRequiredStaff)
+            {
+                throw new BusinessRuleValidationException("HHHAppointment selected staff does not correspond to operation Type's required staff.");
             }
 
             var groupedStaff = staffList
@@ -219,38 +226,49 @@ namespace DDDSample1.ApplicationService.Appointments
             foreach (var staffId in selectedStaff)
             {
                 var staff = await _repoStaff.GetByIdAsync(new StaffGuid(staffId));
-                Slot convertedSlot = null;
-
-                if (staff.Specialization == "ANAESTHETIST")
-                {
-                    convertedSlot = new Slot(start, start.AddMinutes(
-                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
-                    ));
-                }
-                else if (staff.Specialization == "ASSISTANT")
-                {
-                    convertedSlot = new Slot(start, start.AddMinutes(
-                        operationType.EstimatedDuration.Cleaning.ToTimeSpan().TotalMinutes
-                    ));
-                }
-                else
-                {
-                    convertedSlot = new Slot(start, start.AddMinutes(
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
-                    ));
-                }
+                Slot convertedSlot = GetOccupiedSlot(operationType, start, staff);
 
                 if (!VerifyOverlapStaff(staff, convertedSlot))
                 {
                     throw new BusinessRuleValidationException("Staff is not available at this time.");
                 }
 
+            }
+
+            foreach (var staffId in selectedStaff)
+            {
+                var staff = await _repoStaff.GetByIdAsync(new StaffGuid(staffId));
+                Slot convertedSlot = GetOccupiedSlot(operationType, start, staff);
+
                 RemoveOccupiedSlotFromAvailability(staff, convertedSlot);
                 newAppointmentSlots.Add(new AppointmentSlot(convertedSlot, new StaffGuid(staffId)));
             }
 
             return newAppointmentSlots;
+        }
+
+        private static Slot GetOccupiedSlot(OperationType operationType, DateTime start, StaffProfile staff){
+            if (staff.Specialization == "ANAESTHETIST")
+                {
+                    return new Slot(start, start.AddMinutes(
+                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
+                    ));
+                }
+                else if (staff.Specialization == "ASSISTANT")
+                {
+                    return new Slot(start.AddMinutes(
+                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes), start.AddMinutes(
+                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes + operationType.EstimatedDuration.Cleaning.ToTimeSpan().TotalMinutes));
+                }
+                else
+                {
+                    return new Slot(start.AddMinutes(operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes), start.AddMinutes(
+                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes));
+                }
         }
 
         private static void CheckStatus(String status)
@@ -454,10 +472,15 @@ namespace DDDSample1.ApplicationService.Appointments
                 var availableSlot = availableSlots[i];
 
                 if (occupiedSlot.StartTime >= availableSlot.StartTime && occupiedSlot.EndTime <= availableSlot.EndTime)
+                {
+                    Console.WriteLine("Occupied Slot: " + occupiedSlot.StartTime + " - " + occupiedSlot.EndTime);
+                    Console.WriteLine("Available Slot: " + availableSlot.StartTime + " - " + availableSlot.EndTime);
+                    Console.WriteLine("\n\n\n\n\n-------------------------------------------------");
                     return true;
+                }
             }
 
-            return true;
+            return false;
         }
 
 
@@ -466,7 +489,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             foreach (var occupiedSlot in occupiedSlots)
             {
-                if (occupiedSlot.StartTime < newSlot.EndTime && occupiedSlot.EndTime > newSlot.StartTime)
+                if (occupiedSlot.StartTime <= newSlot.EndTime && occupiedSlot.EndTime >= newSlot.StartTime)
                     return false;
             }
             return true;
