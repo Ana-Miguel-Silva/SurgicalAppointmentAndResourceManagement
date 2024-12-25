@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.Staff;
-using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Specializations;
 using DDDSample1.ApplicationService.Staff;
 using Microsoft.Extensions.Configuration;
 using DDDSample1.Infrastructure.Staff;
@@ -19,6 +19,8 @@ namespace Backend.Tests.Services
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IStaffRepository> _staffRepositoryMock;
         private readonly Mock<IMailService> _emailServiceMock;
+
+        private readonly Mock<ISpecializationRepository> _specializationRepositoryMock;
         private readonly StaffService _StaffService;
 
         public StaffServiceTest()
@@ -26,10 +28,12 @@ namespace Backend.Tests.Services
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _staffRepositoryMock = new Mock<IStaffRepository>();            
             _emailServiceMock = new Mock<IMailService>();
+            _specializationRepositoryMock = new Mock<ISpecializationRepository>();
 
             _StaffService = new StaffService(
                 _unitOfWorkMock.Object,
-                _staffRepositoryMock.Object
+                _staffRepositoryMock.Object,
+                _specializationRepositoryMock.Object
             );
         }
 

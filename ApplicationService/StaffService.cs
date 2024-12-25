@@ -2,6 +2,7 @@ using System.ComponentModel;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Staff;
+using DDDSample1.Domain.Specializations;
 
 namespace DDDSample1.ApplicationService.Staff
 {
@@ -9,11 +10,13 @@ namespace DDDSample1.ApplicationService.Staff
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStaffRepository _repo;
+        private readonly ISpecializationRepository _specializationRepository;
 
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository repo)
+        public StaffService(IUnitOfWork unitOfWork, IStaffRepository repo, ISpecializationRepository specializationRepository)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            this._specializationRepository = specializationRepository;
         }
 
         public async Task<List<StaffDto>> GetAllAsync()
@@ -93,7 +96,7 @@ namespace DDDSample1.ApplicationService.Staff
                 throw new BusinessRuleValidationException("Staff's name cannot be Empty.");
             }
             CheckRole(dto.Role);
-            CheckSpecialization(dto.Specialization);
+            await CheckSpecialization(dto.Specialization);
             int baseID = GetAllFilteredAsync(null, null, null, null, null, dto.Role, null).Result.Count();
             char roleId = dto.Role[0];
             if (roleId != 'D' && roleId != 'N') roleId = 'O';
@@ -141,7 +144,7 @@ namespace DDDSample1.ApplicationService.Staff
             //            staff.ChangeLicenseNumber(dto.LicenseNumber);
             if (dto.Specialization != null)
             {
-                CheckSpecialization(dto.Specialization);
+                await CheckSpecialization(dto.Specialization);
                 staff.UpdateSpecialization(dto.Specialization);
             }
             await this._unitOfWork.CommitAsync();
@@ -214,9 +217,11 @@ namespace DDDSample1.ApplicationService.Staff
             if (!Role.IsValid(role.ToUpper()) || role.ToUpper().Equals("ADMIN") || role.ToUpper().Equals("PATIENT"))
                 throw new BusinessRuleValidationException("Invalid Role.");
         }
-        private static void CheckSpecialization(String specialization)
+        private async Task CheckSpecialization(String specialization)
         {
-            if (!Specialization.IsValid(specialization.ToUpper()))
+            var specializations = await this._specializationRepository.GetAllSpecializationNamesAsync();
+
+            if (!specializations.Contains(specialization.ToUpper()))
                 throw new BusinessRuleValidationException("Invalid Specialization.");
         }
 
