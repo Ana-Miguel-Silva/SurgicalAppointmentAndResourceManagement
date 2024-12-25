@@ -33,6 +33,10 @@ interface CreatingSpecializationDto {
   specializationDescription: string;
 }
 
+interface SpecializationUIDto {
+  SpecializationName: string;
+}
+
 interface CreatingOperationTypeDto {
   name: string;
   requiredStaff: RequiredStaff[];
@@ -72,6 +76,9 @@ export class AdminComponent {
     specializationDescription:''
   };
 
+  specializations: SpecializationUIDto[] = [];
+
+  selectedSpecialization: string | null = null;
 
   scheduleDate: string = '';
   probCrossOver: number = 0.50;
@@ -320,7 +327,7 @@ export class AdminComponent {
   }
 
   addStaff() {
-    this.operationType.requiredStaff.push({ quantity: 1, specialization: '', role: '' });
+    this.operationType.requiredStaff.push({ quantity: 1, specialization: '', role: ''});
   }
 
    // Remove a staff member from the requiredStaff array
@@ -490,6 +497,29 @@ export class AdminComponent {
           });
         }
       });
+  }
+
+
+  getAllSelectableSpecialization() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.specializationService.getAllSpecializations().subscribe({
+      next: (response: SpecializationUIDto[]) => {
+        console.log('Selectable Specializations:', response);
+        this.specializations = response;
+      },
+      error: (error) => {
+        console.error('Error fetching requests:', error);
+      }
+    });
   }
 
   // Método para submeter o formulário
@@ -1148,6 +1178,7 @@ export class AdminComponent {
     this.getAllAllergies();
     this.getAllConditions();
     this.setMinDate();
+    this.getAllSelectableSpecialization();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
         this.operationTypeUpdateForm.addControl('requiredStaff', this.fb.array([]));

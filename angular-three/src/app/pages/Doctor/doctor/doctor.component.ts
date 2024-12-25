@@ -57,7 +57,7 @@ interface UpdateOperationRequestDto {
   priority?: string;
 }
 
-export interface CreatingAppointmentDto {
+interface CreatingAppointmentDto {
   roomId: string;
   operationRequestId: string;
   start: string;
@@ -349,7 +349,6 @@ export class DoctorComponent implements OnInit {
     this.operationRequestsService.getAllNotScheduledOperationRequests().subscribe({
       next: (response: OperationRequest[]) => {
         this.notscheduledOperationRequests = response;
-        this.applyFilter();
       },
       error: (error) => {
         console.error('Error fetching requests:', error);

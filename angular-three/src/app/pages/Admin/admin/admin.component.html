@@ -1400,30 +1400,24 @@
                         <label for="quantity_{{i}}" class="form-label">Quantity</label>
                         <input type="number" [(ngModel)]="staff.quantity" name="quantity_{{i}}" class="form-control" placeholder="Quantity" required min="1" step="1" />
                       </div>
-                      <!-- Specialization -->
-                      <div class="col-md-3">
-                        <label for="specialization_{{i}}" class="form-label">Specialization</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-                          <select class="form-select" [(ngModel)]="staff.specialization" name="specialization_{{i}}" required>
-                            <option value="" disabled selected hidden>Specialization</option>
-                            <option value="PEDIATRICS">Pediatrics</option>
-                            <option value="SURGERY">Surgery</option>
-                            <option value="CARDIOLOGY">Cardiology</option>
-                            <option value="ORTHOPEDICS">Orthopedics</option>
-                            <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-                            <option value="NEUROLOGY">Neurology</option>
-                            <option value="ONCOLOGY">Oncology</option>
-                            <option value="GYNECOLOGY">Gynecology</option>
-                            <option value="OBSTETRICS">Obstetrics</option>
-                            <option value="RADIOLOGY">Radiology</option>
-                            <option value="UROLOGY">Urology</option>
-                          </select>
-                          <div class="invalid-feedback">
-                            Please select a valid specialization.
-                          </div>
-                        </div>
-                      </div>
+
+<!-- Specialization -->
+<div class="col-md-3">
+  <label for="specialization_{{i}}">Specialization</label>
+  <select
+    id="specialization_{{i}}"
+    class="form-control"
+    [(ngModel)]="staff.specialization"
+    name="specialization_{{i}}"
+    required
+  >
+    <option value="" disabled>Select a Specialization</option>
+    <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+      {{ specialization.specializationName }}
+    </option>
+  </select>
+</div>
+
                       <!-- Role -->
                       <div class="col-md-3">
                         <label for="role_{{i}}" class="form-label">Role</label>
@@ -2056,103 +2050,6 @@
       </form>
   </div>
 </div>
-
-
-<div [ngStyle]="{'display': isModalOpen('createOperationTypeModal') ? 'block' : 'none'}" id="createOperationTypeModal" class="modal">
-  <div class="modal-content">
-      <span (click)="closeModal('createOperationTypeModal')" class="close">&times;</span>
-      <form (ngSubmit)="onCreateOperationType(operationType)" class="row g-3 needs-validation" novalidate>
-          <h3 class="text-center">Insert New Operation Type</h3>
-
-          <!-- Operation Type Name -->
-          <div class="col-md-6">
-              <label for="name" class="form-label">Operation Type Name</label>
-              <input type="text" class="form-control" id="name" [(ngModel)]="operationType.name" name="name" required />
-              <div class="valid-feedback">Looks good!</div>
-          </div>
-
-          <!-- Required Staff -->
-          <div class="col-md-12">
-              <label for="requiredStaff" class="form-label">Required Staff</label>
-              <div *ngFor="let staff of operationType.requiredStaff; let i = index" class="staff-entry">
-                  <div class="d-flex mb-3">
-                      <!-- Quantity -->
-                      <div class="col-md-3">
-                        <label for="quantity_{{i}}" class="form-label">Quantity</label>
-                        <input type="number" [(ngModel)]="staff.quantity" name="quantity_{{i}}" class="form-control" placeholder="Quantity" required min="1" step="1" />
-                      </div>
-                      <!-- Specialization -->
-                      <div class="col-md-3">
-                        <label for="specialization_{{i}}" class="form-label">Specialization</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-                          <select class="form-select" [(ngModel)]="staff.specialization" name="specialization_{{i}}" required>
-                            <option value="" disabled selected hidden>Specialization</option>
-                            <option value="PEDIATRICS">Pediatrics</option>
-                            <option value="SURGERY">Surgery</option>
-                            <option value="CARDIOLOGY">Cardiology</option>
-                            <option value="ORTHOPEDICS">Orthopedics</option>
-                            <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-                            <option value="NEUROLOGY">Neurology</option>
-                            <option value="ONCOLOGY">Oncology</option>
-                            <option value="GYNECOLOGY">Gynecology</option>
-                            <option value="OBSTETRICS">Obstetrics</option>
-                            <option value="RADIOLOGY">Radiology</option>
-                            <option value="UROLOGY">Urology</option>
-                          </select>
-                          <div class="invalid-feedback">
-                            Please select a valid specialization.
-                          </div>
-                        </div>
-                      </div>
-                      <!-- Role -->
-                      <div class="col-md-3">
-                        <label for="role_{{i}}" class="form-label">Role</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-                          <select class="form-select" [(ngModel)]="staff.role" name="role_{{i}}" required>
-                            <option value="" disabled selected hidden>Role</option>
-                            <option value="DOCTOR">Doctor</option>
-                            <option value="NURSE">Nurse</option>
-                            <option value="TECHNICIAN">Technician</option>
-                          </select>
-                          <div class="invalid-feedback">
-                            Please select a valid role.
-                          </div>
-                        </div>
-                      </div>
-                      <button type="button" class="btn btn-danger mt-4" (click)="removeStaff(i)">Remove</button>
-                    </div>
-              </div>
-              <button type="button" class="staff-entry" (click)="addStaff()">Add Staff</button>
-            </div>
-
-          <!-- Estimated Duration -->
-          <div class="col-md-6">
-              <label for="patientPreparation" class="form-label">Patient Preparation Time</label>
-              <input type="time" class="form-control" id="patientPreparation" [(ngModel)]="operationType.estimatedDuration.patientPreparation" name="patientPreparation" required step="2" />
-          </div>
-
-          <div class="col-md-6">
-              <label for="surgery" class="form-label">Surgery Time</label>
-              <input type="time" class="form-control" id="surgery" [(ngModel)]="operationType.estimatedDuration.surgery" name="surgery" required step="2" />
-          </div>
-
-          <div class="col-md-6">
-              <label for="cleaning" class="form-label">Cleaning Time</label>
-              <input type="time" class="form-control" id="cleaning" [(ngModel)]="operationType.estimatedDuration.cleaning" name="cleaning" required step="2" />
-          </div>
-
-          <!-- Submit Button -->
-          <div class="col-12">
-              <button class="btn btn-primary" type="submit">Create Operation Type</button>
-          </div>
-      </form>
-  </div>
-</div>
-
-
-
 
 <div  [ngStyle]="{'display': isModalOpen('listSpecializationsModal') ? 'block' : 'none'}" id="listSpecializationsModal" class="modal" >
   <div class="modal-content">

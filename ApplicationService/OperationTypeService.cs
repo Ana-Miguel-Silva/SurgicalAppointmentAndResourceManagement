@@ -103,12 +103,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
 
             return new OperationTypeDto(operationType.Id.AsGuid(), operationType.Name, operationType.RequiredStaff, operationType.EstimatedDuration, operationType.Active);
         }
-
-        private static void CheckName(string name)
-        {
-            if (!Specialization.IsValid(name.ToUpper()))
-                throw new BusinessRuleValidationException("Invalid OperationType Name.");
-        }
         private static void CheckEstimatedTime(EstimatedDuration estimatedTime)
         {
             if (estimatedTime == null)
@@ -120,13 +114,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
             if (requiredStaff == null || requiredStaff.Count == 0)
                 throw new BusinessRuleValidationException("Invalid Required Staff.");
 
-            foreach (RequiredStaff rs in requiredStaff)
-            {
-                if (!Specialization.IsValid(rs.Specialization.ToUpper()) || !Role.IsValid(rs.Role.ToUpper()))
-                {
-                    throw new BusinessRuleValidationException("Invalid Required Staff.");
-                }
-            }
         }
 
 
@@ -156,8 +143,6 @@ namespace DDDSample1.ApplicationService.OperationTypes
             return operationType.ConvertAll<OperationTypeDto>(operationsTypes =>
                 new(operationsTypes.Id.AsGuid(), operationsTypes.Name, operationsTypes.RequiredStaff, operationsTypes.EstimatedDuration, operationsTypes.Active)).ToList();
         }
-
-
 
     }
 }
