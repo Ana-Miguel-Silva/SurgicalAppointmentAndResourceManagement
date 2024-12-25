@@ -17,6 +17,7 @@ import { forEach } from 'lodash';
 
 import { IMedicalConditionMedicalRecord } from '../dataschema/IMedicalConditionMedicalRecord';
 import { IAllergieMedicalRecord } from '../dataschema/IAllergieMedicalRecord';
+import IUpdateMedicalRecordDTO from '../dto/IUpdateMedicalRecordDTO';
 
 
 
@@ -239,7 +240,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
-  public async updateMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
+  public async updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
       const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(MedicalRecordDTO.patientId);
       const MedicalRecord = MedicalRecords[0];

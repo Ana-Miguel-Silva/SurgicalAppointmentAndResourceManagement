@@ -622,37 +622,6 @@
           </div>
 
 
-          <div class="col-md-4">
-            <div class="dropdown2">
-              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
-              <div class="tagsConditions-input">
-                <ul id="tagsConditions">
-                  <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
-                    {{ condition }}
-                    <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
-                  </li>
-                </ul>
-                <input
-                  id="condition-filter"
-                  type="text"
-                  name="filterMedicalCondiitonDesignacao"
-                  [(ngModel)]="filterTextCondition"
-                  placeholder="Choose an medical condition"
-                  (input)="filterOptionsMedicalConditions()"
-                  (focus)="showDropdown2 = true"
-                  (blur)="onBlur()"
-                />
-              </div>
-              <ul *ngIf="showDropdown2" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredOptionsConditions"
-                  (mousedown)="selectOptionMedicalCondition(option.designacao)">
-                  {{ option.designacao }}
-                </li>
-              </ul>
-            </div>
-          </div>
-
           <div class="col-md-2">
             <label for="tag-filter" class="form-label">Allergy Status</label>
             <div class="dropdown">
@@ -676,6 +645,54 @@
 
           </div>
 
+          <div class="col-12">
+            <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
+          </div>
+
+          <div class="col-mb-4"></div>
+
+        
+          <div class="col-md-12">
+            <ul id="tags">
+              <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
+                {{ condition.descricao }} -  {{ condition.designacao }} -  {{ condition.status }}
+                <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-mb-4">
+            <div class="dropdown2">
+              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>              
+                <input
+                  id="condition-filter"
+                  type="text"
+                  name="filterMedicalCondiitonDesignacao"
+                  [(ngModel)]="filterTextCondition"
+                  placeholder="Choose an medical condition"
+                  (input)="filterOptionsMedicalConditions()"
+                  (focus)="showDropdown2 = true"
+                  (blur)="onBlur()"
+                />
+              </div>
+              <ul *ngIf="showDropdown2" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredOptionsConditions"
+                  (mousedown)="selectOptionMedicalCondition(option.designacao)">
+                  {{ option.designacao }}
+                </li>
+              </ul>
+          </div>
+   
+
+
+          <div class="col-md-5">
+            <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
+            <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText" name="descricaoCondition" required />
+            <div class="valid-feedback">Looks good!</div>
+          </div>
+
+      
 
 
           <div class="col-md-2">
@@ -710,10 +727,7 @@
           </div>
           <div class="col-12">
             <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
-           </div>
-
-
-
+          </div>
 
 
           <div class="col-mb-6"></div>
@@ -821,65 +835,146 @@
           <!-- Description Field -->
           <div class="col-md-3">
             <div class="input-group has-validation">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-              <input type="text" class="form-control"
-               placeholder="Description">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i>  </span>
+              <input type="text" class="form-control" [(ngModel)]="medicalRecordProfileUpdate.descricao"
+                [ngModelOptions]="{standalone: true}"  placeholder="Description"  name="descriptionUpdate">
             </div>
           </div>
 
           <hr>
-          <div class="col-md-2"></div>
+      
+
+            <!-- Allergies Section -->
+            <div class="col-md-10">
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
+                <span class="input-group-text" style="width:60%" id="add">Allergies</span>
+              </div>
+              <table class="table table-striped table-hover table-over-update">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>               
+                  <tr *ngFor="let tag of tagsAllergies; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ tag.designacao }}</td>
+                    <td>{{ tag.descricao }}</td>
+                    <td>{{ tag.status }}</td>
+                    <td> <button type="button" class="delete-button" (click)="removeAllergie(i); $event.preventDefault()"> Remove </button></td>
+                  </tr>                
+                </tbody>
+              </table>
+            </div>
+          
+          <div class="dropdown">
+            <label for="tag-filter" class="form-label">Allergies</label>
+            <div class="tags-input">
+              <input
+                id="tag-filter"
+                type="text"
+                name="filterAllergieName"
+                [(ngModel)]="filterAllergieNameText"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Choose an allergy"
+                (input)="filterAllergieNameOptions()"
+                (focus)="showDropdown = true"
+                (blur)="onBlur()"
+              />
+            </div>
+            <ul *ngIf="showDropdown" class="dropdown-list">
+              <li
+                *ngFor="let option of filteredAllergieNameOptions"
+                (mousedown)="selectOptionTagAllergies(option.designacao)">
+                {{ option.designacao }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-md-5">
+            <label for="descricaoAllergie" class="form-label">Description</label>
+            <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}"  name="descricaoAllergie" required />
+            <div class="valid-feedback">Looks good!</div>
+          </div>
+
+
+          <div class="col-md-2">
+            <label for="tag-filter" class="form-label">Allergy Status</label>
+            <div class="dropdown">
+              <input
+                type="text"
+                 name="filterAllergieStatus"
+                [(ngModel)]="filterAllergieStatusText"
+                [ngModelOptions]="{standalone: true}"
+                (input)="filterAllergieStatusOptions()"
+                (focus)="showDropdown3 = true"
+                (blur)="onBlur()"
+                placeholder="Filter status"
+              />
+              <ul *ngIf="showDropdown3" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredAllergieStatusOptions"
+                  (mousedown)="selectOptionTagStatusAllergies(option)">
+                  {{ option }}
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          <div class="col-12" style="margin-bottom: 30px;">
+            <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
+          </div>
+
+          <div class="col-mb-4"></div>
+
 
           <!-- Medical Conditions Section -->
-          <div class="col-md-3">
+          <div class="col-md-10">
             <div class="input-group has-validation">
               <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-clock-fill"></i></span>
-              <span class="input-group-text" style="width:60%" id="add">Medical Condition</span>
+              <span class="input-group-text" style="width:60%" id="add">Medical Conditions</span>
             </div>
             <table class="table table-striped table-hover table-over-update">
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Code</th>
                   <th>Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Symptoms</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let condition of tagsConditions; let i = index">
                   <td>{{ i + 1 }}</td>
-                  <td>{{ condition }}</td>
+                  <td>{{ condition.codigo }}</td>
+                  <td>{{ condition.designacao }}</td>
+                  <td>{{ condition.descricao }}</td>
+                  <td>{{ condition.status }}</td>
+                  <td>{{ condition.sintomas }}</td>
+                  <td>  <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()"> Remove </button></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div class="col-12">
-            <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
-           </div>
-
-           <div class="col-mb-4"></div>
-
           <div class="col-mb-4">
-            <ul id="tagsConditions">
-              <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
-                {{ condition.designacao }} - {{ condition.descricao }} - {{ condition.status }}
-                <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="col-mb-4"></div>
-
             <div class="dropdown2">
-              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
-              <div class="tagsConditions-input">
-
+              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>              
                 <input
                   id="condition-filter"
                   type="text"
+                  name="filterMedicalCondiitonDesignacao"
                   [(ngModel)]="filterTextCondition"
+                  [ngModelOptions]="{standalone: true}"
                   placeholder="Choose an medical condition"
                   (input)="filterOptionsMedicalConditions()"
-                  (keydown)="addTagConditionFromInput($event)"
                   (focus)="showDropdown2 = true"
                   (blur)="onBlur()"
                 />
@@ -887,83 +982,64 @@
               <ul *ngIf="showDropdown2" class="dropdown-list">
                 <li
                   *ngFor="let option of filteredOptionsConditions"
-                  (mousedown)="selectOptionMedicalCondition(option.descricao)">
-                  {{ option.descricao }}
+                  (mousedown)="selectOptionMedicalCondition(option.designacao)">
+                  {{ option.designacao }}
                 </li>
               </ul>
-            </div>
-
-
+          </div>
+   
 
 
           <div class="col-md-5">
-            <label for="descricaoCondition" class="form-label">Description</label>
-            <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText" name="descricaoCondition" required />
+            <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
+            <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"   [ngModelOptions]="{standalone: true}" name="descricaoCondition" required />
             <div class="valid-feedback">Looks good!</div>
           </div>
 
+      
 
 
-          <div class="col-md-1"></div>
-
-          <div class="col-md-2"></div>
-
-          <div class="col-md-2"></div>
-
-          <!-- Allergies Section -->
-          <div class="col-md-3">
-            <div class="input-group has-validation">
-              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
-              <span class="input-group-text" style="width:60%" id="add">Allergies</span>
-            </div>
-            <table class="table table-striped table-hover table-over-update">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let allergy of tags; let i = index">
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ allergy }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Tags Input for Allergies -->
-          <div class="dropdown">
-            <label for="tag-filter" class="form-label">Allergies</label>
-            <div class="tags-input">
-              <ul id="tags">
-                <li *ngFor="let tag of tags; let i = index" class="tag">
-                  {{ tag }}
-                  <button type="button" class="delete-button" (click)="removeTag(i)">X</button>
+          <div class="col-md-4">
+            <label for="tag-filter" class="form-label">Medical Condition Status</label>
+            <div class="dropdown">
+              <input
+                type="text"
+                name="filterConditionStatus"
+                [(ngModel)]="filterConditionStatusText"
+                [ngModelOptions]="{standalone: true}"
+                (input)="filterConditionStatusOptions()"
+                (focus)="showDropdown4 = true"
+                (blur)="onBlur()"
+                placeholder="Filter status"
+              />
+              <ul *ngIf="showDropdown4" class="dropdown-list">
+                <li
+                  *ngFor="let option of filteredAllergieStatusOptions"
+                  (mousedown)="selectOptionTagStatusCondition(option)">
+                  {{ option }}
                 </li>
               </ul>
-              <input
-                id="tag-filter"
-                type="text"
-                [(ngModel)]="filterText"
-                placeholder="Choose an allergy"
-                (input)="filterOptions()"
-                (keydown)="addTagFromInput($event)"
-                (focus)="showDropdown = true"
-                (blur)="onBlur()"
-              />
             </div>
-            <ul *ngIf="showDropdown" class="dropdown-list">
-              <li *ngFor="let option of filteredOptions" (mousedown)="selectOptionTag(option.designacao)">
-                {{ option.designacao }}
-              </li>
-            </ul>
+
           </div>
 
-          <div class="col-md-1"></div>
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+              <textarea class="form-control" id="medicalConditionSymptoms"  [(ngModel)]="sintomasCodition"   [ngModelOptions]="{standalone: true}" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a comma (,)]"></textarea>
+            </div>
+
+          </div>
+          <div class="col-12"  style="margin-bottom: 30px;">
+            <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+          </div>
+ 
+         
         </div>
 
-        <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit form</button>
+       
+
+        <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit </button>
       </div>
     </form>
   </div>

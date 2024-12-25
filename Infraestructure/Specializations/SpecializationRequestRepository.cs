@@ -19,5 +19,12 @@ namespace DDDSample1.Infrastructure.Specializations
             .Where(op => op.SpecializationName.Contains(name))
             .ToListAsync();
         }
+
+        public async Task<List<string>> GetAllSpecializationNamesAsync()
+        {
+            return await _context.Specializations
+                .Select(s => s.SpecializationName)
+                .ToListAsync();
+        }
     }
 }

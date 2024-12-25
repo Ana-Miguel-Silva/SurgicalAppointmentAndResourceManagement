@@ -15,6 +15,22 @@ import { environment } from '../../../../environments/environment';
 import { forkJoin } from 'rxjs';
 
 
+interface IAllergieMedicalRecord {
+  designacao: string;
+  descricao: string;
+  status: string;
+  _id?: string;
+}
+
+export interface IMedicalConditionMedicalRecord {
+  codigo: string;
+  designacao: string;
+  descricao: string;
+  sintomas: string[];
+  status: string;
+  _id?: string;
+}
+
 
 @Component({
   selector: 'app-patient',
@@ -101,6 +117,9 @@ export class PatientComponent {
 
   selectedAllergie: string | null =null;
   selectedMedicalCondition: string | null =null;
+  tagsConditions: IMedicalConditionMedicalRecord[] = [];
+  tagsAllergies: IAllergieMedicalRecord[] = [];
+  medicalRecordProfile: any = null;
 
 
   openModal(modalId: string): void {
@@ -208,15 +227,31 @@ export class PatientComponent {
         this.medicalRecordService.getAllMedicalRecordByPatientId(getPatientId)
           .subscribe({            
             next: (response) => {    
+              this.medicalRecordProfile = response[0];
+              console.log("Medical record: ", this.medicalRecordProfile);
+ 
+              // Add existing conditions to the form
+              this.medicalRecordProfile.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
+                this.tagsConditions.push({
+                  codigo: condition.codigo,
+                  designacao: condition.designacao,
+                  descricao: condition.descricao,
+                  sintomas: condition.sintomas,
+                  status: condition.status,
+                });
+              });
+              
+  
+              this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
+                this.tagsAllergies.push({
+                  designacao: allergy.designacao,
+                  descricao: allergy.descricao,
+                  status: allergy.status,
+                });
+              });
 
-              this.allergiesList = response[0].allergies.flat();
-
-              console.log("allergies: ", this.allergiesList);
-
-              this.medicalConditions = response[0].medicalConditions.flat();
-
-              console.log("medical conditions: ", this.medicalConditions);
-
+              this.tagsConditions = this.medicalRecordProfile.medicalConditions;
+              this.tagsAllergies = this.medicalRecordProfile.allergies;
 
               this.openModal('ViewMedicalRecord');
             },

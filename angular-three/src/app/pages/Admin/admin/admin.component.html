@@ -932,18 +932,10 @@
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <select class="form-select" id="validationSpecialization" formControlName="specialization" required="">
-                <option selected="" disabled="" value="" hidden>Specialization</option>
-                <option value="PEDIATRICS">Pediatrics</option>
-                <option value="SURGERY">Surgery</option>
-                <option value="CARDIOLOGY">Cardiology</option>
-                <option value="ORTHOPEDICS">Orthopedics</option>
-                <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-                <option value="NEUROLOGY">Neurology</option>
-                <option value="ONCOLOGY">Oncology</option>
-                <option value="GYNECOLOGY">Gynecology</option>
-                <option value="OBSTETRICS">Obstetrics</option>
-                <option value="RADIOLOGY">Radiology</option>
-                <option value="UROLOGY">Urology</option>
+                <option value="" disabled selected hidden>Specialization</option>
+                          <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                            {{ specialization.specializationName }}
+                          </option>
               </select>
               <div class="invalid-feedback">
                 Please select a valid state.
@@ -1116,18 +1108,10 @@
             <div class="input-group has-validation">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
               <select class="form-select" id="validationSpecializationEdit" formControlName="specialization" required="">
-                <option selected="" disabled="" value="" hidden>Specialization</option>
-                <option value="PEDIATRICS">Pediatrics</option>
-                <option value="SURGERY">Surgery</option>
-                <option value="CARDIOLOGY">Cardiology</option>
-                <option value="ORTHOPEDICS">Orthopedics</option>
-                <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-                <option value="NEUROLOGY">Neurology</option>
-                <option value="ONCOLOGY">Oncology</option>
-                <option value="GYNECOLOGY">Gynecology</option>
-                <option value="OBSTETRICS">Obstetrics</option>
-                <option value="RADIOLOGY">Radiology</option>
-                <option value="UROLOGY">Urology</option>
+                <option value="" disabled selected hidden>Specialization</option>
+                          <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                            {{ specialization.specializationName }}
+                          </option>
               </select>
               <div class="invalid-feedback">
                 Please select a valid state.
@@ -1206,17 +1190,9 @@
         <label for="filterStaffSpecialization" class="form-label">Specialization:</label>
         <select id="filterStaffSpecialization" [(ngModel)]="filterStaff.specialization" name="filterStaffSpecialization" class="form-control">
           <option value="" disabled selected hidden>Specialization</option>
-          <option value="PEDIATRICS">Pediatrics</option>
-          <option value="SURGERY">Surgery</option>
-          <option value="CARDIOLOGY">Cardiology</option>
-          <option value="ORTHOPEDICS">Orthopedics</option>
-          <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-          <option value="NEUROLOGY">Neurology</option>
-          <option value="ONCOLOGY">Oncology</option>
-          <option value="GYNECOLOGY">Gynecology</option>
-          <option value="OBSTETRICS">Obstetrics</option>
-          <option value="RADIOLOGY">Radiology</option>
-          <option value="UROLOGY">Urology</option>
+                          <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                            {{ specialization.specializationName }}
+                          </option>
         </select>
       </div>
 
@@ -1786,27 +1762,16 @@
                       </div>
 
                       <!-- Specialization -->
-                      <div class="col-md-12">
-                        <label for="specialization_{{i}}" class="form-label">Specialization</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-                          <select class="form-select" formControlName="specialization" name="specialization_{{i}}" required>
-                            <option value="" disabled selected hidden>Specialization</option>
-                            <option value="PEDIATRICS">Pediatrics</option>
-                            <option value="SURGERY">Surgery</option>
-                            <option value="CARDIOLOGY">Cardiology</option>
-                            <option value="ORTHOPEDICS">Orthopedics</option>
-                            <option value="ANAESTHESIOLOGY">Anaesthesiology</option>
-                            <option value="NEUROLOGY">Neurology</option>
-                            <option value="ONCOLOGY">Oncology</option>
-                            <option value="GYNECOLOGY">Gynecology</option>
-                            <option value="OBSTETRICS">Obstetrics</option>
-                            <option value="RADIOLOGY">Radiology</option>
-                            <option value="UROLOGY">Urology</option>
-                          </select>
-                          <div class="invalid-feedback">
-                            Please select a valid specialization.
-                          </div>
+                      <div class="form-group">
+                        <label for="specialization_{{i}}">Specialization</label>
+                        <select id="specialization_{{i}}" formControlName="specialization" class="form-control" required>
+                          <option value="" disabled selected hidden>Select a Specialization</option>
+                          <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                            {{ specialization.specializationName }}
+                          </option>
+                        </select>
+                        <div *ngIf="staff.get('specialization')?.invalid && staff.get('specialization')?.touched" class="invalid-feedback">
+                          Please select a specialization.
                         </div>
                       </div>
 
@@ -1921,7 +1886,7 @@
                       <td><input class="selectRequest" type="radio" id="allergie_{{ request.designacao }}" name="id" value="{{ request.designacao }}" [checked]="selectedAllergie === request.designacao" hidden>{{ request.designacao }} </td>
 
                       <td>{{ request.descricao }}</td>
-                   
+
                     </tr>
                   </tbody>
                 </table>
