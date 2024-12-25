@@ -51,15 +51,20 @@ export class StaffService {
   createStaff(formData: any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
+    console.log(JSON.stringify(formData));
+    console.log(headers);
+    console.log(`${this.staffUrl}`);
     return this.http.post<any>(`${this.staffUrl}`, JSON.stringify(formData), { headers });
   }
 
   editStaffPostA(id:string, formData: any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
     return this.http.put<any>(`${this.staffUrl}/${id}`, JSON.stringify(formData), { headers });
   }
@@ -68,7 +73,8 @@ export class StaffService {
   editStaffPostB(id:string, formData:any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
     return this.http.put<any>(`${this.staffUrl}/${id}/SlotsAdd`, JSON.stringify(formData).replaceAll("Time",""), { headers });
 
@@ -77,7 +83,8 @@ export class StaffService {
   removeStaffPostB(id:string, formData:any): Observable<any>{
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
     return this.http.put<any>(`${this.staffUrl}/${id}/SlotsRemove`, JSON.stringify(formData).replaceAll("Time",""), { headers });
 
