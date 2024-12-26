@@ -122,6 +122,32 @@ export class PatientComponent {
   medicalRecordProfile: any = null;
 
 
+  isPolicyAccepted = false; 
+  showPolicyModal = false; 
+
+
+  openPolicyModal() {
+    this.showPolicyModal = true;
+  }
+
+  closePolicyModal() {
+    this.showPolicyModal = false;
+  }
+
+  acceptPolicy() {
+    this.isPolicyAccepted = true;
+    this.closePolicyModal();
+  }
+
+  rejectPolicy() {
+    this.isPolicyAccepted = false;
+    this.closePolicyModal();
+  }
+
+
+
+
+
   openModal(modalId: string): void {
     if (modalId === 'UpdatePatientModal' && this.patientProfileSingle) {
       this.populateUpdateForm();

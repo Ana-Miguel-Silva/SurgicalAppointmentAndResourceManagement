@@ -218,7 +218,7 @@ export class DoctorComponent implements OnInit {
   }
 
   appointmentData = {
-    date: { start: '', end: '' },
+    date: { start: ''},
     selectedStaff: ['']
   };
 
@@ -256,6 +256,9 @@ export class DoctorComponent implements OnInit {
 
   medicalRecordUpdate!: FormGroup;
   medicalRecordProfileUpdate: any = null;
+
+  isPolicyAccepted = false; 
+  showPolicyModal = false; 
 
   ngOnInit() {
     this.getAllOperationRequests();
@@ -416,6 +419,29 @@ export class DoctorComponent implements OnInit {
   selectedAllergie: string | null =null;
   selectedPatientEmailMedicalRecord: string | null =null;
   successMessage: string | null = null;
+
+
+  openPolicyModal() {
+    this.showPolicyModal = true;
+  }
+
+  closePolicyModal() {
+    this.showPolicyModal = false;
+  }
+
+  acceptPolicy() {
+    this.isPolicyAccepted = true;
+    this.closePolicyModal();
+  }
+
+  rejectPolicy() {
+    this.isPolicyAccepted = false;
+    this.closePolicyModal();
+  }
+
+
+
+
 
   selectAllergie(id: string){
       this.selectedAllergie = this.selectedAllergie === id ? null : id;
@@ -855,6 +881,12 @@ removeStaffMember(index: number) {
     const staffEmail = this.authService.getEmail();
 
 
+    if (!this.isPolicyAccepted) {
+      alert('You must accept the policy to submit the form.');
+      return;
+    }
+
+
     forkJoin({
       patient: this.patientService.getPatientByEmail(requestData.patientId),
       staff: this.staffService.getStaffByEmail(staffEmail),
@@ -1128,6 +1160,8 @@ removeStaffMember(index: number) {
       return;
     }
 
+    
+
     const updatedPatientData = this.medicalRecordUpdate.value;
 
 
@@ -1201,7 +1235,7 @@ removeStaffMember(index: number) {
 
   cleanAppointmentModal() {
     this.appointmentData = {
-      date: { start: '', end: '' },
+      date: { start: ''},
       selectedStaff: ['']
     };
     this.selectedOperationRequestId = null;
