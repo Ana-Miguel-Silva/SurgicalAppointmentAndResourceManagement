@@ -98,8 +98,8 @@ namespace DDDSample1.Controllers
         {
             try
             {
+                Console.Write("AA------"+ dto);
                 var cat = await _service.AddAsync(dto);
-
                 return CreatedAtAction(nameof(GetGetById), new { id = cat.Id }, cat);
             }
             catch (BusinessRuleValidationException ex)

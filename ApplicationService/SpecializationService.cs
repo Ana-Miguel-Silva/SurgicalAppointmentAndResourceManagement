@@ -33,6 +33,17 @@ namespace DDDSample1.ApplicationService.Specializations
             }
             return await Dto_to_UIDto(specializations);
         }
+        public async Task<SpecializationUIDto> GetByNameAsync(string? name)
+        {
+            var specializations = await this._repo.GetAllAsync();
+            Specialization ret = null;
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                ret = specializations.Where(o => o.SpecializationName == name).ToList().FirstOrDefault();
+            }
+            return await Dto_to_UIDtoSingle(ret);
+        }
 
         public async Task<SpecializationDto> GetByIdAsync(SpecializationId id)
         {
@@ -41,7 +52,7 @@ namespace DDDSample1.ApplicationService.Specializations
             if (specialization == null)
                 return null;
 
-            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName);
+            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName, specialization.SpecializationDescription);
         }
 
         public async Task<SpecializationDto> AddAsync(CreatingSpecializationDto dto)
@@ -52,7 +63,7 @@ namespace DDDSample1.ApplicationService.Specializations
             await this._repo.AddAsync(specialization);
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName);
+            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName, specialization.SpecializationDescription);
         }
 
         /*public async Task<SpecializationDto> UpdateAsync(SpecializationDto dto, string authUserEmail)
@@ -84,9 +95,13 @@ namespace DDDSample1.ApplicationService.Specializations
             var listDto = new List<SpecializationUIDto>();
             foreach (var specialization in list)
             {
-                listDto.Add(new SpecializationUIDto(specialization.SpecializationName));
+                listDto.Add(new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription));
             }
             return listDto;
+        }
+        private async Task<SpecializationUIDto> Dto_to_UIDtoSingle(Domain.Specializations.Specialization specialization)
+        {
+            return new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription);
         }
 
 

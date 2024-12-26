@@ -29,4 +29,11 @@ createSpecialization(specialization : any): Observable<any> {
     return this.http.get<any[]>(`${this.apiUrl}`, { headers });
   }
 
+  viewSpecialization(specialization : any): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<any[]>(`${this.apiUrl}/name/${specialization}`, { headers });
+  }
+
 }
