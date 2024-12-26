@@ -223,17 +223,6 @@
           required
         />
       </div>
-      <div class="form-group">
-        <label for="endDate">End Date</label>
-        <input
-          id="endDate"
-          type="datetime-local"
-          class="form-control"
-          [(ngModel)]="appointmentData.date.end"
-          name="endDate"
-          required
-        />
-      </div>
 
       <!-- Staff Selection -->
       <div class="form-group" *ngFor="let staffId of appointmentData.selectedStaff; let i = index">

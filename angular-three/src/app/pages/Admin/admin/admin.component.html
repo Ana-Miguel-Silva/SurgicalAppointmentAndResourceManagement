@@ -1781,6 +1781,7 @@
 </div>
 
 
+
 <div  [ngStyle]="{'display': isModalOpen('listOperationTypeModal') ? 'block' : 'none'}" id="listOperationTypeModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('listOperationTypeModal')" class="close">&times;</span>
@@ -2364,17 +2365,16 @@
                   <tr>
                     <th>#</th>
                     <th>Specialization</th>
-                    <th>Prepatation Duration</th>
-                    <th>Surgery Duration</th>
-                    <th>Cleaning Duration</th>
+                    <th>Description</th>
                     <th>Active</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.id)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.id }">
+                  <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.specializationName)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.specializationName }">
                     <td>{{ i + 1 }}</td>
-                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.id }}" name="SpecializationsFormID" value="{{ request.id }}" [checked]="selectSpecializationsId === request.id" hidden>{{ request.id }}</td>
+                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.specializationName }}" name="SpecializationsFormID" value="{{ request.specializationName }}" [checked]="selectSpecializationsId === request.specializationName" hidden>{{ request.specializationName }}</td>
                     <td>{{ request.specializationName }} </td>
+                    <td>{{ request.specializationDescription }} </td>
 </tbody>
               </table>
               </form>
@@ -2384,9 +2384,9 @@
 
         <div class="col-md-9"></div>
         <div class="col-md-3">
-          <!--<button class="fs-5 btn btn-outline-info" (click)="/*viewSpecializations()">View <i class="bi bi-info-square-fill"></i></button>
+          <!--<button class="fs-5 btn btn-outline-info" (click)="/*viewSpecializations()">View <i class="bi bi-info-square-fill"></i></button>-->
           <button class="fs-5 btn btn-outline-warning" (click)="editSpecializations()">Edit <i class="bi bi-pencil-square"></i></button>
-          <button class="fs-5 btn btn-outline-danger" (click)="removeSpecializations()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
+          <!--<button class="fs-5 btn btn-outline-danger" (click)="removeSpecializations()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
         </div>
         </form>
       </div>
@@ -2530,6 +2530,36 @@
           </div>
       </form>
     </div>
+  </div>
+</div>
+
+
+
+<div [ngStyle]="{'display': isModalOpen('editSpecializationModal') ? 'block' : 'none'}" id="editSpecializationModal" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('editSpecializationModal')" class="close">&times;</span>
+      <form [formGroup]="specializarionEditForm"  (ngSubmit)="onEditSpecialization()" class="row g-3 needs-validation" novalidate>
+          <h3 class="text-center">Edit Specialization</h3>
+
+          <!-- Specialization Designation -->
+          <div class="col-md-6">
+              <label for="specializationName" class="form-label">Specialization Designation</label>
+              <input type="text" class="form-control" id="specializationName" formControlName="designacao" name="specializationName" required />
+              <div class="valid-feedback">Looks good!</div>
+          </div>
+
+          <!-- Specialization Description -->
+          <div class="col-md-6">
+              <label for="specializationDescription" class="form-label">Specialization Description</label>
+              <input type="text" class="form-control" id="specializationDescription" formControlName="descricao" name="specializationDescription" required />
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+
+          <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" type="submit">Update Specialization</button>
+          </div>
+      </form>
   </div>
 </div>
 

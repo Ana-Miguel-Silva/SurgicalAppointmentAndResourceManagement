@@ -59,6 +59,19 @@ namespace DDDSample1.Controllers
 
             return specialization;
         }
+        // GET: api/Specializations/5
+        [HttpGet("name/{id}")]
+        public async Task<ActionResult<SpecializationUIDto>> GeByName(String id)
+        {
+            var specialization = await _service.GetByNameAsync(id);
+
+            if (specialization == null)
+            {
+                return NotFound();
+            }
+
+            return specialization;
+        }
 
         // POST: api/Specializations
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]

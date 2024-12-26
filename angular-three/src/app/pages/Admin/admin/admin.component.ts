@@ -192,7 +192,10 @@ export class AdminComponent {
       descricao: ['', Validators.required],
       sintomas: ['', Validators.required]
     });
-
+    this.specializarionEditForm = this.fb.group({
+      designacao: ['', Validators.required],
+      descricao: ['', Validators.required]
+    })
 
 
     this.staffForm = this.fb.group({});
@@ -256,7 +259,7 @@ export class AdminComponent {
     this.selectOperationTypeId = this.selectOperationTypeId === id ? null : id;
   }
 
-  selectSpecialization(id: string) {
+  selectSpecializations(id: string) {
     this.selectSpecializationsId = this.selectSpecializationsId === id ? null : id;
   }
 
@@ -275,6 +278,7 @@ export class AdminComponent {
   allergyUpdate: any = null;
   medicalConditionForm!: FormGroup;
   medicalConditionEditForm!: FormGroup;
+  specializarionEditForm: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -296,6 +300,7 @@ export class AdminComponent {
   requiredStaffView: any[] = [];
   staffProfileSingle: any = null;
   MedicalConditionSingle: any = null;
+  SpecializationSingle: any = null;
   patientProfileSingle: any = null;
   patientProfileUpdate: any = null;
   operationTypeUpdate: any = null;
@@ -847,7 +852,7 @@ export class AdminComponent {
       });
   }
 
-
+  onEditSpecialization(){}
 
   onFilterRequests(){
     this.getAllpatientsProfiles();
@@ -2275,6 +2280,42 @@ sweetErro(text: string){
     }
   }
 
+  editSpecializations(){
+
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    if (this.selectSpecializationsId === null) {
+      this.sweetService.sweetWarning("Please select a Specialization.")
+    } else {
+      console.log(`Viewing Specialization Name: ${this.selectSpecializationsId}`);
+      this.specializationService.viewSpecialization(this.selectSpecializationsId)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.SpecializationSingle = response;
+          console.log(this.SpecializationSingle);
+          this.specializarionEditForm.get('designacao')?.setValue(this.SpecializationSingle.specializationName);
+          this.specializarionEditForm.get('descricao')?.setValue(this.SpecializationSingle.specializationDescription);
+          this.openModal('editSpecializationModal');
+        },
+        error: (error) => {
+          console.error('Error viewing staff:', error);
+          this.errorMessage = 'Failed to view staff profiles!';
+        }
+      });
+    }
+  }
 
   logout(): void {
     this.authService.logout();
