@@ -133,7 +133,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
         public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
         {
-            checkRoomIdAsync(dto.RoomId);
+            await checkRoomIdAsync(dto.RoomId);
 
             var oldAppointment = await this._repo.GetByIdAsync(new AppointmentId(dto.Id));
 
@@ -150,7 +150,7 @@ namespace DDDSample1.ApplicationService.Appointments
             }
             catch (BusinessRuleValidationException e)
             {
-                await AddAsync(new CreatingAppointmentDto(dto.RoomId.Value, oldAppointment.OperationRequestId.Value, dto.Start, dto.SelectedStaff),oldAppointment.Id.Value);
+                await AddAsync(new CreatingAppointmentDto(oldAppointment.RoomId.Value, oldAppointment.OperationRequestId.Value, oldAppointment.Date.StartTime.ToString("o"), oldAppointment.GetAllStaff()),oldAppointment.Id.Value);
                 throw new BusinessRuleValidationException("Appointments was not updated." + e);
             }
 
@@ -172,7 +172,7 @@ namespace DDDSample1.ApplicationService.Appointments
                 AddFreeSlotToAvailability(staff, slot.AppointmentTime);
             }
 
-            ActivateAsync(appointment.OperationRequestId);
+            await ActivateAsync(appointment.OperationRequestId);
 
             this._repo.Remove(appointment);
             await this._unitOfWork.CommitAsync();

@@ -27,7 +27,7 @@ namespace DDDSample1.Domain.Appointments
             this.AppointmentSlot = slots;
         }
 
-        public Appointment(string id,SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, string status, List<AppointmentSlot> slots)
+        public Appointment(string id, SurgeryRoomId roomId, OperationRequestId opReqId, Slot date, string status, List<AppointmentSlot> slots)
         {
             if (roomId == null || opReqId == null || date == null || status == null)
                 throw new BusinessRuleValidationException("One of the appointment parameters was not valid");
@@ -43,6 +43,16 @@ namespace DDDSample1.Domain.Appointments
         public void ChangeStatus(string status)
         {
             this.AppStatus = status;
+        }
+
+        public List<string> GetAllStaff()
+        {
+            List<string> staff = new List<string>();
+            foreach (AppointmentSlot slot in this.AppointmentSlot)
+            {
+                staff.Add(slot.Staff.Value);
+            }
+            return staff;
         }
     }
 }
