@@ -20,244 +20,231 @@
 
         <div class="row g-3">
 
-        <div class="container col-md-4">
-          <div class="container-lg  selectionDiv" (click)="openModal('createRequestModal')">
-            <div class="form-floating mb-3">
-                <h3 class="title" >Resgister Operation Request</h3>
-            </div>
-            </div>
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('createRequestModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">Resgister Operation Request</h3>
           </div>
-
-          <div class="container col-md-4">
-            <div class="container-lg  selectionDiv" (click)="openModal('listOperationRequestModal')">
-              <div class="form-floating mb-3">
-                  <h3 class="title" >List Operation Requests</h3>
-              </div>
-              </div>
-            </div>
-
-          <div class="container col-md-4">
-            <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
-              <div class="form-floating mb-3">
-                  <h3 class="title" >List Allergies</h3>
-              </div>
-              </div>
-            </div>
-
-   <div class="container col-md-4">
-      <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
-        <div class="form-floating mb-3">
-            <h3 class="title" >Register Medical Record</h3>
         </div>
       </div>
-    </div>
 
-    <div class="container col-md-4">
-      <div class="container-lg  selectionDiv" (click)="openModal('listMedicalRecordModal')">
-        <div class="form-floating mb-3">
-            <h3 class="title" >List Medical Record</h3>
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('listOperationRequestModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">List Operation Requests</h3>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="container col-md-4">
-      <div class="container-lg  selectionDiv" (click)="openModal('createAppointmentModal')">
-        <div class="form-floating mb-3">
-            <h3 class="title" >Create Appointment</h3>
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
+          <div class="form-floating mb-3">
+            <h3 class="title">List Allergies</h3>
+          </div>
         </div>
       </div>
-    </div>
 
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">Register Medical Record</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('listMedicalRecordModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">List Medical Record</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('createAppointmentModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">Create Appointment</h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 
 
-<div  [ngStyle]="{'display': isModalOpen('listOperationRequestModal') ? 'block' : 'none'}" id="listOperationRequestModal" class="modal" >
-  <div class="modal-content">
+  <div [ngStyle]="{'display': isModalOpen('listOperationRequestModal') ? 'block' : 'none'}"
+    id="listOperationRequestModal" class="modal">
+    <div class="modal-content">
       <span (click)="closeModal('listOperationRequestModal')" class="close">&times;</span>
       <div>
         <div class="table-wrapper">
           <!-- Action Buttons Section -->
           <div class="table-title">
-              <h2>Operation Requests</h2>
-              <div class="action-buttons">
-                  <button (click)="openModal('filterRequestModal')">
-                      <i class="bi bi-filter"></i> Filter Requests
-                  </button>
-              </div>
+            <h2>Operation Requests</h2>
+            <div class="action-buttons">
+              <button (click)="openModal('filterRequestModal')">
+                <i class="bi bi-filter"></i> Filter Requests
+              </button>
+            </div>
           </div>
 
           <table class="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>Doctor Email</th>
-                  <th>Patient Email</th>
-                  <th>Operation Type</th>
-                  <th>Deadline</th>
-                  <th>Priority</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let request of filteredRequests">
-                  <td>{{ request.emailDoctor }}</td>
-                  <td>{{ request.emailPatient }}</td>
-                  <td>{{ request.operationTypeName }}</td>
-                  <td>{{ request.deadline | date:'mediumDate' }}</td>
-                  <td>{{ request.priority }}</td>
-                  <td>
-                    <button class="btn btn-warning" (click)="setUpdateRequest(request)">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-      </div>
-      </div>
-
-  </div>
-</div>
-
-<!-- Create Operation Request Modal -oncreate-->
-<div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal" class="modal">
-  <div class="modal-content">
-      <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
-      <form (ngSubmit)="onCreateRequest(operationRequest)" class="row g-3 needs-validation" novalidate>
-          <h3 class="text-center">Insert New Operation Request</h3>
-
-          <!-- Patient Email -->
-          <div class="col-md-6">
-              <label for="patientEmail" class="form-label">Patient Email</label>
-              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="operationRequest.patientEmail" name="patientEmail" required />
-              <div class="valid-feedback">Looks good!</div>
-          </div>
-
-          <!-- Operation Type Name -->
-          <div class="col-md-6">
-              <label for="operationTypeName" class="form-label">Operation Type Name</label>
-              <input type="text" class="form-control" id="operationTypeName" [(ngModel)]="operationRequest.operationTypeName" name="operationTypeName" required />
-              <div class="valid-feedback">Looks good!</div>
-          </div>
-
-          <!-- Deadline -->
-          <div class="col-md-6">
-              <label for="deadline" class="form-label">Deadline</label>
-              <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline" required />
-              <div class="valid-feedback">Looks good!</div>
-          </div>
-
-          <!-- Priority -->
-          <div class="col-md-6">
-              <label for="priority" class="form-label">Priority</label>
-              <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
-                  <option value="Urgent">Urgent</option>
-                  <option value="Elective">Elective</option>
-                  <option value="Emergency">Emergency</option>
-              </select>
-              <div class="valid-feedback">Looks good!</div>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="col-12">
-              <button class="btn btn-primary" type="submit">Create Request</button>
-          </div>
-      </form>
-  </div>
-</div>
-
-
-<!-- Create Appointment Modal -->
-<div [ngStyle]="{'display': isModalOpen('createAppointmentModal') ? 'block' : 'none'}" id="createAppointmentModal" class="modal">
-  <div class="modal-content">
-    <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
-    <form (ngSubmit)="onCreateAppointment()">
-
-      <!-- Surgery Rooms Dropdown -->
-      <div class="form-group">
-        <label for="surgeryRoom">Surgery Room</label>
-        <select
-          id="surgeryRoom"
-          class="form-control"
-          [(ngModel)]="selectedSurgeryRoomId"
-          name="surgeryRoom"
-          required
-        >
-          <option value="" disabled>Select a Surgery Room</option>
-          <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
-            {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
-          </option>
-        </select>
-      </div>
-
-      <!-- Operation Request Dropdown -->
-      <div class="form-group">
-        <label for="operationRequest">Operation Request</label>
-        <select
-          id="operationRequest"
-          class="form-control"
-          [(ngModel)]="selectedOperationRequestId"
-          name="operationRequest"
-          required
-        >
-          <option value="" disabled>Select an Operation Request</option>
-          <option *ngFor="let operationRequest of notscheduledOperationRequests" [value]="operationRequest.id">
-            {{ operationRequest.operationTypeName }}
-            ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Date Inputs -->
-      <div class="form-group">
-        <label for="startDate">Start Date</label>
-        <input
-          id="startDate"
-          type="datetime-local"
-          class="form-control"
-          [(ngModel)]="appointmentData.date.start"
-          name="startDate"
-          required
-        />
-      </div>
-
-      <!-- Staff Selection -->
-      <div class="form-group" *ngFor="let staffId of appointmentData.selectedStaff; let i = index">
-        <div class="row">
-          <div class="col-md-6">
-            <label for="staffId{{ i }}">Select Staff</label>
-            <select
-              id="staffId{{ i }}"
-              class="form-control"
-              [(ngModel)]="appointmentData.selectedStaff[i]"
-              name="staffId{{ i }}"
-              required
-            >
-              <option value="" disabled>Select a Staff Member</option>
-              <option *ngFor="let staff of staffs" [value]="staff.id">
-                Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <button type="button" class="btn btn-danger mt-4" (click)="removeStaffMember(i)">Remove Staff</button>
-          </div>
+            <thead>
+              <tr>
+                <th>Doctor Email</th>
+                <th>Patient Email</th>
+                <th>Operation Type</th>
+                <th>Deadline</th>
+                <th>Priority</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of filteredRequests">
+                <td>{{ request.emailDoctor }}</td>
+                <td>{{ request.emailPatient }}</td>
+                <td>{{ request.operationTypeName }}</td>
+                <td>{{ request.deadline | date:'mediumDate' }}</td>
+                <td>{{ request.priority }}</td>
+                <td>
+                  <button class="btn btn-warning" (click)="setUpdateRequest(request)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
-      
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-success">Create Appointment</button>
-    </form>
+
+    </div>
   </div>
-</div>
+
+  <!-- Create Operation Request Modal -oncreate-->
+  <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal"
+    class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
+      <form (ngSubmit)="onCreateRequest(operationRequest)" class="row g-3 needs-validation" novalidate>
+        <h3 class="text-center">Insert New Operation Request</h3>
+
+        <!-- Patient Email -->
+        <div class="col-md-6">
+          <label for="patientEmail" class="form-label">Patient Email</label>
+          <input type="email" class="form-control" id="patientEmail" [(ngModel)]="operationRequest.patientEmail"
+            name="patientEmail" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <!-- Operation Type Name -->
+        <div class="col-md-6">
+          <label for="operationTypeName" class="form-label">Operation Type Name</label>
+          <input type="text" class="form-control" id="operationTypeName"
+            [(ngModel)]="operationRequest.operationTypeName" name="operationTypeName" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <!-- Deadline -->
+        <div class="col-md-6">
+          <label for="deadline" class="form-label">Deadline</label>
+          <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline"
+            required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <!-- Priority -->
+        <div class="col-md-6">
+          <label for="priority" class="form-label">Priority</label>
+          <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
+            <option value="Urgent">Urgent</option>
+            <option value="Elective">Elective</option>
+            <option value="Emergency">Emergency</option>
+          </select>
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Create Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 
-   <!-- Filter Operation Requests Modal -->
-<div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal" class="modal">
+  <!-- Create Appointment Modal -->
+  <div [ngStyle]="{'display': isModalOpen('createAppointmentModal') ? 'block' : 'none'}" id="createAppointmentModal"
+    class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
+      <form (ngSubmit)="onCreateAppointment()">
+
+        <!-- Surgery Rooms Dropdown -->
+        <div class="form-group">
+          <label for="surgeryRoom">Surgery Room</label>
+          <select id="surgeryRoom" class="form-control" [(ngModel)]="selectedSurgeryRoomId" name="surgeryRoom" required>
+            <option value="" disabled>Select a Surgery Room</option>
+            <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
+              {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Operation Request Dropdown -->
+        <div class="form-group">
+          <label for="operationRequest">Operation Request</label>
+          <select id="operationRequest" class="form-control" [(ngModel)]="selectedOperationRequestId"
+            name="operationRequest" required>
+            <option value="" disabled>Select an Operation Request</option>
+            <option *ngFor="let operationRequest of notscheduledOperationRequests" [value]="operationRequest.id">
+              {{ operationRequest.operationTypeName }}
+              ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{
+              operationRequest.deadline }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Date Inputs -->
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input id="startDate" type="datetime-local" class="form-control" [(ngModel)]="appointmentData.date.start"
+            name="startDate" required />
+        </div>
+
+        <!-- Staff Selection -->
+        <div class="form-group" *ngFor="let staffId of appointmentData.selectedStaff; let i = index">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="staffId{{ i }}">Select Staff</label>
+              <select id="staffId{{ i }}" class="form-control" [(ngModel)]="appointmentData.selectedStaff[i]"
+                name="staffId{{ i }}" required>
+                <option value="" disabled>Select a Staff Member</option>
+                <option *ngFor="let staff of staffs" [value]="staff.id">
+                  Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{
+                  staff.specialization }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-danger mt-4" (click)="removeStaffMember(i)">Remove Staff</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success">Create Appointment</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Filter Operation Requests Modal -->
+  <div [ngStyle]="{'display': isModalOpen('filterRequestModal') ? 'block' : 'none'}" id="filterRequestModal"
+    class="modal">
     <div class="modal-content">
       <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
       <form (ngSubmit)="onFilterRequests()">
@@ -265,17 +252,20 @@
 
         <div class="mb-3">
           <label for="filterDoctorEmail" class="form-label">Doctor Email:</label>
-          <input type="text" id="filterDoctorEmail" [(ngModel)]="filter.emailDoctor" name="filterDoctorEmail" class="form-control" />
+          <input type="text" id="filterDoctorEmail" [(ngModel)]="filter.emailDoctor" name="filterDoctorEmail"
+            class="form-control" />
         </div>
 
         <div class="mb-3">
           <label for="filterpatientId" class="form-label">Patient Email:</label>
-          <input type="text" id="filterpatientId" [(ngModel)]="filter.emailPatient" name="filterpatientId" class="form-control" />
+          <input type="text" id="filterpatientId" [(ngModel)]="filter.emailPatient" name="filterpatientId"
+            class="form-control" />
         </div>
 
         <div class="mb-3">
           <label for="filterOperationType" class="form-label">Operation Type:</label>
-          <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeName" name="filterOperationType" class="form-control" />
+          <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeName" name="filterOperationType"
+            class="form-control" />
         </div>
 
         <div class="mb-3">
@@ -293,49 +283,53 @@
     </div>
   </div>
 
-    <!-- Update Operation Request Modal -->
-    <div [ngStyle]="{'display': isModalOpen('updateRequestModal') ? 'block' : 'none'}" id="updateRequestModal" class="modal">
-        <div class="modal-content">
-            <span (click)="closeModal('updateRequestModal')" class="close">&times;</span>
-            <form (ngSubmit)="onUpdateRequest(updateRequest)">
-                <h3 class="text-center">Update Operation Request</h3>
+  <!-- Update Operation Request Modal -->
+  <div [ngStyle]="{'display': isModalOpen('updateRequestModal') ? 'block' : 'none'}" id="updateRequestModal"
+    class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('updateRequestModal')" class="close">&times;</span>
+      <form (ngSubmit)="onUpdateRequest(updateRequest)">
+        <h3 class="text-center">Update Operation Request</h3>
 
-                <!-- Deadline -->
-                <div class="mb-3">
-                    <label for="updateDeadline" class="form-label">Deadline:</label>
-                    <input type="date" id="updateDeadline" [(ngModel)]="updateRequest.deadline" name="updateDeadline" class="form-control" required />
-                </div>
-
-                <!-- Priority -->
-                <div class="mb-3">
-                    <label for="updatePriority" class="form-label">Priority:</label>
-                    <select id="updatePriority" [(ngModel)]="updateRequest.priority" name="updatePriority" class="form-select" required>
-                        <option value="Urgent">Urgent</option>
-                        <option value="Elective">Elective</option>
-                        <option value="Emergency">Emergency</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Update Request</button>
-            </form>
+        <!-- Deadline -->
+        <div class="mb-3">
+          <label for="updateDeadline" class="form-label">Deadline:</label>
+          <input type="date" id="updateDeadline" [(ngModel)]="updateRequest.deadline" name="updateDeadline"
+            class="form-control" required />
         </div>
-    </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div [ngStyle]="{'display': isModalOpen('deleteModal') ? 'block' : 'none'}" id="deleteModal" class="modal">
-        <div class="modal-content">
-            <span (click)="closeModal('deleteModal')" class="close">&times;</span>
-            <div>
-                <h3 class="text-center">Confirm Delete</h3>
-                <p style="font-size: 20px;">Are you sure you want to delete this operation request?</p>
-                <button class="btn btn-danger" (click)="onDeleteRequest(updateRequest.id)" style="margin-right: 5px;">Yes, Delete</button>
-                <button class="btn btn-secondary" (click)="closeModal('deleteModal')">Cancel</button>
-            </div>
+        <!-- Priority -->
+        <div class="mb-3">
+          <label for="updatePriority" class="form-label">Priority:</label>
+          <select id="updatePriority" [(ngModel)]="updateRequest.priority" name="updatePriority" class="form-select"
+            required>
+            <option value="Urgent">Urgent</option>
+            <option value="Elective">Elective</option>
+            <option value="Emergency">Emergency</option>
+          </select>
         </div>
+
+        <button type="submit" class="btn btn-primary">Update Request</button>
+      </form>
     </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div [ngStyle]="{'display': isModalOpen('deleteModal') ? 'block' : 'none'}" id="deleteModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('deleteModal')" class="close">&times;</span>
+      <div>
+        <h3 class="text-center">Confirm Delete</h3>
+        <p style="font-size: 20px;">Are you sure you want to delete this operation request?</p>
+        <button class="btn btn-danger" (click)="onDeleteRequest(updateRequest.id)" style="margin-right: 5px;">Yes,
+          Delete</button>
+        <button class="btn btn-secondary" (click)="closeModal('deleteModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
 
 
-   <!-- <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
+  <!-- <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
       <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
           <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="">
@@ -461,85 +455,81 @@
       </div>
     </div>-->
 
-    <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
-      <div id="mapModalContent" class="modal-content" style="height: 75vh;">
-          <span (click)="closeModal('listAllergies')" class="close">&times;</span>
-          <div>
+  <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
+    <div id="mapModalContent" class="modal-content" style="height: 75vh;">
+      <span (click)="closeModal('listAllergies')" class="close">&times;</span>
+      <div>
 
-            <form  class="row g-3 needs-validation" novalidate="">
-                <div class="col-md-10"></div>
+        <form class="row g-3 needs-validation" novalidate="">
+          <div class="col-md-10"></div>
 
-              <div class="col-md-2">
-                <div class="input-group">
-                <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
-              </div>
+          <div class="col-md-2">
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button
+                class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
             </div>
+          </div>
 
-                <div class="col-md-12">
-                  <div class="table-wrapper" >
-                    <div class="table-title">
-                    <form class="row g-3 needs-validation" novalidate="">
-                    <table class="table table-striped table-hover table-over">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Name</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
-                        <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.id)" [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
-                          <td>{{ i + 1 }}</td>
-                          <td><input class="selectRequest" type="radio" id="allergie_{{ request.id }}" name="id" value="{{ request.id }}" [checked]="selectedAllergie === request.id" hidden>{{ request.designacao }} </td>
+          <div class="col-md-12">
+            <div class="table-wrapper">
+              <div class="table-title">
+                <form class="row g-3 needs-validation" novalidate="">
+                  <table class="table table-striped table-hover table-over">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
+                      <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.id)"
+                        [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
+                        <td>{{ i + 1 }}</td>
+                        <td><input class="selectRequest" type="radio" id="allergie_{{ request.id }}" name="id"
+                            value="{{ request.id }}" [checked]="selectedAllergie === request.id" hidden>{{
+                          request.designacao }} </td>
 
-                          <td>{{ request.descricao }}</td>
-                          <!--<td>{{ request.descricao }}</td>-->
-                          <!--<td id="active_{{ request.email.fullEmail }}_{{request.active}}">
+                        <td>{{ request.descricao }}</td>
+                        <!--<td>{{ request.descricao }}</td>-->
+                        <!--<td id="active_{{ request.email.fullEmail }}_{{request.active}}">
                             <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
                             <ng-template #failure>
                               <span class="badge rounded-pill bg-danger">No</span>
                             </ng-template>
                           </td>-->
-                        </tr>
-                      </tbody>
-                    </table>
-                    </form>
-                  </div>
-                </div>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
               </div>
-
-              <div class="col-md-9"></div>
-              <div class="col-md-3">
-                <button class="fs-5 btn btn-outline-info" >View <i class="bi bi-info-square-fill"></i></button>
-                <button class="fs-5 btn btn-outline-warning" > Edit <i class="bi bi-pencil-square"></i></button>
-                <button class="fs-5 btn btn-outline-danger" > Deactivate <i class="bi bi-archive-fill"></i></button>
-              </div>
-              </form>
-
-
-              <div class="dropdown">
-                <input
-                  type="text"
-                  placeholder="Escolha uma opção"
-                  [(ngModel)]="filterText"
-                  (input)="filterOptions()"
-                  (focus)="showDropdown = true"
-                  (blur)="hideDropdown()"
-                />
-                <ul *ngIf="showDropdown" class="dropdown-list">
-                  <li
-                    *ngFor="let option of filteredOptions"
-                    (mousedown)="selectOption(option.designacao)">
-                    {{ option.designacao }}
-                  </li>
-                </ul>
-              </div>
-
             </div>
+          </div>
+
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <button class="fs-5 btn btn-outline-info">View <i class="bi bi-info-square-fill"></i></button>
+            <button class="fs-5 btn btn-outline-warning"> Edit <i class="bi bi-pencil-square"></i></button>
+            <button class="fs-5 btn btn-outline-danger"> Deactivate <i class="bi bi-archive-fill"></i></button>
+          </div>
+        </form>
+
+
+        <div class="dropdown">
+          <input type="text" placeholder="Escolha uma opção" [(ngModel)]="filterText" (input)="filterOptions()"
+            (focus)="showDropdown = true" (blur)="hideDropdown()" />
+          <ul *ngIf="showDropdown" class="dropdown-list">
+            <li *ngFor="let option of filteredOptions" (mousedown)="selectOption(option.designacao)">
+              {{ option.designacao }}
+            </li>
+          </ul>
+        </div>
 
       </div>
+
     </div>
+  </div>
 
 
 
@@ -549,340 +539,339 @@
 
 
 
-    <!-- Create Operation Request Modal -->
-<div [ngStyle]="{'display': isModalOpen('registerMedicalRecordModal') ? 'block' : 'none'}" id="registerMedicalRecordModal" class="modal">
-  <div class="modal-content">
+  <!-- Create Operation Request Modal -->
+  <div [ngStyle]="{'display': isModalOpen('registerMedicalRecordModal') ? 'block' : 'none'}"
+    id="registerMedicalRecordModal" class="modal">
+    <div class="modal-content">
       <span (click)="closeModal('registerMedicalRecordModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
-          <h3 class="text-center">Register New Medical Record</h3>
+        <h3 class="text-center">Register New Medical Record</h3>
 
-          <div class="col-md-6">
-              <label for="patientEmail" class="form-label">Patient Email</label>
-              <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientId" name="patientEmail" required />
-              <div class="valid-feedback">Looks good!</div>
+        <div class="col-md-6">
+          <label for="patientEmail" class="form-label">Patient Email</label>
+          <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientId"
+            name="patientEmail" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <div class="col-mb-4"></div>
+
+        <div class="col-md-6">
+          <ul id="tags">
+            <li *ngFor="let tag of tagsAllergies; let i = index" class="tag">
+              {{ tag.designacao }} - {{ tag.descricao }} - {{ tag.status }}
+              <button type="button" class="delete-button" (click)="removeAllergie(i); $event.preventDefault()">
+                X
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-mb-4"></div>
+
+        <div class="dropdown">
+          <label for="tag-filter" class="form-label">Allergies</label>
+          <div class="tags-input">
+            <input id="tag-filter" type="text" name="filterAllergieName" [(ngModel)]="filterAllergieNameText"
+              placeholder="Choose an allergy" (input)="filterAllergieNameOptions()" (focus)="showDropdown = true"
+              (blur)="onBlur()" />
           </div>
+          <ul *ngIf="showDropdown" class="dropdown-list">
+            <li *ngFor="let option of filteredAllergieNameOptions"
+              (mousedown)="selectOptionTagAllergies(option.designacao)">
+              {{ option.designacao }}
+            </li>
+          </ul>
+        </div>
 
-          <div class="col-mb-4"></div>
+        <div class="col-md-5">
+          <label for="descricaoAllergie" class="form-label">Description</label>
+          <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText"
+            name="descricaoAllergie" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
 
-          <div class="col-md-6">
-            <ul id="tags">
-              <li *ngFor="let tag of tagsAllergies; let i = index" class="tag">
-                {{ tag.designacao }} - {{ tag.descricao }} - {{ tag.status }}
-                <button
-                  type="button"
-                  class="delete-button"
-                  (click)="removeAllergie(i); $event.preventDefault()"
-                >
-                  X
-                </button>
-              </li>
-            </ul>
-          </div>
 
-          <div class="col-mb-4"></div>
-
+        <div class="col-md-2">
+          <label for="tag-filter" class="form-label">Allergy Status</label>
           <div class="dropdown">
-            <label for="tag-filter" class="form-label">Allergies</label>
-            <div class="tags-input">
-              <input
-                id="tag-filter"
-                type="text"
-                name="filterAllergieName"
-                [(ngModel)]="filterAllergieNameText"
-                placeholder="Choose an allergy"
-                (input)="filterAllergieNameOptions()"
-                (focus)="showDropdown = true"
-                (blur)="onBlur()"
-              />
-            </div>
-            <ul *ngIf="showDropdown" class="dropdown-list">
-              <li
-                *ngFor="let option of filteredAllergieNameOptions"
-                (mousedown)="selectOptionTagAllergies(option.designacao)">
-                {{ option.designacao }}
+            <input type="text" name="filterAllergieStatus" [(ngModel)]="filterAllergieStatusText"
+              (input)="filterAllergieStatusOptions()" (focus)="showDropdown3 = true" (blur)="onBlur()"
+              placeholder="Filter status" />
+            <ul *ngIf="showDropdown3" class="dropdown-list">
+              <li *ngFor="let option of filteredAllergieStatusOptions"
+                (mousedown)="selectOptionTagStatusAllergies(option)">
+                {{ option }}
               </li>
             </ul>
           </div>
 
-          <div class="col-md-5">
-            <label for="descricaoAllergie" class="form-label">Description</label>
-            <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText" name="descricaoAllergie" required />
-            <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <div class="col-12">
+          <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
+        </div>
+
+        <div class="col-mb-4"></div>
+
+
+        <div class="col-md-12">
+          <ul id="tags">
+            <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
+              {{ condition.descricao }} - {{ condition.designacao }} - {{ condition.status }}
+              <button type="button" class="delete-button"
+                (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-mb-4">
+          <div class="dropdown2">
+            <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
+            <input id="condition-filter" type="text" name="filterMedicalCondiitonDesignacao"
+              [(ngModel)]="filterTextCondition" placeholder="Choose an medical condition"
+              (input)="filterOptionsMedicalConditions()" (focus)="showDropdown2 = true" (blur)="onBlur()" />
           </div>
+          <ul *ngIf="showDropdown2" class="dropdown-list">
+            <li *ngFor="let option of filteredOptionsConditions"
+              (mousedown)="selectOptionMedicalCondition(option.designacao)">
+              {{ option.designacao }}
+            </li>
+          </ul>
+        </div>
 
 
-          <div class="col-md-2">
-            <label for="tag-filter" class="form-label">Allergy Status</label>
-            <div class="dropdown">
-              <input
-                type="text"
-                 name="filterAllergieStatus"
-                [(ngModel)]="filterAllergieStatusText"
-                (input)="filterAllergieStatusOptions()"
-                (focus)="showDropdown3 = true"
-                (blur)="onBlur()"
-                placeholder="Filter status"
-              />
-              <ul *ngIf="showDropdown3" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredAllergieStatusOptions"
-                  (mousedown)="selectOptionTagStatusAllergies(option)">
-                  {{ option }}
-                </li>
-              </ul>
-            </div>
 
-          </div>
+        <div class="col-md-5">
+          <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
+          <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"
+            name="descricaoCondition" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
 
-          <div class="col-12">
-            <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
-          </div>
 
-          <div class="col-mb-4"></div>
 
-        
-          <div class="col-md-12">
-            <ul id="tags">
-              <li *ngFor="let condition of tagsConditions; let i = index" class="tagsCondition">
-                {{ condition.descricao }} -  {{ condition.designacao }} -  {{ condition.status }}
-                <button type="button" class="delete-button" (click)="removeMedicalCondition(i); $event.preventDefault()">X</button>
+
+        <div class="col-md-2">
+          <label for="tag-filter" class="form-label">Medical Condition Status</label>
+          <div class="dropdown">
+            <input type="text" name="filterConditionStatus" [(ngModel)]="filterConditionStatusText"
+              (input)="filterConditionStatusOptions()" (focus)="showDropdown4 = true" (blur)="onBlur()"
+              placeholder="Filter status" />
+            <ul *ngIf="showDropdown4" class="dropdown-list">
+              <li *ngFor="let option of filteredAllergieStatusOptions"
+                (mousedown)="selectOptionTagStatusCondition(option)">
+                {{ option }}
               </li>
             </ul>
           </div>
 
-          <div class="col-mb-4">
-            <div class="dropdown2">
-              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>              
-                <input
-                  id="condition-filter"
-                  type="text"
-                  name="filterMedicalCondiitonDesignacao"
-                  [(ngModel)]="filterTextCondition"
-                  placeholder="Choose an medical condition"
-                  (input)="filterOptionsMedicalConditions()"
-                  (focus)="showDropdown2 = true"
-                  (blur)="onBlur()"
-                />
-              </div>
-              <ul *ngIf="showDropdown2" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredOptionsConditions"
-                  (mousedown)="selectOptionMedicalCondition(option.designacao)">
-                  {{ option.designacao }}
-                </li>
-              </ul>
-          </div>
-   
+        </div>
 
-
-          <div class="col-md-5">
-            <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
-            <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText" name="descricaoCondition" required />
-            <div class="valid-feedback">Looks good!</div>
+        <div class="col-md-6">
+          <div class="input-group has-validation">
+            <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+            <textarea class="form-control" id="medicalConditionSymptoms" [(ngModel)]="sintomasCodition"
+              name="medicalConditionSymptoms" required rows="1"
+              placeholder="Symptoms [Separated by a comma (,)]"></textarea>
           </div>
 
-      
+        </div>
+        <div class="col-12">
+          <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+        </div>
 
 
-          <div class="col-md-2">
-            <label for="tag-filter" class="form-label">Medical Condition Status</label>
-            <div class="dropdown">
-              <input
-                type="text"
-                name="filterConditionStatus"
-                [(ngModel)]="filterConditionStatusText"
-                (input)="filterConditionStatusOptions()"
-                (focus)="showDropdown4 = true"
-                (blur)="onBlur()"
-                placeholder="Filter status"
-              />
-              <ul *ngIf="showDropdown4" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredAllergieStatusOptions"
-                  (mousedown)="selectOptionTagStatusCondition(option)">
-                  {{ option }}
-                </li>
-              </ul>
-            </div>
-
-          </div>
-
-          <div class="col-md-6">
-            <div class="input-group has-validation">
-              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
-              <textarea class="form-control" id="medicalConditionSymptoms"  [(ngModel)]="sintomasCodition" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a comma (,)]"></textarea>
-            </div>
-
-          </div>
-          <div class="col-12">
-            <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
-          </div>
+        <div class="col-mb-6"></div>
 
 
-          <div class="col-mb-6"></div>
-
-
-          <div class="col-md-6 mb-4">
-              <label for="descricao" class="form-label">Medical Record Description</label>
-              <input type="text" class="form-control" id="descricao" [(ngModel)]="medicalRecordRequest.descricao" name="descricao" required />
-              <div class="valid-feedback">Looks good!</div>
-          </div>
+        <div class="col-md-6 mb-4">
+          <label for="descricao" class="form-label">Medical Record Description</label>
+          <input type="text" class="form-control" id="descricao" [(ngModel)]="medicalRecordRequest.descricao"
+            name="descricao" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
 
         <div class="col-12" style="margin-bottom: 20px;">
-            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
         </div>
 
 
         <div class="col-12">
-            <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted">Create Request</button>
+          <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted">Create Request</button>
         </div>
 
       </form>
+    </div>
   </div>
-</div>
 
 
-<!-- Modal para a Política -->
-<div [ngStyle]="{'display': showPolicyModal ? 'block' : 'none'}" class="modal" id="policyModal" style="z-index: 9000">
-  <div class="modal-content">
+  <!-- Modal para a Política -->
+  <div [ngStyle]="{'display': showPolicyModal ? 'block' : 'none'}" class="modal" id="policyModal" style="z-index: 9000">
+    <div class="modal-content">
       <span (click)="closePolicyModal()" class="close">&times;</span>
       <h3>Policy Agreement</h3>
       <p>
-          A sua privacidade é importante para nós. Este documento explica como recolhemos, utilizamos, partilhamos e protegemos os seus dados pessoais no âmbito do nosso projeto hospitalar, em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).
+        A sua privacidade é importante para nós. Este documento explica como recolhemos, utilizamos, partilhamos e
+        protegemos os seus dados pessoais no âmbito do nosso projeto hospitalar, em conformidade com o Regulamento Geral
+        sobre a Proteção de Dados (RGPD).
       </p>
 
       <h4>1. Quem Somos</h4>
       <p>
-          Somos uma organização dedicada à prestação de cuidados de saúde e bem-estar, focada na gestão de consultas, cirurgias e recursos. Tratamos dados pessoais para garantir a melhor experiência e segurança aos nossos pacientes.
+        Somos uma organização dedicada à prestação de cuidados de saúde e bem-estar, focada na gestão de consultas,
+        cirurgias e recursos. Tratamos dados pessoais para garantir a melhor experiência e segurança aos nossos
+        pacientes.
       </p>
-      <p  style="margin-bottom: 20px;">
+      <p style="margin-bottom: 20px;">
         <strong>Contacte-nos:</strong> <br>
         Encarregado de Proteção de Dados (DPO): {{ 'mtf&#64;isep.ipp.pt' }}
       </p>
 
       <h4>2. Dados Pessoais que Recolhemos</h4>
       <p style="margin-bottom: 20px;">
-          Recolhemos as seguintes informações:
-          <ul>
-              <li><strong>Identificação:</strong> Nome completo, data de nascimento, género, morada.</li>
-              <li><strong>Contacto:</strong> Número de telemóvel, email.</li>
-              <li><strong>Saúde:</strong> Histórico médico, alergias, contacto de emergência, número de registo médico.</li>
-          </ul>
-          Os dados são fornecidos diretamente pelos utilizadores ou, quando aplicável, através de terceiros, como hospitais parceiros.
-        
+        Recolhemos as seguintes informações:
+      <ul>
+        <li><strong>Identificação:</strong> Nome completo, data de nascimento, género, morada.</li>
+        <li><strong>Contacto:</strong> Número de telemóvel, email.</li>
+        <li><strong>Saúde:</strong> Histórico médico, alergias, contacto de emergência, número de registo médico.</li>
+      </ul>
+      Os dados são fornecidos diretamente pelos utilizadores ou, quando aplicável, através de terceiros, como hospitais
+      parceiros.
 
-      <h4  style="margin-top: 20px;">3. Tipo de Tratamento dos Dados Pessoais</h4>
-      <p  style="margin-bottom: 20px;">
-          Os dados pessoais serão utilizados para:
-          <ul>
-              <li>Recolha: Obter dados dos utilizadores para tratamento no sistema.</li>
-              <li>Destruição: Eliminar dados quando deixarem de ser relevantes, por exemplo, a pedido do titular.</li>
-              <li>Divulgação: Partilhar dados com terceiros, como médicos responsáveis.</li>
-              <li>Conservação: Armazenar os dados na base de dados.</li>
-              <li>Consulta: Permitir acesso por utilizadores autorizados (pacientes ou médicos/staff).</li>
-              <li>Alteração: Atualizar ou corrigir dados de utilizadores.</li>
-              <li>Organização: Estruturar os dados para consultas futuras.</li>
-              <li>Limitações: Restringir o acesso com base no papel do utilizador (ex.: pacientes acessam apenas os seus próprios dados).</li>
-          </ul>
+
+      <h4 style="margin-top: 20px;">3. Tipo de Tratamento dos Dados Pessoais</h4>
+      <p style="margin-bottom: 20px;">
+        Os dados pessoais serão utilizados para:
+      <ul>
+        <li>Recolha: Obter dados dos utilizadores para tratamento no sistema.</li>
+        <li>Destruição: Eliminar dados quando deixarem de ser relevantes, por exemplo, a pedido do titular.</li>
+        <li>Divulgação: Partilhar dados com terceiros, como médicos responsáveis.</li>
+        <li>Conservação: Armazenar os dados na base de dados.</li>
+        <li>Consulta: Permitir acesso por utilizadores autorizados (pacientes ou médicos/staff).</li>
+        <li>Alteração: Atualizar ou corrigir dados de utilizadores.</li>
+        <li>Organização: Estruturar os dados para consultas futuras.</li>
+        <li>Limitações: Restringir o acesso com base no papel do utilizador (ex.: pacientes acessam apenas os seus
+          próprios dados).</li>
+      </ul>
 
 
       <h4>4. Finalidades do Tratamento dos Dados</h4>
-      <p  style="margin-bottom: 20px;">
-          Os dados pessoais recolhidos são tratados para as seguintes finalidades:
-          <ul>
-              <li><strong>Agendamento e gestão de consultas:</strong> Nome, email, número de telemóvel, alergias e histórico médico para organizar serviços clínicos.</li>
-              <li><strong>Personalização de experiências:</strong> Envio de mensagens personalizadas por email (e.g., lembretes de consultas).</li>
-              <li><strong>Emergências médicas:</strong> Contactos de emergência e informações de saúde essenciais para proteção vital.</li>
-              <li><strong>Cumprimento de obrigações legais:</strong> Conservação de nome, morada, histórico médico, e alergias por 20 anos, conforme exigido por lei.</li>
-              <li><strong>Monitorização do sistema:</strong> Nome, email, alergias e histórico de acessos para garantir a eficiência e proteção dos dados.</li>
-          </ul>
-  
+      <p style="margin-bottom: 20px;">
+        Os dados pessoais recolhidos são tratados para as seguintes finalidades:
+      <ul>
+        <li><strong>Agendamento e gestão de consultas:</strong> Nome, email, número de telemóvel, alergias e histórico
+          médico para organizar serviços clínicos.</li>
+        <li><strong>Personalização de experiências:</strong> Envio de mensagens personalizadas por email (e.g.,
+          lembretes de consultas).</li>
+        <li><strong>Emergências médicas:</strong> Contactos de emergência e informações de saúde essenciais para
+          proteção vital.</li>
+        <li><strong>Cumprimento de obrigações legais:</strong> Conservação de nome, morada, histórico médico, e alergias
+          por 20 anos, conforme exigido por lei.</li>
+        <li><strong>Monitorização do sistema:</strong> Nome, email, alergias e histórico de acessos para garantir a
+          eficiência e proteção dos dados.</li>
+      </ul>
+
 
       <h4>5. Base Legal para o Tratamento</h4>
-      <p  style="margin-bottom: 20px;">
-          O tratamento dos dados pessoais baseia-se nos seguintes fundamentos legais, conforme o Artigo 6.º e Artigo 9.º do RGPD:
-          <ul>
-              <li><strong>Consentimento:</strong> Para comunicações personalizadas e partilha de dados com terceiros.</li>
-              <li><strong>Execução de Contrato:</strong> Para a prestação de serviços de saúde contratados.</li>
-              <li><strong>Obrigatoriedade Jurídica:</strong> Para cumprir normas legais aplicáveis ao setor da saúde e de acordo com a Constituição/lei portuguesa.</li>
-              <li><strong>Interesse Vital:</strong> Em emergências médicas, para proteger a vida ou integridade do titular dos dados.</li>
-              <li><strong>Interesse Legítimo:</strong> Para garantir a segurança do sistema e melhorar os nossos serviços.</li>
-          </ul>
-  
+      <p style="margin-bottom: 20px;">
+        O tratamento dos dados pessoais baseia-se nos seguintes fundamentos legais, conforme o Artigo 6.º e Artigo 9.º
+        do RGPD:
+      <ul>
+        <li><strong>Consentimento:</strong> Para comunicações personalizadas e partilha de dados com terceiros.</li>
+        <li><strong>Execução de Contrato:</strong> Para a prestação de serviços de saúde contratados.</li>
+        <li><strong>Obrigatoriedade Jurídica:</strong> Para cumprir normas legais aplicáveis ao setor da saúde e de
+          acordo com a Constituição/lei portuguesa.</li>
+        <li><strong>Interesse Vital:</strong> Em emergências médicas, para proteger a vida ou integridade do titular dos
+          dados.</li>
+        <li><strong>Interesse Legítimo:</strong> Para garantir a segurança do sistema e melhorar os nossos serviços.
+        </li>
+      </ul>
+
 
       <h4>6. Com Quem Partilhamos os Seus Dados</h4>
-      <p  style="margin-bottom: 20px;">
-          Partilhamos os seus dados apenas quando estritamente necessário e de forma segura com:
-          <ul>
-              <li><strong>Profissionais de saúde:</strong> Médicos, enfermeiros e outros profissionais clínicos.</li>
-              <li><strong>Autoridades legais:</strong> Quando exigido por lei.</li>
-          </ul>
-          Todos os terceiros com quem colaboramos estão sujeitos a acordos de confidencialidade e ao cumprimento do RGPD.
-  
-
-      <h4  style="margin-top: 20px;">7. Tempo de Conservação dos Dados</h4>
-      <p  style="margin-bottom: 20px;">
-          Conservamos os seus dados pessoais apenas pelo tempo necessário para cumprir as finalidades descritas nesta Política:
-          <ul>
-              <li><strong>Histórico médico e alergias:</strong> Conservados por 20 anos, conforme obrigações legais.</li>
-              <li><strong>Dados de contacto:</strong> Mantidos até que o titular solicite o apagamento ou deixe de ser relevante.</li>
-              <li><strong>Outros dados:</strong> Eliminados após o período definido para cada finalidade.</li>
-          </ul>
+      <p style="margin-bottom: 20px;">
+        Partilhamos os seus dados apenas quando estritamente necessário e de forma segura com:
+      <ul>
+        <li><strong>Profissionais de saúde:</strong> Médicos, enfermeiros e outros profissionais clínicos.</li>
+        <li><strong>Autoridades legais:</strong> Quando exigido por lei.</li>
+      </ul>
+      Todos os terceiros com quem colaboramos estão sujeitos a acordos de confidencialidade e ao cumprimento do RGPD.
 
 
-      <h4  style="margin-top: 20px;">8. Os Seus Direitos</h4>
-      <p  style="margin-bottom: 20px;">
-          Enquanto titular dos dados, tem os seguintes direitos garantidos pelo RGPD:
-          <ul>
-              <li><strong>Acesso:</strong> Pode solicitar informações sobre os dados pessoais que temos sobre si.</li>
-              <li><strong>Retificação:</strong> Pode corrigir dados incorretos ou incompletos.</li>
-              <li><strong>Apagamento:</strong> Tem o direito de solicitar o apagamento dos seus dados, exceto quando a lei exigir a conservação.</li>
-              <li><strong>Portabilidade:</strong> Pode pedir uma cópia dos seus dados em formato eletrônico, na aplicação.</li>
-              <li><strong>Oposição:</strong> Pode opor-se ao tratamento dos seus dados em certas situações.</li>
-              <li><strong>Limitação:</strong> Pode solicitar a limitação do tratamento dos seus dados em condições específicas.</li>
-          </ul>
-  
+      <h4 style="margin-top: 20px;">7. Tempo de Conservação dos Dados</h4>
+      <p style="margin-bottom: 20px;">
+        Conservamos os seus dados pessoais apenas pelo tempo necessário para cumprir as finalidades descritas nesta
+        Política:
+      <ul>
+        <li><strong>Histórico médico e alergias:</strong> Conservados por 20 anos, conforme obrigações legais.</li>
+        <li><strong>Dados de contacto:</strong> Mantidos até que o titular solicite o apagamento ou deixe de ser
+          relevante.</li>
+        <li><strong>Outros dados:</strong> Eliminados após o período definido para cada finalidade.</li>
+      </ul>
+
+
+      <h4 style="margin-top: 20px;">8. Os Seus Direitos</h4>
+      <p style="margin-bottom: 20px;">
+        Enquanto titular dos dados, tem os seguintes direitos garantidos pelo RGPD:
+      <ul>
+        <li><strong>Acesso:</strong> Pode solicitar informações sobre os dados pessoais que temos sobre si.</li>
+        <li><strong>Retificação:</strong> Pode corrigir dados incorretos ou incompletos.</li>
+        <li><strong>Apagamento:</strong> Tem o direito de solicitar o apagamento dos seus dados, exceto quando a lei
+          exigir a conservação.</li>
+        <li><strong>Portabilidade:</strong> Pode pedir uma cópia dos seus dados em formato eletrônico, na aplicação.
+        </li>
+        <li><strong>Oposição:</strong> Pode opor-se ao tratamento dos seus dados em certas situações.</li>
+        <li><strong>Limitação:</strong> Pode solicitar a limitação do tratamento dos seus dados em condições
+          específicas.</li>
+      </ul>
+
 
       <p style="margin-bottom: 20px;">
-          Para exercer os seus direitos, contacte-nos através do email {{ 'mtf&#64;isep.ipp.pt' }}.
+        Para exercer os seus direitos, contacte-nos através do email {{ 'mtf&#64;isep.ipp.pt' }}.
       </p>
 
 
-      <h4  style="margin-top: 20px;"> 9. Segurança dos Dados </h4>
-      <p  style="margin-bottom: 20px;">
-        Implementamos medidas de segurança técnicas e organizacionais para proteger os seus dados pessoais contra acesso não autorizado, alteração, destruição ou divulgação. Asseguramos também a encriptação e monitorização regular do sistema. 
+      <h4 style="margin-top: 20px;"> 9. Segurança dos Dados </h4>
+      <p style="margin-bottom: 20px;">
+        Implementamos medidas de segurança técnicas e organizacionais para proteger os seus dados pessoais contra acesso
+        não autorizado, alteração, destruição ou divulgação. Asseguramos também a encriptação e monitorização regular do
+        sistema.
       </p>
 
-      <h4  style="margin-top: 20px;"> 10. Violações de Dados </h4>
-      <p  style="margin-bottom: 20px;">
-        Em caso de violação de dados pessoais, notificaremos a Comissão Nacional de <strong> Proteção de Dados (CNPD)</strong> em até 72 horas após o incidente e informaremos os titulares dos dados quando for aplicável. 
+      <h4 style="margin-top: 20px;"> 10. Violações de Dados </h4>
+      <p style="margin-bottom: 20px;">
+        Em caso de violação de dados pessoais, notificaremos a Comissão Nacional de <strong> Proteção de Dados
+          (CNPD)</strong> em até 72 horas após o incidente e informaremos os titulares dos dados quando for aplicável.
       </p>
 
-      <h4  style="margin-top: 20px;"> 11. Atualizações desta Política </h4>
-      <p  style="margin-bottom: 20px;">
-        Esta Política de Privacidade pode ser atualizada periodicamente para refletir mudanças legais ou operacionais. Recomendamos que consulte esta página regularmente.        
+      <h4 style="margin-top: 20px;"> 11. Atualizações desta Política </h4>
+      <p style="margin-bottom: 20px;">
+        Esta Política de Privacidade pode ser atualizada periodicamente para refletir mudanças legais ou operacionais.
+        Recomendamos que consulte esta página regularmente.
       </p>
 
       <p style="margin-bottom: 20px;">
-        <strong> Data da última atualização: 15 de dezembro de 2024 </strong> 
-    </p>
-         
+        <strong> Data da última atualização: 15 de dezembro de 2024 </strong>
+      </p>
+
 
       <div class="text-center">
-          <button class="btn btn-success me-3" (click)="acceptPolicy()">Accept</button>
-          <button class="btn btn-danger" (click)="rejectPolicy()">Decline</button>
+        <button class="btn btn-success me-3" (click)="acceptPolicy()">Accept</button>
+        <button class="btn btn-danger" (click)="rejectPolicy()">Decline</button>
       </div>
+    </div>
   </div>
-</div>
 
 
 
-<div  [ngStyle]="{'display': isModalOpen('listMedicalRecordModal') ? 'block' : 'none'}" id="listMedicalRecordModal" class="modal" >
-  <div class="modal-content">
+  <div [ngStyle]="{'display': isModalOpen('listMedicalRecordModal') ? 'block' : 'none'}" id="listMedicalRecordModal"
+    class="modal">
+    <div class="modal-content">
       <span (click)="closeModal('listMedicalRecordModal')" class="close">&times;</span>
       <div>
 
-      <form  class="row g-3 needs-validation" novalidate="">
+        <form class="row g-3 needs-validation" novalidate="">
           <div class="col-md-10"></div>
 
 
@@ -894,85 +883,89 @@
 
 
           <div class="col-md-12">
-            <div class="table-wrapper" >
+            <div class="table-wrapper">
               <div class="table-title">
-              <table class="table table-striped table-hover table-over">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Staff</th>
-                    <th>Patient Email</th>
-                    <th>Allergies</th>
-                    <th>Medical Conditions</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let request of medicalRecordRequests; let i = index" (click)="selectMedicalRecord(request.patientEmail)" [ngClass]="{ 'selected-row': selectedPatientEmailMedicalRecord === request.patientEmail }">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ request.date | date:'mediumDate' }}</td>
-                    <td>{{ request.staff }}</td>
-                    <td>{{ request.patientEmail }}</td>
-                    <td>
-                      <ul style="list-style-type: none; padding: 0; margin: 0;">
-                        <li *ngFor="let allergie of request.allergies">{{ allergie.designacao }}</li>
-                      </ul>
-                    </td>
-                    <td>
-                      <ul style="list-style-type: none; padding: 0; margin: 0;">
-                        <li *ngFor="let conditon of request.medicalConditions">{{ conditon.designacao }}</li>
-                      </ul>
-                    </td>
+                <table class="table table-striped table-hover table-over">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>Staff</th>
+                      <th>Patient Email</th>
+                      <th>Allergies</th>
+                      <th>Medical Conditions</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let request of medicalRecordRequests; let i = index"
+                      (click)="selectMedicalRecord(request.patientEmail)"
+                      [ngClass]="{ 'selected-row': selectedPatientEmailMedicalRecord === request.patientEmail }">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ request.date | date:'mediumDate' }}</td>
+                      <td>{{ request.staff }}</td>
+                      <td>{{ request.patientEmail }}</td>
+                      <td>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                          <li *ngFor="let allergie of request.allergies">{{ allergie.designacao }}</li>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                          <li *ngFor="let conditon of request.medicalConditions">{{ conditon.designacao }}</li>
+                        </ul>
+                      </td>
 
-                    <td>{{ request.descricao }}</td>
-                   <!--<td>-->
-                     <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
+                      <td>{{ request.descricao }}</td>
+                      <!--<td>-->
+                      <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
                         <i class="bi bi-pencil"></i>
                       </button>
                       <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
                         <i class="bi bi-trash"></i>
                       </button>-->
-                    <!--</td>-->
-                  </tr>
-                </tbody>
-              </table>
+                      <!--</td>-->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="col-md-9"></div>
-       <div class="col-md-3">
-          <!--<button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>-->
-          <button class="fs-5 btn btn-outline-warning" (click)="editMedicalRecord()">Edit <i class="bi bi-pencil-square"></i></button>
-          <!--<button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
-        </div>
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <!--<button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>-->
+            <button class="fs-5 btn btn-outline-warning" (click)="editMedicalRecord()">Edit <i
+                class="bi bi-pencil-square"></i></button>
+            <!--<button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
+          </div>
         </form>
       </div>
 
+    </div>
   </div>
-</div>
 
-<div [ngStyle]="{'display': isModalOpen('UpdateMedicalRecordModal') ? 'block' : 'none'}" id="UpdateMedicalRecordModal" class="modal">
-  <div class="modal-content">
-    <span (click)="closeModal('UpdateMedicalRecordModal')" class="close">&times;</span>
+  <div [ngStyle]="{'display': isModalOpen('UpdateMedicalRecordModal') ? 'block' : 'none'}" id="UpdateMedicalRecordModal"
+    class="modal">
+    <div class="modal-content">
+      <span (click)="closeModal('UpdateMedicalRecordModal')" class="close">&times;</span>
 
-    <form [formGroup]="medicalRecordUpdate" class="row g-3 needs-validation" novalidate="">
-      <div *ngIf="medicalRecordProfileUpdate">
-        <div class="row g-3 needs-validation">
-          <div class="col-md-12"></div>
+      <form [formGroup]="medicalRecordUpdate" class="row g-3 needs-validation" novalidate="">
+        <div *ngIf="medicalRecordProfileUpdate">
+          <div class="row g-3 needs-validation">
+            <div class="col-md-12"></div>
 
-          <!-- Description Field -->
-          <div class="col-md-3">
-            <div class="input-group has-validation">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i>  </span>
-              <input type="text" class="form-control" [(ngModel)]="medicalRecordProfileUpdate.descricao"
-                [ngModelOptions]="{standalone: true}"  placeholder="Description"  name="descriptionUpdate">
+            <!-- Description Field -->
+            <div class="col-md-3">
+              <div class="input-group has-validation">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i> </span>
+                <input type="text" class="form-control" [(ngModel)]="medicalRecordProfileUpdate.descricao"
+                  [ngModelOptions]="{standalone: true}" placeholder="Description" name="descriptionUpdate">
+              </div>
             </div>
-          </div>
 
-          <hr>
-      
+            <hr>
+
 
             <!-- Allergies Section -->
             <div class="col-md-12">
@@ -989,199 +982,174 @@
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody>               
+                <tbody>
                   <tr *ngFor="let tag of tagsAllergies; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>{{ tag.designacao }}</td>
                     <td>{{ tag.descricao }}</td>
                     <td>{{ tag.status }}</td>
-                    <td> <button type="button" class="btn btn-danger" (click)="removeAllergie(i); $event.preventDefault()"> <i class="bi bi-trash"></i> </button></td>                        
-                  </tr>                
+                    <td> <button type="button" class="btn btn-danger"
+                        (click)="removeAllergie(i); $event.preventDefault()"> <i class="bi bi-trash"></i> </button></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-          
-          <div class="dropdown">
-            <label for="tag-filter" class="form-label">Allergies</label>
-            <div class="tags-input">
-              <input
-                id="tag-filter"
-                type="text"
-                name="filterAllergieName"
-                [(ngModel)]="filterAllergieNameText"
-                [ngModelOptions]="{standalone: true}"
-                placeholder="Choose an allergy"
-                (input)="filterAllergieNameOptions()"
-                (focus)="showDropdown = true"
-                (blur)="onBlur()"
-              />
-            </div>
-            <ul *ngIf="showDropdown" class="dropdown-list">
-              <li
-                *ngFor="let option of filteredAllergieNameOptions"
-                (mousedown)="selectOptionTagAllergies(option.designacao)">
-                {{ option.designacao }}
-              </li>
-            </ul>
-          </div>
 
-          <div class="col-md-5">
-            <label for="descricaoAllergie" class="form-label">Description</label>
-            <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}"  name="descricaoAllergie" required />
-            <div class="valid-feedback">Looks good!</div>
-          </div>
-
-
-          <div class="col-md-2">
-            <label for="tag-filter" class="form-label">Allergy Status</label>
             <div class="dropdown">
-              <input
-                type="text"
-                 name="filterAllergieStatus"
-                [(ngModel)]="filterAllergieStatusText"
-                [ngModelOptions]="{standalone: true}"
-                (input)="filterAllergieStatusOptions()"
-                (focus)="showDropdown3 = true"
-                (blur)="onBlur()"
-                placeholder="Filter status"
-              />
-              <ul *ngIf="showDropdown3" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredAllergieStatusOptions"
-                  (mousedown)="selectOptionTagStatusAllergies(option)">
-                  {{ option }}
+              <label for="tag-filter" class="form-label">Allergies</label>
+              <div class="tags-input">
+                <input id="tag-filter" type="text" name="filterAllergieName" [(ngModel)]="filterAllergieNameText"
+                  [ngModelOptions]="{standalone: true}" placeholder="Choose an allergy"
+                  (input)="filterAllergieNameOptions()" (focus)="showDropdown = true" (blur)="onBlur()" />
+              </div>
+              <ul *ngIf="showDropdown" class="dropdown-list">
+                <li *ngFor="let option of filteredAllergieNameOptions"
+                  (mousedown)="selectOptionTagAllergies(option.designacao)">
+                  {{ option.designacao }}
                 </li>
               </ul>
             </div>
 
-          </div>
-
-          <div class="col-12" style="margin-bottom: 30px;">
-            <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
-          </div>
-
-          <div class="col-mb-4"></div>
-
-
-          <!-- Medical Conditions Section -->
-          <div class="col-md-12">
-            <div class="input-group has-validation">
-              <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
-              <span class="input-group-text" style="width:60%" id="add">Medical Conditions</span>
+            <div class="col-md-5">
+              <label for="descricaoAllergie" class="form-label">Description</label>
+              <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText"
+                [ngModelOptions]="{standalone: true}" name="descricaoAllergie" required />
+              <div class="valid-feedback">Looks good!</div>
             </div>
-            <table class="table table-striped table-hover table-over-update">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Code</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Symptoms</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let condition of tagsConditions; let i = index">
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ condition.codigo }}</td>
-                  <td>{{ condition.designacao }}</td>
-                  <td>{{ condition.descricao }}</td>
-                  <td>{{ condition.status }}</td>
-                  <td>{{ condition.sintomas }}</td>
-                  <td>  <button type="button"  class="btn btn-danger" (click)="removeMedicalCondition(i); $event.preventDefault()"> <i class="bi bi-trash"></i> </button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
-          <div class="col-mb-4">
-            <div class="dropdown2">
-              <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>              
-                <input
-                  id="condition-filter"
-                  type="text"
-                  name="filterMedicalCondiitonDesignacao"
-                  [(ngModel)]="filterTextCondition"
-                  [ngModelOptions]="{standalone: true}"
-                  placeholder="Choose an medical condition"
-                  (input)="filterOptionsMedicalConditions()"
-                  (focus)="showDropdown2 = true"
-                  (blur)="onBlur()"
-                />
+
+            <div class="col-md-2">
+              <label for="tag-filter" class="form-label">Allergy Status</label>
+              <div class="dropdown">
+                <input type="text" name="filterAllergieStatus" [(ngModel)]="filterAllergieStatusText"
+                  [ngModelOptions]="{standalone: true}" (input)="filterAllergieStatusOptions()"
+                  (focus)="showDropdown3 = true" (blur)="onBlur()" placeholder="Filter status" />
+                <ul *ngIf="showDropdown3" class="dropdown-list">
+                  <li *ngFor="let option of filteredAllergieStatusOptions"
+                    (mousedown)="selectOptionTagStatusAllergies(option)">
+                    {{ option }}
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="col-12" style="margin-bottom: 30px;">
+              <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
+            </div>
+
+            <div class="col-mb-4"></div>
+
+
+            <!-- Medical Conditions Section -->
+            <div class="col-md-12">
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
+                <span class="input-group-text" style="width:60%" id="add">Medical Conditions</span>
+              </div>
+              <table class="table table-striped table-hover table-over-update">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Symptoms</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let condition of tagsConditions; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ condition.codigo }}</td>
+                    <td>{{ condition.designacao }}</td>
+                    <td>{{ condition.descricao }}</td>
+                    <td>{{ condition.status }}</td>
+                    <td>{{ condition.sintomas }}</td>
+                    <td> <button type="button" class="btn btn-danger"
+                        (click)="removeMedicalCondition(i); $event.preventDefault()"> <i class="bi bi-trash"></i>
+                      </button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-mb-4">
+              <div class="dropdown2">
+                <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
+                <input id="condition-filter" type="text" name="filterMedicalCondiitonDesignacao"
+                  [(ngModel)]="filterTextCondition" [ngModelOptions]="{standalone: true}"
+                  placeholder="Choose an medical condition" (input)="filterOptionsMedicalConditions()"
+                  (focus)="showDropdown2 = true" (blur)="onBlur()" />
               </div>
               <ul *ngIf="showDropdown2" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredOptionsConditions"
+                <li *ngFor="let option of filteredOptionsConditions"
                   (mousedown)="selectOptionMedicalCondition(option.designacao)">
                   {{ option.designacao }}
                 </li>
               </ul>
-          </div>
-   
-
-
-          <div class="col-md-5">
-            <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
-            <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"   [ngModelOptions]="{standalone: true}" name="descricaoCondition" required />
-            <div class="valid-feedback">Looks good!</div>
-          </div>
-
-      
-
-
-          <div class="col-md-4">
-            <label for="tag-filter" class="form-label">Medical Condition Status</label>
-            <div class="dropdown">
-              <input
-                type="text"
-                name="filterConditionStatus"
-                [(ngModel)]="filterConditionStatusText"
-                [ngModelOptions]="{standalone: true}"
-                (input)="filterConditionStatusOptions()"
-                (focus)="showDropdown4 = true"
-                (blur)="onBlur()"
-                placeholder="Filter status"
-              />
-              <ul *ngIf="showDropdown4" class="dropdown-list">
-                <li
-                  *ngFor="let option of filteredAllergieStatusOptions"
-                  (mousedown)="selectOptionTagStatusCondition(option)">
-                  {{ option }}
-                </li>
-              </ul>
             </div>
 
-          </div>
 
-          <div class="col-md-6">
-            <div class="input-group has-validation">
-              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
-              <textarea class="form-control" id="medicalConditionSymptoms"  [(ngModel)]="sintomasCodition"   [ngModelOptions]="{standalone: true}" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a comma (,)]"></textarea>
+
+            <div class="col-md-5">
+              <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
+              <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"
+                [ngModelOptions]="{standalone: true}" name="descricaoCondition" required />
+              <div class="valid-feedback">Looks good!</div>
             </div>
 
+
+
+
+            <div class="col-md-4">
+              <label for="tag-filter" class="form-label">Medical Condition Status</label>
+              <div class="dropdown">
+                <input type="text" name="filterConditionStatus" [(ngModel)]="filterConditionStatusText"
+                  [ngModelOptions]="{standalone: true}" (input)="filterConditionStatusOptions()"
+                  (focus)="showDropdown4 = true" (blur)="onBlur()" placeholder="Filter status" />
+                <ul *ngIf="showDropdown4" class="dropdown-list">
+                  <li *ngFor="let option of filteredAllergieStatusOptions"
+                    (mousedown)="selectOptionTagStatusCondition(option)">
+                    {{ option }}
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group has-validation">
+                <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+                <textarea class="form-control" id="medicalConditionSymptoms" [(ngModel)]="sintomasCodition"
+                  [ngModelOptions]="{standalone: true}" name="medicalConditionSymptoms" required rows="1"
+                  placeholder="Symptoms [Separated by a comma (,)]"></textarea>
+              </div>
+
+            </div>
+            <div class="col-12" style="margin-bottom: 30px;">
+              <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+            </div>
+
+
           </div>
-          <div class="col-12"  style="margin-bottom: 30px;">
-            <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+
+          <div class="col-12">
+            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to
+              Policy</button>
           </div>
- 
-         
+
+
+
+          <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit </button>
         </div>
-
-        <div class="col-12">
-          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
-      </div>
-
-       
-
-        <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
 
 
-<!--<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">
+  <!--<div [ngStyle]="{'display': isModalOpen('filterMedicalRecordRequestModal') ? 'block' : 'none'}" id="filterMedicalRecordRequestModal" class="modal">
   <div class="modal-content">
 
     <span (click)="closeModal('filterMedicalRecordRequestModal')" class="close">&times;</span>
@@ -1216,15 +1184,15 @@
 </div>-->
 
 
-    <div class="container-xxl">
-      <button class="btn-right" (click)="logout()">Logout</button>
-    </div>
+  <div class="container-xxl">
+    <button class="btn-right" (click)="logout()">Logout</button>
+  </div>
 
 
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
