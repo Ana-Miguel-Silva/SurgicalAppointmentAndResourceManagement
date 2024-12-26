@@ -126,7 +126,7 @@ export class DoctorComponent implements OnInit {
 
   initialize() {
     // Initialize the game with necessary parameters
-    this.thumbRaiser = new ThumbRaiser(
+    /*this.thumbRaiser = new ThumbRaiser(
       {}, // General Parameters
       {scale: new THREE.Vector3(1.0, 0.5, 1.0)}, // Maze parameters
       {}, // Player parameters
@@ -141,10 +141,10 @@ export class DoctorComponent implements OnInit {
       { view: "third-person", multipleViewsViewport: new THREE.Vector4(0.0, 0.0, 0.55, 0.5), initialOrientation: new Orientation(0.0, -20.0), initialDistance: 2.0, distanceMin: 1.0, distanceMax: 4.0 }, // Third-person view camera parameters
       { view: "top", multipleViewsViewport: new THREE.Vector4(1.0, 0.0, 0.45, 0.5), initialOrientation: new Orientation(0.0, -90.0), initialDistance: 4.0, distanceMin: 1.0, distanceMax: 16.0 }, // Top view camera parameters
       { view: "mini-map", multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(180.0, -90.0), initialZoom: 0.64 } // Mini-map view camera parameters
-    );
+    );*/
   }
 
-  animate() {
+  /*animate() {
     requestAnimationFrame(() => this.animate());
     // Update the game (call update method of thumbRaiser)
     this.thumbRaiser.update();
@@ -163,7 +163,7 @@ export class DoctorComponent implements OnInit {
       console.error('Target div not found.');
 
     }
-  }
+  }*/
 
 
 

@@ -19,6 +19,11 @@ import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment'; // Importa o environment correto
 import { StaffService } from '../../../Services/staff.service';
 import { AppointmentService } from '../../../Services/appointment.service';
+import { MedicalRecordService } from '../../../Services/medicalRecordservice';
+import { MockMedicalRecordService } from '../../../Services/Tests/mock-medicalRecord.service';
+import { AllergiesService } from '../../../Services/allergies.service';
+import { MedicalConditionService } from '../../../Services/medicalCondition.service';
+import { SpecializationService } from '../../../Services/specialization.service';
 class MockAuthService {
   getToken() {
     return 'fake-token';
@@ -32,6 +37,10 @@ describe('AdminComponent', () => {
   let mockStaffService: jasmine.SpyObj<StaffService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockModalService: jasmine.SpyObj<ModalService>;
+  let mockMedicalRecordService: jasmine.SpyObj<MedicalRecordService>;
+  let mockAllegiesService: jasmine.SpyObj<AllergiesService>;
+  let mockMedicalConditionService: jasmine.SpyObj<MedicalConditionService>;
+  let mockSpecializationService: jasmine.SpyObj<SpecializationService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let httpMock: HttpTestingController;
   let mockHttpClient: jasmine.SpyObj<HttpClient>;
@@ -57,13 +66,27 @@ describe('AdminComponent', () => {
         { provide: StaffService, useClass: MockStaffService },
         { provide: AuthService, useClass: MockAuthService },
         { provide: ModalService, useValue: mockModalService },
+        { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
+          // TODO: MUDAR PARA  useClass: MockAllergiesService
+        { provide: AllergiesService, useClass: AllergiesService },
+         // TODO: MUDAR PARA  useClass: MockMedicalConditionService
+        { provide: MedicalConditionService, useClass: MedicalConditionService },
+        // TODO: MUDAR PARA  useClass: MockSpecializationService
+        { provide: SpecializationService, useClass: SpecializationService },
         { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
 
     mockOperationTypeService = TestBed.inject(OperationTypesService) as jasmine.SpyObj<OperationTypesService>;
+    mockMedicalRecordService = TestBed.inject(MedicalRecordService) as jasmine.SpyObj<MedicalRecordService>;
     mockStaffService = TestBed.inject(StaffService) as jasmine.SpyObj<StaffService>;
     mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    mockAllegiesService = TestBed.inject(AllergiesService) as jasmine.SpyObj<AllergiesService>;
+    mockMedicalConditionService = TestBed.inject(MedicalConditionService) as jasmine.SpyObj<MedicalConditionService>;
+    mockSpecializationService = TestBed.inject(SpecializationService) as jasmine.SpyObj<SpecializationService>;
+
+
+
     httpMock = TestBed.inject(HttpTestingController);
 
     fixture = TestBed.createComponent(AdminComponent);
@@ -379,8 +402,8 @@ describe('AdminComponent', () => {
       emergencyContactName: 'Jane Doe',
       emergencyContactEmail: 'jane.doe@example.com',
       emergencyContactPhone: '987654321',
-      appointmentHistory: [],
-      allergies: []
+      appointmentHistory: []
+     
     });
 
     // Adicionar valores ao appointmentHistory
@@ -406,8 +429,8 @@ describe('AdminComponent', () => {
       emergencyContactName: 'Jane Doe',
       emergencyContactEmail: 'jane.doe@example.com',
       emergencyContactPhone: '987654321',
-      appointmentHistory: ['2021-09-15', '2022-10-10'],
-      allergies: []
+      appointmentHistory: ['2021-09-15', '2022-10-10']
+      
     });
 
     // Simular uma resposta de sucesso
@@ -474,7 +497,7 @@ describe('AdminComponent', () => {
       icon: 'warning',
       title: 'Por favor seleciona um Patient.',
       toast: true,
-      position: 'bottom-right',
+      position: 'top-end',
       timer: 3000,
       showConfirmButton: false
     }));
@@ -495,7 +518,7 @@ describe('AdminComponent', () => {
       icon: "warning",
       title: "Por favor seleciona um Patient.",
       toast: true,
-      position: "bottom-right",
+      position: "top-end",
       timer: 3000,
       showConfirmButton: false
     }));
@@ -527,12 +550,7 @@ describe('AdminComponent', () => {
       },
       phoneEmergency: {
         "number": "999999999"
-      },
-     allergies: ["apple"],
-      appointmentHistory: ["2024-11-06"],
-      medicalRecordNumber: {
-        "number": "202411000001"
-      },
+      },   
       dateOfBirth: "1994-11-19T17:23:59.346839"
      };
     spyOn(component, 'populateUpdateForm');

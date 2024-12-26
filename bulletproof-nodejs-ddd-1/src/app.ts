@@ -17,7 +17,7 @@ async function startServer() {
         callback(new Error('Not allowed by CORS'), false); // Outros domínios não são permitidos
       }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
   }));
 
