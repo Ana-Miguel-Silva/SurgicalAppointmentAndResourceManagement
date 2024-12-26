@@ -17,7 +17,7 @@ export class SpecializationService {
 
 createSpecialization(specialization : any): Observable<any> {
   const token = this.authService.getToken();
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).set('Content-Type', 'application/json');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
   return this.http.post(`${this.apiUrl}`, specialization, { headers })
   }
@@ -35,12 +35,13 @@ createSpecialization(specialization : any): Observable<any> {
 
     return this.http.get<any[]>(`${this.apiUrl}/${specialization}`, { headers });
   }
-  updateSpecialization(specialization : any, updatedData: any): Observable<any[]> {
+  updateSpecialization(specialization : any, updatedData: any): Observable<any> {
     const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(headers);
     console.log(specialization);
     console.log(updatedData);
-    return this.http.patch<any[]>(`${this.apiUrl}/${specialization}`, updatedData ,{ headers });
+    //TODO: Resolve Patch not working through Angular but working through Postman
+    return this.http.patch(`${this.apiUrl}/${specialization}`, updatedData ,{ headers });
   }
 }
