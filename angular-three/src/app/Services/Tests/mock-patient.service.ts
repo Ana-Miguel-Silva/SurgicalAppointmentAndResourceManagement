@@ -30,12 +30,7 @@ export class MockPatientService {
         },
         phoneEmergency: { 
           "number": "999999999" 
-        },
-       allergies: ["apple"],
-        appointmentHistory: ["2024-11-06"],
-        medicalRecordNumber: { 
-          "number": "202411000001" 
-        },
+        },      
         dateOfBirth: "1994-11-19T17:23:59.346839"
       
     },
