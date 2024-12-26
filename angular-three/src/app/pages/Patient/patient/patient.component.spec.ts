@@ -15,6 +15,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../environments/environment';
+import { MedicalRecordService } from '../../../Services/medicalRecordservice';
+import { MockMedicalRecordService } from '../../../Services/Tests/mock-medicalRecord.service';
+import { AllergiesService } from '../../../Services/allergies.service';
+import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 
 describe('PatientComponent', () => {
   let component: PatientComponent;
@@ -23,6 +27,9 @@ describe('PatientComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockModalService: jasmine.SpyObj<ModalService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockMedicalRecordService: jasmine.SpyObj<MedicalRecordService>;
+  let mockAllegiesService: jasmine.SpyObj<AllergiesService>;
+  let mockMedicalConditionService: jasmine.SpyObj<MedicalConditionService>;
   let httpMock: HttpTestingController;
   let mock_service: jasmine.SpyObj<PatientService>;
 
@@ -43,10 +50,19 @@ describe('PatientComponent', () => {
         { provide: PatientService, useClass: MockPatientService },
         { provide: AuthService, useValue: mockAuthService },
         { provide: ModalService, useValue: mockModalService },
+        { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
+         // TODO: MUDAR PARA  useClass: MockAllergiesService
+        { provide: AllergiesService, useClass: AllergiesService },
+         // TODO: MUDAR PARA  useClass: MockMedicalConditionService
+        { provide: MedicalConditionService, useClass: MedicalConditionService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
       ]
     }).compileComponents();
+
+    mockMedicalRecordService = TestBed.inject(MedicalRecordService) as jasmine.SpyObj<MedicalRecordService>;
+    mockAllegiesService = TestBed.inject(AllergiesService) as jasmine.SpyObj<AllergiesService>;
+    mockMedicalConditionService = TestBed.inject(MedicalConditionService) as jasmine.SpyObj<MedicalConditionService>;
 
     mock_service = TestBed.inject(PatientService) as jasmine.SpyObj<PatientService>;
     mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;

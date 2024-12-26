@@ -35,6 +35,10 @@ export class MockStaffService {
     },
   ];
 
+  getStaff(): Observable<any[]> {
+    return of([...this.staff]);
+  }
+
   viewStaff(id: string): Observable<any> {
     const staffProf = this.staff.find((p) => p.id === id);
     return staffProf ? of(staffProf) : throwError(() => new Error('Staff not found'));

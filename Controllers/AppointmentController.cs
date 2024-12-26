@@ -59,8 +59,7 @@ namespace DDDSample1.Controllers
             try
             {
                 string userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-                var appointment = await _service.AddAsync(dto);
-
+                var appointment = await _service.AddAsync(dto, null);
 
                 await _logService.LogAsync("Appointment", "Created", appointment.Id, JsonConvert.SerializeObject(dto), userEmail);
 
@@ -92,7 +91,7 @@ namespace DDDSample1.Controllers
 
         // PUT: api/Appointments/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<AppointmentDto>> Update(Guid id, AppointmentDto dto)
+        public async Task<ActionResult<AppointmentDto>> Update(Guid id, UpdateAppointmentDto dto)
         {
             if (id != dto.Id)
             {

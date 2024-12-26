@@ -66,5 +66,10 @@ namespace DDDSample1.Domain.OperationRequests
         {
             this.Active = false;
         }
+
+        public void MarkAsActive()
+        {
+            this.Active = true;
+        }
     }
 }
