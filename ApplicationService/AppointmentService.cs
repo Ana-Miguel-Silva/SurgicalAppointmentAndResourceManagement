@@ -77,7 +77,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, newAppointmentSlot, AppointmentStatus.SCHEDULED, appointmentSlots);
 
-            InactivateAsync(dto.OperationRequestId);
+            await InactivateAsync(dto.OperationRequestId);
 
             await this._repo.AddAsync(appointment);
 
