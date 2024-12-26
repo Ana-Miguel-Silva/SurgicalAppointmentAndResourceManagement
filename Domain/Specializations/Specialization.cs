@@ -23,5 +23,13 @@ namespace DDDSample1.Domain.Specializations
             this.SpecializationName = specializationName.ToUpper();
             this.SpecializationDescription = SpecializationDescription;
         }
+
+        public void updateName(string specializationName) {
+            SpecializationName = specializationName.ToUpper();
+        }
+
+        public void updateDescription(string specializationDescription) {
+            SpecializationDescription = specializationDescription;
+        }
     }
 }

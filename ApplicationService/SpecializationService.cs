@@ -66,15 +66,18 @@ namespace DDDSample1.ApplicationService.Specializations
             return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName, specialization.SpecializationDescription);
         }
 
-        /*public async Task<SpecializationDto> UpdateAsync(SpecializationDto dto, string authUserEmail)
+        public async Task<SpecializationDto> UpdateAsync(SpecializationDto dto, string authUserEmail)
         {
 
             var specialization = await this._repo.GetByIdAsync(new SpecializationId(dto.Id));
 
+            specialization.updateName(dto.SpecializationName);
+            specialization.updateDescription(dto.SpecializationDescription);
+
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName);
-        }*/
+            return new SpecializationDto(specialization.Id.AsGuid(), specialization.SpecializationName, specialization.SpecializationDescription);
+        }
 
 
         /*  public async Task<SpecializationDto> DeleteAsync(SpecializationId id)
@@ -95,13 +98,13 @@ namespace DDDSample1.ApplicationService.Specializations
             var listDto = new List<SpecializationUIDto>();
             foreach (var specialization in list)
             {
-                listDto.Add(new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription));
+                listDto.Add(new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription, specialization.Id.AsString()));
             }
             return listDto;
         }
         private async Task<SpecializationUIDto> Dto_to_UIDtoSingle(Domain.Specializations.Specialization specialization)
         {
-            return new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription);
+            return new SpecializationUIDto(specialization.SpecializationName, specialization.SpecializationDescription, specialization.Id.AsString());
         }
 
 

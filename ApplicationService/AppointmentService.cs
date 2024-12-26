@@ -57,7 +57,7 @@ namespace DDDSample1.ApplicationService.Appointments
 
             return new AppointmentDto(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot);
         }
-        public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
+        public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto, string appointmentId)
         {
 
             var room = await checkRoomIdAsync(dto.RoomId);
@@ -75,7 +75,16 @@ namespace DDDSample1.ApplicationService.Appointments
 
             List<AppointmentSlot> appointmentSlots = await CheckStaffAvailability(dto.SelectedStaff, operationType, start);
 
-            var appointment = new Appointment(dto.RoomId, dto.OperationRequestId, newAppointmentSlot, AppointmentStatus.SCHEDULED, appointmentSlots);
+            Appointment appointment;
+
+            if (appointmentId != null)
+            {
+                appointment = new Appointment(appointmentId, dto.RoomId, dto.OperationRequestId, newAppointmentSlot, AppointmentStatus.SCHEDULED, appointmentSlots);
+            }
+            else
+            {
+                appointment = new Appointment(dto.RoomId, dto.OperationRequestId, newAppointmentSlot, AppointmentStatus.SCHEDULED, appointmentSlots);
+            }
 
             await InactivateAsync(dto.OperationRequestId);
 
@@ -122,20 +131,32 @@ namespace DDDSample1.ApplicationService.Appointments
             }
         }
 
-        public async Task<AppointmentDto> UpdateAsync(AppointmentDto dto)
+        public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
         {
-            CheckStatus(dto.AppStatus);
+            await checkRoomIdAsync(dto.RoomId);
 
-            var appointment = await this._repo.GetByIdAsync(new AppointmentId(dto.Id));
+            var oldAppointment = await this._repo.GetByIdAsync(new AppointmentId(dto.Id));
 
-            if (appointment == null)
+            if (oldAppointment == null)
                 return null;
 
-            appointment.ChangeStatus(dto.AppStatus);
+            await DeleteAsync(oldAppointment.Id);
+
+            AppointmentDto appointment;
+            try
+            {
+                appointment = await AddAsync(new CreatingAppointmentDto(dto.RoomId.Value, oldAppointment.OperationRequestId.Value, dto.Start, dto.SelectedStaff), oldAppointment.Id.Value);
+
+            }
+            catch (BusinessRuleValidationException e)
+            {
+                await AddAsync(new CreatingAppointmentDto(oldAppointment.RoomId.Value, oldAppointment.OperationRequestId.Value, oldAppointment.Date.StartTime.ToString("o"), oldAppointment.GetAllStaff()),oldAppointment.Id.Value);
+                throw new BusinessRuleValidationException("Appointments was not updated." + e);
+            }
 
             await this._unitOfWork.CommitAsync();
 
-            return new AppointmentDto(appointment.Id.AsGuid(), appointment.RoomId, appointment.OperationRequestId, appointment.Date, appointment.AppStatus, appointment.AppointmentSlot);
+            return appointment;
         }
 
         public async Task<AppointmentDto> DeleteAsync(AppointmentId id)
@@ -144,6 +165,14 @@ namespace DDDSample1.ApplicationService.Appointments
 
             if (appointment == null)
                 return null;
+
+            foreach (var slot in appointment.AppointmentSlot)
+            {
+                var staff = await _repoStaff.GetByIdAsync(slot.Staff);
+                AddFreeSlotToAvailability(staff, slot.AppointmentTime);
+            }
+
+            await ActivateAsync(appointment.OperationRequestId);
 
             this._repo.Remove(appointment);
             await this._unitOfWork.CommitAsync();
@@ -247,28 +276,29 @@ namespace DDDSample1.ApplicationService.Appointments
             return newAppointmentSlots;
         }
 
-        private static Slot GetOccupiedSlot(OperationType operationType, DateTime start, StaffProfile staff){
+        private static Slot GetOccupiedSlot(OperationType operationType, DateTime start, StaffProfile staff)
+        {
             if (staff.Specialization == "ANAESTHETIST")
-                {
-                    return new Slot(start, start.AddMinutes(
-                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
-                    ));
-                }
-                else if (staff.Specialization == "ASSISTANT")
-                {
-                    return new Slot(start.AddMinutes(
-                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes), start.AddMinutes(
-                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes + operationType.EstimatedDuration.Cleaning.ToTimeSpan().TotalMinutes));
-                }
-                else
-                {
-                    return new Slot(start.AddMinutes(operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes), start.AddMinutes(
-                        operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
-                        operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes));
-                }
+            {
+                return new Slot(start, start.AddMinutes(
+                    operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                    operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes
+                ));
+            }
+            else if (staff.Specialization == "ASSISTANT")
+            {
+                return new Slot(start.AddMinutes(
+                    operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                    operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes), start.AddMinutes(
+                    operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                    operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes + operationType.EstimatedDuration.Cleaning.ToTimeSpan().TotalMinutes));
+            }
+            else
+            {
+                return new Slot(start.AddMinutes(operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes), start.AddMinutes(
+                    operationType.EstimatedDuration.PatientPreparation.ToTimeSpan().TotalMinutes +
+                    operationType.EstimatedDuration.Surgery.ToTimeSpan().TotalMinutes));
+            }
         }
 
         private static void CheckStatus(String status)
@@ -417,6 +447,19 @@ namespace DDDSample1.ApplicationService.Appointments
             return await Dto_to_UIDto(operationRequest);
         }
 
+        public async Task<OperationRequestUIDto> ActivateAsync(OperationRequestId id)
+        {
+            var operationRequest = await _repoOpReq.GetByIdAsync(id);
+
+            if (operationRequest == null)
+            {
+                return null;
+            }
+
+            operationRequest.MarkAsInative();
+            return await Dto_to_UIDto(operationRequest);
+        }
+
         private async Task<OperationRequestUIDto> Dto_to_UIDto(OperationRequest operationRequest)
         {
             var operationTypes = await _repoOpTy.GetByIdAsync(operationRequest.OperationTypeId);
@@ -461,6 +504,30 @@ namespace DDDSample1.ApplicationService.Appointments
                     }
                 }
             }
+        }
+
+        private void AddFreeSlotToAvailability(StaffProfile staffProfile, Slot freeSlot)
+        {
+            var availableSlots = staffProfile.AvailabilitySlots;
+
+            for (int i = 0; i < availableSlots.Count; i++)
+            {
+                var currentSlot = availableSlots[i];
+
+                if (freeSlot.StartTime <= currentSlot.EndTime && freeSlot.EndTime >= currentSlot.StartTime)
+                {
+                    freeSlot = new Slot(
+                        new DateTime(Math.Min(freeSlot.StartTime.Ticks, currentSlot.StartTime.Ticks)),
+                        new DateTime(Math.Max(freeSlot.EndTime.Ticks, currentSlot.EndTime.Ticks))
+                    );
+
+                    availableSlots.RemoveAt(i);
+                    i--;
+                }
+            }
+            availableSlots.Add(freeSlot);
+
+            availableSlots.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
         }
 
         private bool VerifyOverlapStaff(StaffProfile staffProfile, Slot occupiedSlot)

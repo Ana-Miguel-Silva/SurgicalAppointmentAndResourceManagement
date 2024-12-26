@@ -2370,9 +2370,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.specializationName)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.specializationName }">
+                  <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.id)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.id }">
                     <td>{{ i + 1 }}</td>
-                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.specializationName }}" name="SpecializationsFormID" value="{{ request.specializationName }}" [checked]="selectSpecializationsId === request.specializationName" hidden>{{ request.specializationName }}</td>
+                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.id }}" name="SpecializationsFormID" value="{{ request.id }}" [checked]="selectSpecializationsId === request.id" hidden>{{ request.id }}</td>
                     <td>{{ request.specializationName }} </td>
                     <td>{{ request.specializationDescription }} </td>
 </tbody>
@@ -2538,7 +2538,7 @@
 <div [ngStyle]="{'display': isModalOpen('editSpecializationModal') ? 'block' : 'none'}" id="editSpecializationModal" class="modal">
   <div class="modal-content">
       <span (click)="closeModal('editSpecializationModal')" class="close">&times;</span>
-      <form [formGroup]="specializarionEditForm"  (ngSubmit)="onEditSpecialization()" class="row g-3 needs-validation" novalidate>
+      <form [formGroup]="specializationEditForm"  (ngSubmit)="onEditSpecialization()" class="row g-3 needs-validation" novalidate>
           <h3 class="text-center">Edit Specialization</h3>
 
           <!-- Specialization Designation -->

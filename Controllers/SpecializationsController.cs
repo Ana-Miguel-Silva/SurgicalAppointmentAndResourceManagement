@@ -112,12 +112,13 @@ namespace DDDSample1.Controllers
 
 
         // PATCH: api/Specializations/5
-        /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPatch("{id}")]
-        public async Task<ActionResult<SpecializationDto>> Update(Guid id, SpecializationDto dto)
+        public async Task<ActionResult<SpecializationDto>> Update(string id, SpecializationDto dto)
         {
-
-            if (id != dto.Id)
+            Console.WriteLine("AA - - -"+id);
+            Console.WriteLine("BB - - -"+dto);
+            if (id != dto.Id.ToString())
             {
                 return BadRequest();
             }
@@ -145,7 +146,7 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
 
-        }*/
+        }
 
         // DELETE: api/Specializations/5
         /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
