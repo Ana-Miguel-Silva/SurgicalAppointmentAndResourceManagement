@@ -192,7 +192,8 @@ export class AdminComponent {
       descricao: ['', Validators.required],
       sintomas: ['', Validators.required]
     });
-    this.specializarionEditForm = this.fb.group({
+    this.specializationEditForm = this.fb.group({
+      id: ['', Validators.required],
       designacao: ['', Validators.required],
       descricao: ['', Validators.required]
     })
@@ -278,7 +279,7 @@ export class AdminComponent {
   allergyUpdate: any = null;
   medicalConditionForm!: FormGroup;
   medicalConditionEditForm!: FormGroup;
-  specializarionEditForm: FormGroup;
+  specializationEditForm: FormGroup;
   staffForm: FormGroup;
   patientForm: FormGroup;
   staffCreationForm: FormGroup;
@@ -852,7 +853,39 @@ export class AdminComponent {
       });
   }
 
-  onEditSpecialization(){}
+  onEditSpecialization(){
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+    if (!this.selectSpecializationsId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum paciente selecionado.',
+      });
+      return;
+    }
+    const updatedPatientData = this.specializationEditForm.value;
+    this.specializationService.updateSpecialization(this.selectSpecializationsId, updatedPatientData )
+      .subscribe({
+        next: (response: any) => {
+          //this.successMessage = 'Time Slots Added!';
+          //this.errorMessage = null;
+          this.sweetService.sweetSuccess("Specialization atualizado com sucesso!");
+
+          this.getAllpatientsProfiles(); // Refresh the list after creation
+          this.closeModal('EditSpecializationModal');
+        },
+        error: (error) => {
+          console.error('Error editing Specialization:', error);
+          this.sweetService.sweetErro("Não foi possível atualizar o Specialization");
+          this.errorMessage = 'Failed to edit Specialization!';
+          this.successMessage = null;
+        }
+      });
+  }
 
   onFilterRequests(){
     this.getAllpatientsProfiles();
@@ -2305,8 +2338,9 @@ sweetErro(text: string){
           console.log(response);
           this.SpecializationSingle = response;
           console.log(this.SpecializationSingle);
-          this.specializarionEditForm.get('designacao')?.setValue(this.SpecializationSingle.specializationName);
-          this.specializarionEditForm.get('descricao')?.setValue(this.SpecializationSingle.specializationDescription);
+          this.specializationEditForm.get('id')?.setValue(this.SpecializationSingle.id);
+          this.specializationEditForm.get('designacao')?.setValue(this.SpecializationSingle.specializationName);
+          this.specializationEditForm.get('descricao')?.setValue(this.SpecializationSingle.specializationDescription);
           this.openModal('editSpecializationModal');
         },
         error: (error) => {

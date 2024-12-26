@@ -17,7 +17,7 @@ export class SpecializationService {
 
 createSpecialization(specialization : any): Observable<any> {
   const token = this.authService.getToken();
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).set('Content-Type', 'application/json');
 
   return this.http.post(`${this.apiUrl}`, specialization, { headers })
   }
@@ -33,7 +33,14 @@ createSpecialization(specialization : any): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<any[]>(`${this.apiUrl}/name/${specialization}`, { headers });
+    return this.http.get<any[]>(`${this.apiUrl}/${specialization}`, { headers });
   }
-
+  updateSpecialization(specialization : any, updatedData: any): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).set('Content-Type', 'application/json');
+    console.log(headers);
+    console.log(specialization);
+    console.log(updatedData);
+    return this.http.patch<any[]>(`${this.apiUrl}/${specialization}`, updatedData ,{ headers });
+  }
 }

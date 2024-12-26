@@ -7,8 +7,9 @@ namespace DDDSample1.Domain.Specializations;
         public string SpecializationDescription { get; set; }
 
 
-    public SpecializationUIDto(string specializationName, string specializationDescription)
+    public SpecializationUIDto(string specializationName, string specializationDescription, string id)
         {
+            this.Id = id;
             this.SpecializationName = specializationName;
             this.SpecializationDescription = specializationDescription;
         }
