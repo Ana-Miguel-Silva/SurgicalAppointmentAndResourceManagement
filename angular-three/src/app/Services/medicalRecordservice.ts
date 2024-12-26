@@ -48,6 +48,14 @@ updateMedicalRecord(params : any): Observable<any[]> {
 }
 
 
+deleteMedicalRecord(params : any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.post<any>(`${this.apiUrl}/delete`, params , { headers });
+}
+
+
 
 
 

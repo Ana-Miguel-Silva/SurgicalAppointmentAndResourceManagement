@@ -106,4 +106,14 @@ export default (app: Router) => {
       }),
       (req, res, next) => ctrl.getMedicalRecordById(req, res, next) );
 
+
+      route.post(
+        '/delete',
+        celebrate({
+          body: Joi.object({
+            patientId: Joi.string()
+          }),
+        }),
+        (req, res, next) => ctrl.deleteMedicalRecord(req, res, next) );
+
 };

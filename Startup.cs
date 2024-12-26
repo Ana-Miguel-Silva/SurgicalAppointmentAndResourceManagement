@@ -342,6 +342,20 @@ namespace DDDSample1
                     await userService.AddAsync(adminDto);
                 }
 
+              
+                var adminUsername2 = "cypressUser";
+                var adminEmail2 = new Email("testeCypress@gmail.com");
+            
+
+                User existingAdmin2 = await userService.GetByUsernameAsync(adminUsername2);
+
+                if (existingAdmin2 == null)
+                {
+                    var adminDto2 = new CreatingUserDto(adminUsername2, adminEmail2.FullEmail, adminRole);
+
+                    await userService.AddAsync(adminDto2);
+                }
+
             }
         }
 
@@ -370,6 +384,28 @@ namespace DDDSample1
 
                     await patientService.AddAsync(patientDto, patientRole);
                 }
+
+
+       
+
+                var patientUsername2 = "cypress";
+                
+                var patientEmail2 = "testeCypress@gmail.com";
+        
+                var phoneNumberObject2 = "966783436";
+                
+  
+
+                Patient existingPatientByUserEmail2 = await patientService.GetPatientByEmailAsync(patientEmail2);
+                Patient existingPatientByEmail2 = await patientService.GetPatientByEmailAsync(patientEmail2);
+
+                if (existingPatientByEmail2 == null && existingPatientByUserEmail2 == null)
+                {
+                    var patientDto2 = new CreatingPatientDto(patientUsername2, dateOfBirth, phoneNumberObject2,  patientEmail2,patientEmail2, patientGender);
+
+                    await patientService.AddAsync(patientDto2, patientRole);
+                }
+                
 
             }
         }

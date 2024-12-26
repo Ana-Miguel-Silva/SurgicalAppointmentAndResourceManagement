@@ -549,7 +549,7 @@
 
         <div class="col-md-6">
           <label for="patientEmail" class="form-label">Patient Email</label>
-          <input type="email" class="form-control" id="patientEmail" [(ngModel)]="medicalRecordRequest.patientId"
+          <input type="email" class="form-control" id="patientEmailMedicalRecord" [(ngModel)]="medicalRecordRequest.patientId"
             name="patientEmail" required />
           <div class="valid-feedback">Looks good!</div>
         </div>
@@ -595,7 +595,7 @@
         <div class="col-md-2">
           <label for="tag-filter" class="form-label">Allergy Status</label>
           <div class="dropdown">
-            <input type="text" name="filterAllergieStatus" [(ngModel)]="filterAllergieStatusText"
+            <input type="text" name="filterAllergieStatus" id="filterAllergieStatus" [(ngModel)]="filterAllergieStatusText"
               (input)="filterAllergieStatusOptions()" (focus)="showDropdown3 = true" (blur)="onBlur()"
               placeholder="Filter status" />
             <ul *ngIf="showDropdown3" class="dropdown-list">
@@ -698,7 +698,7 @@
 
 
         <div class="col-12">
-          <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted">Create Request</button>
+          <button class="btn btn-primary" type="submit" id="registerMedicalRecord" [disabled]="!isPolicyAccepted">Create Medical Record</button>
         </div>
 
       </form>
@@ -935,8 +935,10 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <!--<button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>-->
-            <button class="fs-5 btn btn-outline-warning" (click)="editMedicalRecord()">Edit <i
+            <button class="fs-5 btn btn-outline-warning" id="editMedicalRecord" (click)="editMedicalRecord()">Edit <i
                 class="bi bi-pencil-square"></i></button>
+
+            <button class="fs-5 btn btn-outline-danger" id="deleteMedicalRecord" (click)="deleteMedicalRecord()"> Deactivate <i class="bi bi-archive-fill"></i></button>
             <!--<button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
           </div>
         </form>
@@ -959,7 +961,7 @@
             <div class="col-md-3">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i> </span>
-                <input type="text" class="form-control" [(ngModel)]="medicalRecordProfileUpdate.descricao"
+                <input type="text" class="form-control" id="updateMedicalRecordDescription"[(ngModel)]="medicalRecordProfileUpdate.descricao"
                   [ngModelOptions]="{standalone: true}" placeholder="Description" name="descriptionUpdate">
               </div>
             </div>
@@ -998,11 +1000,11 @@
             <div class="dropdown">
               <label for="tag-filter" class="form-label">Allergies</label>
               <div class="tags-input">
-                <input id="tag-filter" type="text" name="filterAllergieName" [(ngModel)]="filterAllergieNameText"
+                <input id="tag-filterUpdate" type="text" name="filterAllergieName" [(ngModel)]="filterAllergieNameText"
                   [ngModelOptions]="{standalone: true}" placeholder="Choose an allergy"
                   (input)="filterAllergieNameOptions()" (focus)="showDropdown = true" (blur)="onBlur()" />
               </div>
-              <ul *ngIf="showDropdown" class="dropdown-list">
+              <ul *ngIf="showDropdown" class="dropdown-listUpdate">
                 <li *ngFor="let option of filteredAllergieNameOptions"
                   (mousedown)="selectOptionTagAllergies(option.designacao)">
                   {{ option.designacao }}
@@ -1012,8 +1014,8 @@
 
             <div class="col-md-5">
               <label for="descricaoAllergie" class="form-label">Description</label>
-              <input type="text" class="form-control" id="descricaoAllergie" [(ngModel)]="filterAllergieDescricaoText"
-                [ngModelOptions]="{standalone: true}" name="descricaoAllergie" required />
+              <input type="text" class="form-control" id="descricaoAllergieUpdate" [(ngModel)]="filterAllergieDescricaoText"
+                [ngModelOptions]="{standalone: true}" name="descricaoAllergieUpdate" required />
               <div class="valid-feedback">Looks good!</div>
             </div>
 
@@ -1021,10 +1023,10 @@
             <div class="col-md-2">
               <label for="tag-filter" class="form-label">Allergy Status</label>
               <div class="dropdown">
-                <input type="text" name="filterAllergieStatus" [(ngModel)]="filterAllergieStatusText"
+                <input type="text" name="filterAllergieStatusUpdate" [(ngModel)]="filterAllergieStatusText"
                   [ngModelOptions]="{standalone: true}" (input)="filterAllergieStatusOptions()"
                   (focus)="showDropdown3 = true" (blur)="onBlur()" placeholder="Filter status" />
-                <ul *ngIf="showDropdown3" class="dropdown-list">
+                <ul *ngIf="showDropdown3" class="dropdown-listUpdate">
                   <li *ngFor="let option of filteredAllergieStatusOptions"
                     (mousedown)="selectOptionTagStatusAllergies(option)">
                     {{ option }}
@@ -1035,7 +1037,7 @@
             </div>
 
             <div class="col-12" style="margin-bottom: 30px;">
-              <button type="button" class="btn btn-primary" (click)="addAllergie()">Add Allergie</button>
+              <button type="button" class="btn btn-primaryUpdate"  (click)="addAllergie()">Add Allergie</button>
             </div>
 
             <div class="col-mb-4"></div>
@@ -1076,13 +1078,13 @@
 
             <div class="col-mb-4">
               <div class="dropdown2">
-                <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
-                <input id="condition-filter" type="text" name="filterMedicalCondiitonDesignacao"
+                <label for="tagsCondition-filterUpdate" class="form-label">Medical Condtions</label>
+                <input id="condition-filterUpdate" type="text" name="filterMedicalCondiitonDesignacao"
                   [(ngModel)]="filterTextCondition" [ngModelOptions]="{standalone: true}"
                   placeholder="Choose an medical condition" (input)="filterOptionsMedicalConditions()"
                   (focus)="showDropdown2 = true" (blur)="onBlur()" />
               </div>
-              <ul *ngIf="showDropdown2" class="dropdown-list">
+              <ul *ngIf="showDropdown2" class="dropdown-listUpdate">
                 <li *ngFor="let option of filteredOptionsConditions"
                   (mousedown)="selectOptionMedicalCondition(option.designacao)">
                   {{ option.designacao }}
@@ -1094,8 +1096,8 @@
 
             <div class="col-md-5">
               <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
-              <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"
-                [ngModelOptions]="{standalone: true}" name="descricaoCondition" required />
+              <input type="text" class="form-control" id="descricaoConditionUpdate" [(ngModel)]="filterConditionDescricaoText"
+                [ngModelOptions]="{standalone: true}" name="descricaoConditionUpdate" required />
               <div class="valid-feedback">Looks good!</div>
             </div>
 
@@ -1105,10 +1107,10 @@
             <div class="col-md-4">
               <label for="tag-filter" class="form-label">Medical Condition Status</label>
               <div class="dropdown">
-                <input type="text" name="filterConditionStatus" [(ngModel)]="filterConditionStatusText"
+                <input type="text" name="filterConditionStatusUpdate" [(ngModel)]="filterConditionStatusText"
                   [ngModelOptions]="{standalone: true}" (input)="filterConditionStatusOptions()"
                   (focus)="showDropdown4 = true" (blur)="onBlur()" placeholder="Filter status" />
-                <ul *ngIf="showDropdown4" class="dropdown-list">
+                <ul *ngIf="showDropdown4" class="dropdown-listUpdate">
                   <li *ngFor="let option of filteredAllergieStatusOptions"
                     (mousedown)="selectOptionTagStatusCondition(option)">
                     {{ option }}
@@ -1121,27 +1123,26 @@
             <div class="col-md-6">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
-                <textarea class="form-control" id="medicalConditionSymptoms" [(ngModel)]="sintomasCodition"
+                <textarea class="form-control" id="medicalConditionSymptomsUpdate" [(ngModel)]="sintomasCodition"
                   [ngModelOptions]="{standalone: true}" name="medicalConditionSymptoms" required rows="1"
                   placeholder="Symptoms [Separated by a comma (,)]"></textarea>
               </div>
 
             </div>
             <div class="col-12" style="margin-bottom: 30px;">
-              <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+              <button type="button" class="btn btn-primaryUpdate" (click)="addMedicalCondition()">Add Condition</button>
             </div>
 
 
           </div>
 
           <div class="col-12">
-            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to
-              Policy</button>
+            <button type="button" class="btn btn-secondaryUpdate" (click)="openPolicyModal()">Read and Agree to Policy</button>
           </div>
 
 
 
-          <button class="btn btn-primary" (click)="onUpdateMedicalRecord()">Submit </button>
+          <button class="btn btn-primaryUpdate" [disabled]="!isPolicyAccepted" id="updateMedicalRecord" (click)="onUpdateMedicalRecord()">Edit Medical Record</button>
         </div>
       </form>
     </div>

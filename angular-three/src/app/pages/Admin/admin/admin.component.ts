@@ -609,12 +609,16 @@ export class AdminComponent {
      this.patientService.adminRegisterPatient(formData)
         .subscribe(
           response => {
+            this.rejectPolicy();
+
             this.sweetService.sweetSuccess("Patient adicionado com sucesso!")
             this.myForm.reset(); // Redefinir o formulário após o envio
             this.appointmentHistory = []; // Limpar o array de tags após o envio
             this.getAllpatientsProfiles();
           },
           error => {
+            this.rejectPolicy();
+
             console.error("Erro ao submeter o formulário", error);
               console.error('Error editing patient:', error);
               this.sweetService.sweetErro("Não foi possível adicionar o patient devido a algum atributo")
@@ -623,6 +627,8 @@ export class AdminComponent {
           }
         );
     } else {
+      this.rejectPolicy();
+
       this.myForm.markAllAsTouched();
       console.log("Formulário inválido");
     }
@@ -749,6 +755,8 @@ export class AdminComponent {
       this.patientService.adminGetPatient(this.selectedPatientEmail)
       .subscribe({
         next: (response) => {
+          this.rejectPolicy();
+
           this.patientProfileUpdate = response;
 
           this.populateUpdateForm();
@@ -759,6 +767,8 @@ export class AdminComponent {
           this.openModal('UpdatePatientModal');
         },
         error: (error) => {
+          this.rejectPolicy();
+
           console.error('Error getting patient:', error);
           this.errorMessage = 'Failed to getting patient profile!';
         }
@@ -838,12 +848,16 @@ export class AdminComponent {
         next: (response: any) => {
           //this.successMessage = 'Time Slots Added!';
           //this.errorMessage = null;
+          this.rejectPolicy();
+
           this.sweetService.sweetSuccess("Patient atualizado com sucesso!");
 
           this.getAllpatientsProfiles(); // Refresh the list after creation
           this.closeModal('UpdatePatientModal');
         },
         error: (error) => {
+          this.rejectPolicy();
+
           console.error('Error editing patient:', error);
           this.sweetService.sweetErro("Não foi possível atualizar o patient");
           this.errorMessage = 'Failed to edit patient!';
@@ -917,6 +931,7 @@ export class AdminComponent {
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
+          
 
           if (!this.selectedPatientEmail) {
             Swal.fire({
@@ -932,17 +947,22 @@ export class AdminComponent {
           this.patientService.adminDeletePatient(this.selectedPatientEmail)
           .subscribe({
             next: (response) => {
+              this.rejectPolicy();
+
               this.getAllpatientsProfiles();
               this.sweetService.sweetSuccess("Perfil desativado com sucesso")
 
             },
             error: (error) => {
+              this.rejectPolicy();
+
               console.error('Error deactivating staff:', error);
               this.errorMessage = 'Failed to deactivate staff profiles!';
               this.sweetService.sweetErro("Não foi possível desativar o perfil")
             }
           });
         } else if (result.isDenied) {
+          this.rejectPolicy();          
         }
       });
 
@@ -1876,21 +1896,20 @@ export class AdminComponent {
     this.allergiesService.insertAllergies(formData)
       .subscribe({
         next: (response) => {
+          this.rejectPolicy();
 
           this.sweetService.sweetSuccess("Allergie created with success");
-
-
 
           this.modalService.closeModal('insertAllergies');
 
         },
         error: (error) => {
+          this.rejectPolicy(); 
+
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a allergie  !';
 
           this.sweetService.sweetErro("Already exist a allergie with this name");
-
-
         }
       });
 
@@ -1945,10 +1964,9 @@ export class AdminComponent {
       this.allergiesService.getByDesignacao(this.selectedAllergie)
       .subscribe({
         next: (response) => {
+          this.rejectPolicy();
 
-          console.log(response)
-
-
+          console.log(response);
 
           this.allergyUpdate = response;
           this.populateAllergyUpdateForm();
@@ -1960,6 +1978,8 @@ export class AdminComponent {
 
         },
         error: (error) => {
+          this.rejectPolicy();
+
           console.error('Error getting allergy:', error);
           this.errorMessage = 'Failed to getting allergy!';
         }
@@ -2008,11 +2028,14 @@ export class AdminComponent {
     this.allergiesService.updateAllergie(this.selectedAllergie,this.allergyUpdateForm.value)
     .subscribe({
         next: (response: any) => {
+          this.rejectPolicy();
+
           this.sweetService.sweetSuccess("Alergia atualizado com sucesso!")
           this.getAllAllergies(); // Refresh the list after creation
           this.closeModal('UpdateAllergyModal');
         },
         error: (error) => {
+          this.rejectPolicy();
           console.error('Error editing Allergy:', error);
 
           if (error.status === 400) {

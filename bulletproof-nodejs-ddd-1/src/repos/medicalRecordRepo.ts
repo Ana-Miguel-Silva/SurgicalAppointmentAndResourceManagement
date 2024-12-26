@@ -49,6 +49,27 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
     }
 }
 
+    public async delete(MedicalRecord: MedicalRecord): Promise<string> {
+      try {
+
+        const query = { _id: MedicalRecord.id.toString() };
+
+        const deleteResult = await this.MedicalRecordSchema.deleteOne(query);
+
+        console.log('Delete Result:', deleteResult);
+
+        if (deleteResult.deletedCount === 1) { 
+          return "Medical record successfully deleted"; 
+        } else { 
+          return "Failed to delete medical record"; 
+        }
+
+      } catch (e) {
+        throw e;
+      }
+    }
+
+
   public async save (MedicalRecord: MedicalRecord): Promise<MedicalRecord> {
     const query = { medicalRecordId: MedicalRecord.id.toString() };
 

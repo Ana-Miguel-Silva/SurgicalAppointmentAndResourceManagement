@@ -34,7 +34,7 @@ export default class MedicalConditionController implements IMedicalConditionCont
   public async getMedicalCondition(req: Request, res: Response, next: NextFunction) {
     try {
       const MedicalConditionOrError = await this.medicalConditionServiceInstance.getMedicalCondition(req.body as string) as Result<IMedicalConditionDTO>;
-      console.log(MedicalConditionOrError);
+      //console.log(MedicalConditionOrError);
       if (MedicalConditionOrError.isFailure) {
         return res.status(404).send();
       }

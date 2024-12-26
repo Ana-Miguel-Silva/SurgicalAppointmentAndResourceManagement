@@ -20,6 +20,7 @@ import { forkJoin } from 'rxjs';
 import Orientation from './map/orientation';
 //@ts-ignore
 import ThumbRaiser from './map/hospital';
+import { sweetAlertService } from '../../../Services/sweetAlert.service';
 
 interface CreatingOperationRequestUIDto {
   patientEmail: string;
@@ -241,6 +242,7 @@ export class DoctorComponent implements OnInit {
     private medicalRecordService: MedicalRecordService,
     private patientService : PatientService,
     private staffService : StaffService,
+    private sweetService : sweetAlertService,
     private router: Router,
     private ngZone: NgZone
   ) {
@@ -418,6 +420,7 @@ export class DoctorComponent implements OnInit {
 
   selectedAllergie: string | null =null;
   selectedPatientEmailMedicalRecord: string | null =null;
+  selectedPatientIdMedicalRecord: string | null =null;
   successMessage: string | null = null;
 
 
@@ -868,6 +871,8 @@ removeStaffMember(index: number) {
   }
 
   async onCreateMedicalRecord(requestData: CreatingMedicalRecordUIDto) {
+    
+
     const token = this.authService.getToken();
     if (!token) {
       Swal.fire({
@@ -923,8 +928,12 @@ removeStaffMember(index: number) {
               timer: 1500,
             });
             this.modalService.closeModal('registerMedicalRecordModal');
+
+            this.rejectPolicy();
           },
           error: (error: any) => {
+            this.rejectPolicy();
+
             console.error('Error creating Medical Record:', error);
             Swal.fire({
               icon: 'error',
@@ -935,6 +944,8 @@ removeStaffMember(index: number) {
         });
       },
       error: (error: any) => {
+        this.rejectPolicy();
+
         console.error('Error fetching patient or staff:', error);
         Swal.fire({
           icon: 'error',
@@ -1142,6 +1153,45 @@ removeStaffMember(index: number) {
   }
 
 
+  deleteMedicalRecord(){
+     console.log(`Deactivating medical record ID: ${this.selectedPatientEmailMedicalRecord}`);
+            
+      if (!this.selectedPatientEmailMedicalRecord) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'No medical record selected.',
+        });
+        return;
+      }
+
+      forkJoin({
+      patient: this.patientService.getPatientByEmail(this.selectedPatientEmailMedicalRecord)
+    }).subscribe({
+      next: ({ patient }) => {
+        console.log(patient);
+     
+      console.log(patient.id.value);
+      this.selectedPatientIdMedicalRecord = patient.id.value;
+
+      this.medicalRecordService.deleteMedicalRecord(this.selectedPatientIdMedicalRecord)
+      .subscribe({
+        next: (response) => {
+          this.getAllMedicalConditions();
+          this.sweetService.sweetSuccess("Medical Record desativado com sucesso")
+        },
+        error: (error) => {
+          console.error('Error deactivating medical record:', error);
+          this.errorMessage = 'Failed to deactivate medical record!';
+          this.sweetService.sweetErro("Failed to deactivate medical record")
+        }
+      });
+
+    }});
+
+    };   
+
+
 
   onUpdateMedicalRecord() {
     const token = this.authService.getToken();
@@ -1181,28 +1231,20 @@ removeStaffMember(index: number) {
       .subscribe({
         next: (response: any) => {
           console.log("Updated medical record response: ", response);
-          Swal.fire({
-            icon: "success",
-            title: "Medical Record atualizado com sucesso!",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.sweetService.sweetSuccess("Medical record edited successfully");
+
           this.getAllMedicalRecords();
           this.cleanMedicalRecordRegister();
           this.closeModal('UpdateMedicalRecordModal');
+
+          this.rejectPolicy();
         },
         error: (error) => {
-          console.error('Error editing Medical Record:', error);
-          Swal.fire({
-            icon: "error",
-            title: "Não foi possível atualizar o Medical Record",
-            toast: true,
-            position: "top-end",
-            timer: 3000,
-            showConfirmButton: false
-          });
+          this.rejectPolicy();
+          
+          console.error('Error editing Medical Record:', error);          
+          this.sweetService.sweetErro("Error editing Medical Record");
+          
           this.errorMessage = 'Failed to edit Medical Record!';
           this.successMessage = null;
         }

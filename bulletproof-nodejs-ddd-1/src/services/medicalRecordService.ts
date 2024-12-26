@@ -262,4 +262,29 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
+
+  public async deleteMedicalRecord(patientId: string): Promise<Result<string>> {
+    try {
+      const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(patientId);
+      const MedicalRecord = MedicalRecords[0];
+      
+      if (MedicalRecord === null || MedicalRecord === undefined) {       
+        return Result.fail<string>("Medical Record not found");
+      }
+      else {       
+        const deleteMessage = await this.MedicalRecordRepo.delete(MedicalRecord);
+
+        if(deleteMessage == "Medical record successfully deleted"){
+          return Result.ok<string>( "Medical Record was deleted" )
+        }else{
+          return Result.fail<string>("Error in deleting Medical Record");
+        }        
+       
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
 }

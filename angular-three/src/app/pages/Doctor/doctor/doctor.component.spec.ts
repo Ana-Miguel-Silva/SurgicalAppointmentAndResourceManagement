@@ -326,63 +326,214 @@ component.onCreateRequest(newRequest);
     expect(component.operationRequests.length).toBe(2);
   }));
 
-    it('should update medical record successfully', fakeAsync(() => {
-     
-      spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
+  it('should update medical record successfully', fakeAsync(() => {
     
-   
-      const mockResponse = [{
-        id: '1', 
-        staff: '937c43d0-85df-4cfc-b07b-b1b6c2af6501',
-        patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-        allergies: [
-          { designacao: 'Shellfish Allergy', descricao: 'e.g., shrimp, lobster', status: 'Not Meaningful Anymore' }
-        ],
-        medicalConditions: [
-          { codigo: 'A08.0', designacao: 'Rotavirus enteritis', descricao: 'A viral infection that causes severe diarrhea, primarily in young children.', sintomas: ['Diarrhea', 'Fever', 'Abdominal pain', 'Dehydration'], status: 'Active' }
-        ],
-        descricao: 'Updated description'
-      }];
-      
-      spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
-      spyOn(component, 'getAllMedicalRecords');
-      spyOn(component, 'cleanMedicalRecordRegister');
-      spyOn(component, 'closeModal');
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');  
   
-      component.medicalRecordUpdate.patchValue({
-        patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-        descricao: 'Updated description',
-        medicalConditions: [
-          {
-            codigo: 'A08.0',
-            designacao: 'Rotavirus enteritis',
-            descricao: 'Updated description',
-            sintomas: ['Diarrhea'],
-            status: 'Active'
-          }
-        ],
-        allergies: [
-          {
-            designacao: 'Peanut Allergy',
-            descricao: '',
-            status: 'Active'
-          }
-        ]
-      });
+    const mockResponse = [{
+      id: '1', 
+      staff: '937c43d0-85df-4cfc-b07b-b1b6c2af6501',
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      allergies: [
+        { designacao: 'Shellfish Allergy', descricao: 'e.g., shrimp, lobster', status: 'Not Meaningful Anymore' }
+      ],
+      medicalConditions: [
+        { codigo: 'A08.0', designacao: 'Rotavirus enteritis', descricao: 'A viral infection that causes severe diarrhea, primarily in young children.', sintomas: ['Diarrhea', 'Fever', 'Abdominal pain', 'Dehydration'], status: 'Active' }
+      ],
+      descricao: 'Updated description'
+    }];
+    
+    spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
+    spyOn(component, 'getAllMedicalRecords');
+    spyOn(component, 'cleanMedicalRecordRegister');
+    spyOn(component, 'closeModal');
 
-      component.getAllMedicalRecords();
-      component.onUpdateMedicalRecord();
-      tick(); 
-      tick(1000); 
-      flush(); 
+    component.medicalRecordUpdate.patchValue({
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      descricao: 'Updated description',
+      medicalConditions: [
+        {
+          codigo: 'A08.0',
+          designacao: 'Rotavirus enteritis',
+          descricao: 'Updated description',
+          sintomas: ['Diarrhea'],
+          status: 'Active'
+        }
+      ],
+      allergies: [
+        {
+          designacao: 'Peanut Allergy',
+          descricao: '',
+          status: 'Active'
+        }
+      ]
+    });
 
-      component.cleanMedicalRecordRegister();
-      
+    component.getAllMedicalRecords();
+    component.onUpdateMedicalRecord();
+    tick(); 
+    tick(1000); 
+    flush(); 
+
+    component.cleanMedicalRecordRegister();
+    
+
+    expect(mockAuthService.getToken).toHaveBeenCalled();    
+    expect(component.getAllMedicalRecords).toHaveBeenCalled();
+    expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
+  }));
+
+
+  it('should update allergy entry in medical record successfully', fakeAsync(() => {
+    
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');  
   
-      expect(mockAuthService.getToken).toHaveBeenCalled();    
-      expect(component.getAllMedicalRecords).toHaveBeenCalled();
-      expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
-    }));
+    const mockResponse = [{
+      id: '1', 
+      staff: '937c43d0-85df-4cfc-b07b-b1b6c2af6501',
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      allergies: [        
+      ],
+      medicalConditions: [
+        { codigo: 'A08.0', designacao: 'Rotavirus enteritis', descricao: 'A viral infection that causes severe diarrhea, primarily in young children.', sintomas: ['Diarrhea', 'Fever', 'Abdominal pain', 'Dehydration'], status: 'Active' }
+      ],
+      descricao: 'Updated description'
+    }];
+    
+    spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
+    spyOn(component, 'getAllMedicalRecords');
+    spyOn(component, 'cleanMedicalRecordRegister');
+    spyOn(component, 'closeModal');
+
+    component.medicalRecordUpdate.patchValue({
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      descricao: 'Updated description',
+      medicalConditions: [
+        {
+          codigo: 'A08.0',
+          designacao: 'Rotavirus enteritis',
+          descricao: 'Updated description',
+          sintomas: ['Diarrhea'],
+          status: 'Active'
+        }
+      ],
+      allergies: [      
+      ]
+    });
+
+    component.getAllMedicalRecords();
+    component.onUpdateMedicalRecord();
+    tick(); 
+    tick(1000); 
+    flush(); 
+
+    component.cleanMedicalRecordRegister();
+    
+
+    expect(mockAuthService.getToken).toHaveBeenCalled();    
+    expect(component.getAllMedicalRecords).toHaveBeenCalled();
+    expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
+  }));
+
+
+  it('should update medical condition entry in medical record successfully', fakeAsync(() => {
+    
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');  
+  
+    const mockResponse = [{
+      id: '1', 
+      staff: '937c43d0-85df-4cfc-b07b-b1b6c2af6501',
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      allergies: [
+        { designacao: 'Shellfish Allergy', descricao: 'e.g., shrimp, lobster', status: 'Not Meaningful Anymore' }
+      ],
+      medicalConditions: [
+        ],
+      descricao: 'Updated description'
+    }];
+    
+    spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
+    spyOn(component, 'getAllMedicalRecords');
+    spyOn(component, 'cleanMedicalRecordRegister');
+    spyOn(component, 'closeModal');
+
+    component.medicalRecordUpdate.patchValue({
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      descricao: 'Updated description',
+      medicalConditions: [       
+      ],
+      allergies: [
+        {
+          designacao: 'Peanut Allergy',
+          descricao: '',
+          status: 'Active'
+        }
+      ]
+    });
+
+    component.getAllMedicalRecords();
+    component.onUpdateMedicalRecord();
+    tick(); 
+    tick(1000); 
+    flush(); 
+
+    component.cleanMedicalRecordRegister();
+    
+
+    expect(mockAuthService.getToken).toHaveBeenCalled();    
+    expect(component.getAllMedicalRecords).toHaveBeenCalled();
+    expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
+  }));
+
+
+  it('should update description entry in medical record successfully', fakeAsync(() => {
+    
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');  
+  
+    const mockResponse = [{
+      id: '1', 
+      staff: '937c43d0-85df-4cfc-b07b-b1b6c2af6501',
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      allergies: [
+        { designacao: 'Shellfish Allergy', descricao: 'e.g., shrimp, lobster', status: 'Not Meaningful Anymore' }
+      ],
+      medicalConditions: [
+        ],
+      descricao: 'description'
+    }];
+    
+    spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
+    spyOn(component, 'getAllMedicalRecords');
+    spyOn(component, 'cleanMedicalRecordRegister');
+    spyOn(component, 'closeModal');
+
+    component.medicalRecordUpdate.patchValue({
+      patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
+      descricao: 'description',
+      medicalConditions: [       
+      ],
+      allergies: [
+        {
+          designacao: 'Peanut Allergy',
+          descricao: '',
+          status: 'Active'
+        }
+      ]
+    });
+
+    component.getAllMedicalRecords();
+    component.onUpdateMedicalRecord();
+    tick(); 
+    tick(1000); 
+    flush(); 
+
+    component.cleanMedicalRecordRegister();
+    
+
+    expect(mockAuthService.getToken).toHaveBeenCalled();    
+    expect(component.getAllMedicalRecords).toHaveBeenCalled();
+    expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
+  }));
 });
   
 

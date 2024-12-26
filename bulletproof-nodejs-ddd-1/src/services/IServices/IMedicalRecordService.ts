@@ -10,6 +10,7 @@ import IUpdateMedicalRecordDTO from "../../dto/IUpdateMedicalRecordDTO";
 export default interface IMedicalRecordService  {
   createMedicalRecord(MedicalRecordDTO: IMedicalRecordDTO):  Promise<Result<IMedicalRecordDTO>>;
   updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO):  Promise<Result<IMedicalRecordDTO>>;
+  deleteMedicalRecord(patientId: string):  Promise<Result<string>>;
   getMedicalRecordById (medicalrecordId: string): Promise<Result<IMedicalRecordDTO>>;
   getMedicalRecord (medicalrecordId: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO>>;
   getAllergiesMedicalRecord (medicalrecord: MedicalRecord): Promise<Result<string[]>>;
