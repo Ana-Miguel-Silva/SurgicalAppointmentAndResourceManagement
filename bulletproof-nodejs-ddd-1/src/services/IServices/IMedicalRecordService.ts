@@ -12,7 +12,7 @@ export default interface IMedicalRecordService  {
   updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO):  Promise<Result<IMedicalRecordDTO>>;
   deleteMedicalRecord(patientId: string):  Promise<Result<string>>;
   getMedicalRecordById (medicalrecordId: string): Promise<Result<IMedicalRecordDTO>>;
-  getMedicalRecord (medicalrecordId: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO>>;
+  getMedicalRecord (medicalrecordId: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO | null>>;
   getAllergiesMedicalRecord (medicalrecord: MedicalRecord): Promise<Result<string[]>>;
   getAllMedicalConditionsMedicalRecord (medicalrecord: MedicalRecord): Promise<Result<string[]>>;
 }

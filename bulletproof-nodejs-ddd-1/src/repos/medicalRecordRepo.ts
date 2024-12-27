@@ -122,6 +122,8 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
      try {
       let query: any = {};
 
+      console.log(medicalRecord)
+
       if (typeof medicalRecord === 'string') {
         query = {
           $or: [
@@ -142,8 +144,11 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
         if (medicalRecord.descricao) query.descricao = medicalRecord.descricao;
       }
 
-      const medicalRecordRecords = await this.MedicalRecordSchema.find(query);
 
+    
+      const medicalRecordRecords = await this.MedicalRecordSchema.find(query);
+  
+    
 
       const medicalRecords = await Promise.all(
         medicalRecordRecords.map(async record => await MedicalRecordMap.toDomain(record))

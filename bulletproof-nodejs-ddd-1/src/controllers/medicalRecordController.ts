@@ -26,11 +26,14 @@ export default class MedicalRecordController implements IMedicalRecordController
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IFEMedicalRecordDTO>;
 
+      console.log("get medical record" , MedicalRecordOrError);
+
       if (MedicalRecordOrError.isFailure) {
         return res.status(404).send();
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();   
+      console.log("get medical record2 "  , MedicalRecordDTO);
 
       return res.status(200).json( MedicalRecordDTO );
     }

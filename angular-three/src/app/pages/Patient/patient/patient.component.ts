@@ -119,6 +119,7 @@ export class PatientComponent {
   selectedMedicalCondition: string | null =null;
   tagsConditions: IMedicalConditionMedicalRecord[] = [];
   tagsAllergies: IAllergieMedicalRecord[] = [];
+  descricaoList: string[] = [];
   medicalRecordProfile: any = null;
 
 
@@ -278,6 +279,7 @@ export class PatientComponent {
 
               this.tagsConditions = this.medicalRecordProfile.medicalConditions;
               this.tagsAllergies = this.medicalRecordProfile.allergies;
+              this.descricaoList = this.medicalRecordProfile.designacao;
 
               this.openModal('ViewMedicalRecord');
             },

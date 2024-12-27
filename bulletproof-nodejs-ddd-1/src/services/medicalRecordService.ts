@@ -64,7 +64,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
   }
 
 
-    public async getMedicalRecord(medicalRecord: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO>> {
+    public async getMedicalRecord(medicalRecord: string): Promise<Result<IFEMedicalRecordDTO[] | IFEMedicalRecordDTO | null>> {
       try {
         const medicalRecords = await this.MedicalRecordRepo.findMedicalRecord(medicalRecord);
 

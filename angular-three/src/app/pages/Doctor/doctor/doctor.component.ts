@@ -474,6 +474,10 @@ export class DoctorComponent implements OnInit {
   selectedPatientIdMedicalRecord: string | null =null;
   successMessage: string | null = null;
 
+  filteredAllergies = [...this.tagsAllergies];
+  filteredConditions = [...this.tagsConditions];
+  filteredDescriptions = [...this.descricaoList];
+
   medicalRecordProfile: any = null;
 
 
@@ -1226,23 +1230,6 @@ removeStaffMember(index: number) {
     });
   }
 
-  applyMedicalRecordFilter() {
-    this.filteredMedicalRecordRequests = this.medicalRecordRequests.filter(request => {
-      const matchesAllergie = this.filterMedicalRecord.allergies
-      ? (request.allergies as IAllergieMedicalRecord[]).some(allergie =>
-          allergie.designacao.toLowerCase().includes(this.filterMedicalRecord.allergies.toLowerCase())
-        )
-      : true;
-
-      const matchesMedicalCondition = this.filterMedicalRecord.medicalConditions
-      ? (request.medicalConditions as IMedicalConditionMedicalRecord[]).some(medicalCondition =>
-        medicalCondition.designacao.toLowerCase().includes(this.filterMedicalRecord.medicalConditions.toLowerCase())
-        )
-      : true;
-
-      return matchesAllergie && matchesMedicalCondition;
-    });
-  }
 
   editMedicalRecord() {
     const token = this.authService.getToken();
@@ -1471,6 +1458,7 @@ removeStaffMember(index: number) {
   
                 this.tagsConditions = this.medicalRecordProfile.medicalConditions;
                 this.tagsAllergies = this.medicalRecordProfile.allergies;
+                this.descricaoList = this.medicalRecordProfile.descricao;
   
                 this.openModal('ViewMedicalRecord');
               },
