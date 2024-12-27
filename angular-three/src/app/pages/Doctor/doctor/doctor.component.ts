@@ -252,7 +252,7 @@ export class DoctorComponent implements OnInit {
   selectedOperationRequestId: string | null = null;
 
   selectedSurgeryRoomId: string | null = null;
-
+  validConditionText: string = '✘';
 
 
   constructor(
@@ -474,7 +474,15 @@ export class DoctorComponent implements OnInit {
   selectedPatientIdMedicalRecord: string | null =null;
   successMessage: string | null = null;
 
-
+  updateConditionToValid(): void {
+      this.validConditionText = '✔';
+  }
+  isConditionValid(): boolean {
+    return this.validConditionText === '✔';
+}
+  updateConditionToInvalid(): void {
+      this.validConditionText = '✘';
+  }
   openPolicyModal() {
     this.showPolicyModal = true;
   }
@@ -542,6 +550,7 @@ export class DoctorComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.medicalConditionsList = response;
+          this.filterOptionsMedicalConditions();
           console.log("teste: ", response);
         },
         error: (error) => {
@@ -585,11 +594,20 @@ export class DoctorComponent implements OnInit {
   }
 
   filterOptionsMedicalConditions(): void {
-    const filterValueCondition = this.filterTextCondition.toLowerCase();
-    this.filteredOptionsConditions = this.medicalConditionsList.filter(option =>
-      option.designacao.toLowerCase().includes(filterValueCondition),
-    );
-  }
+    this.updateConditionToInvalid();
+    this.filterConditionDescricaoText = "";
+    this.filterConditionCodigoText = "";
+
+    const filterValueCondition = this.filterTextCondition
+        .toLowerCase()
+        .split(' ')
+        .filter(word => word.trim() !== '');
+
+    this.filteredOptionsConditions = this.medicalConditionsList.filter(option => {
+        const combinedString = `[${option.codigo}] ${option.designacao}`.toLowerCase();
+        return filterValueCondition.every(word => combinedString.includes(word));
+    });
+}
 
   selectOption(option: string): void {
     this.filterText = option;
@@ -623,6 +641,7 @@ export class DoctorComponent implements OnInit {
   }
 
   selectOptionMedicalCondition(designacao: string) {
+    this.updateConditionToValid();
     this.filterTextCondition = designacao;
 
     this.filterConditionDescricaoText = this.medicalConditionsList.find(option =>

@@ -743,28 +743,22 @@ id="updateAppointmentModal" class="modal">
           </ul>
         </div>
 
-        <div class="col-mb-4">
-          <div class="dropdown2">
-            <label for="tagsCondition-filter" class="form-label">Medical Condtions</label>
-            <input id="condition-filter" type="text" name="filterMedicalCondiitonDesignacao"
+        <div class="col-md-12">
+          <div class="input-group has-validation">
+            <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+            <input id="condition-filter" class="form-control" type="text" name="filterMedicalCondiitonDesignacao"
               [(ngModel)]="filterTextCondition" placeholder="Choose an medical condition"
               (input)="filterOptionsMedicalConditions()" (focus)="showDropdown2 = true" (blur)="onBlur()" />
+              <span class="input-group-text" id="validCondition">{{ validConditionText }}</span>
+            <input type="text" class="form-control" id="descricaoCondition"  style="width: 40%;" [(ngModel)]="filterConditionDescricaoText"
+              name="descricaoCondition" required readonly />
           </div>
           <ul *ngIf="showDropdown2" class="dropdown-list">
             <li *ngFor="let option of filteredOptionsConditions"
               (mousedown)="selectOptionMedicalCondition(option.designacao)">
-              {{ option.designacao }}
+              [{{option.codigo}}] {{ option.designacao }}
             </li>
           </ul>
-        </div>
-
-
-
-        <div class="col-md-5">
-          <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
-          <input type="text" class="form-control" id="descricaoCondition" [(ngModel)]="filterConditionDescricaoText"
-            name="descricaoCondition" required />
-          <div class="valid-feedback">Looks good!</div>
         </div>
 
 
@@ -799,7 +793,7 @@ id="updateAppointmentModal" class="modal">
 
         </div>
         <div class="col-12">
-          <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+          <button type="button" class="btn btn-primary" (click)="addMedicalCondition()" [disabled]="!isConditionValid()">Add Condition</button>
         </div>
 
 
@@ -1242,28 +1236,21 @@ id="updateAppointmentModal" class="modal">
             </div>
 
             <div class="col-mb-4">
-              <div class="dropdown2">
-                <label for="tagsCondition-filterUpdate" class="form-label">Medical Condtions</label>
-                <input id="condition-filterUpdate" type="text" name="filterMedicalCondiitonDesignacao"
-                  [(ngModel)]="filterTextCondition" [ngModelOptions]="{standalone: true}"
-                  placeholder="Choose an medical condition" (input)="filterOptionsMedicalConditions()"
-                  (focus)="showDropdown2 = true" (blur)="onBlur()" />
+              <div class="input-group has-validation">
+                <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+                <input id="condition-filterUpdate" class="form-control" type="text" name="filterMedicalCondiitonDesignacao"
+                  [(ngModel)]="filterTextCondition" placeholder="Choose an medical condition"
+                  (input)="filterOptionsMedicalConditions()" (focus)="showDropdown2 = true" (blur)="onBlur()" />
+                  <span class="input-group-text" id="validCondition">{{ validConditionText }}</span>
+                <input type="text" class="form-control" id="descricaoConditionUpdate"  style="width: 40%;" [(ngModel)]="filterConditionDescricaoText"
+                  name="descricaoConditionUpdate" required readonly />
               </div>
-              <ul *ngIf="showDropdown2" class="dropdown-listUpdate">
+              <ul *ngIf="showDropdown2" class="dropdown-list">
                 <li *ngFor="let option of filteredOptionsConditions"
                   (mousedown)="selectOptionMedicalCondition(option.designacao)">
-                  {{ option.designacao }}
+                  [{{option.codigo}}] {{ option.designacao }}
                 </li>
               </ul>
-            </div>
-
-
-
-            <div class="col-md-5">
-              <label for="descricaoCondition" class="form-label">Medical Condition Description</label>
-              <input type="text" class="form-control" id="descricaoConditionUpdate" [(ngModel)]="filterConditionDescricaoText"
-                [ngModelOptions]="{standalone: true}" name="descricaoConditionUpdate" required />
-              <div class="valid-feedback">Looks good!</div>
             </div>
 
 
