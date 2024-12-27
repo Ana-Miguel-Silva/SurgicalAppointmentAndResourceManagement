@@ -193,9 +193,9 @@ export class AdminComponent {
       sintomas: ['', Validators.required]
     });
     this.specializationEditForm = this.fb.group({
-      id: ['', Validators.required],
-      designacao: ['', Validators.required],
-      descricao: ['', Validators.required]
+      id: ['', Validators.required],      
+      SpecializationName: ['', Validators.required],
+      SpecializationDescription: ['', Validators.required]
     })
 
 
@@ -868,6 +868,7 @@ export class AdminComponent {
   }
 
   onEditSpecialization(){
+
     const token = this.authService.getToken();
     if (!token) {
       this.errorMessage = 'You are not logged in!';
@@ -882,6 +883,7 @@ export class AdminComponent {
       return;
     }
     const updatedPatientData = this.specializationEditForm.value;
+
     this.specializationService.updateSpecialization(this.selectSpecializationsId, updatedPatientData )
       .subscribe({
         next: (response: any) => {
@@ -1629,7 +1631,7 @@ export class AdminComponent {
 
 
 
-    //TODO: Fazer o array dos required staff atualizar automaticamente e ir buscar o codigo de adicionar o staff
+      //TODO: Fazer o array dos required staff atualizar automaticamente e ir buscar o codigo de adicionar o staff
 
   }
 
@@ -2362,8 +2364,8 @@ sweetErro(text: string){
           this.SpecializationSingle = response;
           console.log(this.SpecializationSingle);
           this.specializationEditForm.get('id')?.setValue(this.SpecializationSingle.id);
-          this.specializationEditForm.get('designacao')?.setValue(this.SpecializationSingle.specializationName);
-          this.specializationEditForm.get('descricao')?.setValue(this.SpecializationSingle.specializationDescription);
+          this.specializationEditForm.get('SpecializationName')?.setValue(this.SpecializationSingle.specializationName);
+          this.specializationEditForm.get('SpecializationDescription')?.setValue(this.SpecializationSingle.specializationDescription);
           this.openModal('editSpecializationModal');
         },
         error: (error) => {
