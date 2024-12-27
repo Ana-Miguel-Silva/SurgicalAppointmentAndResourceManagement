@@ -31,7 +31,7 @@ namespace DDDSample1.Controllers
 
         // GET: api/Appointments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<AppointmentUIDto>>> GetAll()
         {
             return await _service.GetAllAsync();
         }

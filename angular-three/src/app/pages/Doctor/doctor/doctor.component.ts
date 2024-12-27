@@ -38,10 +38,28 @@ interface OperationRequest {
   priority: string;
 }
 
+interface AppointmentUIDto {
+  id: string;
+  roomNumber: string;
+  date: SlotDto;
+}
+
+interface SlotDto {
+  startTime: string;
+  endTime: string;
+}
+
+interface updateAppointmentDto {
+  id: string;
+  roomId: string;
+  start: string;
+  selectedStaff: string[];
+}
+
 interface SurgeryRoomUIDto {
-  Id: string;
-  RoomNumber: string;
-  Type: string;
+  id: string;
+  roomNumber: string;
+  type: string;
 }
 
 interface StaffUIDto {
@@ -62,7 +80,7 @@ interface CreatingAppointmentDto {
   roomId: string;
   operationRequestId: string;
   start: string;
-  selectedStaff: string[]; 
+  selectedStaff: string[];
 }
 
 interface MedicalRecordRequest {
@@ -181,6 +199,13 @@ export class DoctorComponent implements OnInit {
     priority: ''
   };
 
+  updateAppointment: updateAppointmentDto = {
+    id: '',
+    roomId: '',
+    start: '',
+    selectedStaff: []
+  };
+
   operationRequests: OperationRequest[] = [];
 
   notscheduledOperationRequests: OperationRequest[] = [];
@@ -192,6 +217,8 @@ export class DoctorComponent implements OnInit {
     emailPatient: '',
     emailDoctor: ''
   };
+
+  appointments: AppointmentUIDto[] = [];
 
   surgeryRooms: SurgeryRoomUIDto[] = [];
 
@@ -208,7 +235,6 @@ export class DoctorComponent implements OnInit {
     medicalConditions: '',
     descricao: ''
   };
-
 
   medicalRecordRequest: CreatingMedicalRecordUIDto ={
     staff: '',
@@ -259,8 +285,8 @@ export class DoctorComponent implements OnInit {
   medicalRecordUpdate!: FormGroup;
   medicalRecordProfileUpdate: any = null;
 
-  isPolicyAccepted = false; 
-  showPolicyModal = false; 
+  isPolicyAccepted = false;
+  showPolicyModal = false;
 
   ngOnInit() {
     this.getAllOperationRequests();
@@ -270,6 +296,7 @@ export class DoctorComponent implements OnInit {
     this.getAllSurgeryRooms();
     this.getAllStaffs();
     this.getAllNotScheduledOperationRequests();
+    this.getAllAppointments();
   }
 
 
@@ -361,6 +388,28 @@ export class DoctorComponent implements OnInit {
         console.error('Error fetching requests:', error);
       }
     });
+  }
+
+  getAllAppointments() {
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    this.appointmentService.getAllAppointments().subscribe({
+      next: (response: AppointmentUIDto[]) => {
+        this.appointments = response;
+      },
+      error: (error) => {
+        console.error('Error fetching appointments:', error);
+      }
+    });
+
   }
 
 
@@ -625,10 +674,10 @@ export class DoctorComponent implements OnInit {
       console.log("update array: ",  this.tagsConditions);
     }
 
-    
+
   }
 
-  addDescription() {  
+  addDescription() {
     let exist = this.descricaoList.find(option =>
       option.toLowerCase() === this.filterTextDescription.toLowerCase()
     );
@@ -686,7 +735,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     if (!this.selectedOperationRequestId) {
       Swal.fire({
         icon: 'error',
@@ -695,7 +744,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     if (!this.selectedSurgeryRoomId) {
       Swal.fire({
         icon: 'error',
@@ -704,7 +753,7 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     if (this.appointmentData.selectedStaff.length === 0 || this.appointmentData.selectedStaff.some(staffId => !staffId)) {
       Swal.fire({
         icon: 'error',
@@ -713,14 +762,14 @@ export class DoctorComponent implements OnInit {
       });
       return;
     }
-  
+
     const payload: CreatingAppointmentDto = {
       roomId: this.selectedSurgeryRoomId,
-      operationRequestId: this.selectedOperationRequestId,  
+      operationRequestId: this.selectedOperationRequestId,
       start: this.appointmentData.date.start,
       selectedStaff: this.appointmentData.selectedStaff
     };
-    
+
     this.appointmentService.createAppointments(payload).subscribe({
       next: () => {
         // this.getAllAppointments();
@@ -857,6 +906,112 @@ removeStaffMember(index: number) {
     this.openModal('updateRequestModal');
   }
 
+  onUpdateAppointment(appointmentData: updateAppointmentDto) {
+    if (!appointmentData.id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Invalid Appointment ID!',
+      });
+      return;
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+    if (!appointmentData.id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Invalid Appointment ID!',
+      });
+      return;
+    }
+
+    const oldAppointment = this.appointments.find(app => app.id === appointmentData.id);
+
+    if (!oldAppointment) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Original appointment not found!',
+      });
+      return;
+    }
+
+    const roomId = this.surgeryRooms.find(room => room.roomNumber.toString() === oldAppointment.roomNumber)?.id;
+
+    if (!roomId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Room not found for old appointment!',
+      });
+      return;
+    }
+
+
+    const payload: updateAppointmentDto = {
+      id: appointmentData.id,
+      roomId: appointmentData.roomId || roomId,
+      start: appointmentData.start || oldAppointment.date.startTime,
+      selectedStaff: appointmentData.selectedStaff
+    };
+
+    console.log("Payload: ", payload);
+    this.appointmentService.updateAppointments(payload).subscribe({
+      next: () => {
+        this.getAllAppointments();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Appointment updated successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+        this.modalService.closeModal('updateAppointmentModal');
+      },
+      error: (error) => {
+        console.error('Error updating Appointment:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update Appointment.',
+        });
+      }
+    });
+  }
+
+  setUpdateAppointment(appointment: updateAppointmentDto){
+
+    this.updateAppointment.id = appointment.id;
+    this.updateAppointment.roomId = appointment.roomId;
+    this.updateAppointment.start = appointment.start;
+    this.updateAppointment.selectedStaff = [];
+    this.openModal('updateAppointmentModal');
+
+  }
+
+  addUpdateStaffMember() {
+    this.updateAppointment.selectedStaff.push('');
+  }
+
+
+  removeUpdateStaffMember(index: number) {
+    if (index > -1) {
+      this.updateAppointment.selectedStaff.splice(index, 1);
+    }
+  }
+
   onDeleteRequest(id: string) {
     const token = this.authService.getToken();
     if (!token) {
@@ -891,7 +1046,7 @@ removeStaffMember(index: number) {
   }
 
   async onCreateMedicalRecord(requestData: CreatingMedicalRecordUIDto) {
-    
+
 
     const token = this.authService.getToken();
     if (!token) {
@@ -917,7 +1072,7 @@ removeStaffMember(index: number) {
       staff: this.staffService.getStaffByEmail(staffEmail),
     }).subscribe({
       next: ({ patient, staff }) => {
-       
+
         const getPatientId = patient.id.value;
         const staffId = staff.id;
 
@@ -927,12 +1082,12 @@ removeStaffMember(index: number) {
           allergies: this.tagsAllergies,
           medicalConditions: this.tagsConditions.map((condition) => ({
             ...condition,
-            sintomas: condition.sintomas.filter((sintoma: string) => sintoma.trim() !== ''), 
+            sintomas: condition.sintomas.filter((sintoma: string) => sintoma.trim() !== ''),
           })),
           descricao: this.descricaoList,
         };
 
-       
+
         console.log("Medical record payload:", payload);
 
 
@@ -941,7 +1096,7 @@ removeStaffMember(index: number) {
             this.cleanMedicalRecordRegister();
             this.getAllMedicalRecords();
             this.sweetService.sweetSuccess('Medical Record created successfully!');
-        
+
             this.modalService.closeModal('registerMedicalRecordModal');
 
             this.rejectPolicy();
@@ -1125,11 +1280,11 @@ removeStaffMember(index: number) {
 
             const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
             const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
-            
+
             // Clear existing items (if needed)
             medicalConditionsControl.clear();
             allergiesControl.clear();
-            
+
             // Add existing conditions to the form
             this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
               medicalConditionsControl.push(this.fb.group({
@@ -1140,7 +1295,7 @@ removeStaffMember(index: number) {
                 status: [condition.status],
               }));
             });
-            
+
             // Add existing allergies to the form
             this.medicalRecordProfileUpdate.allergies.forEach((allergy: IAllergieMedicalRecord) => {
               allergiesControl.push(this.fb.group({
@@ -1149,11 +1304,11 @@ removeStaffMember(index: number) {
                 status: [allergy.status],
               }));
             });
-            
+
             this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions;
             this.tagsAllergies = this.medicalRecordProfileUpdate.allergies;
             this.descricaoList = this.medicalRecordProfileUpdate.descricao;
-            
+
             const updatedMedicalRecordData = this.medicalRecordUpdate.value;
             console.log('Updated Patient Data:', updatedMedicalRecordData);
             console.log('Updated allergies:', this.tagsAllergies);
@@ -1171,7 +1326,7 @@ removeStaffMember(index: number) {
 
   deleteMedicalRecord(){
      console.log(`Deactivating medical record ID: ${this.selectedPatientEmailMedicalRecord}`);
-            
+
       if (!this.selectedPatientEmailMedicalRecord) {
         Swal.fire({
           icon: 'error',
@@ -1186,7 +1341,7 @@ removeStaffMember(index: number) {
     }).subscribe({
       next: ({ patient }) => {
         console.log(patient);
-     
+
       console.log(patient.id.value);
       this.selectedPatientIdMedicalRecord = patient.id.value;
 
@@ -1205,7 +1360,7 @@ removeStaffMember(index: number) {
 
     }});
 
-    };   
+    };
 
 
 
@@ -1226,7 +1381,7 @@ removeStaffMember(index: number) {
       return;
     }
 
-    
+
 
     const updatedPatientData = this.medicalRecordUpdate.value;
 
@@ -1236,7 +1391,7 @@ removeStaffMember(index: number) {
   updatedPatientData.medicalConditions = this.tagsConditions.map(({ _id, ...rest }) => {
     return {
       ...rest,
-      sintomas: rest.sintomas.filter((sintoma: string) => sintoma.trim() !== ''), 
+      sintomas: rest.sintomas.filter((sintoma: string) => sintoma.trim() !== ''),
     };
   });
 
@@ -1259,10 +1414,10 @@ removeStaffMember(index: number) {
         },
         error: (error) => {
           this.rejectPolicy();
-          
-          console.error('Error editing Medical Record:', error);          
+
+          console.error('Error editing Medical Record:', error);
           this.sweetService.sweetErro("Error editing Medical Record");
-          
+
           this.errorMessage = 'Failed to edit Medical Record!';
           this.successMessage = null;
         }
@@ -1313,7 +1468,7 @@ removeStaffMember(index: number) {
     this.filterAllergieNameText = '';
     this.filterAllergieDescricaoText = '';
     this.filterAllergieStatusText = '';
-    
+
     this.filterConditionCodigoText = '';
     this.filterTextCondition = '';
     this.filterConditionDescricaoText = '';

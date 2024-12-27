@@ -68,6 +68,14 @@
         </div>
       </div>
 
+      <div class="container col-md-4">
+        <div class="container-lg  selectionDiv" (click)="openModal('listAppointmentModal')">
+          <div class="form-floating mb-3">
+            <h3 class="title">Update Appointments</h3>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -215,31 +223,141 @@
         </div>
 
         <!-- Staff Selection -->
-        <div class="form-group" *ngFor="let staffId of appointmentData.selectedStaff; let i = index">
-          <div class="row">
-            <div class="col-md-6">
-              <label for="staffId{{ i }}">Select Staff</label>
-              <select id="staffId{{ i }}" class="form-control" [(ngModel)]="appointmentData.selectedStaff[i]"
-                name="staffId{{ i }}" required>
-                <option value="" disabled>Select a Staff Member</option>
-                <option *ngFor="let staff of staffs" [value]="staff.id">
-                  Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{
-                  staff.specialization }}
-                </option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <button type="button" class="btn btn-danger mt-4" (click)="removeStaffMember(i)">Remove Staff</button>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
+<div class="form-group" *ngFor="let staffId of updateAppointment.selectedStaff; let i = index">
+  <div class="row">
+    <div class="col-md-6">
+      <label for="updateStaffId{{ i }}">Select Staff</label>
+      <select
+        id="updateStaffId{{ i }}"
+        class="form-control"
+        [(ngModel)]="updateAppointment.selectedStaff[i]"
+        name="updateStaffId{{ i }}"
+        required>
+        <option value="" disabled>Select a Staff Member</option>
+        <option *ngFor="let staff of staffs" [value]="staff.id">
+          Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
+        </option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <button
+        type="button"
+        class="btn btn-danger mt-4"
+        (click)="removeStaffMember(i)">
+        Remove Staff
+      </button>
+    </div>
+  </div>
+</div>
+<button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
 
         <!-- Submit Button -->
         <button type="submit" class="btn btn-success">Create Appointment</button>
       </form>
     </div>
   </div>
+
+
+<!-- List Appointment Modal -->
+<div [ngStyle]="{'display': isModalOpen('listAppointmentModal') ? 'block' : 'none'}"
+  id="listAppointmentModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeModal('listAppointmentModal')" class="close">&times;</span>
+    <div>
+      <div class="table-wrapper">
+        <!-- Table Title -->
+        <div class="table-title">
+          <h2>Appointments</h2>
+        </div>
+
+        <!-- Appointment Table -->
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Room Number</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appointment of appointments">
+              <td>{{ appointment.roomNumber }}</td>
+              <td>{{ appointment.date.startTime | date:'medium' }}</td>
+              <td>{{ appointment.date.endTime | date:'medium' }}</td>
+              <td>
+                <button class="btn btn-warning" (click)="setUpdateAppointment(appointment)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Update Appointment Modal -->
+<div [ngStyle]="{'display': isModalOpen('updateAppointmentModal') ? 'block' : 'none'}"
+id="updateAppointmentModal" class="modal">
+<div class="modal-content">
+  <span (click)="closeModal('updateAppointmentModal')" class="close">&times;</span>
+  <form (ngSubmit)="onUpdateAppointment(updateAppointment)">
+
+    <!-- Surgery Rooms Dropdown -->
+    <div class="form-group">
+      <label for="updateRoom">Room</label>
+<select id="updateRoom" class="form-control" [(ngModel)]="updateAppointment.roomId" name="updateRoom" required>
+  <option value="" disabled>Select a Room</option>
+  <option *ngFor="let room of surgeryRooms" [value]="room.id">
+    {{ room.roomNumber }} ({{ room.type }})
+  </option>
+</select>
+    </div>
+
+    <!-- Start Date -->
+    <div class="form-group">
+      <label for="updateStartDate">Start Date</label>
+      <input
+        id="updateStartDate"
+        type="datetime-local"
+        class="form-control"
+        [(ngModel)]="updateAppointment.start"
+        name="updateStartDate"
+        required />
+    </div>
+
+    <!-- Staff Selection -->
+    <div class="form-group" *ngFor="let staffId of updateAppointment.selectedStaff; let i = index">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="updateStaffId{{ i }}">Select Staff</label>
+          <select
+            id="updateStaffId{{ i }}"
+            class="form-control"
+            [(ngModel)]="updateAppointment.selectedStaff[i]"
+            name="updateStaffId{{ i }}"
+            required>
+            <option value="" disabled>Select a Staff Member</option>
+            <option *ngFor="let staff of staffs" [value]="staff.id">
+              Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <button type="button" class="btn btn-danger mt-4" (click)="removeUpdateStaffMember(i)">Remove Staff</button>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="addUpdateStaffMember()">Add Staff</button>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-success">Update Appointment</button>
+  </form>
+</div>
+</div>
 
 
   <!-- Filter Operation Requests Modal -->
@@ -650,7 +768,7 @@
         </div>
 
 
-        
+
 
 
 
@@ -687,11 +805,11 @@
 
         <div class="col-mb-6"></div>
 
-        
+
         <div class="col-md-6">
           <ul id="descriptions">
             <li *ngFor="let description of descricaoList; let i = index" class="description">
-              {{ description }} 
+              {{ description }}
               <button type="button" class="delete-button" (click)="removeDescription(i); $event.preventDefault()">
                 X
               </button>
@@ -709,7 +827,7 @@
           <div class="valid-feedback">Looks good!</div>
         </div>
 
-     
+
       <div class="col-12">
         <button type="button" class="btn btn-primary" (click)="addDescription()">Add Description</button>
       </div>
@@ -948,7 +1066,7 @@
                         </ul>
                       </td>
 
-                     
+
                       <!--<td>-->
                       <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
                         <i class="bi bi-pencil"></i>
@@ -1013,7 +1131,7 @@
               </table>
             </div>
 
-          
+
 
 
             <div class="col-md-3">
@@ -1060,7 +1178,7 @@
               </table>
             </div>
 
-            
+
 
             <div class="dropdown">
               <label for="tag-filter" class="form-label">Allergies</label>
@@ -1076,7 +1194,7 @@
                 </li>
               </ul>
             </div>
-            
+
 
             <div class="col-md-5">
               <label for="descricaoAllergie" class="form-label">Description</label>

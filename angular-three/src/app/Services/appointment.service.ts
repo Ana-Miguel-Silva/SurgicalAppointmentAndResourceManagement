@@ -33,7 +33,14 @@ updateAppointments(formData: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.patch(`${this.apiUrl}/${formData.id}`, formData, { headers });
+  return this.http.put(`${this.apiUrl}/${formData.id}`, formData, { headers });
+}
+
+getAllAppointments(): Observable<any[]> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any[]>(`${this.apiUrl}`, { headers });
 }
 
 }

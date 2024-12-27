@@ -38,14 +38,14 @@ namespace DDDSample1.ApplicationService.Appointments
             this._repoPat = repoPat;
         }
 
-        public async Task<List<AppointmentDto>> GetAllAsync()
+        public async Task<List<AppointmentUIDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
 
             List<AppointmentDto> listDto = list.ConvertAll<AppointmentDto>(Appointment =>
                 new(Appointment.Id.AsGuid(), Appointment.RoomId, Appointment.OperationRequestId, Appointment.Date, Appointment.AppStatus, Appointment.AppointmentSlot));
 
-            return listDto;
+            return await Appointment_Dto_to_UIDto(listDto);
         }
 
         public async Task<AppointmentDto> GetByIdAsync(AppointmentId id)
@@ -145,12 +145,18 @@ namespace DDDSample1.ApplicationService.Appointments
             AppointmentDto appointment;
             try
             {
-                appointment = await AddAsync(new CreatingAppointmentDto(dto.RoomId.Value, oldAppointment.OperationRequestId.Value, dto.Start, dto.SelectedStaff), oldAppointment.Id.Value);
-
+                if (dto.SelectedStaff == null || dto.SelectedStaff.Count == 0)
+                {
+                    appointment = await AddAsync(new CreatingAppointmentDto(dto.RoomId.Value, oldAppointment.OperationRequestId.Value, dto.Start, oldAppointment.GetAllStaff()), oldAppointment.Id.Value);
+                }
+                else
+                {
+                    appointment = await AddAsync(new CreatingAppointmentDto(dto.RoomId.Value, oldAppointment.OperationRequestId.Value, dto.Start, dto.SelectedStaff), oldAppointment.Id.Value);
+                }
             }
             catch (BusinessRuleValidationException e)
             {
-                await AddAsync(new CreatingAppointmentDto(oldAppointment.RoomId.Value, oldAppointment.OperationRequestId.Value, oldAppointment.Date.StartTime.ToString("o"), oldAppointment.GetAllStaff()),oldAppointment.Id.Value);
+                await AddAsync(new CreatingAppointmentDto(oldAppointment.RoomId.Value, oldAppointment.OperationRequestId.Value, oldAppointment.Date.StartTime.ToString("o"), oldAppointment.GetAllStaff()), oldAppointment.Id.Value);
                 throw new BusinessRuleValidationException("Appointments was not updated." + e);
             }
 
@@ -447,17 +453,17 @@ namespace DDDSample1.ApplicationService.Appointments
             return await Dto_to_UIDto(operationRequest);
         }
 
-        public async Task<OperationRequestUIDto> ActivateAsync(OperationRequestId id)
+        public async Task ActivateAsync(OperationRequestId id)
         {
             var operationRequest = await _repoOpReq.GetByIdAsync(id);
 
             if (operationRequest == null)
             {
-                return null;
+                return;
             }
 
             operationRequest.MarkAsInative();
-            return await Dto_to_UIDto(operationRequest);
+            return;
         }
 
         private async Task<OperationRequestUIDto> Dto_to_UIDto(OperationRequest operationRequest)
@@ -466,16 +472,20 @@ namespace DDDSample1.ApplicationService.Appointments
             var doctors = await _repoStaff.GetByIdAsync(operationRequest.DoctorId);
             var patients = await _repoPat.GetByIdAsync(operationRequest.MedicalRecordNumber);
 
-            return new OperationRequestUIDto(
-                operationRequest.Id.AsGuid(),
-                patients.Email.FullEmail,
-                doctors.Email.FullEmail,
-                operationTypes.Name,
-                operationRequest.Deadline,
-                operationRequest.Priority
+            return new OperationRequestUIDto(operationRequest.Id.AsGuid(), patients.Email.FullEmail, doctors.Email.FullEmail, operationTypes.Name, operationRequest.Deadline, operationRequest.Priority
             );
         }
 
+        private async Task<List<AppointmentUIDto>> Appointment_Dto_to_UIDto(List<AppointmentDto> appointmentDto)
+        {
+            List<AppointmentUIDto> appointments = new List<AppointmentUIDto>();
+            foreach (var appointment in appointmentDto)
+            {
+                var room = await _repoRooms.GetByIdAsync(appointment.RoomId);
+                appointments.Add(new AppointmentUIDto(appointment.Id, room.RoomNumber.ToString(), appointment.OperationRequestId, appointment.Date));
+            }
+            return appointments;
+        }
         private static string FormattedDate(DateTime date, string format = "HH:mm:ss")
         {
             return date.ToString(format);
