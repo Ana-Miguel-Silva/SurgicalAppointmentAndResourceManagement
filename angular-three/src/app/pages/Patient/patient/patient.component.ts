@@ -282,12 +282,12 @@ export class PatientComponent {
               this.openModal('ViewMedicalRecord');
             },
             error: (error) => {
-              console.error('Error fetching  allergies:', error);
-              this.errorMessage = 'Failed to fetch allergies!';
+              console.error('Error fetching  medical record:', error);
+              this.errorMessage = 'Failed to get medical record!';
             }
           });
         },
-        error: (error: any) => {
+        error: (error: any) => {          
           console.error('Error fetching patient:', error);
           Swal.fire({
             icon: 'error',
