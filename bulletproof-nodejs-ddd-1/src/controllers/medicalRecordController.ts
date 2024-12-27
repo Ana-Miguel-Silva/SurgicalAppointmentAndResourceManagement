@@ -45,6 +45,10 @@ export default class MedicalRecordController implements IMedicalRecordController
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
+      console.log("body create: ", req.body)
+
+      console.log("Create medical record: ", MedicalRecordOrError);
+
       console.log(MedicalRecordOrError);
 
       if (MedicalRecordOrError.isFailure) {
@@ -52,6 +56,8 @@ export default class MedicalRecordController implements IMedicalRecordController
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();
+
+
       return res.json( MedicalRecordDTO ).status(201);
     }
     catch (e) {

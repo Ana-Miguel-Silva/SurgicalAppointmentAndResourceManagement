@@ -42,7 +42,7 @@ describe('Doctor Operation Requests', () => {
     cy.get('.dropdown-list > li').contains('Active').click();
     cy.get('.btn-primary').contains('Add Allergie').click();
 
-    // Add a medical condition
+
     cy.get('#condition-filter').type('Major depressive disorder');
     cy.get('.dropdown-list > li').contains('Major depressive disorder').click();
     cy.get('#descricaoCondition').type('A mental health condition marked by persistent feelings of sadness...');
@@ -51,16 +51,19 @@ describe('Doctor Operation Requests', () => {
     cy.get('#medicalConditionSymptoms').type('Sadness');
     cy.get('.btn-primary').contains('Add Condition').click();
 
-    // Fill in the medical record description
-    cy.get('#descricao').type('Medical record for a patient with peanut allergy');
 
-    // Agree to policy
-    cy.get('.btn-secondary').contains('Read and Agree to Policy').click();
+    cy.get('#descricao').type('Medical record for a patient with peanut allergy');
+    cy.get('button[id="registerDescriptionMedicalRecord"]').click();
+
+
+    cy.get('button[id="registerMedicalRecordPolicy"]').click();    
 
     cy.get('#policyModal').should('be.visible');
     cy.get('#policyModal .btn-success').contains('Accept').click();
 
-    cy.get('#registerMedicalRecord').click(); 
+    cy.get('button[id="buttonRegisterMedicalRecord"]').click();
+    
+    cy.contains('Medical Record created successfully!').should('be.visible');
    
   }); 
 
@@ -68,47 +71,32 @@ describe('Doctor Operation Requests', () => {
   it('should allow edit a medical record', () => {
     cy.get('.selectionDiv').contains('List Medical Record').click();
     cy.get('#listMedicalRecordModal', { timeout: 10000 }).should('be.visible');
-
-    cy.get('#listMedicalRecordModal').find('td').last().should('exist');
-    cy.get('#listMedicalRecordModal').find('td').last().click();
+   
+    cy.get('#listMedicalRecordModal').contains('td', 'testeCypress@gmail.com').parent('tr').click();
 
     cy.get('button[id="editMedicalRecord"]').click();
-
     cy.get('#UpdateMedicalRecordModal', { timeout: 10000 }).should('be.visible');
     
     cy.get('input[id="updateMedicalRecordDescription"]').should('exist'); 
        
     cy.get('input[id="updateMedicalRecordDescription"]').type('update description'); 
-      
-    cy.get('#tag-filterUpdate').type('Peanut Allergy');
-    cy.get('.dropdown-listUpdate > li').contains('Peanut Allergy').click();
-    cy.get('#descricaoAllergieUpdate').type('Severe reaction to peanuts');
-    cy.get('[name="filterAllergieStatusUpdate"]').type('Active');
-    cy.get('.dropdown-listUpdate > li').contains('Active').click();
-    cy.get('.btn-primaryUpdate').contains('Add Allergie').click();
-
+    cy.get('button[id="buttonUpdateMedicalRecordDescription"]').click();
+    
        
     cy.get('#tag-filterUpdate').clear().type('Shellfish Allergy');
     cy.get('.dropdown-listUpdate > li').contains('Shellfish Allergy').click();
     cy.get('#descricaoAllergieUpdate').clear().type('Severe reaction to Shellfish');
     cy.get('[name="filterAllergieStatusUpdate"]').clear().type('Active');
     cy.get('.dropdown-listUpdate > li').contains('Active').click();
-    cy.get('.btn-primaryUpdate').contains('Add Allergie').click();
+    cy.get('button[id="updateAddAllergie"]').contains('Add Allergie').click();
 
-    cy.get('#condition-filterUpdate').type('Major depressive disorder');
-    cy.get('.dropdown-listUpdate > li').contains('Major depressive disorder').click();
-    cy.get('#descricaoConditionUpdate').type('A mental health condition marked by persistent feelings of sadness...');
-    cy.get('[name="filterConditionStatusUpdate"]').type('Active');
-    cy.get('.dropdown-listUpdate > li').contains('Active').click();
-    cy.get('#medicalConditionSymptomsUpdate').type('Sadness');
-    cy.get('.btn-primaryUpdate').contains('Add Condition').click();
-
-    cy.get('.btn-secondaryUpdate').contains('Read and Agree to Policy').click();
-
+   
+    cy.get('button[id="updateMedicalRecordPolicy"]').contains('Read and Agree to Policy').click();    
     cy.get('#policyModal').should('be.visible');
     cy.get('#policyModal .btn-success').contains('Accept').click();
 
     cy.get('button[id="updateMedicalRecord"]').click();
+    cy.contains('Medical record edited successfully').should('be.visible');   
   });
 
   it('should delete medical record', () => {
@@ -118,7 +106,8 @@ describe('Doctor Operation Requests', () => {
     cy.get('#listMedicalRecordModal').find('td').last().should('exist');
     cy.get('#listMedicalRecordModal').find('td').last().click();
 
-    cy.get('button[id="deleteMedicalRecord"]').click();   
+    cy.get('button[id="deleteMedicalRecord"]').click();      
+    cy.contains('Medical Record deactivated successfully!').should('be.visible');    
   });
   
 

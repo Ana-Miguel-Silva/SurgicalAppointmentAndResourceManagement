@@ -117,6 +117,8 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   public async findMedicalRecord (medicalRecord: string | { staff?: string; patientId?: string; allergie?: string; medicalCondition?: string; descricao?: string; id?: string }
 	): Promise<MedicalRecord[] > {
 
+    
+
      try {
       let query: any = {};
 
@@ -142,9 +144,11 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
 
       const medicalRecordRecords = await this.MedicalRecordSchema.find(query);
 
+
       const medicalRecords = await Promise.all(
         medicalRecordRecords.map(async record => await MedicalRecordMap.toDomain(record))
       );
+
 
       return medicalRecords;
 

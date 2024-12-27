@@ -662,7 +662,7 @@ id="updateAppointmentModal" class="modal">
     id="registerMedicalRecordModal" class="modal">
     <div class="modal-content">
       <span (click)="closeModal('registerMedicalRecordModal')" class="close">&times;</span>
-      <form (ngSubmit)="onCreateMedicalRecord(medicalRecordRequest)" class="row g-3 needs-validation" novalidate>
+      <form class="row g-3 needs-validation" novalidate>
         <h3 class="text-center">Register New Medical Record</h3>
 
         <div class="col-md-6">
@@ -829,7 +829,7 @@ id="updateAppointmentModal" class="modal">
 
 
       <div class="col-12">
-        <button type="button" class="btn btn-primary" (click)="addDescription()">Add Description</button>
+        <button type="button" class="btn btn-primary" id="registerDescriptionMedicalRecord" (click)="addDescription()">Add Description</button>
       </div>
 
 
@@ -837,12 +837,12 @@ id="updateAppointmentModal" class="modal">
     <div class="col-mb-6"></div>
 
         <div class="col-12" style="margin-bottom: 20px;">
-          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+          <button type="button" class="btn btn-secondary" id="registerMedicalRecordPolicy" (click)="openPolicyModal()">Read and Agree to Policy</button>
         </div>
 
 
         <div class="col-12">
-          <button class="btn btn-primary" type="submit" id="registerMedicalRecord" [disabled]="!isPolicyAccepted">Create Medical Record</button>
+          <button class="btn btn-primary" type="submit" id="buttonRegisterMedicalRecord" [disabled]="!isPolicyAccepted"  (click)="onCreateMedicalRecord(medicalRecordRequest)" >Create Medical Record</button>
         </div>
 
       </form>
@@ -1019,13 +1019,6 @@ id="updateAppointmentModal" class="modal">
           <div class="col-md-10"></div>
 
 
-          <!--<div class="col-md-2">
-            <div class="input-group">
-            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
-          </div>
-        </div>-->
-
-
           <div class="col-md-12">
             <div class="table-wrapper">
               <div class="table-title">
@@ -1065,16 +1058,7 @@ id="updateAppointmentModal" class="modal">
                           <li *ngFor="let description of request.descricao">{{ description }}</li>
                         </ul>
                       </td>
-
-
-                      <!--<td>-->
-                      <!-- <button class="btn btn-warning" (click)="setUpdateRequest(request)">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-danger" (click)="openModal('deleteModal'); updateRequest.id = request.id;">
-                        <i class="bi bi-trash"></i>
-                      </button>-->
-                      <!--</td>-->
+                   
                     </tr>
                   </tbody>
                 </table>
@@ -1084,12 +1068,10 @@ id="updateAppointmentModal" class="modal">
 
           <div class="col-md-9"></div>
           <div class="col-md-3">
-            <!--<button class="fs-5 btn btn-outline-info" (click)="viewPatient()">View <i class="bi bi-info-square-fill"></i></button>-->
             <button class="fs-5 btn btn-outline-warning" id="editMedicalRecord" (click)="editMedicalRecord()">Edit <i
                 class="bi bi-pencil-square"></i></button>
 
             <button class="fs-5 btn btn-outline-danger" id="deleteMedicalRecord" (click)="deleteMedicalRecord()"> Deactivate <i class="bi bi-archive-fill"></i></button>
-            <!--<button class="fs-5 btn btn-outline-danger" (click)="deactivatePatient()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
           </div>
         </form>
       </div>
@@ -1143,7 +1125,7 @@ id="updateAppointmentModal" class="modal">
             </div>
 
             <div class="col-12">
-              <button type="button" class="btn btn-primary" (click)="addDescription()">Add Description</button>
+              <button type="button" class="btn btn-primary" id="buttonUpdateMedicalRecordDescription" (click)="addDescription()">Add Description</button>
             </div>
 
 
@@ -1220,7 +1202,7 @@ id="updateAppointmentModal" class="modal">
             </div>
 
             <div class="col-12" style="margin-bottom: 30px;">
-              <button type="button" class="btn btn-primary"  (click)="addAllergie()">Add Allergie</button>
+              <button type="button" class="btn btn-primary"  id="updateAddAllergie" (click)="addAllergie()">Add Allergie</button>
             </div>
 
              <div class="col-mb-4"></div>
@@ -1313,14 +1295,14 @@ id="updateAppointmentModal" class="modal">
 
             </div>
             <div class="col-12" style="margin-bottom: 30px;">
-              <button type="button" class="btn btn-primary" (click)="addMedicalCondition()">Add Condition</button>
+              <button type="button" class="btn btn-primary" id="updateAddCondition" (click)="addMedicalCondition()">Add Condition</button>
             </div>
 
 
           </div>
 
           <div class="col-12" style="margin-bottom: 20px;">
-            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+            <button type="button" class="btn btn-secondary" id="updateMedicalRecordPolicy" (click)="openPolicyModal()">Read and Agree to Policy</button>
           </div>
 
 

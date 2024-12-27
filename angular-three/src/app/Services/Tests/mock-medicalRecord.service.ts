@@ -18,7 +18,7 @@ export class MockMedicalRecordService extends MedicalRecordService {
         { codigo: "A04.0", designacao: "Cholera", descricao: "An acute diarrheal disease caused by Vibrio cholerae, often transmitted through contaminated water or food.", "sintomas": ["Severe diarrhea", "Dehydration", "Vomiting", "Muscle cramps"], status: "Active" },
         { codigo: "A08.0", designacao: "Rotavirus enteritis",   descricao: "A viral infection that causes severe diarrhea, primarily in young children.", "sintomas": ["Diarrhea", "Fever", "Abdominal pain", "Dehydration"], status: "Active" }
       ],
-      descricao: ""
+      descricao: [""]
     }
     ,
     { id: '2', 
@@ -31,7 +31,7 @@ export class MockMedicalRecordService extends MedicalRecordService {
       medicalConditions: [       
         { codigo: "A08.0", designacao: "Rotavirus enteritis",   descricao: "A viral infection that causes severe diarrhea, primarily in young children.", "sintomas": ["Diarrhea", "Fever", "Abdominal pain", "Dehydration"], status: "Active" }
       ],
-      descricao: "teste"
+      descricao: ["teste"]
     },
   ];
 
@@ -45,7 +45,7 @@ export class MockMedicalRecordService extends MedicalRecordService {
     return of(newRequestWithId);
   }
 
-  override getAllMedicalRecordByPatientId(patientId : any):  Observable<any[]> {
+  override getAllMedicalRecordByPatientId(patientId : any):  Observable<any> {
     const records = this.medicalRecords.filter(record => record.patientId === patientId);
     return of(records);
   }

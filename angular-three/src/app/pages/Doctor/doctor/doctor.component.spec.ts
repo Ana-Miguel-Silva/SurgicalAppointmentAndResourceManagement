@@ -277,7 +277,7 @@ component.onCreateRequest(newRequest);
         { codigo: "A04.0", designacao: "Cholera", descricao: "An acute diarrheal disease caused by Vibrio cholerae, often transmitted through contaminated water or food.", "sintomas": ["Severe diarrhea", "Dehydration", "Vomiting", "Muscle cramps"], status: "Active" },
         { codigo: "A08.0", designacao: "Rotavirus enteritis",   descricao: "A viral infection that causes severe diarrhea, primarily in young children.", "sintomas": ["Diarrhea", "Fever", "Abdominal pain", "Dehydration"], status: "Active" }
       ],
-      descricao: ""
+      descricao: [""]
     }
     ,
     { id: '1', 
@@ -290,7 +290,7 @@ component.onCreateRequest(newRequest);
       medicalConditions: [       
         { codigo: "A08.0", designacao: "Rotavirus enteritis",   descricao: "A viral infection that causes severe diarrhea, primarily in young children.", "sintomas": ["Diarrhea", "Fever", "Abdominal pain", "Dehydration"], status: "Active" }
       ],
-      descricao: "teste"
+      descricao: ["teste"]
     }]));
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
 
@@ -340,7 +340,7 @@ component.onCreateRequest(newRequest);
       medicalConditions: [
         { codigo: 'A08.0', designacao: 'Rotavirus enteritis', descricao: 'A viral infection that causes severe diarrhea, primarily in young children.', sintomas: ['Diarrhea', 'Fever', 'Abdominal pain', 'Dehydration'], status: 'Active' }
       ],
-      descricao: 'Updated description'
+      descricao: ['Updated description']
     }];
     
     spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
@@ -350,7 +350,7 @@ component.onCreateRequest(newRequest);
 
     component.medicalRecordUpdate.patchValue({
       patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-      descricao: 'Updated description',
+      descricao: ['Updated description'],
       medicalConditions: [
         {
           codigo: 'A08.0',
@@ -397,7 +397,7 @@ component.onCreateRequest(newRequest);
       medicalConditions: [
         { codigo: 'A08.0', designacao: 'Rotavirus enteritis', descricao: 'A viral infection that causes severe diarrhea, primarily in young children.', sintomas: ['Diarrhea', 'Fever', 'Abdominal pain', 'Dehydration'], status: 'Active' }
       ],
-      descricao: 'Updated description'
+      descricao: ['Updated description']
     }];
     
     spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
@@ -407,7 +407,7 @@ component.onCreateRequest(newRequest);
 
     component.medicalRecordUpdate.patchValue({
       patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-      descricao: 'Updated description',
+      descricao: ['Updated description'],
       medicalConditions: [
         {
           codigo: 'A08.0',
@@ -449,7 +449,7 @@ component.onCreateRequest(newRequest);
       ],
       medicalConditions: [
         ],
-      descricao: 'Updated description'
+      descricao: ['Updated description']
     }];
     
     spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
@@ -459,7 +459,7 @@ component.onCreateRequest(newRequest);
 
     component.medicalRecordUpdate.patchValue({
       patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-      descricao: 'Updated description',
+      descricao: ['Updated description'],
       medicalConditions: [       
       ],
       allergies: [
@@ -499,7 +499,7 @@ component.onCreateRequest(newRequest);
       ],
       medicalConditions: [
         ],
-      descricao: 'description'
+      descricao: ['description']
     }];
     
     spyOn(mockMedicalRecordService, 'updateMedicalRecord').and.returnValue(of(mockResponse));
@@ -509,7 +509,7 @@ component.onCreateRequest(newRequest);
 
     component.medicalRecordUpdate.patchValue({
       patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-      descricao: 'description',
+      descricao: ['description'],
       medicalConditions: [       
       ],
       allergies: [

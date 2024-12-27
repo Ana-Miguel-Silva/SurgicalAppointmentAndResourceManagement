@@ -33,11 +33,13 @@ getAllMedicalRecord(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
 }
 
-getAllMedicalRecordByPatientId(patientId : any): Observable<any[]> {
+getAllMedicalRecordByPatientId(patientId : any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.get<any[]>(`${this.apiUrl}/get?patientId=${patientId}`, { headers });
+  const body = { patientId };
+
+  return this.http.post<any>(`${this.apiUrl}/getByPatientId`, body, { headers });
 }
 
 updateMedicalRecord(params : any): Observable<any[]> {
@@ -48,11 +50,12 @@ updateMedicalRecord(params : any): Observable<any[]> {
 }
 
 
-deleteMedicalRecord(params : any): Observable<any> {
+deleteMedicalRecord(patientId : any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const body = { patientId };
 
-  return this.http.post<any>(`${this.apiUrl}/delete`, params , { headers });
+  return this.http.post<any>(`${this.apiUrl}/delete`, body , { headers });
 }
 
 

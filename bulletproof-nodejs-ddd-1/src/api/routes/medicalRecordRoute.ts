@@ -97,6 +97,16 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.getMedicalRecord(req, res, next) );
 
+
+    route.post(
+      '/getByPatientId',
+      celebrate({
+        body: Joi.object({         
+          patientId: Joi.string(),
+        }),
+      }),
+      (req, res, next) => ctrl.getMedicalRecord(req, res, next) );
+
     route.get(
       '/getById',
       celebrate({

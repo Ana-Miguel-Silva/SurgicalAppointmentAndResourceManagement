@@ -1046,6 +1046,7 @@ removeStaffMember(index: number) {
   }
 
   async onCreateMedicalRecord(requestData: CreatingMedicalRecordUIDto) {
+    console.log("CRIAR MEDICAL RECORD");
 
 
     const token = this.authService.getToken();
@@ -1266,55 +1267,69 @@ removeStaffMember(index: number) {
     } else {
       console.log(`Viewing Patient Id medical record: ${this.selectedPatientEmailMedicalRecord}`);
 
-      this.medicalRecordService.getAllMedicalRecordByPatientId(this.selectedPatientEmailMedicalRecord)
-        .subscribe({
-          next: (response) => {
-            this.medicalRecordProfileUpdate = response[0];
-            console.log("Medical record: ", this.medicalRecordProfileUpdate);
+      forkJoin({
+        patient: this.patientService.getPatientByEmail(this.selectedPatientEmailMedicalRecord)
+      }).subscribe({
+        next: ({ patient }) => {
+          console.log(patient);
+  
+          console.log(patient.id.value);
+          this.selectedPatientIdMedicalRecord = patient.id.value;
 
-            // Patch form data
-            this.medicalRecordUpdate.patchValue({
-              patientId: this.medicalRecordProfileUpdate.patientEmail,
-              descricao: this.medicalRecordProfileUpdate.descricao
-            });
+          const patientId = this.selectedPatientIdMedicalRecord;
+    
+          this.medicalRecordService.getAllMedicalRecordByPatientId(patientId)
+          .subscribe({
+            next: (response) => {
+              console.log("Medical record response: ", response);
+              this.medicalRecordProfileUpdate = response[0];
+              console.log("Medical record: ", this.medicalRecordProfileUpdate);
 
-            const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
-            const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
+              // Patch form data
+              this.medicalRecordUpdate.patchValue({
+                patientId: this.medicalRecordProfileUpdate.patientEmail,
+                descricao: this.medicalRecordProfileUpdate.descricao
+              });
 
-            // Clear existing items (if needed)
-            medicalConditionsControl.clear();
-            allergiesControl.clear();
+              const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
+              const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
 
-            // Add existing conditions to the form
-            this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
-              medicalConditionsControl.push(this.fb.group({
-                codigo: [condition.codigo],
-                designacao: [condition.designacao],
-                descricao: [condition.descricao],
-                sintomas: this.fb.array(condition.sintomas || []),
-                status: [condition.status],
-              }));
-            });
+              // Clear existing items (if needed)
+              medicalConditionsControl.clear();
+              allergiesControl.clear();
 
-            // Add existing allergies to the form
-            this.medicalRecordProfileUpdate.allergies.forEach((allergy: IAllergieMedicalRecord) => {
-              allergiesControl.push(this.fb.group({
-                designacao: [allergy.designacao],
-                descricao: [allergy.descricao],
-                status: [allergy.status],
-              }));
-            });
+              // Add existing conditions to the form
+              this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
+                medicalConditionsControl.push(this.fb.group({
+                  codigo: [condition.codigo],
+                  designacao: [condition.designacao],
+                  descricao: [condition.descricao],
+                  sintomas: this.fb.array(condition.sintomas || []),
+                  status: [condition.status],
+                }));
+              });
 
-            this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions;
-            this.tagsAllergies = this.medicalRecordProfileUpdate.allergies;
-            this.descricaoList = this.medicalRecordProfileUpdate.descricao;
+              // Add existing allergies to the form
+              this.medicalRecordProfileUpdate.allergies.forEach((allergy: IAllergieMedicalRecord) => {
+                allergiesControl.push(this.fb.group({
+                  designacao: [allergy.designacao],
+                  descricao: [allergy.descricao],
+                  status: [allergy.status],
+                }));
+              });
 
-            const updatedMedicalRecordData = this.medicalRecordUpdate.value;
-            console.log('Updated Patient Data:', updatedMedicalRecordData);
-            console.log('Updated allergies:', this.tagsAllergies);
+              this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions;
+              this.tagsAllergies = this.medicalRecordProfileUpdate.allergies;
+              this.descricaoList = this.medicalRecordProfileUpdate.descricao;
 
-            this.openModal('UpdateMedicalRecordModal');
+              const updatedMedicalRecordData = this.medicalRecordUpdate.value;
+              console.log('Updated Patient Data:', updatedMedicalRecordData);
+              console.log('Updated allergies:', this.tagsAllergies);
+
+              this.openModal('UpdateMedicalRecordModal');
+            }});
           },
+       
           error: (error) => {
             console.error('Error getting medical record:', error);
             this.errorMessage = 'Failed to get medical record!';
@@ -1349,7 +1364,7 @@ removeStaffMember(index: number) {
       .subscribe({
         next: (response) => {
           this.getAllMedicalConditions();
-          this.sweetService.sweetSuccess("Medical Record desativado com sucesso")
+          this.sweetService.sweetSuccess("Medical Record deactivated successfully!")
         },
         error: (error) => {
           console.error('Error deactivating medical record:', error);
