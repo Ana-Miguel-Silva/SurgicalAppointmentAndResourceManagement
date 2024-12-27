@@ -483,6 +483,13 @@ export class DoctorComponent implements OnInit {
   updateConditionToInvalid(): void {
       this.validConditionText = '✘';
   }
+  filteredAllergies = [...this.tagsAllergies];
+  filteredConditions = [...this.tagsConditions];
+  filteredDescriptions = [...this.descricaoList];
+
+  medicalRecordProfile: any = null;
+
+
   openPolicyModal() {
     this.showPolicyModal = true;
   }
@@ -1122,6 +1129,7 @@ removeStaffMember(index: number) {
             this.rejectPolicy();
           },
           error: (error: any) => {
+            this.cleanMedicalRecordRegister();
             this.rejectPolicy();
 
             console.error('Error creating Medical Record:', error);
@@ -1144,6 +1152,8 @@ removeStaffMember(index: number) {
         });
       },
     });
+
+
   }
 
 
@@ -1240,23 +1250,6 @@ removeStaffMember(index: number) {
     });
   }
 
-  applyMedicalRecordFilter() {
-    this.filteredMedicalRecordRequests = this.medicalRecordRequests.filter(request => {
-      const matchesAllergie = this.filterMedicalRecord.allergies
-      ? (request.allergies as IAllergieMedicalRecord[]).some(allergie =>
-          allergie.designacao.toLowerCase().includes(this.filterMedicalRecord.allergies.toLowerCase())
-        )
-      : true;
-
-      const matchesMedicalCondition = this.filterMedicalRecord.medicalConditions
-      ? (request.medicalConditions as IMedicalConditionMedicalRecord[]).some(medicalCondition =>
-        medicalCondition.designacao.toLowerCase().includes(this.filterMedicalRecord.medicalConditions.toLowerCase())
-        )
-      : true;
-
-      return matchesAllergie && matchesMedicalCondition;
-    });
-  }
 
   editMedicalRecord() {
     const token = this.authService.getToken();
@@ -1275,14 +1268,7 @@ removeStaffMember(index: number) {
     }
 
     if (this.selectedPatientEmailMedicalRecord === null) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please select a medical record.",
-        toast: true,
-        position: "bottom-right",
-        timer: 3000,
-        showConfirmButton: false
-      });
+      this.sweetService.sweetWarning("Please select a medical record.");
     } else {
       console.log(`Viewing Patient Id medical record: ${this.selectedPatientEmailMedicalRecord}`);
 
@@ -1291,12 +1277,12 @@ removeStaffMember(index: number) {
       }).subscribe({
         next: ({ patient }) => {
           console.log(patient);
-  
+
           console.log(patient.id.value);
           this.selectedPatientIdMedicalRecord = patient.id.value;
 
           const patientId = this.selectedPatientIdMedicalRecord;
-    
+
           this.medicalRecordService.getAllMedicalRecordByPatientId(patientId)
           .subscribe({
             next: (response) => {
@@ -1313,11 +1299,9 @@ removeStaffMember(index: number) {
               const medicalConditionsControl = this.medicalRecordUpdate.get('medicalConditions') as FormArray;
               const allergiesControl = this.medicalRecordUpdate.get('allergies') as FormArray;
 
-              // Clear existing items (if needed)
               medicalConditionsControl.clear();
               allergiesControl.clear();
 
-              // Add existing conditions to the form
               this.medicalRecordProfileUpdate.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
                 medicalConditionsControl.push(this.fb.group({
                   codigo: [condition.codigo],
@@ -1348,7 +1332,7 @@ removeStaffMember(index: number) {
               this.openModal('UpdateMedicalRecordModal');
             }});
           },
-       
+
           error: (error) => {
             console.error('Error getting medical record:', error);
             this.errorMessage = 'Failed to get medical record!';
@@ -1361,38 +1345,33 @@ removeStaffMember(index: number) {
   deleteMedicalRecord(){
      console.log(`Deactivating medical record ID: ${this.selectedPatientEmailMedicalRecord}`);
 
-      if (!this.selectedPatientEmailMedicalRecord) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Erro',
-          text: 'No medical record selected.',
+     if (this.selectedPatientEmailMedicalRecord === null) {
+      this.sweetService.sweetWarning("Please select a medical record.");
+    } else {
+        forkJoin({
+        patient: this.patientService.getPatientByEmail(this.selectedPatientEmailMedicalRecord)
+      }).subscribe({
+        next: ({ patient }) => {
+          console.log(patient);
+
+        console.log(patient.id.value);
+        this.selectedPatientIdMedicalRecord = patient.id.value;
+
+        this.medicalRecordService.deleteMedicalRecord(this.selectedPatientIdMedicalRecord)
+        .subscribe({
+          next: (response) => {
+            this.getAllMedicalConditions();
+            this.sweetService.sweetSuccess("Medical Record deactivated successfully!")
+          },
+          error: (error) => {
+            console.error('Error deactivating medical record:', error);
+            this.errorMessage = 'Failed to deactivate medical record!';
+            this.sweetService.sweetErro("Failed to deactivate medical record")
+          }
         });
-        return;
-      }
 
-      forkJoin({
-      patient: this.patientService.getPatientByEmail(this.selectedPatientEmailMedicalRecord)
-    }).subscribe({
-      next: ({ patient }) => {
-        console.log(patient);
-
-      console.log(patient.id.value);
-      this.selectedPatientIdMedicalRecord = patient.id.value;
-
-      this.medicalRecordService.deleteMedicalRecord(this.selectedPatientIdMedicalRecord)
-      .subscribe({
-        next: (response) => {
-          this.getAllMedicalConditions();
-          this.sweetService.sweetSuccess("Medical Record deactivated successfully!")
-        },
-        error: (error) => {
-          console.error('Error deactivating medical record:', error);
-          this.errorMessage = 'Failed to deactivate medical record!';
-          this.sweetService.sweetErro("Failed to deactivate medical record")
-        }
-      });
-
-    }});
+      }});
+    }
 
     };
 
@@ -1406,16 +1385,9 @@ removeStaffMember(index: number) {
       return;
     }
 
-    if (!this.selectedPatientEmailMedicalRecord) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro',
-        text: 'Nenhum medical record selecionado.',
-      });
-      return;
+    if (this.selectedPatientEmailMedicalRecord === null) {
+      this.sweetService.sweetWarning("Please select a medical record.");
     }
-
-
 
     const updatedPatientData = this.medicalRecordUpdate.value;
 
@@ -1457,6 +1429,77 @@ removeStaffMember(index: number) {
         }
       });
   }
+
+   getMedicalRecord() {
+      const token = this.authService.getToken();
+      if (!token) {
+        this.errorMessage = 'You are not logged in!';
+        return;
+      }
+      console.log("Entrei get medical record");
+
+
+      if (this.selectedPatientEmailMedicalRecord === null) {
+        this.sweetService.sweetWarning("Please select a medical record.");
+      } else {
+      forkJoin({
+        patient: this.patientService.getPatientByEmail(this.selectedPatientEmailMedicalRecord)
+      }).subscribe({
+        next: ({ patient }) => {
+
+          const getPatientId = patient.id.value;
+          console.log("patient id " , getPatientId);
+
+          this.medicalRecordService.getAllMedicalRecordByPatientId(getPatientId)
+            .subscribe({
+              next: (response) => {
+                this.medicalRecordProfile = response[0];
+                console.log("Medical record: ", this.medicalRecordProfile);
+
+
+                this.medicalRecordProfile.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
+                  this.tagsConditions.push({
+                    codigo: condition.codigo,
+                    designacao: condition.designacao,
+                    descricao: condition.descricao,
+                    sintomas: condition.sintomas,
+                    status: condition.status,
+                  });
+                });
+
+
+                this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
+                  this.tagsAllergies.push({
+                    designacao: allergy.designacao,
+                    descricao: allergy.descricao,
+                    status: allergy.status,
+                  });
+                });
+
+                this.tagsConditions = this.medicalRecordProfile.medicalConditions;
+                this.tagsAllergies = this.medicalRecordProfile.allergies;
+                this.descricaoList = this.medicalRecordProfile.descricao;
+
+                this.openModal('ViewMedicalRecord');
+              },
+              error: (error) => {
+                console.error('Error fetching  medical record:', error);
+                this.errorMessage = 'Failed to get medical record!';
+              }
+            });
+          },
+          error: (error: any) => {
+            console.error('Error fetching patient:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to fetch patient information.',
+            });
+          },
+        });
+      }
+    };
+
 
 
 

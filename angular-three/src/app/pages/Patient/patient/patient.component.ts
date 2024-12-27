@@ -119,6 +119,7 @@ export class PatientComponent {
   selectedMedicalCondition: string | null =null;
   tagsConditions: IMedicalConditionMedicalRecord[] = [];
   tagsAllergies: IAllergieMedicalRecord[] = [];
+  descricaoList: string[] = [];
   medicalRecordProfile: any = null;
 
 
@@ -278,16 +279,17 @@ export class PatientComponent {
 
               this.tagsConditions = this.medicalRecordProfile.medicalConditions;
               this.tagsAllergies = this.medicalRecordProfile.allergies;
+              this.descricaoList = this.medicalRecordProfile.designacao;
 
               this.openModal('ViewMedicalRecord');
             },
             error: (error) => {
-              console.error('Error fetching  allergies:', error);
-              this.errorMessage = 'Failed to fetch allergies!';
+              console.error('Error fetching  medical record:', error);
+              this.errorMessage = 'Failed to get medical record!';
             }
           });
         },
-        error: (error: any) => {
+        error: (error: any) => {          
           console.error('Error fetching patient:', error);
           Swal.fire({
             icon: 'error',

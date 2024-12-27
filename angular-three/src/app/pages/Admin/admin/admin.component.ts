@@ -317,6 +317,7 @@ export class AdminComponent {
   medicalRecordProfile: any = null;
   tagsConditions: IMedicalConditionMedicalRecord[] = [];
   tagsAllergies: IAllergieMedicalRecord[] = [];
+  descricaoList : string[] = [];
 
 
   filteredPatients: any[] = [];
@@ -1030,7 +1031,7 @@ export class AdminComponent {
         next: (response) => {
           this.patientProfileSingle = response;
 
-          this.medicalRecordService.getAllMedicalRecordByPatientId(this.patientProfileSingle.Id)
+          this.medicalRecordService.getAllMedicalRecordByPatientId(this.patientProfileSingle.id.value)
           .subscribe({            
             next: (res) => {    
               this.medicalRecordProfile = res[0];
@@ -1057,6 +1058,7 @@ export class AdminComponent {
 
               this.tagsConditions = this.medicalRecordProfile.medicalConditions;
               this.tagsAllergies = this.medicalRecordProfile.allergies;
+              this.descricaoList = this.medicalRecordProfile.descricao;
 
               this.openModal('ViewMedicalRecord');
             },
