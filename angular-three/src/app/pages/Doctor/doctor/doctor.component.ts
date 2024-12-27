@@ -72,7 +72,7 @@ interface MedicalRecordRequest {
   patientEmail: string;
   allergies: IAllergieMedicalRecord[];
   medicalConditions: IMedicalConditionMedicalRecord[];
-  descricao: string
+  descricao: string[]
 }
 
 
@@ -97,7 +97,7 @@ interface CreatingMedicalRecordUIDto {
   patientId: string;
   allergies: IAllergieMedicalRecord[];
   medicalConditions: IMedicalConditionMedicalRecord[];
-  descricao?: string
+  descricao: string[]
 }
 
 export enum AllergyStatus {
@@ -215,7 +215,7 @@ export class DoctorComponent implements OnInit {
     patientId: '',
     allergies: [],
     medicalConditions: [],
-    descricao: ''
+    descricao: []
   }
 
   appointmentData = {
@@ -249,7 +249,7 @@ export class DoctorComponent implements OnInit {
 
     this.medicalRecordUpdate = this.fb.group({
       patientId: "",
-      descricao: ['', Validators.required],
+      descricao: this.fb.array([]),
       //agree: [false, Validators.requiredTrue],
       medicalConditions: this.fb.array([]),
       allergies: this.fb.array([])
@@ -406,10 +406,12 @@ export class DoctorComponent implements OnInit {
   filterAllergieStatusText: string = '';
   filterConditionStatusText: string = '';
   filterTextCondition: string = '';
+  filterTextDescription: string = '';
   sintomasCodition: string = '';
   filterConditionCodigoText: string = '';
   tagsAllergies: IAllergieMedicalRecord[] = [];
   tagsConditions: IMedicalConditionMedicalRecord[] = [];
+  descricaoList : string[] = [];
   filteredAllergieNameOptions: any[] = [];
   filteredOptionsConditions: any[] = [];
 
@@ -625,6 +627,24 @@ export class DoctorComponent implements OnInit {
 
     
   }
+
+  addDescription() {  
+    let exist = this.descricaoList.find(option =>
+      option.toLowerCase() === this.filterTextDescription.toLowerCase()
+    );
+
+    if(!exist){
+      this.descricaoList.push(this.filterTextDescription);
+      console.log("update array: ",  this.descricaoList);
+    }
+
+    this.filterTextDescription = '';
+  }
+
+  removeDescription(index: number) {
+    this.descricaoList.splice(index, 1);
+  }
+
 
   removeMedicalCondition(index: number) {
       this.tagsConditions.splice(index, 1);
@@ -909,7 +929,7 @@ removeStaffMember(index: number) {
             ...condition,
             sintomas: condition.sintomas.filter((sintoma: string) => sintoma.trim() !== ''), 
           })),
-          descricao: requestData.descricao || "",
+          descricao: this.descricaoList,
         };
 
        
@@ -920,13 +940,8 @@ removeStaffMember(index: number) {
           next: () => {
             this.cleanMedicalRecordRegister();
             this.getAllMedicalRecords();
-            Swal.fire({
-              icon: 'success',
-              title: 'Success',
-              text: 'Medical Record created successfully!',
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            this.sweetService.sweetSuccess('Medical Record created successfully!');
+        
             this.modalService.closeModal('registerMedicalRecordModal');
 
             this.rejectPolicy();
@@ -1137,6 +1152,7 @@ removeStaffMember(index: number) {
             
             this.tagsConditions = this.medicalRecordProfileUpdate.medicalConditions;
             this.tagsAllergies = this.medicalRecordProfileUpdate.allergies;
+            this.descricaoList = this.medicalRecordProfileUpdate.descricao;
             
             const updatedMedicalRecordData = this.medicalRecordUpdate.value;
             console.log('Updated Patient Data:', updatedMedicalRecordData);
@@ -1224,6 +1240,8 @@ removeStaffMember(index: number) {
     };
   });
 
+  updatedPatientData.descricao = this.descricaoList;
+
 
     console.log("to be updated:" ,  updatedPatientData);
 
@@ -1290,22 +1308,26 @@ removeStaffMember(index: number) {
     this.tagsConditions = [];
     this.filterTextCondition = '';
 
+    this.descricaoList = [];
+
     this.filterAllergieNameText = '';
     this.filterAllergieDescricaoText = '';
     this.filterAllergieStatusText = '';
-
+    
     this.filterConditionCodigoText = '';
     this.filterTextCondition = '';
     this.filterConditionDescricaoText = '';
     this.filterConditionStatusText = '';
     this.sintomasCodition = '';
 
+    this.filterTextDescription = '';
+
     this.medicalRecordRequest = {
       staff: '',
       patientId: '',
       allergies: [],
       medicalConditions: [],
-      descricao: ''
+      descricao: []
     };
   }
 }

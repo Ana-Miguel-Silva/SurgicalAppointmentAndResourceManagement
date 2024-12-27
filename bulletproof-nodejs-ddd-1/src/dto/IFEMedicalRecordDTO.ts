@@ -8,5 +8,5 @@ export default interface IFEMedicalRecordDTO {
 	patientEmail: string;
 	allergies: IAllergieMedicalRecord[]; 
   medicalConditions: IMedicalConditionMedicalRecord[]; 
-	descricao: string  
+	descricao: string[]  
 }

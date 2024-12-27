@@ -53,7 +53,7 @@ const MedicalRecordSchema = new mongoose.Schema(
       default: [],
     },
     descricao: {
-      type: String,
+      type: [String],
       default: '',
     },
   },

@@ -17,7 +17,7 @@ interface MedicalRecordProps {
   patientId: string;
   allergies: IAllergieMedicalRecord[];
   medicalConditions: IMedicalConditionMedicalRecord[];
-  descricao: string
+  descricao: string[]
 }
 
 export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
@@ -70,11 +70,11 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
     this.props.medicalConditions = value;
   }
 
-  get descricao(): string {
+  get descricao(): string[] {
     return this.props.descricao;
   }
 
-  set descricao(value: string) {
+  set descricao(value: string[]) {
     this.props.descricao = value;
   }
 

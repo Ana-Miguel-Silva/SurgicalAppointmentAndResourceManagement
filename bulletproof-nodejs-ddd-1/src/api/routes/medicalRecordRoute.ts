@@ -44,7 +44,7 @@ export default (app: Router) => {
         )
         .allow([])
         .optional(), 
-        descricao: Joi.string().allow('').optional(),
+        descricao: Joi.array().items(Joi.string()).optional(),
       }),
     }),
     (req, res, next) => ctrl.createMedicalRecord(req, res, next) );
@@ -77,7 +77,7 @@ export default (app: Router) => {
           )
           .allow([])
           .optional(), 
-          descricao: Joi.string().allow('').optional(),
+          descricao: Joi.array().items(Joi.string()).optional(),
         }),
       }),
       (req, res, next) => ctrl.updateMedicalRecord(req, res, next) );
@@ -92,7 +92,7 @@ export default (app: Router) => {
         patientId: Joi.string(),
         allergies: Joi.array().items(Joi.string()),
         medicalConditions: Joi.array().items(Joi.string()),
-        descricao: Joi.string(),
+        descricao: Joi.array().items(Joi.string()),
       }),
     }),
     (req, res, next) => ctrl.getMedicalRecord(req, res, next) );

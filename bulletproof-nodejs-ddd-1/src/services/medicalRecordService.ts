@@ -29,7 +29,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       @Inject(config.services.medicalCondition.name) private medicalConditionServiceInstance : IMedicalConditionService,
   ) {}
 
-  public async createMedicalRecordDefault(medicalRecord: { date: Date; staff: string; patientId: string; allergies: IAllergieMedicalRecord[]; medicalConditions: IMedicalConditionMedicalRecord[]; descricao: string; }) {
+  public async createMedicalRecordDefault(medicalRecord: { date: Date; staff: string; patientId: string; allergies: IAllergieMedicalRecord[]; medicalConditions: IMedicalConditionMedicalRecord[]; descricao: string[]; }) {
 
     const MedicalRecordOrError = await MedicalRecord.create( medicalRecord );
 

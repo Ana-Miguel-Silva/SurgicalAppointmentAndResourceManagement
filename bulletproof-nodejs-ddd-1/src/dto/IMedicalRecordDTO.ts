@@ -9,5 +9,5 @@ export default interface IMedicalRecordDTO {
 	patientId: string;
 	allergies: IAllergieMedicalRecord[];
   medicalConditions: IMedicalConditionMedicalRecord[];
-	descricao: string
+	descricao: string[]
 }
