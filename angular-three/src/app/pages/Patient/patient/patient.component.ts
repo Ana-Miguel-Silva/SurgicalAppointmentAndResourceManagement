@@ -159,6 +159,7 @@ export class PatientComponent {
   closeModal(modalId: string): void {
     this.modalService.closeModal(modalId);
     this.viewPatient();
+    this.rejectPolicy();
   }
 
   isModalOpen(modalId: string): boolean {

@@ -392,6 +392,7 @@ export class AdminComponent {
 
   closeModal(modalId: string): void {
     this.modalService.closeModal(modalId);
+    this.rejectPolicy();
   }
 
   isModalOpen(modalId: string): boolean {

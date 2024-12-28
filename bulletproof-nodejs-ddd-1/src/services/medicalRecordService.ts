@@ -245,7 +245,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(MedicalRecordDTO.patientId);
       const MedicalRecord = MedicalRecords[0];
 
-      if (MedicalRecord === null) {
+      if (MedicalRecord === null || !MedicalRecord) {
         return Result.fail<IMedicalRecordDTO>("MedicalRecord not found");
       }
       else {
