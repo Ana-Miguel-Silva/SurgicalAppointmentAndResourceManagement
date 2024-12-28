@@ -1713,22 +1713,22 @@
                         <input type="number" [(ngModel)]="staff.quantity" name="quantity_{{i}}" class="form-control" placeholder="Quantity" required min="1" step="1" />
                       </div>
 
-<!-- Specialization -->
-<div class="col-md-3">
-  <label for="specialization_{{i}}">Specialization</label>
-  <select
-    id="specialization_{{i}}"
-    class="form-control"
-    [(ngModel)]="staff.specialization"
-    name="specialization_{{i}}"
-    required
-  >
-    <option value="" disabled>Select a Specialization</option>
-    <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
-      {{ specialization.specializationName }}
-    </option>
-  </select>
-</div>
+                        <!-- Specialization -->
+                        <div class="col-md-3">
+                          <label for="specialization_{{i}}">Specialization</label>
+                          <select
+                            id="specialization_{{i}}"
+                            class="form-control"
+                            [(ngModel)]="staff.specialization"
+                            name="specialization_{{i}}"
+                            required
+                          >
+                            <option value="" disabled>Select a Specialization</option>
+                            <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                              {{ specialization.specializationName }}
+                            </option>
+                          </select>
+                        </div>
 
                       <!-- Role -->
                       <div class="col-md-3">

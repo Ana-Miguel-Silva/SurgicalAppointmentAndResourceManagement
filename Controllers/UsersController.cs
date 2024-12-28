@@ -30,7 +30,7 @@ namespace DDDSample1.Controllers
             _authService = authService;
             _mailService = mailService;
             _patientService = patientService;
-             _logService = logService;
+            _logService = logService;
             
         }
 
