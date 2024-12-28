@@ -1069,9 +1069,9 @@ id="updateAppointmentModal" class="modal">
   </div>
 
 
-  <div [ngStyle]="{'display': isModalOpen('ViewMedicalRecord') ? 'block' : 'none'}" id="ViewMedicalRecord" class="modal">
+  <div [ngStyle]="{'display': isModalOpen('FilterMedicalRecord') ? 'block' : 'none'}" id="FilterMedicalRecord" class="modal">
     <div class="modal-content">
-      <span (click)="closeModal('ViewMedicalRecord')" class="close">&times;</span>
+      <span (click)="closeModal('FilterMedicalRecord')" class="close">&times;</span>
       <form  class="row g-3 needs-validation" novalidate="">
         <div *ngIf="medicalRecordProfile">
           <div class="row g-3 needs-validation">
