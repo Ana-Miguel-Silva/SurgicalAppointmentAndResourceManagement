@@ -39,8 +39,12 @@ using DDDSample1.Infrastructure.Specializations;
 using DDDSample1.ApplicationService.SurgeryRooms;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.SurgeryRooms;
+using DDDSample1.Infrastructure.RoomTypess;
 using System.Security.Claims;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.RoomTypess;
+using DDDSample1.ApplicationService.RoomTypess;
+//using DDDSample1.ApplicationService.RoomTypess;
 
 
 namespace DDDSample1
@@ -243,7 +247,11 @@ namespace DDDSample1
             services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
             services.AddTransient<SurgeryRoomService>();
 
-             services.AddTransient<IPendingActionsRepository, PendingActionsRepository>();
+
+            services.AddTransient<IRoomTypesRepository, RoomTypesRepository>();
+            services.AddTransient<RoomTypesService>();
+
+            services.AddTransient<IPendingActionsRepository, PendingActionsRepository>();
             services.AddTransient<PendingActionsService>();
 
 
