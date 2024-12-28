@@ -19,6 +19,8 @@ using DDDSample1.Infrastructure.Logging;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.PendingActions;
 using DDDSample1.Domain.PendingActions;
+using DDDSample1.Domain.RoomTypess;
+using DDDSample1.Infrastructure.RoomTypess;
 
 namespace DDDSample1.Infrastructure
 {
@@ -34,6 +36,9 @@ namespace DDDSample1.Infrastructure
         public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
         public DbSet<Domain.Specializations.Specialization> Specializations { get; set; }
         public DbSet<PendingActionsEntry> PendingActions { get; set; }
+
+        public DbSet<RoomTypes> RoomTypes { get; set; }
+
 
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
@@ -54,6 +59,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomTypesEntityTypeConfiguration());
         }
     }
 }

@@ -232,6 +232,14 @@
             </div>
           </div>
 
+          <div class="container col-md-4">
+            <div class="container-lg  selectionDiv" (click)="openModal('insertRoomTypes')">
+              <div class="form-floating mb-3">
+                  <h3 class="title" >Insert RoomTypes</h3>
+              </div>
+            </div>
+          </div>
+
         <div class="container col-md-4">
           <div class="container-lg  selectionDiv" (click)="openModal('insertMedicalCondition')">
             <div class="form-floating mb-3">
@@ -2589,6 +2597,71 @@
       </form>
   </div>
 </div>
+
+
+
+
+<div [ngStyle]="{'display': isModalOpen('insertRoomTypes') ? 'block' : 'none'}" id="insertRoomTypes" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('insertRoomTypes')" class="close">&times;</span>
+      <form [formGroup]="roomTypeForm" (ngSubmit)="onInsertRoomType()" class="row g-3 needs-validation" novalidate>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" id="roomTypeCode" formControlName="code"   name="roomTypeCode" required step="1" placeholder="Code"/>
+            </div>
+         </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" id="roomTypeDesignation" formControlName="designacao"  name="roomTypenDesignation" required step="2" placeholder="Designation" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
+              <textarea class="form-control" id="roomTypeDescription" formControlName="descricao" name="roomTypeDescription" rows="1" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input visually-hidden" id="surgerySuitable" formControlName="surgerySuitable" name="surgerySuitable">
+                <label class="form-check-label" for="surgerySuitable">
+                  <div class="custom-checkbox-label">
+                    <i class="bi bi-check-lg"></i>
+                    <span>Surgery Suitable</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div class="col-12" style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+        </div>  
+
+
+          <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" [disabled]="!isPolicyAccepted" type="submit">Register Room Type</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+
+
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

@@ -16,6 +16,7 @@ import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { sweetAlertService } from '../../../Services/sweetAlert.service';
 import { MedicalRecordService } from '../../../Services/medicalRecordservice';
+import { RoomTypesService } from '../../../Services/roomtypes.service';
 
 interface RequiredStaff {
   quantity: number;
@@ -118,6 +119,7 @@ export class AdminComponent {
     private fb: FormBuilder,
     private modalService: ModalService,
     private allergiesService: AllergiesService,
+    private roomTypesService: RoomTypesService,
     private medicalConditionService: MedicalConditionService,
     private http: HttpClient,
     private authService: AuthService,
@@ -179,6 +181,15 @@ export class AdminComponent {
       designacao: [''],
       descricao: [''],
     });
+
+
+    this.roomTypeForm = this.fb.group({
+      code: ['', Validators.required],
+      designacao: ['', Validators.required],
+      descricao: ['', Validators.required],
+      surgerySuitable: [false]
+    });
+
 
     this.medicalConditionForm = this.fb.group({
       codigo: ['', Validators.required],
@@ -277,6 +288,7 @@ export class AdminComponent {
   allergyUpdateForm!: FormGroup;
   allergieForm!: FormGroup;
   allergyUpdate: any = null;
+  roomTypeForm!: FormGroup;
   medicalConditionForm!: FormGroup;
   medicalConditionEditForm!: FormGroup;
   specializationEditForm: FormGroup;
@@ -2091,6 +2103,61 @@ export class AdminComponent {
   selectAllergie(id: string ): void{
     this.selectedAllergie = this.selectedAllergie === id ? null : id;
 }
+
+
+
+
+
+
+
+onInsertRoomType(){
+
+
+  const token = this.authService.getToken();
+
+    // Check if the user is logged in
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not logged in!',
+      });
+      return;
+    }
+
+
+    const formData = this.roomTypeForm.value;
+
+    console.log(formData)
+
+    this.roomTypesService.insertRoomTypes(formData)
+      .subscribe({
+        next: (response) => {
+          this.rejectPolicy();
+
+          this.sweetService.sweetSuccess("Room Type created with success");
+
+          this.modalService.closeModal('insertRoomTypes');
+
+          this.roomTypeForm.reset();
+
+        },
+        error: (error) => {
+          this.rejectPolicy(); 
+
+          console.error('Error fetched:', error);
+          this.errorMessage = 'Failed to create a Room Type  !';
+
+          this.sweetService.sweetErro("Already exist a Room Type with this code");
+        }
+      });
+
+
+}
+
+
+
+
 
 
 
