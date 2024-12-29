@@ -369,7 +369,7 @@ input, textarea {
   box-sizing: border-box;
 }
 
-.dropdown-list, .dropdown2-list {
+.dropdown-list, .dropdown2-list, .dropdown-listUpdate {
   position: absolute;
   width: 100%;
   background: white;
@@ -384,11 +384,12 @@ input, textarea {
 }
 
 .dropdown-list li, 
-.dropdown2 .dropdown-list li  {
+.dropdown2 .dropdown-list li 
+.dropdown-listUpdate li {
   padding: 8px;
   cursor: pointer;
 }
 
-.dropdown-list li:hover,  .dropdown2-list li:hover{
+.dropdown-list li:hover,  .dropdown2-list li:hover, .dropdown-listUpdate li:hover{
   background: #f0f0f0;
 }

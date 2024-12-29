@@ -252,6 +252,7 @@ export class DoctorComponent implements OnInit {
 
   selectedSurgeryRoomId: string | null = null;
   validConditionText: string = '✘';
+  validAllergieText: string = '✘';
 
 
   constructor(
@@ -488,11 +489,22 @@ export class DoctorComponent implements OnInit {
       this.validConditionText = '✔';
   }
   isConditionValid(): boolean {
-    return this.validConditionText === '✔';
+    return this.validConditionText === '✔' && this.filterConditionStatusText != '';
 }
   updateConditionToInvalid(): void {
       this.validConditionText = '✘';
   }
+
+
+  updateAllergieToValid(): void {
+    this.validAllergieText = '✔';
+}
+isAllergieValid(): boolean {
+  return this.validAllergieText === '✔' && this.filterAllergieStatusText != '';
+}
+updateAllergieToInvalid(): void {
+    this.validAllergieText = '✘';
+}
   filteredAllergies = [...this.tagsAllergies];
   filteredConditions = [...this.tagsConditions];
   filteredDescriptions = [...this.descricaoList];
@@ -588,6 +600,8 @@ export class DoctorComponent implements OnInit {
 
 
   filterAllergieNameOptions(): void {
+    this.updateAllergieToInvalid();
+
     const filterValue = this.filterAllergieNameText.toLowerCase();
     this.filteredAllergieNameOptions = this.allergiesList.filter(option =>
       option.designacao.toLowerCase().includes(filterValue),
@@ -632,6 +646,8 @@ export class DoctorComponent implements OnInit {
   }
 
   selectOptionTagAllergies(designacao: string) {
+    this.updateAllergieToValid();
+
     this.filterAllergieNameText = designacao;
     this.filterAllergieDescricaoText = this.allergiesList.find(option =>
       option.designacao.toLowerCase() === designacao.toLowerCase()
@@ -689,6 +705,9 @@ export class DoctorComponent implements OnInit {
       console.log(this.tagsAllergies);
     }
 
+    this.cleanAllergieFilter();
+    this.updateAllergieToInvalid();
+
   }
 
 
@@ -709,8 +728,8 @@ export class DoctorComponent implements OnInit {
       this.tagsConditions.push(medicalConditionAdd);
       console.log("update array: ",  this.tagsConditions);
     }
-
-
+    this.cleanMedicalConditionFilter();
+    this.updateConditionToInvalid();
   }
 
   addDescription() {
@@ -1461,6 +1480,7 @@ removeStaffMember(index: number) {
         },
         error: (error) => {
           this.rejectPolicy();
+          this.cleanMedicalRecordRegister();
 
           console.error('Error editing Medical Record:', error);
           this.sweetService.sweetErro("Error editing Medical Record");
@@ -1469,6 +1489,8 @@ removeStaffMember(index: number) {
           this.successMessage = null;
         }
       });
+
+      this.cleanMedicalRecordRegister();
   }
 
    getMedicalRecord() {
@@ -1574,6 +1596,20 @@ removeStaffMember(index: number) {
     };
     this.selectedOperationRequestId = null;
     this.selectedSurgeryRoomId = null;
+  }
+
+  cleanAllergieFilter(){
+    this.filterAllergieNameText = '';
+    this.filterAllergieDescricaoText = '';
+    this.filterAllergieStatusText = '';
+  }
+
+  cleanMedicalConditionFilter(){
+    this.filterConditionCodigoText = '';
+    this.filterTextCondition = '';
+    this.filterConditionDescricaoText = '';
+    this.filterConditionStatusText = '';
+    this.sintomasCodition = '';
   }
 
   cleanMedicalRecordRegister() {
