@@ -1,6 +1,7 @@
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.RoomTypess;
 
 
 namespace DDDSample1.ApplicationService.SurgeryRooms
@@ -10,12 +11,14 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISurgeryRoomRepository _repo;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IRoomTypesRepository _roomTypeRepository;
 
-        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo, IAppointmentRepository appointmentRepository)
+        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo, IAppointmentRepository appointmentRepository, IRoomTypesRepository roomTypeRepository)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._appointmentRepository = appointmentRepository;
+            this._roomTypeRepository = roomTypeRepository;
         }
 
         public async Task<List<SurgeryRoomDto>> GetAllAsync()
@@ -53,6 +56,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
         public async Task<SurgeryRoomDto> AddAsync(CreatingSurgeryRoomDto dto)
         {
             CheckStatus(dto.Status);
+            await checkRoomTypeAsync(dto.Type);
 
             List<Slot> converted = [];
             foreach (var slot in dto.MaintenanceSlots)
@@ -106,6 +110,16 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
                 throw new BusinessRuleValidationException("Invalid Status.");
         }
 
+        private async Task<RoomTypes> checkRoomTypeAsync(RTId roomTypeId)
+        {
+            Console.WriteLine("roomTypeId: " + roomTypeId.Value);
+            Console.WriteLine("XXXXXXXXXXXXXXXXXX\n\n\n\n\n\n");
+            var category = await _roomTypeRepository.GetByIdAsync(roomTypeId);
+            if (category == null)
+                throw new BusinessRuleValidationException("Invalid RoomType Id.");
+            return category;
+        }
+
         public async Task<bool> IsRoomAvailable(SurgeryRoomId id, DateTime date, int duration)
         {
             var surgeryRoom = await this._repo.GetByIdAsync(id);
@@ -132,7 +146,9 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             var listDto = new List<SurgeryRoomUIDto>();
             foreach (var surgeryRoom in list)
             {
-                listDto.Add(new SurgeryRoomUIDto(surgeryRoom.Id, surgeryRoom.RoomNumber, surgeryRoom.Type));
+                var roomType = await this._roomTypeRepository.GetByIdAsync(surgeryRoom.Type);
+                if (roomType.SurgerySuitable == true)
+                    listDto.Add(new SurgeryRoomUIDto(surgeryRoom.Id, surgeryRoom.RoomNumber, roomType.Code.Value));
             }
 
             return listDto;
