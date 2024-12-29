@@ -2237,16 +2237,16 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let request of allergiesList; let i = index" 
-                      (click)="selectAllergie(request.id)" 
-                      [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
+                      (click)="selectAllergie(request.designacao)" 
+                      [ngClass]="{ 'selected-row': selectedAllergie === request.designacao }">
                     <td>{{ i + 1 }}</td>
                     <td>
                       <input class="selectRequest" 
                              type="radio" 
-                             id="allergie_{{ request.id }}" 
+                             id="allergie_{{ request.designacao }}" 
                              name="id" 
-                             value="{{ request.id }}" 
-                             [checked]="selectedAllergie === request.id" hidden>
+                             value="{{ request.designacao }}" 
+                             [checked]="selectedAllergie === request.designacao" hidden>
                       {{ request.designacao }}
                     </td>
                     <td>{{ request.descricao }}</td>
