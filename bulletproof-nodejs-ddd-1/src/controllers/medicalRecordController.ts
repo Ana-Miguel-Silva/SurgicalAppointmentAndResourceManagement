@@ -26,14 +26,11 @@ export default class MedicalRecordController implements IMedicalRecordController
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.body as string) as Result<IFEMedicalRecordDTO>;
 
-      console.log("get medical record" , MedicalRecordOrError);
-
       if (MedicalRecordOrError.isFailure) {
         return res.status(404).send();
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();   
-      console.log("get medical record2 "  , MedicalRecordDTO);
 
       return res.status(200).json( MedicalRecordDTO );
     }
@@ -48,18 +45,11 @@ export default class MedicalRecordController implements IMedicalRecordController
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
-      console.log("body create: ", req.body)
-
-      console.log("Create medical record: ", MedicalRecordOrError);
-
-      console.log(MedicalRecordOrError);
-
       if (MedicalRecordOrError.isFailure) {
         return res.status(402).send();
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();
-
 
       return res.json( MedicalRecordDTO ).status(201);
     }
@@ -88,7 +78,7 @@ export default class MedicalRecordController implements IMedicalRecordController
   public async deleteMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.deleteMedicalRecord(req.body as string) as Result<string>;
-      console.log(MedicalRecordOrError);
+     
 
       if (MedicalRecordOrError.isSuccess) {        
         return res.status(200).send();

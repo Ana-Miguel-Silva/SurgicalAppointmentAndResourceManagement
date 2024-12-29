@@ -416,3 +416,71 @@ table.table td .btn.manage:hover {
     font-family: Arial, sans-serif; /* Optional: Set a desired font */
   }
   
+  /* CSS para personalização */
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+}
+
+.form-check-input {
+  position: absolute;
+  opacity: 0;  /* Torna a checkbox original invisível */
+  z-index: -1;
+}
+
+.form-check-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 18px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out;
+  border: 1px solid #ddd;
+}
+
+.form-check-label:hover {
+  background-color: #e2e6ea;
+}
+
+.custom-checkbox-label {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox input:checked + .form-check-label .bi-check-lg {
+  color: #03ff3e; /* Verde quando marcado */
+}
+
+.custom-checkbox input:not(:checked) + .form-check-label .bi-check-lg {
+  color: #ccc; /* Cinza quando desmarcado */
+}
+
+.custom-checkbox .bi-check-lg {
+  font-size: 22px;
+  margin-right: 10px;
+  transition: color 0.3s ease-in-out; /* Transição suave */
+}
+
+.form-check-label span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #495057;
+  transition: color 0.3s ease-in-out;
+}
+
+.form-check-label span:hover {
+  color: #007bff; /* Azul quando hover */
+}
+
+/* Adicionando interação visual para o clique */
+.custom-checkbox input:checked + .form-check-label {
+  background-color: #348f49;  /* Verde quando checked */
+  border-color: #218838; /* Cor de borda mais escura para dar efeito */
+  transform: transform(2px); /* Leve movimento ao clicar */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+}
+
+.custom-checkbox input:checked + .form-check-label span {
+  color: white;  /* Cor do texto vai para branco quando marcado */
+}

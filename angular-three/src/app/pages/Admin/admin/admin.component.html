@@ -232,6 +232,14 @@
             </div>
           </div>
 
+          <div class="container col-md-4">
+            <div class="container-lg  selectionDiv" (click)="openModal('insertRoomTypes')">
+              <div class="form-floating mb-3">
+                  <h3 class="title" >Insert RoomTypes</h3>
+              </div>
+            </div>
+          </div>
+
         <div class="container col-md-4">
           <div class="container-lg  selectionDiv" (click)="openModal('insertMedicalCondition')">
             <div class="form-floating mb-3">
@@ -1713,22 +1721,22 @@
                         <input type="number" [(ngModel)]="staff.quantity" name="quantity_{{i}}" class="form-control" placeholder="Quantity" required min="1" step="1" />
                       </div>
 
-<!-- Specialization -->
-<div class="col-md-3">
-  <label for="specialization_{{i}}">Specialization</label>
-  <select
-    id="specialization_{{i}}"
-    class="form-control"
-    [(ngModel)]="staff.specialization"
-    name="specialization_{{i}}"
-    required
-  >
-    <option value="" disabled>Select a Specialization</option>
-    <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
-      {{ specialization.specializationName }}
-    </option>
-  </select>
-</div>
+                        <!-- Specialization -->
+                        <div class="col-md-3">
+                          <label for="specialization_{{i}}">Specialization</label>
+                          <select
+                            id="specialization_{{i}}"
+                            class="form-control"
+                            [(ngModel)]="staff.specialization"
+                            name="specialization_{{i}}"
+                            required
+                          >
+                            <option value="" disabled>Select a Specialization</option>
+                            <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
+                              {{ specialization.specializationName }}
+                            </option>
+                          </select>
+                        </div>
 
                       <!-- Role -->
                       <div class="col-md-3">
@@ -2207,54 +2215,60 @@
   </div>
 </div>
 
+
 <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
   <div id="mapModalContent" class="modal-content" style="height: 75vh;">
-      <span (click)="closeModal('listAllergies')" class="close">&times;</span>
-      <div>
+    <span (click)="closeModal('listAllergies')" class="close">&times;</span>
+    <div>
 
-        <form  class="row g-3 needs-validation" novalidate="">
-            <div class="col-md-10"></div>
+      <form class="row g-3 needs-validation" novalidate="">      
 
-            <div class="col-md-12">
-              <div class="table-wrapper" >
-                <div class="table-title">
-                <form class="row g-3 needs-validation" novalidate="">
-                <table class="table table-striped table-hover table-over">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
-                    <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.designacao)" [ngClass]="{ 'selected-row': selectedAllergie === request.designacao }">
-                      <td>{{ i + 1 }}</td>
-                      <td><input class="selectRequest" type="radio" id="allergie_{{ request.designacao }}" name="id" value="{{ request.designacao }}" [checked]="selectedAllergie === request.designacao" hidden>{{ request.designacao }} </td>
-
-                      <td>{{ request.descricao }}</td>
-
-                    </tr>
-                  </tbody>
-                </table>
-                </form>
-              </div>
+        <!-- Tabela -->
+        <div class="col-md-12"  style="overflow: auto; max-height: 60vh; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
+          <div class="table-wrapper">
+            <div class="table-title">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let request of allergiesList; let i = index" 
+                      (click)="selectAllergie(request.id)" 
+                      [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                      <input class="selectRequest" 
+                             type="radio" 
+                             id="allergie_{{ request.id }}" 
+                             name="id" 
+                             value="{{ request.id }}" 
+                             [checked]="selectedAllergie === request.id" hidden>
+                      {{ request.designacao }}
+                    </td>
+                    <td>{{ request.descricao }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+        </div>
 
-          <div class="col-md-9"></div>
+        <!-- Botões -->
+        <div class="col-md-9"></div>
           <div class="col-md-3">
             <button class="fs-5 btn btn-outline-warning" (click)="updateAllergy()" > Edit <i class="bi bi-pencil-square"></i></button>
           </div>
           </form>
 
-
-
-        </div>
-
+    </div>
   </div>
 </div>
+
+
 
 
 <div [ngStyle]="{'display': isModalOpen('UpdateAllergyModal') ? 'block' : 'none'}" id="UpdateAllergyModal" class="modal" >
@@ -2589,6 +2603,71 @@
       </form>
   </div>
 </div>
+
+
+
+
+<div [ngStyle]="{'display': isModalOpen('insertRoomTypes') ? 'block' : 'none'}" id="insertRoomTypes" class="modal">
+  <div class="modal-content">
+      <span (click)="closeModal('insertRoomTypes')" class="close">&times;</span>
+      <form [formGroup]="roomTypeForm" (ngSubmit)="onInsertRoomType()" class="row g-3 needs-validation" novalidate>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-badge-fill"></i></span>
+              <input type="text" class="form-control" id="roomTypeCode" formControlName="code"   name="roomTypeCode" required step="1" placeholder="Code"/>
+            </div>
+         </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
+              <input type="text" class="form-control" id="roomTypeDesignation" formControlName="designacao"  name="roomTypenDesignation" required step="2" placeholder="Designation" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
+              <textarea class="form-control" id="roomTypeDescription" formControlName="descricao" name="roomTypeDescription" rows="1" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input visually-hidden" id="surgerySuitable" formControlName="surgerySuitable" name="surgerySuitable">
+                <label class="form-check-label" for="surgerySuitable">
+                  <div class="custom-checkbox-label">
+                    <i class="bi bi-check-lg"></i>
+                    <span>Surgery Suitable</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div class="col-12" style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+        </div>  
+
+
+          <!-- Submit Button -->
+          <div class="col-12">
+              <button class="btn btn-primary" [disabled]="!isPolicyAccepted" type="submit">Register Room Type</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+
+
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

@@ -1479,7 +1479,7 @@ removeStaffMember(index: number) {
                 this.tagsAllergies = this.medicalRecordProfile.allergies;
                 this.descricaoList = this.medicalRecordProfile.descricao;
 
-                this.openModal('ViewMedicalRecord');
+                this.openModal('FilterMedicalRecord');
               },
               error: (error) => {
                 console.error('Error fetching  medical record:', error);
@@ -1509,6 +1509,7 @@ removeStaffMember(index: number) {
 
   closeModal(modalId: string): void {
     this.modalService.closeModal(modalId);
+    this.rejectPolicy();
   }
 
   isModalOpen(modalId: string): boolean {
