@@ -1,6 +1,5 @@
 
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.RoomTypes;
 
 namespace DDDSample1.Domain.RoomTypess
 {

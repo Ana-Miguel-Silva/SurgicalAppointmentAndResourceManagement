@@ -8,6 +8,7 @@ using DDDSample1.Domain.Staff;
 using Newtonsoft.Json.Linq;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Domain.RoomTypess;
 
 namespace DDDSample1.ApplicationService.Appointments
 {
@@ -20,12 +21,12 @@ namespace DDDSample1.ApplicationService.Appointments
         private readonly IStaffRepository _repoStaff;
         private readonly IOperationTypeRepository _repoOpTy;
         private readonly IPatientRepository _repoPat;
-
+        private readonly IRoomTypesRepository _repoRoomTypes;
         private readonly HttpClient _httpClient;
         public IConfiguration configuration { get; }
 
 
-        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IStaffRepository repoStaff, IOperationTypeRepository repoOpTy, IPatientRepository repoPat, IConfiguration configuration)
+        public AppointmentService(IUnitOfWork unitOfWork, IAppointmentRepository repo, ISurgeryRoomRepository repoSurgeryRooms, IOperationRequestRepository repoOperationRequests, IStaffRepository repoStaff, IRoomTypesRepository roomTypes, IOperationTypeRepository repoOpTy, IPatientRepository repoPat, IConfiguration configuration)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -36,6 +37,7 @@ namespace DDDSample1.ApplicationService.Appointments
             this._repoStaff = repoStaff;
             this._repoOpTy = repoOpTy;
             this._repoPat = repoPat;
+            this._repoRoomTypes = roomTypes;
         }
 
         public async Task<List<AppointmentUIDto>> GetAllAsync()
@@ -320,7 +322,7 @@ namespace DDDSample1.ApplicationService.Appointments
             List<StaffProfile> staff = await _repoStaff.GetAllAsync();
             List<OperationRequest> request = await _repoOpReq.GetAllAsync();
             List<OperationType> types = await _repoOpTy.GetAllAsync();
-            List<SurgeryRoom> rooms = await _repoRooms.GetAllAsync();
+            List<SurgeryRoom> rooms = await SurgerySuitableRooms();
             List<Appointment> appointments = await _repo.GetAllAsync();
 
             var helper = new PrologUtils();
@@ -572,7 +574,18 @@ namespace DDDSample1.ApplicationService.Appointments
             return true;
         }
 
-
+        private async Task<List<SurgeryRoom>> SurgerySuitableRooms()
+        {
+            var rooms = await _repoRooms.GetAllAsync();
+            var suitableRooms = new List<SurgeryRoom>();
+            foreach (var surgeryRoom in rooms)
+            {
+                var roomType = await _repoRoomTypes.GetByIdAsync(surgeryRoom.Type);
+                if (roomType.SurgerySuitable == true)
+                    suitableRooms.Add(surgeryRoom);
+            }
+            return suitableRooms;
+        }
 
     }
 }

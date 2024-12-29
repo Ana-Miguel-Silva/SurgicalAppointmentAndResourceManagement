@@ -1,7 +1,6 @@
     using System;
     
     using DDDSample1.Domain.Shared;
-    using DDDSample1.Domain.RoomTypes;
     using System.Text.RegularExpressions;
 
     namespace DDDSample1.Domain.RoomTypess

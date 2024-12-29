@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Domain.RoomTypes
+namespace DDDSample1.Domain.RoomTypess
 {
     public class CreatingRoomTypesDto
     {

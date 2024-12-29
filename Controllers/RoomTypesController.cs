@@ -10,7 +10,6 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.ApplicationService.Patients;
 using Newtonsoft.Json;
 using DDDSample1.ApplicationService.Logging;
-using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Controllers
@@ -28,8 +27,8 @@ namespace DDDSample1.Controllers
         {
             _service = service;
             _authService = authService;
-             _logService = logService;
-            
+            _logService = logService;
+
         }
 
         // GET: api/RoomTypes
@@ -42,27 +41,26 @@ namespace DDDSample1.Controllers
             return await _service.GetAllAsync();
         }
 
-        
         // POST: api/RoomTypess
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
         [HttpPost]
         public async Task<ActionResult<RoomTypesDto>> Create(CreatingRoomTypesDto dto)
         {
-           
-                var result = await _service.AddAsync(dto);
 
-                if (result == null)
-                {
-                    return BadRequest("Wasn't possible to create the RoomTypes.");
-                }
-               
-                return CreatedAtAction(nameof(Create), new { id = result.RoomTypeId }, result);
+            var result = await _service.AddAsync(dto);
 
-            
-            
-        }        
+            if (result == null)
+            {
+                return BadRequest("Wasn't possible to create the RoomTypes.");
+            }
 
-        
+            return CreatedAtAction(nameof(Create), new { id = result.RoomTypeId }, result);
+
+
+
+        }
+
+
 
     }
 }

@@ -1,3 +1,4 @@
+using DDDSample1.Domain.RoomTypess;
 using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.SurgeryRooms
@@ -5,7 +6,7 @@ namespace DDDSample1.Domain.SurgeryRooms
     public class SurgeryRoom : Entity<SurgeryRoomId>, IAggregateRoot
     {
         public int RoomNumber { get; private set; }
-        public string Type { get; private set; }
+        public RTId Type { get; private set; }
         public int Capacity { get; private set; }
         public List<string> AssignedEquipment { get; private set; }
         public string CurrentStatus { get; private set; }
@@ -17,7 +18,7 @@ namespace DDDSample1.Domain.SurgeryRooms
             MaintenanceSlots = new List<Slot>();
         }
 
-        public SurgeryRoom(int number, string type, int capacity, List<string> assignedEquipment, string status, List<Slot> maintenanceSlots)
+        public SurgeryRoom(int number, RTId type, int capacity, List<string> assignedEquipment, string status, List<Slot> maintenanceSlots)
         {
             if (type == null || capacity <= 0)
                 throw new BusinessRuleValidationException("One of the surgery room parameters was not valid");

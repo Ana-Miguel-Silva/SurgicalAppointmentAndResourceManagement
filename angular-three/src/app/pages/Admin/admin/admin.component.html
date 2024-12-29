@@ -2237,8 +2237,17 @@
   <div id="mapModalContent" class="modal-content" style="height: 75vh;">
     <span (click)="closeModal('listAllergies')" class="close">&times;</span>
     <div>
+      
 
-      <form class="row g-3 needs-validation" novalidate="">      
+      <form class="row g-3 needs-validation" novalidate="">  
+        <div class="col-md-10"></div>
+
+
+        <div class="col-md-2">
+            <div class="input-group">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('filterAllergyModal')"> Filter </button>
+          </div>
+        </div>    
 
         <!-- Tabela -->
         <div class="col-md-12"  style="overflow: auto; max-height: 60vh; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
@@ -2286,7 +2295,35 @@
 </div>
 
 
+<div [ngStyle]="{'display': isModalOpen('filterAllergyModal') ? 'block' : 'none'}" id="filterAllergyModal" class="modal">
+  <div class="modal-content">
 
+    <span (click)="closeModal('filterAllergyModal')" class="close">&times;</span>
+    <form>
+
+      <h3 class="text-center">Filter Allergies</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilterAllergy()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterName" class="form-label">Name:</label>
+        <input type="text" id="filterName" [(ngModel)]="filterAllergy.name"  name="filterName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterDescription" class="form-label">Description:</label>
+        <input type="text" id="filterDescription" [(ngModel)]="filterAllergy.description"  name="filterDescription" class="form-control" />
+      </div>
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterAllergies()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
+  </div>
+</div>
 
 <div [ngStyle]="{'display': isModalOpen('UpdateAllergyModal') ? 'block' : 'none'}" id="UpdateAllergyModal" class="modal" >
   <div class="modal-content">

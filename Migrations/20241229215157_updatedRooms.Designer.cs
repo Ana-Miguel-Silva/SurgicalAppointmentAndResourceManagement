@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241218153319_updatedSpecialization")]
-    partial class updatedSpecialization
+    [Migration("20241229215157_updatedRooms")]
+    partial class updatedRooms
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,6 +180,40 @@ namespace DDDNetCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PendingActions");
+                });
+
+            modelBuilder.Entity("DDDSample1.Domain.RoomTypess.RoomTypes", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("RoomTId");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("Descricao");
+
+                    b.Property<string>("Designacao")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("Designacao");
+
+                    b.Property<bool>("SurgerySuitable")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("SurgerySuitable");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("DDDSample1.Domain.Specializations.Specialization", b =>
