@@ -342,6 +342,12 @@ export class AdminComponent {
     appointmentHistory: ''
   } as const;
 
+  filteredAllergies: any[] = [];
+  filterAllergy = {
+    name: '',
+    description: '',
+  } as const;
+
   filteredStaffs: any[] = [];
   filterStaff = {
     name: '',
@@ -930,6 +936,19 @@ export class AdminComponent {
       dateOfBirth: '',
       allergies: '',
       appointmentHistory: ''
+    };
+  }
+
+
+  onFilterAllergies(){
+    this.getAllAllergies();
+    this.closeModal('filterAllergyModal');
+  }
+
+  cleanFilterAllergy() {
+    this.filterAllergy = {
+      name: '',
+      description: '',
     };
   }
 
@@ -1976,11 +1995,14 @@ export class AdminComponent {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+    
     this.allergiesService.getAllAllergies()
       .subscribe({
         next: (response) => {
           this.allergiesList = response;
-          console.log("teste: ", response);
+          this.applyFilters();
+          console.log("Allergies: ", response);
+          console.log("filtered: ", this.filteredAllergies)
         },
         error: (error) => {
           console.error('Error fetching  allergies:', error);
@@ -1989,6 +2011,21 @@ export class AdminComponent {
       });
 
   }
+
+  applyFilters() {
+    this.allergiesList = this.allergiesList.filter(allergy => {
+      const nameMatch = this.filterAllergy.name
+        ? String(allergy.designacao).toLowerCase().includes(String(this.filterAllergy.name).toLowerCase())
+        : true;
+  
+      const descriptionMatch = this.filterAllergy.description
+        ? String(allergy.descricao).toLowerCase().includes(String(this.filterAllergy.description).toLowerCase())
+        : true;
+  
+      return nameMatch && descriptionMatch;
+    });
+  }
+  
 
   selectedAllergieId: string | null = null;
 
