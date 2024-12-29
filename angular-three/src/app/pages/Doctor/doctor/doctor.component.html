@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,10 +15,10 @@
 
 <body>
   <h1 class="h1 title glow" (click)="ngOnInit()" style="padding: 1cm; color:white"> Doctor </h1>
-  <!--<button id="mapButton" class="hospMapBtn" (click)="openModal('mapModal')">
+  <button id="mapButton" class="hospMapBtn" (click)="openModal('mapModal')">
       Hospital Map
       <span class="icon">📍</span>
-    </button>-->
+    </button>
     <div class="container">
 
         <div class="row g-3">
@@ -447,7 +450,7 @@ id="updateAppointmentModal" class="modal">
   </div>
 
 
-  <!-- <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
+  <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
       <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
           <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="">
@@ -571,7 +574,7 @@ id="updateAppointmentModal" class="modal">
           </div>
         </div>
       </div>
-    </div>-->
+    </div>
 
   <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
     <div id="mapModalContent" class="modal-content" style="height: 75vh;">

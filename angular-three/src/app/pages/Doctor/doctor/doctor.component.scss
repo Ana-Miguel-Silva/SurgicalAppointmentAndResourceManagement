@@ -264,7 +264,10 @@ canvas {
   position: relative;
 }
 
-
+input, textarea {
+  position: relative;
+  z-index: 2;
+}
 
 
 #mapButton {

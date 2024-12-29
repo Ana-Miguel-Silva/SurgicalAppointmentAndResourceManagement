@@ -275,10 +275,6 @@ export default class ThumbRaiser {
         window.addEventListener("resize", event => this.windowResize(event));
 
         // Register the event handler to be called on key down
-        document.addEventListener("keydown", event => this.keyChange(event, true));
-
-        // Register the event handler to be called on key release
-        document.addEventListener("keyup", event => this.keyChange(event, false));
 
         // Register the event handler to be called on mouse down
         this.renderer.domElement.addEventListener("mousedown", event => this.mouseDown(event));
@@ -422,19 +418,6 @@ export default class ThumbRaiser {
         this.topViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.miniMapCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    keyChange(event, state) {
-        // Allow digit and arrow keys to be used when entering numbers
-        if (["horizontal", "vertical", "distance", "zoom"].indexOf(event.target.id) < 0) {
-            event.target.blur();
-        }
-        if (document.activeElement == document.body) {
-            // Prevent the "Space" and "Arrow" keys from scrolling the document's content
-            if (event.code == "Space" || event.code == "ArrowLeft" || event.code == "ArrowRight" || event.code == "ArrowDown" || event.code == "ArrowUp") {
-                event.preventDefault();
-            }
-        }
     }
 
     mouseDown(event) {
