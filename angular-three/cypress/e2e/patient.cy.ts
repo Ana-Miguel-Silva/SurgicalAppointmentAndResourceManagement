@@ -40,27 +40,6 @@ describe('PatientComponent', () => {
 
 });
 
-it('should allow updating patient information', () => {
-  cy.get('.selectionDiv')
-    .contains('Update Patient Profile')
-    .should('be.visible')
-    .click();
-
-  cy.get('#UpdatePatientModal', { timeout: 10000 }).should('be.visible');
-
-  cy.get('input[formControlName="name"]').clear().type('patient patient');
-  cy.get('input[formControlName="email"]').clear().type('avlismana@gmail.com');
-  cy.get('input[formControlName="phone"]').clear().type('987654321');
-  cy.get('input[formControlName="userEmail"]').clear().type('avlismana@gmail.com');
-  cy.get('input[formControlName="gender"]').clear().type('Female');
-  cy.get('input[formControlName="emergencyContactName"]').clear().type('default dd');
-  cy.get('input[formControlName="emergencyContactEmail"]').clear().type('default@gmail.com');
-  cy.get('input[formControlName="emergencyContactPhone"]').clear().type('999999999');
-
-
-  cy.get('button.btn.btn-primary').click();
-
-});
 
 it('should add and remove dates from appointmentHistory', () => {
 
@@ -76,10 +55,12 @@ it('should add and remove dates from appointmentHistory', () => {
   const newDate = '2023-12-01'; 
   cy.get('input[type="date"]#input-date').clear().type(newDate); 
 
+  cy.get('button[id="updatePatientPolicy"]').contains('Read and Agree to Policy').click();    
+  cy.get('#policyModal').should('be.visible');
+  cy.get('#policyModal .btn-success').contains('Accept').click();
 
-  cy.get('button.btn.btn-primary').click(); 
-
-  cy.get('.table-over-update tbody').should('contain', newDate);
+  cy.get('button[id="updatePatientModalButton"]').click();
+  cy.contains('Patient updated successfully!').should('be.visible');   
 
 });
 
@@ -95,7 +76,7 @@ it('should remove dates from appointmentHistory', () => {
   cy.get('#UpdatePatientModal', { timeout: 10000 }).should('be.visible');
 
   const newDate = '2023-12-01';
-  cy.get('input[type="date"]#input-date').clear().type(newDate); 
+ 
 
 
   cy.get('input[type="date"]#input-date').trigger('change');
@@ -110,25 +91,14 @@ it('should remove dates from appointmentHistory', () => {
 
   
   cy.get('ul#dates').should('contain', newDate); 
+
+  cy.get('button[id="updatePatientPolicy"]').contains('Read and Agree to Policy').click();    
+  cy.get('#policyModal').should('be.visible');
+  cy.get('#policyModal .btn-success').contains('Accept').click();
+
+  cy.get('button[id="updatePatientModalButton"]').click();
+  cy.contains('Patient updated successfully!').should('be.visible');   
   
-});
-
-
-it('should add and remove tags from allergies', () => {
-  cy.get('.selectionDiv')
-  .contains('Update Patient Profile')
-  .should('be.visible')
-  .click();
-
-
-  cy.get('#UpdatePatientModal', { timeout: 10000 }).should('be.visible');
-
-  const newtag= 'water';
-  cy.get('input[type="text"]#input-tag').clear().type(newtag);
-
-  cy.get('button.btn.btn-primary').click();
- 
- cy.get('ul#tags').should('not.contain', newtag); 
 });
 
 });

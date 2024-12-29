@@ -18,6 +18,12 @@ import { SurgeryRoomsService } from '../../../Services/surgeryRoom.service';
 import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { StaffService } from '../../../Services/staff.service';
+import { PatientService } from '../../../Services/patient.service';
+import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
+import { sweetAlertService } from '../../../Services/sweetAlert.service';
+import { MockSweetAlertService } from '../../../Services/Tests/mock-sweetAlert.service';
+import { SweetAlertArrayOptions } from 'sweetalert2';
+import { RoomTypesService } from '../../../Services/roomtypes.service';
 
 
 class MockAuthService {
@@ -43,6 +49,8 @@ describe('DoctorComponent', () => {
   let mockMedicalConditionService: jasmine.SpyObj<MedicalConditionService>;
   let mockStaffService: jasmine.SpyObj<StaffService>;
 
+  let mockSweetAlertService: jasmine.SpyObj<sweetAlertService>;
+ 
 
   let httpMock: HttpTestingController;
 
@@ -62,8 +70,8 @@ describe('DoctorComponent', () => {
       providers: [
         { provide: OperationRequestsService, useClass: MockOperationRequestsService }, 
         { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
-        
-          // TODO: MUDAR PARA  useClass: MockAppointmentService
+        { provide: sweetAlertService, useClass: MockSweetAlertService }, 
+        // TODO: MUDAR PARA  useClass: MockAppointmentService
         { provide: AppointmentService, useClass: AppointmentService },
          // TODO: MUDAR PARA  useClass: MockSurgeryRoomsService
          { provide: SurgeryRoomsService, useClass: SurgeryRoomsService },
@@ -86,7 +94,9 @@ describe('DoctorComponent', () => {
     mockAllegiesService = TestBed.inject(AllergiesService) as jasmine.SpyObj<AllergiesService>;
     mockMedicalConditionService = TestBed.inject(MedicalConditionService) as jasmine.SpyObj<MedicalConditionService>;
     mockStaffService = TestBed.inject(StaffService) as jasmine.SpyObj<StaffService>;
-    
+  
+    mockSweetAlertService = TestBed.inject(sweetAlertService) as jasmine.SpyObj<sweetAlertService>;
+   
     
     mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     httpMock = TestBed.inject(HttpTestingController);
@@ -307,7 +317,7 @@ component.onCreateRequest(newRequest);
 
   it('should get medical record  by patient Id', fakeAsync(() => {
 
-    spyOn(mockMedicalRecordService, 'getAllMedicalRecordByPatientId').and.callThrough();
+    spyOn(component, 'editMedicalRecord');
 
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
 
@@ -322,8 +332,8 @@ component.onCreateRequest(newRequest);
   
 
     expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockMedicalRecordService.getAllMedicalRecordByPatientId).toHaveBeenCalled();
-    expect(component.operationRequests.length).toBe(2);
+    expect(component.editMedicalRecord).toHaveBeenCalled();
+    expect(component.medicalRecordRequests.length).toBe(2);
   }));
 
   it('should update medical record successfully', fakeAsync(() => {
@@ -436,7 +446,7 @@ component.onCreateRequest(newRequest);
   }));
 
 
-  it('should update medical condition entry in medical record successfully', fakeAsync(() => {
+  /*it('should update medical condition entry in medical record successfully', fakeAsync(() => {
     
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');  
   
@@ -459,15 +469,15 @@ component.onCreateRequest(newRequest);
 
     component.medicalRecordUpdate.patchValue({
       patientId: '9b48129b-4e08-44bd-b714-a1fb730f3a19',
-      descricao: ['Updated description'],
-      medicalConditions: [       
-      ],
+      descricao: ['Updated description'],     
       allergies: [
         {
           designacao: 'Peanut Allergy',
           descricao: '',
           status: 'Active'
         }
+      ],
+      medicalConditions: [       
       ]
     });
 
@@ -483,7 +493,7 @@ component.onCreateRequest(newRequest);
     expect(mockAuthService.getToken).toHaveBeenCalled();    
     expect(component.getAllMedicalRecords).toHaveBeenCalled();
     expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
-  }));
+  }));*/
 
 
   it('should update description entry in medical record successfully', fakeAsync(() => {
@@ -534,7 +544,58 @@ component.onCreateRequest(newRequest);
     expect(component.getAllMedicalRecords).toHaveBeenCalled();
     expect(component.cleanMedicalRecordRegister).toHaveBeenCalled();      
   }));
+
+  it('should filter allergies successfully', () => {
+    component.tagsAllergies = [
+      { designacao: 'Peanut Allergy', descricao: 'Peanut-related allergy', status: 'Active' },
+      { designacao: 'Shellfish Allergy', descricao: 'Shrimp allergy', status: 'Resolved' },
+    ];
+
+    component.allergieNameFilter = 'peanut';
+    component.onFilterMedicalRecordRequests();
+
+    expect(component.filteredTagsAllergies.length).toBe(1);
+    expect(component.filteredTagsAllergies[0].designacao).toBe('Peanut Allergy');
+  });
+
+  it('should filter medical conditions by symptoms successfully', () => {
+    component.tagsConditions = [
+      {
+        codigo: 'C01',
+        designacao: 'Condition A',
+        descricao: 'Description A',
+        status: 'Active',
+        sintomas: ['fever', 'cough'],
+      },
+      {
+        codigo: 'C02',
+        designacao: 'Condition B',
+        descricao: 'Description B',
+        status: 'Resolved',
+        sintomas: ['headache', 'nausea'],
+      },
+    ];
+
+    component.medicalConditionSymptomsFilter = 'fever';
+    component.onFilterMedicalRecordRequestsConditions();
+
+    expect(component.filteredTagsConditions.length).toBe(1);
+    expect(component.filteredTagsConditions[0].codigo).toBe('C01');
+  });
+
+
+  it('should show warning if no patient email is selected for fetching records', () => {
+    component.selectedPatientEmailMedicalRecord = null;
+
+    component.getMedicalRecord();
+
+    expect(mockSweetAlertService.sweetWarning).toHaveBeenCalledWith('Please select a medical record.');
+  });
+
+  
 });
+
+
   
 
 

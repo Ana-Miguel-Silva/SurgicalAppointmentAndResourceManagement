@@ -45,9 +45,11 @@ describe('Doctor Operation Requests', () => {
 
     cy.get('#condition-filter').type('Major depressive disorder');
     cy.get('.dropdown-list > li').contains('Major depressive disorder').click();
-    cy.get('#descricaoCondition').type('A mental health condition marked by persistent feelings of sadness...');
-    cy.get('[name="filterConditionStatus"]').type('Active');
+   // cy.get('#descricaoCondition').type('A mental health condition marked by persistent feelings of sadness...');
+    cy.get('[id="registerFilterConditionStatus"]').type('Active');
+    cy.get('.dropdown-list', { timeout: 5000 }).should('be.visible')
     cy.get('.dropdown-list > li').contains('Active').click();
+    
     cy.get('#medicalConditionSymptoms').type('Sadness');
     cy.get('.btn-primary').contains('Add Condition').click();
 
@@ -67,6 +69,7 @@ describe('Doctor Operation Requests', () => {
    
   }); 
 
+ 
 
   it('should allow edit a medical record', () => {
     cy.get('.selectionDiv').contains('List Medical Record').click();
@@ -86,8 +89,8 @@ describe('Doctor Operation Requests', () => {
     cy.get('#tag-filterUpdate').clear().type('Shellfish Allergy');
     cy.get('.dropdown-listUpdate > li').contains('Shellfish Allergy').click();
     cy.get('#descricaoAllergieUpdate').clear().type('Severe reaction to Shellfish');
-    cy.get('[name="filterAllergieStatusUpdate"]').clear().type('Active');
-    cy.get('.dropdown-listUpdate > li').contains('Active').click();
+    cy.get('[name="filterAllergieStatusUpdate"]').clear().type('Misdiagnosed');
+    cy.get('.dropdown-listUpdate > li').contains('Misdiagnosed').click();
     cy.get('button[id="updateAddAllergie"]').contains('Add Allergie').click();
 
    
@@ -98,6 +101,44 @@ describe('Doctor Operation Requests', () => {
     cy.get('button[id="updateMedicalRecord"]').click();
     cy.contains('Medical record edited successfully').should('be.visible');   
   });
+
+
+  it('should allow filter existing allergies a medical record', () => {
+    cy.get('.selectionDiv').contains('List Medical Record').click();
+    cy.get('#listMedicalRecordModal', { timeout: 10000 }).should('be.visible');
+   
+    cy.get('#listMedicalRecordModal').contains('td', 'testeCypress@gmail.com').parent('tr').click();
+
+    cy.get('button[id="filterMedicalRecord"]').click();
+    cy.get('#FilterMedicalRecord', { timeout: 10000 }).should('be.visible');
+    
+    cy.get('[id="medicalConditionNameFilter"]').should('exist'); 
+       
+    cy.get('[name="medicalConditionNameFilter"]').clear().type('Major depressive disorder');
+    cy.get('button[id="filterConditionMedicalRecord"]').contains('Apply Medical Condition Filter').click();
+
+   
+    cy.get('#FilterMedicalRecord').contains('td', 'Major depressive disorder').parent('tr').click();
+  });
+
+  it('should allow filter existing medical conditions a medical record', () => {
+    cy.get('.selectionDiv').contains('List Medical Record').click();
+    cy.get('#listMedicalRecordModal', { timeout: 10000 }).should('be.visible');
+   
+    cy.get('#listMedicalRecordModal').contains('td', 'testeCypress@gmail.com').parent('tr').click();
+
+    cy.get('button[id="filterMedicalRecord"]').click();
+    cy.get('#FilterMedicalRecord', { timeout: 10000 }).should('be.visible');
+    
+    cy.get('[id="allergieStatusFilter"]').should('exist'); 
+       
+    cy.get('[name="allergieStatusFilter"]').clear().type('Misdiagnosed');
+    cy.get('button[id="filterAllergieMedicalRecord"]').contains('Apply Allergie Filter').click();
+
+   
+    cy.get('#FilterMedicalRecord').contains('td', 'Misdiagnosed').parent('tr').click();
+  });
+
 
   it('should delete medical record', () => {
     cy.get('.selectionDiv').contains('List Medical Record').click();

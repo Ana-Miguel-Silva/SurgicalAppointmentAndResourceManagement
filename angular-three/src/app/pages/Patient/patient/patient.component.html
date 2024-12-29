@@ -361,13 +361,13 @@
           </div>!-->
 
           <div class="col-12" style="margin-bottom: 20px;">
-            <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+            <button type="button" class="btn btn-secondary" id="updatePatientPolicy" (click)="openPolicyModal()">Read and Agree to Policy</button>
         </div>
 
        
 
         <div class="col-12">
-          <button class="btn btn-primary" [disabled]="!isPolicyAccepted" (click)="onUpdatePatient()">Submit form</button>
+          <button class="btn btn-primary" id="updatePatientModalButton" [disabled]="!isPolicyAccepted" (click)="onUpdatePatient()">Submit form</button>
         </div>
         </div>
       </form>

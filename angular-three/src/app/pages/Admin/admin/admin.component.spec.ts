@@ -24,6 +24,7 @@ import { MockMedicalRecordService } from '../../../Services/Tests/mock-medicalRe
 import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { SpecializationService } from '../../../Services/specialization.service';
+import { RoomTypesService } from '../../../Services/roomtypes.service';
 class MockAuthService {
   getToken() {
     return 'fake-token';
@@ -41,6 +42,7 @@ describe('AdminComponent', () => {
   let mockAllegiesService: jasmine.SpyObj<AllergiesService>;
   let mockMedicalConditionService: jasmine.SpyObj<MedicalConditionService>;
   let mockSpecializationService: jasmine.SpyObj<SpecializationService>;
+  let mockRoomTypesService: jasmine.SpyObj<RoomTypesService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let httpMock: HttpTestingController;
   let mockHttpClient: jasmine.SpyObj<HttpClient>;
@@ -67,6 +69,9 @@ describe('AdminComponent', () => {
         { provide: AuthService, useClass: MockAuthService },
         { provide: ModalService, useValue: mockModalService },
         { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
+        // TODO: MUDAR PARA  useClass: MockRoomTypesService
+        { provide: RoomTypesService, useClass: RoomTypesService },       
+
           // TODO: MUDAR PARA  useClass: MockAllergiesService
         { provide: AllergiesService, useClass: AllergiesService },
          // TODO: MUDAR PARA  useClass: MockMedicalConditionService
@@ -84,6 +89,8 @@ describe('AdminComponent', () => {
     mockAllegiesService = TestBed.inject(AllergiesService) as jasmine.SpyObj<AllergiesService>;
     mockMedicalConditionService = TestBed.inject(MedicalConditionService) as jasmine.SpyObj<MedicalConditionService>;
     mockSpecializationService = TestBed.inject(SpecializationService) as jasmine.SpyObj<SpecializationService>;
+    mockRoomTypesService = TestBed.inject(RoomTypesService) as jasmine.SpyObj<RoomTypesService>;
+    
 
 
 

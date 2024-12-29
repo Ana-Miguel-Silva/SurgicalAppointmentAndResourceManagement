@@ -463,6 +463,17 @@ export class DoctorComponent implements OnInit {
   filteredAllergieNameOptions: any[] = [];
   filteredOptionsConditions: any[] = [];
 
+  filteredTagsAllergies =[...this.tagsAllergies];
+  allergieNameFilter: string = '';
+  allergieDescriptionFilter:string = '';
+  allergieStatusFilter:string = '';
+  filteredTagsConditions =[...this.tagsConditions];
+  medicalConditionNameFilter: string = '';
+  medicalConditionCodeFilter: string = '';
+  medicalConditionDescriptionFilter: string = '';
+  medicalConditionStatusFilter: string = '';
+  medicalConditionSymptomsFilter: string = '';
+
   showDropdown: boolean = false;
   showDropdown2: boolean = false;
   showDropdown3: boolean = false;
@@ -744,11 +755,35 @@ export class DoctorComponent implements OnInit {
     this.closeModal('filterRequestModal');
   }
 
-  /*onFilterMedicalRecordRequests() {
-    this.getAllMedicalRecords();
-    this.applyMedicalRecordFilter();
-    this.closeModal('filterMedicalRecordRequestModal');
-  }*/
+  onFilterMedicalRecordRequests() {
+    this.filteredTagsAllergies = this.tagsAllergies.filter(allergie =>
+      (!this.allergieNameFilter || allergie.designacao.toLowerCase().includes(this.allergieNameFilter.toLowerCase())) &&
+      (!this.allergieDescriptionFilter || allergie.descricao.toLowerCase().includes(this.allergieDescriptionFilter.toLowerCase())) &&
+      (!this.allergieStatusFilter || allergie.status.toLowerCase().includes(this.allergieStatusFilter.toLowerCase()))
+    );
+  }
+
+
+  onFilterMedicalRecordRequestsConditions() {
+    const symptomsFilterArray = this.medicalConditionSymptomsFilter
+      ? this.medicalConditionSymptomsFilter
+          .split(',')
+          .map(symptom => symptom.trim().toLowerCase()) 
+      : [];
+  
+    this.filteredTagsConditions = this.tagsConditions.filter(condition =>
+      (!this.medicalConditionNameFilter || condition.designacao.toLowerCase().includes(this.medicalConditionNameFilter.toLowerCase())) &&
+      (!this.medicalConditionCodeFilter || condition.codigo.toLowerCase().includes(this.medicalConditionCodeFilter.toLowerCase())) &&
+      (!this.medicalConditionDescriptionFilter || condition.descricao.toLowerCase().includes(this.medicalConditionDescriptionFilter.toLowerCase())) &&
+      (!this.medicalConditionStatusFilter || condition.status.toLowerCase().includes(this.medicalConditionStatusFilter.toLowerCase())) &&
+      (symptomsFilterArray.length === 0 || 
+        symptomsFilterArray.every(filterSymptom =>
+          condition.sintomas.some(symptom => symptom.toLowerCase().includes(filterSymptom))
+        )
+      )
+    );
+  }
+  
 
   onCreateAppointment() {
     const token = this.authService.getToken();
@@ -1187,11 +1222,18 @@ removeStaffMember(index: number) {
   }
 
 
-  onBlur() {
-    setTimeout(() => (this.showDropdown = false), 200);
-    setTimeout(() => (this.showDropdown2 = false), 200);
-    setTimeout(() => (this.showDropdown3 = false), 200);
-    setTimeout(() => (this.showDropdown4 = false), 200);
+  onBlur(field: string) {   
+      setTimeout(() => {
+        if (field === 'filterAllergie') {
+          this.showDropdown = false;
+        } else if (field === 'filterCondition') {
+          this.showDropdown2 = false;
+        } else if (field === 'filterAllergieStatus') {
+          this.showDropdown3 = false;
+        }else if (field === 'filterStatus') {
+          this.showDropdown4 = false;
+        }       
+      }, 200);        
   }
 
 
@@ -1457,7 +1499,7 @@ removeStaffMember(index: number) {
 
 
                 this.medicalRecordProfile.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
-                  this.tagsConditions.push({
+                  this.filteredTagsConditions.push({
                     codigo: condition.codigo,
                     designacao: condition.designacao,
                     descricao: condition.descricao,
@@ -1468,7 +1510,7 @@ removeStaffMember(index: number) {
 
 
                 this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
-                  this.tagsAllergies.push({
+                  this.filteredTagsAllergies.push({
                     designacao: allergy.designacao,
                     descricao: allergy.descricao,
                     status: allergy.status,
@@ -1537,8 +1579,10 @@ removeStaffMember(index: number) {
   cleanMedicalRecordRegister() {
     this.tagsAllergies = [];
     this.filterText = '';
+    this.filteredTagsAllergies = [];
     this.tagsConditions = [];
     this.filterTextCondition = '';
+    this.filteredTagsConditions = [];
 
     this.descricaoList = [];
 
