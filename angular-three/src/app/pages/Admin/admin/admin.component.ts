@@ -2011,6 +2011,8 @@ export class AdminComponent {
       this.sweetService.sweetWarning("Por favor seleciona uma alergia.")
     }else {
 
+      console.log("nome allergy",this.selectedAllergie)
+
       this.allergiesService.getByDesignacao(this.selectedAllergie)
       .subscribe({
         next: (response) => {
