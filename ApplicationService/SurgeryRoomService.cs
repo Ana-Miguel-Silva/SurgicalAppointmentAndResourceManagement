@@ -120,25 +120,28 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             return category;
         }
 
-        public async Task<bool> IsRoomAvailable(SurgeryRoomId id, DateTime date, int duration)
+        public async Task<bool> IsRoomAvailable(SurgeryRoomId id, DateTime date)
         {
-            var surgeryRoom = await this._repo.GetByIdAsync(id);
+            var appointments = await _appointmentRepository.GetAllAsync();
+            var room = await _repo.GetByIdAsync(id);
+            List<Slot> roomOccupiedSlots = new List<Slot>(room.MaintenanceSlots);
 
-            if (surgeryRoom == null)
-                return false;
-
-            var appointments = await this._appointmentRepository.GetByRoomAsync(id.Value);
-
-            foreach (var appointment in appointments)
+            foreach (var app in appointments)
             {
-                if (appointment.Date.StartTime.Day == date.Date.Day || appointment.Date.EndTime.Day == date.Date.Day)
+                if (app.RoomId == room.Id)
                 {
-                    if (appointment.Date.StartTime.Hour <= date.Hour && appointment.Date.EndTime.Hour > date.Hour)
-                        return false;
+                    roomOccupiedSlots.Add(app.Date);
                 }
             }
 
-            return true;
+            foreach (var slot in roomOccupiedSlots)
+            {
+                if (date >= slot.StartTime && date <= slot.EndTime){
+                    return false;
+                }
+            }
+
+            return true;            
         }
 
         private async Task<List<SurgeryRoomUIDto>> Dto_to_UIDto(List<SurgeryRoomDto> list)
