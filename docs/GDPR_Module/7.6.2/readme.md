@@ -11,7 +11,8 @@ This is the first time this task has been assigned for development.
 
 **US 7.6.2**  As a Patient, I want to request the deletion of my personal data, so that I can exercise my right to be forgotten under GDPR
 
-[//]: # (**Acceptance Criteria:** )
+# **Acceptance Criteria:** 
+-  print that proves the implementation
 
 [//]: # ()
 [//]: # (- Patients can request data deletion through their profile settings.)

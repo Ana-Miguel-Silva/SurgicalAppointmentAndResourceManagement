@@ -17,28 +17,6 @@ activate CTRL
 CTRL -> SERV: Call UpdateMedicalRecord method
 activate SERV
 
-SERV -> REPO: Get allergie/medicalCondition through Id
-activate REPO
-
-REPO --> SERV: allergie/medicalCondition
-deactivate REPO
-
-SERV -> DOM : Update allergie/medicalCondition
-
-
-SERV -> REPO : Update allergie/medicalCondition
-activate REPO
-
-REPO -> BDD : Update Entity
-activate BDD
-
-BDD --> REPO : Confirm Update
-deactivate BDD
-
-REPO --> SERV : Return Success
-deactivate REPO
-
-
 
 
 SERV -> REPO : Update medicalRecord

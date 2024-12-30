@@ -15,14 +15,14 @@ As part of the development of the software system, it is necessary to implement 
 [//]: # (- )
 
 [//]: # ()
-[//]: # (**Customer Specifications and Clarifications:**)
+**Customer Specifications and Clarifications:**
 
-[//]: # ()
-[//]: # (> **Question:** )
 
-[//]: # (>)
-
-[//]: # (>**Answer:** )
+> **Question:**  
+What can be edited in a medical record entry?
+>
+>**Answer:** An allergy entry can be marked as “not meaningful anymore” With a short free text note the doctor can add to explain the situation. The name of the doctor and date must be stored
+a medical condition entry can be edited , for instance to fix typos, only by the doctor that originally created the entry. They can only change the text note of the entry.
 
 **Dependencies/References:**
 

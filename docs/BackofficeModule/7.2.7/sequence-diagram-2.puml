@@ -15,15 +15,13 @@ FE -> BE: getCreateForm()
 activate BE
 BE --> FE: form
 deactivate BE
---> FE : data input
+<-- FE : data input
 deactivate FE
  -> FE : search allergie/medical condition in medical record
 activate FE
-FE -> BE : searchAllergies(allergieDescription)
-activate BE
-BE --> FE: success
-deactivate BE
---> FE: success and view medical record updated.
+FE --> FE :  onFilterMedicalRecordRequestsAllergies(allergie)/onFilterMedicalRecordRequests(medicalCondition)
+
+<-- FE: success and view allergie/medical conditions.
 deactivate FE
 
 

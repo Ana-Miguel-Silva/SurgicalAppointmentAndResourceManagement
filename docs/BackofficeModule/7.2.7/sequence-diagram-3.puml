@@ -18,7 +18,7 @@ FE -> HT : onClick()
 activate HT
 
 
-HT -> CM : onSearchAllergie(allergieDescription)
+HT -> CM : onFilterMedicalRecordRequestsAllergies(allergie)/onFilterMedicalRecordRequests(medicalCondition)
 
 activate CM
 
@@ -27,15 +27,15 @@ CM --> CM
 
 
 
-CM --> HT : Success and view allergies
+CM --> HT : Success and view allergies/medical conditions
 deactivate CM
 
 
 
-HT --> FE : Success and view allergies
+HT --> FE : Success and view allergies/medical conditions
 deactivate HT
 
-<--- FE : success and view medical record updated
+<--- FE : success and view allergies/medical conditions
 
 deactivate FE
 

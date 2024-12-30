@@ -9,6 +9,23 @@ As part of the development of the software system, it is necessary to implement 
 
 **7.2.7** As a Doctor, I want to search for entries in the Patient Medical Record, namely respecting Medical Conditions and Allergies.
 
+
+
+**Customer Specifications and Clarifications:**
+
+
+> **Question:**  
+Na User Story 7.2.7 ("As a Doctor, I want to search for entries in the Patient Medical Record, namely respecting Medical Conditions and Allergies. ") é mencionado que o objetivo é procurar por entries dentro do Medical Record relativas às alergias e às condições médicas. Como é que isto funcionaria? Seguindo o exemplo dado numa outra resposta deste forum o Medical Record estaria dividido em secções para alergias, condições medicas e uma secção de texto livre. Assumindo que as alergias por exemplo aparecem no topo como é que se mostraria o resultado da pesquisa ao utilizador?
+>
+>**Answer:**
+Como indicado, o Medical Record de um paciente é um objeto complexo com vários subobjetos. quando o utilizador consulta o registo médico do paciente deve visualizar cada seção do mesmo e ter a possibilidade de pesquisar cada uma das seções. por exemplo, a página do regisot m´+edico mostra uma tabela com as entradas de alergias, outra tabela com as entradas de medical condition, outra tabela com as entradas de texto livre, etc.
+
+
+> **Question:** Na tarefa 7.2.7, refere-se à filtragem de Medical Records através de Allergies e Medical Conditions ou à pesquisa de Allergies e Medical Conditions dentro de um Medical Record?
+>
+>**Answer:** pretende-se procurar entradas do medicla record em que exista menções a determinadas alergias ou condições médicas
+
+
 [//]: # (**Acceptance Criteria:** )
 
 [//]: # ()

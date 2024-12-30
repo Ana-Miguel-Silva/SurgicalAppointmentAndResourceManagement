@@ -16,17 +16,17 @@ This module must be implemented in Node.js, Express and MongoDB SGBD.
 
 - This module must be implemented in Node.js, Express and MongoDB SGBD.
 
-[//]: # ()
-[//]: # (**Customer Specifications and Clarifications:**)
 
-[//]: # ()
-[//]: # (> **Question:** )
 
-[//]: # (>)
+**Customer Specifications and Clarifications:**
 
-[//]: # (>**Answer:** )
 
-[//]: # ()  
+> **Question:**  
+Gostaríamos de saber se o novo modulo que nos é pedido será apenas uma base de dados ou será uma nova UI que depois se conectaria a este novo modulo que utiliza uma nova base dados em MongoDB.
+>
+>**Answer:** o novo módulo é um módulo de backend.
+as funcionalidades expostas por esse módulo devem ser acedidas pelo módulo front-end desenvolvido no sprint anterior
+
 [//]: # (**Input and Output Data**)
 
 [//]: # ()

@@ -10,7 +10,14 @@ As system administrator, I want to create a public file share, in SMB/CIFS or NF
 
 **7.4.11** As a system administrator, I would like to create a public file share, in SMB/CIFS or NFS format, to speed things up between the various teams.
 
+**Customer Specifications and Clarifications:**
 
+
+> **Question:**  
+Regarding the shared folder outlined in US 7.4.11, could you please clarify the required permissions? Specifically, we need to know if all users should have both read and write/edit access to the files in the folder, or if only the creator/owner of a file should be allowed to edit it while others have read-only access.
+>
+>**Answer:**
+The group should decide the permissions and explain the decision. The US says "to speed things up between the various teams". What teams do you want to include? Internal, only? External, also?
 
 
 [//]: # (### 4.2. Class Diagram)

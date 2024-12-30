@@ -15,16 +15,19 @@ This is the first time this task has been assigned for development.
 
 - Patients can request to download their medical history via their profile.
 - Format like XML or JSON: all medical, personal, information must be exported
+- print that proves the implementation
 
-[//]: # ()
-[//]: # (**Customer Specifications and Clarifications:**)
 
-[//]: # ()
-[//]: # (> **Question:** )
+**Customer Specifications and Clarifications:**
 
-[//]: # (>)
 
-[//]: # (>**Answer:** )
+> **Question:**
+What is considered a secure format?
+What is the preferred format/extension of the downloadable file?
+>
+>**Answer:** 
+>De forma a garantir a segurança e confidencialidade dos dados aquando do pedido de portabilidade, sugiro um formato que possibilite a aposição, por exemplo, de uma password.
+Relembro que o ficheiro deve ser facilmente acessível pelo titular de dados pessoais, pelo que, deverá ser adotado um tipo de ficheiro comummente utilizado.
 
 [//]: # ()
 [//]: # ()
