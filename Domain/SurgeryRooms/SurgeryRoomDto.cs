@@ -1,3 +1,4 @@
+using DDDSample1.Domain.RoomTypess;
 using DDDSample1.Domain.Shared;
 
 
@@ -8,7 +9,7 @@ namespace DDDSample1.Domain.SurgeryRooms
         public Guid Id { get; set; }
 
         public int RoomNumber { get; set; }
-        public string Type { get; set; }
+        public RTId Type { get; set; }
 
         public int Capacity { get; set; }
 
@@ -18,7 +19,7 @@ namespace DDDSample1.Domain.SurgeryRooms
 
         public List<Slot> MaintenanceSlots { get; set; }
 
-        public SurgeryRoomDto(Guid id, int number, string type, int capacity, List<string> assignedEquipment, string status, List<Slot> maintenanceSlots)
+        public SurgeryRoomDto(Guid id, int number, RTId type, int capacity, List<string> assignedEquipment, string status, List<Slot> maintenanceSlots)
         {
             this.Id = id;
             this.RoomNumber = number;

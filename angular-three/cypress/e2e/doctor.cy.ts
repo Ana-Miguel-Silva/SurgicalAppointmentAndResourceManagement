@@ -37,7 +37,6 @@ describe('Doctor Operation Requests', () => {
       
     cy.get('#tag-filter').type('Peanut Allergy');
     cy.get('.dropdown-list > li').contains('Peanut Allergy').click();
-    cy.get('#descricaoAllergie').type('Severe reaction to peanuts');
     cy.get('[name="filterAllergieStatus"]').type('Active');
     cy.get('.dropdown-list > li').contains('Active').click();
     cy.get('.btn-primary').contains('Add Allergie').click();
@@ -45,8 +44,7 @@ describe('Doctor Operation Requests', () => {
 
     cy.get('#condition-filter').type('Major depressive disorder');
     cy.get('.dropdown-list > li').contains('Major depressive disorder').click();
-   // cy.get('#descricaoCondition').type('A mental health condition marked by persistent feelings of sadness...');
-    cy.get('[id="registerFilterConditionStatus"]').type('Active');
+    cy.get('[name="filterConditionStatus"]').type('Active');
     cy.get('.dropdown-list', { timeout: 5000 }).should('be.visible')
     cy.get('.dropdown-list > li').contains('Active').click();
     
@@ -88,7 +86,6 @@ describe('Doctor Operation Requests', () => {
        
     cy.get('#tag-filterUpdate').clear().type('Shellfish Allergy');
     cy.get('.dropdown-listUpdate > li').contains('Shellfish Allergy').click();
-    cy.get('#descricaoAllergieUpdate').clear().type('Severe reaction to Shellfish');
     cy.get('[name="filterAllergieStatusUpdate"]').clear().type('Misdiagnosed');
     cy.get('.dropdown-listUpdate > li').contains('Misdiagnosed').click();
     cy.get('button[id="updateAddAllergie"]').contains('Add Allergie').click();
