@@ -325,7 +325,20 @@ export class DoctorComponent implements OnInit {
       }
     });
   }
-
+  doTheClick(){
+    let a = this.thumbRaiser.CurrentRoom;
+    console.log(a);
+    if(a != 0 && a!= null) {
+      this.thumbRaiser.fetchRoomData(a - 1).then((roomData: string) => {
+      console.log("Room " + roomData);
+      }).catch((error: any) => {
+          console.error("Failed to fetch room data:", error);
+      });
+    }
+    else {
+      console.log("Lobby");
+    }
+  }
   getAllStaffs() {
     const token = this.authService.getToken();
     if (!token) {
