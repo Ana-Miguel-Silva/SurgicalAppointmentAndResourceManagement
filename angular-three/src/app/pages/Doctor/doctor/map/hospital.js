@@ -188,6 +188,8 @@ export default class ThumbRaiser {
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
+        console.log("ROOM DATA 2" + this.maze.roomData);
+        this.CurrentRoom = null;
 
         // Create the player
         this.player = new Player(this.playerParameters);
@@ -313,7 +315,11 @@ export default class ThumbRaiser {
         this.activeViewCamera.target.x = this.maze.Lobby.x;
         this.activeViewCamera.target.z = this.maze.Lobby.z;*/
     }
-
+    async fetchRoomData(index) {
+        let x = await this.maze.fetchRoomData(index);
+        console.log("Fetch Room Data, in hospital " + x);
+        return x.roomNumber;
+    }
     buildHelpPanel() {
         const table = document.getElementById("help-table");
         let i = 0;
@@ -492,6 +498,7 @@ export default class ThumbRaiser {
                 //console.log(intersectedObject);
                 const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
                 //console.log("Index is: "+intersectedIndex);
+                this.CurrentRoom = intersectedIndex;
                 const modelPosition = this.maze.RoomArr[intersectedIndex].position;
                 /*console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
                 console.log(this.activeViewCamera.target);*/
