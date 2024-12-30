@@ -74,7 +74,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Staff/5
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}, {Role.DOCTOR}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetGetById(string id)
         {

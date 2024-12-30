@@ -29,6 +29,7 @@ export default (app: Router) => {
             designacao: Joi.string().required(),
             descricao: Joi.string().allow('').optional(),
             status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+            note: Joi.string().allow('').optional(),
           })
         )
         .allow([])
@@ -40,6 +41,7 @@ export default (app: Router) => {
             descricao: Joi.string().allow('').optional(),
             sintomas: Joi.array().items(Joi.string()).allow([]).optional(),
             status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+            note: Joi.string().allow('').optional(),
           })
         )
         .allow([])
@@ -61,6 +63,7 @@ export default (app: Router) => {
               designacao: Joi.string().required(),
               descricao: Joi.string().allow('').optional(),
               status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+              note: Joi.string().allow('').optional(),
             })
           )
           .allow([])
@@ -73,6 +76,7 @@ export default (app: Router) => {
               descricao: Joi.string().allow('').optional().optional(),
               sintomas: Joi.array().items(Joi.string()).allow([]).optional(),
               status: Joi.string().valid('Active', 'Not Meaningful Anymore', 'Misdiagnosed').required(),
+              note: Joi.string().allow('').optional(),
             })
           )
           .allow([])

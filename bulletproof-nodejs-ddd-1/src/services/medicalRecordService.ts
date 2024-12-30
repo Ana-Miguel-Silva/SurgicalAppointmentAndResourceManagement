@@ -249,6 +249,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
         return Result.fail<IMedicalRecordDTO>("MedicalRecord not found");
       }
       else {
+       
         MedicalRecord.descricao = MedicalRecordDTO.descricao;
         MedicalRecord.allergies = MedicalRecordDTO.allergies;
         MedicalRecord.medicalConditions = MedicalRecordDTO.medicalConditions;

@@ -34,13 +34,14 @@ describe('MedicalRecord Controller', function () {
             date: new Date(),
             patientId: '123',
             staff: '111',
-            allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active }],
+            allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active, note: "", }],
             medicalConditions: [{
                 codigo: 'MC001',
                 designacao: 'Diabetes',
                 descricao: 'Chronic condition',
                 sintomas: ['Increased thirst', 'Frequent urination'],
-                status: AllergyStatus.Active
+                status: AllergyStatus.Active,
+                note: "",
             }],            
             descricao: ['Teste'],
 
@@ -68,13 +69,14 @@ describe('MedicalRecord Controller', function () {
         date: new Date(),
         patientEmail: '123',
         staff: '111',
-        allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active }],
+        allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active, note: "", }],
         medicalConditions: [{
             codigo: 'MC001',
             designacao: 'Diabetes',
             descricao: 'Chronic condition',
             sintomas: ['Increased thirst', 'Frequent urination'],
-            status: AllergyStatus.Active
+            status: AllergyStatus.Active,
+            note: "",
         }],            
         descricao: ['Teste'],
 
@@ -102,13 +104,14 @@ describe('MedicalRecord Controller', function () {
         date: new Date(),
         patientId: '123',
         staff: '111',
-        allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active }],
+        allergies: [{ designacao: 'Peanut', descricao: 'Severe nut allergy', status: AllergyStatus.Active, note: "", }],
         medicalConditions: [{
             codigo: 'MC001',
             designacao: 'Diabetes',
             descricao: 'Chronic condition',
             sintomas: ['Increased thirst', 'Frequent urination'],
-            status: AllergyStatus.Active
+            status: AllergyStatus.Active,
+            note: "",
         }],            
         descricao: ['Teste'],
 

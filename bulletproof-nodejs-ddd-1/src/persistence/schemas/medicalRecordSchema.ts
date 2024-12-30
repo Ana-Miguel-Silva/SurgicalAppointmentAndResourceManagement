@@ -9,6 +9,7 @@ const AllergySchema = new mongoose.Schema({
     enum: ['Active', 'Not Meaningful Anymore', 'Misdiagnosed'],
     required: true
   },
+  note: { type: String, default: '' },
 });
 
 const MedicalConditionSchema = new mongoose.Schema({
@@ -21,6 +22,7 @@ const MedicalConditionSchema = new mongoose.Schema({
     enum: ['Active', 'Not Meaningful Anymore', 'Misdiagnosed'],
     required: true
   },
+  note: { type: String, default: '' },
 });
 
 const MedicalRecordSchema = new mongoose.Schema(

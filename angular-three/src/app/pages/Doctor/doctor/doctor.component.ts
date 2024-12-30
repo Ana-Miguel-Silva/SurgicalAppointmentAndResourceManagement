@@ -15,7 +15,7 @@ import { PatientService } from '../../../Services/patient.service';
 import { StaffService } from '../../../Services/staff.service';
 import * as THREE from "three";
 import { MedicalRecordService } from '../../../Services/medicalRecordservice';
-import { forkJoin } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 //@ts-ignore
 import Orientation from './map/orientation';
 //@ts-ignore
@@ -99,6 +99,7 @@ interface IAllergieMedicalRecord {
   descricao: string;
   status: string;
   _id?: string;
+  note: string;
 }
 
 export interface IMedicalConditionMedicalRecord {
@@ -108,6 +109,7 @@ export interface IMedicalConditionMedicalRecord {
   sintomas: string[];
   status: string;
   _id?: string;
+  note: string;
 }
 
 interface CreatingMedicalRecordUIDto {
@@ -453,11 +455,15 @@ export class DoctorComponent implements OnInit {
   filterAllergieDescricaoText: string = '';
   filterConditionDescricaoText: string = '';
   filterAllergieStatusText: string = '';
+  noteAllergie: string = '';
+
   filterConditionStatusText: string = '';
   filterTextCondition: string = '';
   filterTextDescription: string = '';
   sintomasCodition: string = '';
   filterConditionCodigoText: string = '';
+  noteCondition: string = '';
+
   tagsAllergies: IAllergieMedicalRecord[] = [];
   tagsConditions: IMedicalConditionMedicalRecord[] = [];
   descricaoList : string[] = [];
@@ -468,12 +474,18 @@ export class DoctorComponent implements OnInit {
   allergieNameFilter: string = '';
   allergieDescriptionFilter:string = '';
   allergieStatusFilter:string = '';
+  allergieNoteFilter:string = '';
   filteredTagsConditions =[...this.tagsConditions];
   medicalConditionNameFilter: string = '';
   medicalConditionCodeFilter: string = '';
   medicalConditionDescriptionFilter: string = '';
   medicalConditionStatusFilter: string = '';
   medicalConditionSymptomsFilter: string = '';
+  medicalConditionNoteFilter: string = '';
+
+  staffEmailSelectedMedicalRecord: string = '';
+
+  
 
   showDropdown: boolean = false;
   showDropdown2: boolean = false;
@@ -688,49 +700,189 @@ updateAllergieToInvalid(): void {
     this.showDropdown2 = false;
   }
 
-  addAllergie() {
+  isDoctor: boolean = false;
 
-    let allergieAdd: IAllergieMedicalRecord = {
-      designacao: this.filterAllergieNameText,
-      descricao: this.filterAllergieDescricaoText,
-      status: this.filterAllergieStatusText,
-    };
+  async isDoctorAuthorized() {
+  
+    try {
+      const res = await firstValueFrom(this.staffService.viewStaff(this.staffEmailSelectedMedicalRecord));
+      const staffEmail = res.email.fullEmail;
+    
+      if (staffEmail === this.authService.getEmail()) {
+        this.isDoctor = true;      
+      } else {
+        this.isDoctor = false;
+      }
+    } catch (error) {
+      console.error("Error fetching staff data: ", error);
+      this.isDoctor = false; 
+    }
+  }
 
-    let exist = this.tagsAllergies.find(option =>
+  addAllergie(update : string) {  
+
+    let allergieAdd: IAllergieMedicalRecord;
+    if(update === "yes" && this.filterAllergieStatusText != "Active"){
+      const info = `Doctor Email: ${this.authService.getEmail()}
+      Date: ${new Date().toLocaleString('pt-PT', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })}
+      Change allergy status to: ${this.filterAllergieStatusText}`;
+      
+      allergieAdd = {
+        designacao: this.filterAllergieNameText,
+        descricao: this.filterAllergieDescricaoText,
+        status: this.filterAllergieStatusText,
+        note: `${info}\n Note: ${this.noteAllergie}\n`,
+      };
+    }else{
+      allergieAdd = {
+        designacao: this.filterAllergieNameText,
+        descricao: this.filterAllergieDescricaoText,
+        status: this.filterAllergieStatusText,
+        note: '',        
+      };
+    }   
+   
+
+    let existIndex = this.tagsAllergies.findIndex(option =>
       option.designacao.toLowerCase() === this.filterAllergieNameText.toLowerCase()
     );
-
-    if(!exist){
+  
+    if(existIndex !== -1) {     
+      this.tagsAllergies[existIndex].status = allergieAdd.status;
+      this.tagsAllergies[existIndex].note = `${this.tagsAllergies[existIndex].note}\n${allergieAdd.note}`;
+    } else {
       this.tagsAllergies.push(allergieAdd);
-      console.log(this.tagsAllergies);
     }
+  
+    console.log(this.tagsAllergies); 
 
     this.cleanAllergieFilter();
     this.updateAllergieToInvalid();
-
   }
 
 
-  addMedicalCondition() {
-    let medicalConditionAdd: IMedicalConditionMedicalRecord = {
-      codigo: this.filterConditionCodigoText,
-      designacao: this.filterTextCondition,
-      descricao: this.filterConditionDescricaoText,
-      status: this.filterConditionStatusText,
-      sintomas:  this.sintomasCodition.split(',').map((item: string) => item.trim()),
-    };
+  addMedicalCondition(update : string) {
+    let medicalConditionAdd: IMedicalConditionMedicalRecord;
 
-    let exist = this.tagsConditions.find(option =>
+    if(update === "yes" && this.filterConditionStatusText != "Active"){
+      const info = `Doctor Email: ${this.authService.getEmail()}
+       Date: ${new Date().toLocaleString('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })}
+      Change medical condition status to: ${this.filterConditionStatusText}`;
+      
+      medicalConditionAdd = {
+        codigo: this.filterConditionCodigoText,
+        designacao: this.filterTextCondition,
+        descricao: this.filterConditionDescricaoText,
+        status: this.filterConditionStatusText,
+        sintomas:  this.sintomasCodition.split(',').map((item: string) => item.trim()),
+        note: `${info}\n Note: ${this.noteCondition}\n`,
+      };
+    }else{
+      medicalConditionAdd = {
+        codigo: this.filterConditionCodigoText,
+        designacao: this.filterTextCondition,
+        descricao: this.filterConditionDescricaoText,
+        status: this.filterConditionStatusText,
+        sintomas:  this.sintomasCodition.split(',').map((item: string) => item.trim()),
+        note: '',        
+      };
+    } 
+    
+    let existIndex = this.tagsConditions.findIndex(option =>
       option.designacao.toLowerCase() === this.filterTextCondition.toLowerCase()
     );
-
-    if(!exist){
+  
+    if(existIndex !== -1) {      
+      this.tagsConditions[existIndex].sintomas = medicalConditionAdd.sintomas;
+      this.tagsConditions[existIndex].status = medicalConditionAdd.status;
+      this.tagsConditions[existIndex].note = `${this.tagsConditions[existIndex].note}\n${medicalConditionAdd.note}`;
+    } else {
       this.tagsConditions.push(medicalConditionAdd);
-      console.log("update array: ",  this.tagsConditions);
     }
+  
+    console.log(this.tagsConditions); 
+    this.noteCondition = '';
+   
     this.cleanMedicalConditionFilter();
     this.updateConditionToInvalid();
   }
+  
+  updateNoteMedicalCondition(){
+    const info = `Doctor Email: ${this.authService.getEmail()}
+       Date: ${new Date().toLocaleString('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })}`;
+      
+      
+    console.log("Entrei noteeeeee");    
+
+
+    let existIndex = this.tagsConditions.findIndex(option =>
+      option.codigo.toLowerCase() === this.filterConditionCodigoText.toLowerCase()
+    );
+
+    console.log("codigo", this.filterConditionCodigoText);  
+    console.log("conditions", this.tagsConditions);
+
+     
+    this.tagsConditions[existIndex].note = `${this.tagsConditions[existIndex].note}\n${info}\n Note: ${this.noteCondition}\n`;
+
+    
+    console.log("NOTE", this.noteCondition);
+
+    this.closeModal("UpdateOtherDoctorMedicalRecordModal");   
+
+  }
+
+
+  updateNoteAllergies(){
+    const info = `Doctor Email: ${this.authService.getEmail()}
+       Date: ${new Date().toLocaleString('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })}`;
+      
+      
+  
+
+    let existIndex = this.tagsAllergies.findIndex(option =>
+      option.designacao.toLowerCase() === this.filterAllergieNameText.toLowerCase()
+    );
+
+     
+    this.tagsAllergies[existIndex].note = `${this.tagsAllergies[existIndex].note}\n${info}\n Note: ${this.noteAllergie}\n`;
+
+    
+    console.log("NOTE", this.noteAllergie);
+
+    this.closeModal("UpdateOtherDoctorMedicalRecordModalAllergie");   
+
+  }
+
+
 
   addDescription() {
     let exist = this.descricaoList.find(option =>
@@ -752,6 +904,19 @@ updateAllergieToInvalid(): void {
 
   removeMedicalCondition(index: number) {
       this.tagsConditions.splice(index, 1);
+  }
+
+  editMedicalConditionNote(codigo : string){
+    this.filterConditionCodigoText = codigo;
+
+    this.openModal('UpdateOtherDoctorMedicalRecordModal');   
+  }
+
+
+  editAllergieNote(designacao : string){
+    this.filterAllergieNameText = designacao;
+
+    this.openModal('UpdateOtherDoctorMedicalRecordModalAllergie');   
   }
 
   removeAllergie(index: number) {
@@ -778,7 +943,8 @@ updateAllergieToInvalid(): void {
     this.filteredTagsAllergies = this.tagsAllergies.filter(allergie =>
       (!this.allergieNameFilter || allergie.designacao.toLowerCase().includes(this.allergieNameFilter.toLowerCase())) &&
       (!this.allergieDescriptionFilter || allergie.descricao.toLowerCase().includes(this.allergieDescriptionFilter.toLowerCase())) &&
-      (!this.allergieStatusFilter || allergie.status.toLowerCase().includes(this.allergieStatusFilter.toLowerCase()))
+      (!this.allergieStatusFilter || allergie.status.toLowerCase().includes(this.allergieStatusFilter.toLowerCase()))  &&
+      (!this.allergieNoteFilter || allergie.note.toLowerCase().includes(this.allergieNoteFilter.toLowerCase()))
     );
   }
 
@@ -799,7 +965,8 @@ updateAllergieToInvalid(): void {
         symptomsFilterArray.every(filterSymptom =>
           condition.sintomas.some(symptom => symptom.toLowerCase().includes(filterSymptom))
         )
-      )
+      ) &&
+      (!this.medicalConditionNoteFilter || condition.note.toLowerCase().includes(this.medicalConditionNoteFilter.toLowerCase()))
     );
   }
   
@@ -1154,7 +1321,7 @@ removeStaffMember(index: number) {
       next: ({ patient, staff }) => {
 
         const getPatientId = patient.id.value;
-        const staffId = staff.id;
+        const staffId = staff.staffId;
 
         const payload: CreatingMedicalRecordUIDto = {
           staff: staffId,
@@ -1295,9 +1462,9 @@ removeStaffMember(index: number) {
             },
           });
 
-          this.staffService.getStaff(element.staff).subscribe({
-            next: (res) => {
-              element.staff =  res[0].email.fullEmail;
+          this.staffService.viewStaff(element.staff).subscribe({
+            next: (res) => {              
+              element.staff =  res.email.fullEmail;
             },
           });
 
@@ -1350,6 +1517,8 @@ removeStaffMember(index: number) {
               this.medicalRecordProfileUpdate = response[0];
               console.log("Medical record: ", this.medicalRecordProfileUpdate);
 
+              this.staffEmailSelectedMedicalRecord = this.medicalRecordProfileUpdate.staff;
+
               // Patch form data
               this.medicalRecordUpdate.patchValue({
                 patientId: this.medicalRecordProfileUpdate.patientEmail,
@@ -1369,6 +1538,7 @@ removeStaffMember(index: number) {
                   descricao: [condition.descricao],
                   sintomas: this.fb.array(condition.sintomas || []),
                   status: [condition.status],
+                  note: condition.note,
                 }));
               });
 
@@ -1378,6 +1548,7 @@ removeStaffMember(index: number) {
                   designacao: [allergy.designacao],
                   descricao: [allergy.descricao],
                   status: [allergy.status],
+                  note: allergy.note,
                 }));
               });
 
@@ -1386,9 +1557,11 @@ removeStaffMember(index: number) {
               this.descricaoList = this.medicalRecordProfileUpdate.descricao;
 
               const updatedMedicalRecordData = this.medicalRecordUpdate.value;
-              console.log('Updated Patient Data:', updatedMedicalRecordData);
-              console.log('Updated allergies:', this.tagsAllergies);
 
+              this.isDoctorAuthorized();
+
+              console.log('Updated Patient Data:', updatedMedicalRecordData);
+          
               this.openModal('UpdateMedicalRecordModal');
             }});
           },
@@ -1527,6 +1700,7 @@ removeStaffMember(index: number) {
                     descricao: condition.descricao,
                     sintomas: condition.sintomas,
                     status: condition.status,
+                    note: condition.note,
                   });
                 });
 
@@ -1536,6 +1710,7 @@ removeStaffMember(index: number) {
                     designacao: allergy.designacao,
                     descricao: allergy.descricao,
                     status: allergy.status,
+                    note: allergy.note,
                   });
                 });
 
@@ -1602,6 +1777,7 @@ removeStaffMember(index: number) {
     this.filterAllergieNameText = '';
     this.filterAllergieDescricaoText = '';
     this.filterAllergieStatusText = '';
+    this.noteAllergie = '';
   }
 
   cleanMedicalConditionFilter(){
@@ -1610,6 +1786,7 @@ removeStaffMember(index: number) {
     this.filterConditionDescricaoText = '';
     this.filterConditionStatusText = '';
     this.sintomasCodition = '';
+    this.noteCondition= '';
   }
 
   cleanMedicalRecordRegister() {
@@ -1625,12 +1802,14 @@ removeStaffMember(index: number) {
     this.filterAllergieNameText = '';
     this.filterAllergieDescricaoText = '';
     this.filterAllergieStatusText = '';
+    this.noteAllergie= '';
 
     this.filterConditionCodigoText = '';
     this.filterTextCondition = '';
     this.filterConditionDescricaoText = '';
     this.filterConditionStatusText = '';
     this.sintomasCodition = '';
+    this.noteCondition= '';
 
     this.filterTextDescription = '';
 

@@ -6,4 +6,5 @@ export interface IMedicalConditionMedicalRecord {
   descricao: string;
   sintomas: string[];
   status: AllergyStatus;
+  note: string;
 }

@@ -4,4 +4,5 @@ export interface IAllergieMedicalRecord {
   designacao: string;
   descricao: string;
   status: AllergyStatus;
+  note: string;
 }

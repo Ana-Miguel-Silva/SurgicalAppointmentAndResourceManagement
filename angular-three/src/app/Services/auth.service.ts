@@ -56,6 +56,24 @@ export class AuthService {
     }
     return '';
   }
+
+  getId(): string {
+    const token = this.getToken();
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<JwtPayload & { [key: string]: any }>(token || '');
+        const idClaim = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
+        const id = decodedToken[idClaim];
+        return id ? id : '';
+      } catch (error) {
+        console.error('Invalid token', error);
+        return '';
+      }
+    }
+    return '';
+  }
+  
+
   
 
   isAdmin(): boolean {
