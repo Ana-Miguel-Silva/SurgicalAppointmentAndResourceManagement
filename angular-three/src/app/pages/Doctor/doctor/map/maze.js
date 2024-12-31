@@ -29,9 +29,9 @@ export default class Maze {
             this.RoomArrCoord = [];
             this.Lobby = null;
 
-            this.roomData = await this.fetchRoomNum(description); 
-            console.log("ROOM DATA: " + this.roomData);
-            let roomNum = this.roomData?this.roomData.length:description.room_number;
+            let roomData = await this.fetchRoomData(); 
+            console.log("ROOM DATA: " + roomData);
+            let roomNum = roomData?roomData.length:description.room_number;
 
             
             let rooms_temp = this.createMatrix(description.map, roomNum, description.rooms_per_row);
@@ -138,7 +138,7 @@ export default class Maze {
                         });
                     }
                     if(rooms[j][i] == 6) {
-                        if (this.roomData[0].status == "AVAILABLE") {
+                        if (roomData[0].status == "AVAILABLE") {
                             const door = new Decor({ url: 'assets/models/gltf/hospital_table.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
@@ -196,7 +196,7 @@ export default class Maze {
                                 this.object.add(doorLight); */
                             });
                         }
-                        this.roomData.shift();
+                        roomData.shift();
                     }
                     if(rooms[j][i] == 7) {
                         const door = new Decor({ url: 'assets/models/gltf/lobby.glb', scale: new THREE.Vector3(0.5, 1, 0.5) }, (doorObject) => {
@@ -259,7 +259,7 @@ export default class Maze {
             error => this.onError(this.url, error)
         );
     }
-    async fetchRoomNum(description) {
+    async fetchRoomData() {
         try {
             const response = await fetch('https://localhost:5001/api/SurgeryRooms', {
                 method: 'GET',
@@ -271,23 +271,11 @@ export default class Maze {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            const rawText = await response.text();
-            console.log("Raw response:", rawText);
-            const data = JSON.parse(rawText);
-            /*console.log("Parsed data as string:", JSON.stringify(data));
-            console.log("\n\n");*/
-            const roomNumbers = data.map((item) => item.roomNumber);
-            /*console.log("Room Numbers:", roomNumbers);
-            console.log("\n\n");*/
+            const data = await response.json();
             return data;
         } catch (error) {
             console.error('There was an error fetching the room number:', error);
         }
-    }
-    async fetchRoomData(index){
-        let x = await this.fetchRoomNum("");
-        console.log("Fetch Room Data, in maze " + x[index]);
-        return x[index];
     }
     createMatrix(N, X, Y) {
 		const zeroMatrix = this.replaceWithZero(N);

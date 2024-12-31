@@ -188,7 +188,7 @@ export default class ThumbRaiser {
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
-        console.log("ROOM DATA 2" + this.maze.roomData);
+        this.roomData = null;
         this.CurrentRoom = null;
 
         // Create the player
@@ -316,9 +316,10 @@ export default class ThumbRaiser {
         this.activeViewCamera.target.z = this.maze.Lobby.z;*/
     }
     async fetchRoomData(index) {
-        let x = await this.maze.fetchRoomData(index);
-        console.log("Fetch Room Data, in hospital " + x);
-        return x.roomNumber;
+        let x = await this.maze.fetchRoomData();
+        console.log("Fetch Room Data, in hospital ")
+        console.log(x[index]);
+        return x[index].roomNumber;
     }
     buildHelpPanel() {
         const table = document.getElementById("help-table");
@@ -459,51 +460,25 @@ export default class ThumbRaiser {
 
             if (intersects.length > 0) {
 
-                const intersectionPoint = intersects[0].point; // Intersection point
-                //console.log("Intersection Point:", intersectionPoint);
-
-                // Create geometry for the line
-                /*const points = [
-                    this.activeViewCamera.perspective.position.clone(), // Start at the camera position
-                    intersectionPoint.clone()     // End at the intersection point
-                ];
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-                // Create material for the line
-                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0ffff0 });
-
-                // Create the line and add it to the scene
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                this.scene3D.add(line);*/
-
-
                 const intersectedObject = intersects[0].object;
         
-                // Store original material if not already stored
                 if (!this.originalMaterials.has(intersectedObject)) {
                     this.originalMaterials.set(intersectedObject, intersectedObject.material);
                 }
         
-                // Apply highlight material
                 intersectedObject.material = this.highlightMaterial;
                 intersectedObject.material.opacity = 0.5;
         
-                // Revert back after a short delay
                 setTimeout(() => {
                     if (this.originalMaterials.has(intersectedObject)) {
                         intersectedObject.material = this.originalMaterials.get(intersectedObject);
                         this.originalMaterials.delete(intersectedObject);
                     }
                 }, 500); // Highlight for 500ms
-                //console.log(intersectedObject);
                 const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
-                //console.log("Index is: "+intersectedIndex);
                 this.CurrentRoom = intersectedIndex;
                 const modelPosition = this.maze.RoomArr[intersectedIndex].position;
-                /*console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
-                console.log(this.activeViewCamera.target);*/
                 this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
-                //console.log(this.activeViewCamera.target);
             }
         }
     }
@@ -645,8 +620,15 @@ export default class ThumbRaiser {
     update() {
         if (!this.gameRunning) {
             if (this.maze.loaded) { // If all resources have been loaded
+                if(this.CurrentRoom == null) {
+                    this.CurrentRoom = 0;
+                    const modelPosition = this.maze.RoomArr[0].position;
+                    this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+                }
                 this.scene3D.add(this.maze.object);
                 this.scene3D.add(this.lights.object);
+                this.roomData = this.maze.roomData;
+                console.log("Sayga " + this.roomData);
 
                 // Create the clock
                 this.clock = new THREE.Clock();
