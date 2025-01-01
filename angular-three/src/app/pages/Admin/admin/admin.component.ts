@@ -405,6 +405,32 @@ export class AdminComponent {
     return this.modalService.isModalOpen(modalId);
   }
 
+  newStaff = {
+    quantity: 0,
+    specialization: '',
+    role: '',
+  };
+  
+  addStaff1() {
+    if (
+      this.newStaff.quantity > 0 &&
+      this.newStaff.specialization &&
+      this.newStaff.role
+    ) {
+      this.operationType.requiredStaff.push({ ...this.newStaff });
+      this.newStaff = { quantity: 0, specialization: '', role: '' }; // Reset fields
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Required Staff Error',
+        text: 'Please fill all fields with valid values!',
+      });    }
+  }
+  
+  removeStaff1(index: number) {
+    this.operationType.requiredStaff.splice(index, 1);
+  }
+
   addStaff() {
     this.operationType.requiredStaff.push({ quantity: 1, specialization: '', role: ''});
   }

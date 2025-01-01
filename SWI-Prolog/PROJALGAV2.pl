@@ -56,7 +56,7 @@
 
 % Static Variables
 
-additionToPerfectTime(1).
+additionToPerfectTime(15).
 numberOfGenerationsThatStabilized(3).
 
 %agenda_staff(d001, 20241028, [(0,200,so000001)]).
@@ -488,7 +488,6 @@ initialize(Generations,Prob_CrossOver,Prob_Mutation,Base_Pop,Day):-
 	(retractall(prob_mutation(_));true), asserta(prob_mutation(Prob_Mutation)),
 
     (retractall(best_individual_room(_,_));true),
-    (retractall(lastGenerations(_,_));true),
 
     (retractall(day(_));true), asserta(day(Day)),
 
@@ -552,14 +551,8 @@ generate([Room|ListOfRooms]) :-
     % Get the number of generations
     generations(NG),
 
-    % Create values for the last generations
-    assert(lastGenerations([], 0)),
-
     % Generate the generations
-    (generate_generation(0, NG, PopOrd, Room, []); true),
-
-    % Clean up last generations
-    retractall(lastGenerations(_,_)),
+    (generate_generation(0, NG, PopOrd, Room); true),
 
     % Update Staff Times
     updateStaffTime(Room),
@@ -639,41 +632,29 @@ bchange([X*VX,Y*VY|L1],[Y*VY|L2]):-
 bchange([X|L1],[X|L2]):-bchange(L1,L2).
 
 
-generate_generation(G,G,Pop,Room,NextGen):-!,
-
-    ( (is_list_empty(NextGen),!) ;
-    (
-    findBestIndividual(NextGen,R),
-    assert(best_individual_room(Room,R)),!,fail
-    )),
+generate_generation(G,G,Pop,Room):-!,
 
     findBestIndividual(Pop,R),
     assert(best_individual_room(Room,R)).
 
-generate_generation(N,G,Pop,Room,NextGen):-
+generate_generation(N,G,Pop,Room):-
 
-    (
-
-    (is_list_empty(NextGen),!) ;
-
-    (
-    N1 is N+1,
-    verifyFinalConditions(NextGen,Room),
-	generate_generation(N1,G,NextGen,Room,[]),!,fail
-    )
-    ),
     random_permutation(Pop,RandomPop),
 	crossover(RandomPop,NPop1),
 	mutation(NPop1,NPop),
 	evaluate_population(NPop,NPopValue,Room),
 	order_population(NPopValue,NPopOrd),
 
-    ( (updateLastGenerations(NPopOrd),findIndividualsForNextGeneration(NextGeneration),!) ; true),
+    append(Pop,NPopOrd,NewList),
+    remove_equals(NewList,NewNewList),
+
+    ( (findIndividualsForNextGeneration(NewNewList ,NextGeneration),!) ; true),
 
 	N1 is N+1,
-    verifyFinalConditions(NPopOrd,Room),
 
-	generate_generation(N1,G,NPopOrd,Room,NextGeneration).
+    verifyFinalConditions(NextGeneration,Room),
+
+	generate_generation(N1,G,NextGeneration,Room).
 
 verifyFinalConditions(Pop,Room):-
 
@@ -1199,22 +1180,10 @@ same([H1|R1],L):-
     delete(L,H1,L1),
     same(R1, L1).
 
-updateLastGenerations(Pop):-
-    retract(lastGenerations(L,N)),
-    NumberOfOldGenerations is N + 1,
-    append(L,Pop,NewList),
-    remove_equals(NewList,NewNewList),
-    assert(lastGenerations(NewNewList,NumberOfOldGenerations)),
-    NumberOfOldGenerations == 2.
 
-
-findIndividualsForNextGeneration(NextGeneration):-
-    retract(lastGenerations(L,_)),
+findIndividualsForNextGeneration(L,NextGeneration):-
     order_population(L,OrderedPop),
-    length(OrderedPop,Length),
     population(MinimumNumBer),
-
-    ( (Length < MinimumNumBer,! ,assert(lastGenerations([],0)) , empty_list(NextGeneration),fail) ; true),
 
     P is round(0.2 * MinimumNumBer),
 
@@ -1229,10 +1198,7 @@ findIndividualsForNextGeneration(NextGeneration):-
     indivualsOldValues(Remaining_Members_Final,OrderedPop,Remaining_Individuals),
 
     append(BestMembers,Remaining_Individuals,NextGeneration1),
-    order_population(NextGeneration1,NextGeneration),
-
-
-    assert(lastGenerations([],0)).
+    order_population(NextGeneration1,NextGeneration).
 
 
 empty_list([]).
