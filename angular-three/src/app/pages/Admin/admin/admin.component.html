@@ -1617,26 +1617,28 @@
 <div [ngStyle]="{'display': isModalOpen('scheduleOperationsModal') ? 'block' : 'none'}" id="scheduleOperationsModal" class="modal">
   <div class="modal-content">
     <span (click)="closeModal('scheduleOperationsModal')" class="close">&times;</span>
-    <h3 class="text-center">Schedule Operations</h3>
+    <h3 class="text-center" style="font-weight: 600; padding: 20px;">Schedule Operations</h3>
 
     <div class="container">
-      <div class="row">
+      <!-- Top Row with 3 Inputs -->
+      <div class="row justify-content-center">
 
         <!-- Date Input Field -->
-        <div class="col-md-6 mb-3">
-          <label for="scheduleDate">Select a Date:</label>
+        <div class="col-md-4 col-12 mb-3">
+          <label for="scheduleDate" style="font-weight: 600;">Date to Schedule:</label>
           <input
             type="date"
             id="scheduleDate"
             [(ngModel)]="scheduleDate"
             [min]="minDate"
             class="form-control"
+            style="border-radius: 8px;"
           />
         </div>
 
         <!-- Probability of Crossover Input Field -->
-        <div class="col-md-6 mb-3">
-          <label for="probCrossOver">Probability of Crossover:</label>
+        <div class="col-md-4 col-12 mb-3">
+          <label for="probCrossOver" style="font-weight: 600;">Probability of Crossover:</label>
           <input
             type="number"
             id="probCrossOver"
@@ -1646,12 +1648,13 @@
             min="0"
             max="1"
             class="form-control"
+            style="border-radius: 8px;"
           />
         </div>
 
         <!-- Probability of Mutation Input Field -->
-        <div class="col-md-6 mb-3">
-          <label for="probMutation">Probability of Mutation:</label>
+        <div class="col-md-4 col-12 mb-3">
+          <label for="probMutation" style="font-weight: 600;">Probability of Mutation:</label>
           <input
             type="number"
             id="probMutation"
@@ -1661,12 +1664,17 @@
             min="0"
             max="1"
             class="form-control"
+            style="border-radius: 8px;"
           />
         </div>
+      </div>
+
+      <!-- Bottom Row with 2 Inputs -->
+      <div class="row justify-content-center">
 
         <!-- Number of Generations Input Field -->
-        <div class="col-md-6 mb-3">
-          <label for="nGenerations">Number of Generations:</label>
+        <div class="col-md-4 col-12 mb-3">
+          <label for="nGenerations" style="font-weight: 600;">Number of Generations:</label>
           <input
             type="number"
             id="nGenerations"
@@ -1674,12 +1682,13 @@
             placeholder="Enter number of generations"
             min="1"
             class="form-control"
+            style="border-radius: 8px;"
           />
         </div>
 
         <!-- Base Population Input Field -->
-        <div class="col-md-6 mb-3">
-          <label for="basePopulation">Base Population:</label>
+        <div class="col-md-4 col-12 mb-3">
+          <label for="basePopulation" style="font-weight: 600;">Population Size:</label>
           <input
             type="number"
             id="basePopulation"
@@ -1687,15 +1696,15 @@
             placeholder="Enter base population"
             min="1"
             class="form-control"
+            style="border-radius: 8px;"
           />
         </div>
       </div>
     </div>
 
     <!-- Generate Schedule Button -->
-    <div class="text-center my-3">
-      <button
-        class="btn btn-primary"
+    <div class="text-center my-3" style="padding: 20px;">
+      <button class="btn btn-primary" type="submit" style="border-radius: 8px;"
         (click)="onScheduleAppointment({
           date: scheduleDate,
           Prob_CrossOver: probCrossOver,
@@ -1708,94 +1717,135 @@
     </div>
 
     <!-- Display Scheduled Message -->
-    <h5 class="text-center">Schedule Preview:</h5>
+    <h5 class="text-center" style="font-weight: 600;">Schedule Preview:</h5>
     <div class="formatted-message" [innerHTML]="scheduledAppointmentMessage"></div>
   </div>
 </div>
 
+
 <!-- Create Operation Type Modal -->
 <div [ngStyle]="{'display': isModalOpen('createOperationTypeModal') ? 'block' : 'none'}" id="createOperationTypeModal" class="modal">
-  <div class="modal-content">
-      <span (click)="closeModal('createOperationTypeModal')" class="close">&times;</span>
+  <div class="modal-content" style="border-radius: 8px; padding: 20px;">
+      <span (click)="closeModal('createOperationTypeModal')" class="close" style="font-size: 30px; cursor: pointer;">&times;</span>
       <form (ngSubmit)="onCreateOperationType(operationType)" class="row g-3 needs-validation" novalidate>
-          <h3 class="text-center">Insert New Operation Type</h3>
+          <h3 class="text-center" style="font-weight: bold; margin-bottom: 20px;">Create Operation Type</h3>
 
           <!-- Operation Type Name -->
-          <div class="col-md-6">
-              <label for="name" class="form-label">Operation Type Name</label>
-              <input type="text" class="form-control" id="name" [(ngModel)]="operationType.name" name="name" required />
+          <div class="col-md-4" style="margin-bottom: 30px;">
+              <label for="name" class="form-label" style="font-weight: 600;">Operation Type Name</label>
+              <input type="text" class="form-control" id="name" [(ngModel)]="operationType.name" name="name" required style="border-radius: 8px;" />
               <div class="valid-feedback">Looks good!</div>
           </div>
 
-          <!-- Required Staff -->
-          <div class="col-md-12">
-              <label for="requiredStaff" class="form-label">Required Staff</label>
-              <div *ngFor="let staff of operationType.requiredStaff; let i = index" class="staff-entry">
-                  <div class="d-flex mb-3">
-                      <!-- Quantity -->
-                      <div class="col-md-3">
-                        <label for="quantity_{{i}}" class="form-label">Quantity</label>
-                        <input type="number" [(ngModel)]="staff.quantity" name="quantity_{{i}}" class="form-control" placeholder="Quantity" required min="1" step="1" />
-                      </div>
-
-                        <!-- Specialization -->
-                        <div class="col-md-3">
-                          <label for="specialization_{{i}}">Specialization</label>
-                          <select
-                            id="specialization_{{i}}"
-                            class="form-control"
-                            [(ngModel)]="staff.specialization"
-                            name="specialization_{{i}}"
-                            required
-                          >
-                            <option value="" disabled>Select a Specialization</option>
-                            <option *ngFor="let specialization of specializations" [value]="specialization.specializationName">
-                              {{ specialization.specializationName }}
-                            </option>
-                          </select>
-                        </div>
-
-                      <!-- Role -->
-                      <div class="col-md-3">
-                        <label for="role_{{i}}" class="form-label">Role</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-                          <select class="form-select" [(ngModel)]="staff.role" name="role_{{i}}" required>
-                            <option value="" disabled selected hidden>Role</option>
-                            <option value="DOCTOR">Doctor</option>
-                            <option value="NURSE">Nurse</option>
-                            <option value="TECHNICIAN">Technician</option>
-                          </select>
-                          <div class="invalid-feedback">
-                            Please select a valid role.
-                          </div>
-                        </div>
-                      </div>
-                      <button type="button" class="btn btn-danger mt-4" (click)="removeStaff(i)">Remove</button>
-                    </div>
-              </div>
-              <button type="button" class="staff-entry" (click)="addStaff()">Add Staff</button>
+          <div class="row mb-3">
+            <!-- Quantity -->
+            <div class="col-md-3">
+              <label for="quantity" class="form-label" style="font-weight: 600;">Quantity</label>
+              <input
+                type="number"
+                [(ngModel)]="newStaff.quantity"
+                name="quantity"
+                class="form-control"
+                placeholder="Quantity"
+                required
+                min="1"
+                step="1"
+                style="border-radius: 8px;"
+              />
             </div>
+          
+            <!-- Specialization -->
+            <div class="col-md-3">
+              <label for="specialization" class="form-label" style="font-weight: 600;">Specialization</label>
+              <select
+                id="specialization"
+                class="form-control"
+                [(ngModel)]="newStaff.specialization"
+                name="specialization"
+                required
+                style="border-radius: 8px;"
+              >
+                <option value="" disabled>Select a Specialization</option>
+                <option
+                  *ngFor="let specialization of specializations"
+                  [value]="specialization.specializationName"
+                >
+                  {{ specialization.specializationName }}
+                </option>
+              </select>
+            </div>
+          
+            <!-- Role -->
+            <div class="col-md-3">
+              <label for="role" class="form-label" style="font-weight: 600;">Role</label>
+              <select
+                id="role"
+                class="form-control"
+                [(ngModel)]="newStaff.role"
+                name="role"
+                required
+                style="border-radius: 8px;"
+              >
+                <option value="" disabled hidden>Role</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="NURSE">Nurse</option>
+                <option value="TECHNICIAN">Technician</option>
+              </select>
+            </div>
+          
+            <!-- Button -->
+            <div class="col-md-3 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="addStaff1()"
+                style=" border-radius: 8px;"
+              >
+                Add Staff
+              </button>
+            </div>
+          </div>
+
+          <!-- Staff List -->
+          <div class="staff-list" style="margin-top: 20px;">
+            <ul id="staffEntries">
+              <li
+                *ngFor="let staff of operationType.requiredStaff; let i = index"
+                class="staff-item"
+                style="padding: 8px;"
+              >
+                {{ staff.quantity }} {{ staff.role }} ({{ staff.specialization }})
+                <span
+                  class="remove-button"
+                  (click)="removeStaff(i)"
+                >
+                  X
+                </span>
+              </li>
+            </ul>
+          </div>
 
           <!-- Estimated Duration -->
-          <div class="col-md-6">
-              <label for="patientPreparation" class="form-label">Patient Preparation Time</label>
-              <input type="time" class="form-control" id="patientPreparation" [(ngModel)]="operationType.estimatedDuration.patientPreparation" name="patientPreparation" required step="2" />
+          <div class="col-md-3">
+              <label for="patientPreparation" class="form-label" style="font-weight: 600;">Patient Preparation Time</label>
+              <input type="time" class="form-control" id="patientPreparation" [(ngModel)]="operationType.estimatedDuration.patientPreparation" name="patientPreparation" required step="2" style="border-radius: 8px;" />
           </div>
 
-          <div class="col-md-6">
-              <label for="surgery" class="form-label">Surgery Time</label>
-              <input type="time" class="form-control" id="surgery" [(ngModel)]="operationType.estimatedDuration.surgery" name="surgery" required step="2" />
+          <div class="col-md-3">
+              <label for="surgery" class="form-label" style="font-weight: 600;">Surgery Time</label>
+              <input type="time" class="form-control" id="surgery" [(ngModel)]="operationType.estimatedDuration.surgery" name="surgery" required step="2" style="border-radius: 8px;" />
           </div>
 
-          <div class="col-md-6">
-              <label for="cleaning" class="form-label">Cleaning Time</label>
-              <input type="time" class="form-control" id="cleaning" [(ngModel)]="operationType.estimatedDuration.cleaning" name="cleaning" required step="2" />
+          <div class="col-md-3" style="margin-bottom: 30px;">
+              <label for="cleaning" class="form-label" style="font-weight: 600;">Cleaning Time</label>
+              <input type="time" class="form-control" id="cleaning" [(ngModel)]="operationType.estimatedDuration.cleaning" name="cleaning" required step="2" style="border-radius: 8px;" />
           </div>
 
           <!-- Submit Button -->
           <div class="col-12">
-              <button class="btn btn-primary" type="submit">Create Operation Type</button>
+              <button class="btn btn-primary" type="submit" style="border-radius: 8px;">
+                Create Operation Type
+              </button>
           </div>
       </form>
   </div>
@@ -1808,30 +1858,31 @@
   <div class="modal-content">
       <span (click)="closeModal('createSpecializationModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateSpecialization(specialization)" class="row g-3 needs-validation" novalidate>
-          <h3 class="text-center">Insert New Specialization</h3>
+          <h3 class="text-center" style="font-weight: 600;">Insert New Specialization</h3>
 
-          <!-- Specialization Designation -->
-          <div class="col-md-6">
-              <label for="specializationName" class="form-label">Specialization Designation</label>
-              <input type="text" class="form-control" id="specializationName" [(ngModel)]="specialization.specializationName" name="specializationName" required />
-              <div class="valid-feedback">Looks good!</div>
+          <div class="row justify-content-center">
+              <!-- Specialization Designation -->
+              <div class="col-md-6 col-12">
+                  <label for="specializationName" class="form-label" style="font-weight: 600;">Specialization Designation</label>
+                  <input type="text" class="form-control" id="specializationName" [(ngModel)]="specialization.specializationName" name="specializationName" required style="border-radius: 8px;"/>
+                  <div class="valid-feedback">Looks good!</div>
+              </div>
+
+              <!-- Specialization Description -->
+              <div class="col-md-6 col-12">
+                  <label for="specializationDescription" class="form-label" style="font-weight: 600;">Specialization Description</label>
+                  <input type="text" class="form-control" id="specializationDescription" [(ngModel)]="specialization.specializationDescription" name="specializationDescription" required style="border-radius: 8px;"/>
+                  <div class="valid-feedback">Looks good!</div>
+              </div>
           </div>
 
-          <!-- Specialization Description -->
-          <div class="col-md-6">
-              <label for="specializationDescription" class="form-label">Specialization Description</label>
-              <input type="text" class="form-control" id="specializationDescription" [(ngModel)]="specialization.specializationDescription" name="specializationDescription" required />
-              <div class="valid-feedback">Looks good!</div>
-            </div>
-
           <!-- Submit Button -->
-          <div class="col-12">
-              <button class="btn btn-primary" type="submit">Create Specialization</button>
+          <div class="col-12 text-center">
+              <button class="btn btn-primary" type="submit" style="border-radius: 8px;">Create Specialization</button>
           </div>
       </form>
   </div>
 </div>
-
 
 
 <div  [ngStyle]="{'display': isModalOpen('listOperationTypeModal') ? 'block' : 'none'}" id="listOperationTypeModal" class="modal" >
