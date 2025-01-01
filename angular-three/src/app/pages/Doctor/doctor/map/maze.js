@@ -14,7 +14,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 export default class Maze {
     constructor(parameters) {
-        const modelLoader = new GLTFLoader();
         this.onLoad = async function (description) {
             this.map = description.map;
             this.size = description.size;
@@ -26,6 +25,7 @@ export default class Maze {
 
             this.object = new THREE.Group();
             this.RoomArr = [];
+            this.BedArr = [];
             this.RoomArrCoord = [];
             this.Lobby = null;
 
@@ -96,6 +96,7 @@ export default class Maze {
             this.walldow = new Wall({ textureUrl: description.windowWallTextureUrl });
             let wallObject;
             let doorObject;
+            let faux_BedArr = [];
             for (let i = 0; i <= actual_width; i++) { 
                 for (let j = 0; j <= actual_height; j++) {
                     if (rooms[j][i] == 2 || rooms[j][i] == 3) {
@@ -138,64 +139,29 @@ export default class Maze {
                         });
                     }
                     if(rooms[j][i] == 6) {
-                        if (roomData[0].status == "AVAILABLE") {
                             const door = new Decor({ url: 'assets/models/gltf/hospital_table.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
-
                                 const geometryc = new THREE.BoxGeometry(3.8, 3.8, 4.8);
                                 const materialc = new THREE.MeshBasicMaterial({
                                     color: 0xFF00FF, // Any color
                                     opacity: 0,     // Fully transparent
                                     transparent: true
                                 });
-                                
+                                    
                                 const cube = new THREE.Mesh(geometryc, materialc);
                                 cube.position.set(i - actual_width / 2.0, 1.8, j - actual_height / 2 + 0.5);
                                 this.object.add(cube); // Add to the scene
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
-
-                               /* const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
-                                doorLight.position.set(
-                                    doorObject.position.x,
-                                    doorObject.position.y + 5, 
-                                    doorObject.position.z
-                                );
-                                doorLight.castShadow = true; 
-                                this.object.add(doorLight); */
                             });
-                        }
-                        else {
-                            const door = new Decor({ url: 'assets/models/gltf/hospital_table_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
+                            const door2 = new Decor({ url: 'assets/models/gltf/hospital_table_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
-
-                                const geometryc = new THREE.BoxGeometry(3.8, 3.8, 4.8);
-                                const materialc = new THREE.MeshBasicMaterial({
-                                    color: 0xFF00FF, // Any color
-                                    opacity: 0,     // Fully transparent
-                                    transparent: true
-                                });
-                                
-                                const cube = new THREE.Mesh(geometryc, materialc);
-                                cube.position.set(i - actual_width / 2.0, 1.8, j - actual_height / 2 + 0.5);
-                                this.object.add(cube); // Add to the scene
-                                this.RoomArr.push(cube);
-                                this.RoomArrCoord.push(cube.position);
-
-                               /*const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
-                                doorLight.position.set(
-                                    doorObject.position.x,
-                                    doorObject.position.y + 5, 
-                                    doorObject.position.z
-                                );
-                                doorLight.castShadow = true; 
-                                this.object.add(doorLight); */
+                                faux_BedArr.push(doorObject);
                             });
-                        }
                         roomData.shift();
                     }
                     if(rooms[j][i] == 7) {
@@ -234,6 +200,7 @@ export default class Maze {
                 }
             }
             this.object.scale.set(this.scale.x, this.scale.y, this.scale.z);
+            this.BedArr = faux_BedArr;
             this.loaded = true;
         }
 

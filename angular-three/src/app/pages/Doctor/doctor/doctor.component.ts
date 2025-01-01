@@ -361,6 +361,12 @@ export class DoctorComponent implements OnInit {
       }
     });
   }
+  
+  onMapTimeChange(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value;
+    console.log('Datetime value changed:', inputValue);
+    this.thumbRaiser.selectedDate = inputValue;
+  }
 
   getAllOperationRequests() {
     const token = this.authService.getToken();

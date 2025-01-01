@@ -188,9 +188,10 @@ export default class ThumbRaiser {
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
-        this.roomData = null;
         this.CurrentRoom = null;
-
+        this.CorrectlyLoaded = false;
+        this.selectedDate = null;
+        this.roomDataCache = null;
         // Create the player
         this.player = new Player(this.playerParameters);
 
@@ -316,10 +317,35 @@ export default class ThumbRaiser {
         this.activeViewCamera.target.z = this.maze.Lobby.z;*/
     }
     async fetchRoomData(index) {
-        let x = await this.maze.fetchRoomData();
+        let x = this.roomDataCache ?? await this.maze.fetchRoomData();
+        if(this.roomDataCache == null) this.roomDataCache = x;
         console.log("Fetch Room Data, in hospital ")
         console.log(x[index]);
-        return x[index].roomNumber;
+        return x[index];
+    }
+    async fetchRoomStatus(id) {
+        console.log(id);
+        let date = this.selectedDate ?? new Date().toISOString();
+        console.log(date);
+        console.log(this.selectedDate);
+        try {
+            const response = await fetch('https://localhost:5001/api/SurgeryRooms/Availability', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ id, date })
+            });
+            if (!response.ok) {
+                console.log(response);
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('There was an error fetching the room number:', error);
+        }
     }
     buildHelpPanel() {
         const table = document.getElementById("help-table");
@@ -617,7 +643,7 @@ export default class ThumbRaiser {
         return 0;
     }
 
-    update() {
+    async update() {
         if (!this.gameRunning) {
             if (this.maze.loaded) { // If all resources have been loaded
                 if(this.CurrentRoom == null) {
@@ -627,8 +653,6 @@ export default class ThumbRaiser {
                 }
                 this.scene3D.add(this.maze.object);
                 this.scene3D.add(this.lights.object);
-                this.roomData = this.maze.roomData;
-                console.log("Sayga " + this.roomData);
 
                 // Create the clock
                 this.clock = new THREE.Clock();
@@ -650,6 +674,29 @@ export default class ThumbRaiser {
             }
         }
         else {
+            if (this.maze.loaded) {
+                if(!this.CorrectlyLoaded && (this.maze.BedArr.length==(this.maze.RoomArr.length-1) && this.maze.BedArr.length > 0)) {
+                    this.CorrectlyLoaded = true;
+                    console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
+                    setTimeout(() => {
+                        this.CorrectlyLoaded = false;
+                        console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
+                    }, 60000);
+                    for (let index = 0; index < this.maze.BedArr.length; index++) {
+                        const element = this.maze.BedArr[index];
+                        let room = await this.fetchRoomData(index);
+                        let status = await this.fetchRoomStatus(room.id);
+                        if (status) {
+                            element.visible = false;
+                            console.log("Luigi is Died!");
+                        } else {
+                            element.visible = true;
+                            console.log("Luigi is Live!");
+                        }
+                        console.log("Checked Room: " + room.roomNumber);
+                    }
+                }
+            }
             // Update the model animations
             const deltaT = this.clock.getDelta();
             this.animations.update(deltaT);
