@@ -347,6 +347,50 @@ input, textarea {
 
 
 
+.staff-list {
+  margin-top: 10px;
+}
+
+.staff-list ul#staffEntries {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.staff-list ul#staffEntries li.staff-item {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border-radius: 5px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.staff-list ul#staffEntries li.staff-item .remove-button {
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.staff-list ul#staffEntries li.staff-item .remove-button:hover {
+  color: #d32f2f;
+}
+
+
+
+
+
+
+
 
 
 

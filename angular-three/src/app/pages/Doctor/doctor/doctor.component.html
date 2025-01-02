@@ -90,8 +90,8 @@
       <div>
         <div class="table-wrapper">
           <!-- Action Buttons Section -->
-          <div class="table-title">
-            <h2>Operation Requests</h2>
+          <div class="table-title" > 
+            <h2 style="font-weight: 600;">Operation Requests</h2>
             <div class="action-buttons">
               <button (click)="openModal('filterRequestModal')">
                 <i class="bi bi-filter"></i> Filter Requests
@@ -134,42 +134,44 @@
     </div>
   </div>
 
+
+
   <!-- Create Operation Request Modal -oncreate-->
   <div [ngStyle]="{'display': isModalOpen('createRequestModal') ? 'block' : 'none'}" id="createRequestModal"
     class="modal">
     <div class="modal-content">
       <span (click)="closeModal('createRequestModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateRequest(operationRequest)" class="row g-3 needs-validation" novalidate>
-        <h3 class="text-center">Insert New Operation Request</h3>
+        <h3 class="text-center" style="font-weight: 600;" >Create Operation Request</h3>
 
         <!-- Patient Email -->
         <div class="col-md-6">
-          <label for="patientEmail" class="form-label">Patient Email</label>
+          <label for="patientEmail" class="form-label" style="font-weight: 600;">Patient Email</label>
           <input type="email" class="form-control" id="patientEmail" [(ngModel)]="operationRequest.patientEmail"
-            name="patientEmail" required />
+            name="patientEmail" required style="border-radius: 8px;"/>
           <div class="valid-feedback">Looks good!</div>
         </div>
 
         <!-- Operation Type Name -->
         <div class="col-md-6">
-          <label for="operationTypeName" class="form-label">Operation Type Name</label>
+          <label for="operationTypeName" class="form-label" style="font-weight: 600;">Operation Type Name</label>
           <input type="text" class="form-control" id="operationTypeName"
-            [(ngModel)]="operationRequest.operationTypeName" name="operationTypeName" required />
+            [(ngModel)]="operationRequest.operationTypeName" name="operationTypeName" required style="border-radius: 8px;"/>
           <div class="valid-feedback">Looks good!</div>
         </div>
 
         <!-- Deadline -->
         <div class="col-md-6">
-          <label for="deadline" class="form-label">Deadline</label>
+          <label for="deadline" class="form-label" style="font-weight: 600;">Deadline</label>
           <input type="date" class="form-control" id="deadline" [(ngModel)]="operationRequest.deadline" name="deadline"
-            required />
+            required style="border-radius: 8px;"/>
           <div class="valid-feedback">Looks good!</div>
         </div>
 
         <!-- Priority -->
         <div class="col-md-6">
-          <label for="priority" class="form-label">Priority</label>
-          <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required>
+          <label for="priority" class="form-label" style="font-weight: 600;">Priority</label>
+          <select class="form-select" id="priority" [(ngModel)]="operationRequest.priority" name="priority" required style="border-radius: 8px;">
             <option value="Urgent">Urgent</option>
             <option value="Elective">Elective</option>
             <option value="Emergency">Emergency</option>
@@ -179,86 +181,95 @@
 
         <!-- Submit Button -->
         <div class="col-12">
-          <button class="btn btn-primary" type="submit">Create Request</button>
+          <button class="btn btn-primary" style="border-radius: 8px;" type="submit">Create Request</button>
         </div>
       </form>
     </div>
   </div>
 
 
-  <!-- Create Appointment Modal -->
-  <div [ngStyle]="{'display': isModalOpen('createAppointmentModal') ? 'block' : 'none'}" id="createAppointmentModal"
-    class="modal">
+
+
+
+
+
+
+  <div class="modal" [ngStyle]="{'display': isModalOpen('createAppointmentModal') ? 'block' : 'none'}">
     <div class="modal-content">
       <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateAppointment()">
-
-        <!-- Surgery Rooms Dropdown -->
+        
+        <!-- Surgery Room Dropdown -->
         <div class="form-group">
-          <label for="surgeryRoom">Surgery Room</label>
-          <select id="surgeryRoom" class="form-control" [(ngModel)]="selectedSurgeryRoomId" name="surgeryRoom" required>
+          <label for="surgeryRoom" style="font-weight: 600;">Surgery Room</label>
+          <select id="surgeryRoom" class="form-control" [(ngModel)]="selectedSurgeryRoomId" name="surgeryRoom" required style="border-radius: 8px;">
             <option value="" disabled>Select a Surgery Room</option>
             <option *ngFor="let surgeryRoom of surgeryRooms" [value]="surgeryRoom.id">
-              {{ surgeryRoom.roomNumber }} ({{ surgeryRoom.type }})
+              Room Number: {{ surgeryRoom.roomNumber }} - Room Type: ({{ surgeryRoom.type }})
             </option>
           </select>
         </div>
-
+  
         <!-- Operation Request Dropdown -->
         <div class="form-group">
-          <label for="operationRequest">Operation Request</label>
-          <select id="operationRequest" class="form-control" [(ngModel)]="selectedOperationRequestId"
-            name="operationRequest" required>
+          <label for="operationRequest" style="font-weight: 600;">Operation Request</label>
+          <select id="operationRequest" class="form-control" [(ngModel)]="selectedOperationRequestId" name="operationRequest" required style="border-radius: 8px;">
             <option value="" disabled>Select an Operation Request</option>
             <option *ngFor="let operationRequest of notscheduledOperationRequests" [value]="operationRequest.id">
-              {{ operationRequest.operationTypeName }}
-              ({{ operationRequest.emailPatient }}) - Priority: {{ operationRequest.priority }} - Deadline: {{
-              operationRequest.deadline }}
+              Type: {{ operationRequest.operationTypeName }} - Patient Email: {{ operationRequest.emailPatient }} 
+              - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline | date:'yyyy-MM-dd' }}
             </option>
           </select>
         </div>
-
-        <!-- Date Inputs -->
+  
+        <!-- Date Input -->
         <div class="form-group">
-          <label for="startDate">Start Date</label>
-          <input id="startDate" type="datetime-local" class="form-control" [(ngModel)]="appointmentData.date.start"
-            name="startDate" required />
+          <label for="startDate" style="font-weight: 600;">Start Date and Time</label>
+          <input id="startDate" type="datetime-local" class="form-control" [(ngModel)]="appointmentData.date.start" name="startDate" required style="border-radius: 8px;"/>
         </div>
-
+  
         <!-- Staff Selection -->
-<div class="form-group" *ngFor="let staffId of updateAppointment.selectedStaff; let i = index">
-  <div class="row">
-    <div class="col-md-6">
-      <label for="updateStaffId{{ i }}">Select Staff</label>
-      <select
-        id="updateStaffId{{ i }}"
-        class="form-control"
-        [(ngModel)]="updateAppointment.selectedStaff[i]"
-        name="updateStaffId{{ i }}"
-        required>
-        <option value="" disabled>Select a Staff Member</option>
-        <option *ngFor="let staff of staffs" [value]="staff.id">
-          Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
-        </option>
-      </select>
-    </div>
-    <div class="col-md-6">
-      <button
-        type="button"
-        class="btn btn-danger mt-4"
-        (click)="removeStaffMember(i)">
-        Remove Staff
-      </button>
-    </div>
-  </div>
-</div>
-<button type="button" class="btn btn-primary" (click)="addStaffMember()">Add Staff</button>
+        <div class="staff-list">
+          <label for="staffSelect" style="font-weight: 600;">Select Staff for Appointment</label>
+          <select id="staffSelect" class="form-control" [(ngModel)]="selectedStaffMemberId" name="staffSelect" style="border-radius: 8px;">
+            <option value="" disabled>Select a Staff Member</option>
+            <option *ngFor="let staff of staffs" [value]="staff.id">
+              License: {{ staff.licenseNumber }} - Role: {{ staff.role }} - Specialization: {{ staff.specialization }}
+            </option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary mt-3" (click)="addStaffMember()">
+          <span style="border-radius: 8px;">+</span> Add Staff
+        </button>
+        
 
+
+          <!-- Staff List -->
+          <div class="staff-list" style="margin-top: 20px;">
+            <ul id="staffEntries">
+              <li
+                *ngFor="let staff of appointmentData.selectedStaff; let i = index"
+                class="staff-item"
+                style="padding: 8px;"
+              >
+                {{ staff.licenseNumber }} {{ staff.role }} ({{ staff.specialization }})
+                <span
+                  class="remove-button"
+                  (click)="removeStaffMember(i)"
+                >
+                  X
+                </span>
+              </li>
+            </ul>
+          </div>
+  
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-success">Create Appointment</button>
+        <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Create Appointment</button>
       </form>
     </div>
   </div>
+
+  
 
 
 <!-- List Appointment Modal -->
@@ -302,64 +313,73 @@
 </div>
 
 
-  <!-- Update Appointment Modal -->
+<!-- Update Appointment Modal -->
 <div [ngStyle]="{'display': isModalOpen('updateAppointmentModal') ? 'block' : 'none'}"
-id="updateAppointmentModal" class="modal">
-<div class="modal-content">
-  <span (click)="closeModal('updateAppointmentModal')" class="close">&times;</span>
-  <form (ngSubmit)="onUpdateAppointment(updateAppointment)">
+     id="updateAppointmentModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeModal('updateAppointmentModal')" class="close">&times;</span>
+    <form (ngSubmit)="onUpdateAppointment(updateAppointment)">
 
-    <!-- Surgery Rooms Dropdown -->
-    <div class="form-group">
-      <label for="updateRoom">Room</label>
-<select id="updateRoom" class="form-control" [(ngModel)]="updateAppointment.roomId" name="updateRoom" required>
-  <option value="" disabled>Select a Room</option>
-  <option *ngFor="let room of surgeryRooms" [value]="room.id">
-    {{ room.roomNumber }} ({{ room.type }})
-  </option>
-</select>
-    </div>
+      <!-- Surgery Rooms Dropdown -->
+      <div class="form-group">
+        <label for="updateRoom" style="font-weight: 600;">Room</label>
+        <select id="updateRoom" class="form-control" [(ngModel)]="updateAppointment.roomId" name="updateRoom" required style="border-radius: 8px;">
+          <option value="" disabled>Select a Room</option>
+          <option *ngFor="let room of surgeryRooms" [value]="room.id">
+              Room Number: {{ room.roomNumber }} - Room Type: ({{ room.type }})
+          </option>
+        </select>
+      </div>
 
-    <!-- Start Date -->
-    <div class="form-group">
-      <label for="updateStartDate">Start Date</label>
-      <input
-        id="updateStartDate"
-        type="datetime-local"
-        class="form-control"
-        [(ngModel)]="updateAppointment.start"
-        name="updateStartDate"
-        required />
-    </div>
+      <!-- Start Date -->
+      <div class="form-group">
+        <label for="updateStartDate" style="font-weight: 600;">Start Date</label>
+        <input
+          id="updateStartDate"
+          type="datetime-local"
+          class="form-control"
+          [(ngModel)]="updateAppointment.start"
+          name="updateStartDate"
+          required style="border-radius: 8px;"/>
+      </div>
 
-    <!-- Staff Selection -->
-    <div class="form-group" *ngFor="let staffId of updateAppointment.selectedStaff; let i = index">
-      <div class="row">
-        <div class="col-md-6">
-          <label for="updateStaffId{{ i }}">Select Staff</label>
-          <select
-            id="updateStaffId{{ i }}"
-            class="form-control"
-            [(ngModel)]="updateAppointment.selectedStaff[i]"
-            name="updateStaffId{{ i }}"
-            required>
+      <!-- Staff Selection -->
+      <div class="staff-list">
+        <label for="updateStaffSelect" style="font-weight: 600;">Select Staff</label>
+        <div class="form-group">
+          <select id="updateStaffSelect" class="form-control" [(ngModel)]="selectedUpdateStaffMemberId" name="updateStaffSelect" style="border-radius: 8px;">
             <option value="" disabled>Select a Staff Member</option>
             <option *ngFor="let staff of staffs" [value]="staff.id">
-              Licence Number: {{ staff.licenseNumber }} Role: {{ staff.role }} Specialization: {{ staff.specialization }}
+              Licence Number: {{ staff.licenseNumber }} - Role: {{ staff.role }} - Specialization: {{ staff.specialization }}
             </option>
           </select>
-        </div>
-        <div class="col-md-6">
-          <button type="button" class="btn btn-danger mt-4" (click)="removeUpdateStaffMember(i)">Remove Staff</button>
+
+          <button type="button" class="btn btn-primary mt-3" (click)="addUpdateStaffMember()">
+            <span style="border-radius: 8px;">+</span> Add Staff
+          </button>
         </div>
       </div>
-    </div>
-    <button type="button" class="btn btn-primary" (click)="addUpdateStaffMember()">Add Staff</button>
 
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-success">Update Appointment</button>
-  </form>
+<!-- Updated Staff List -->
+<div class="staff-list" style="margin-top: 20px;">
+  <ul id="staffEntries">
+    <li *ngFor="let staffId of updateAppointment.selectedStaff; let i = index" class="staff-item" style="padding: 8px;">
+      <!-- Find the staff object based on staffId -->
+      <ng-container *ngIf="staffId">
+        <!-- Get the staff object with the corresponding staffId -->
+        <ng-container *ngIf="getStaffById(staffId)">
+          <span>{{ getStaffById(staffId)?.licenseNumber }} - {{ getStaffById(staffId)?.role }} ({{ getStaffById(staffId)?.specialization }})</span>
+          <span class="remove-button" (click)="removeUpdateStaffMember(i)">X</span>
+        </ng-container>
+      </ng-container>
+    </li>
+  </ul>
 </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Update Appointment</button>
+    </form>
+  </div>
 </div>
 
 
@@ -369,29 +389,29 @@ id="updateAppointmentModal" class="modal">
     <div class="modal-content">
       <span (click)="closeModal('filterRequestModal')" class="close">&times;</span>
       <form (ngSubmit)="onFilterRequests()">
-        <h3 class="text-center">Filter Operation Requests</h3>
+        <h3 class="text-center" style="font-weight: 600;">Filter Operation Requests</h3>
 
         <div class="mb-3">
-          <label for="filterDoctorEmail" class="form-label">Doctor Email:</label>
+          <label for="filterDoctorEmail" class="form-label" style="font-weight: 600;">Doctor Email:</label>
           <input type="text" id="filterDoctorEmail" [(ngModel)]="filter.emailDoctor" name="filterDoctorEmail"
-            class="form-control" />
+            class="form-control" style="border-radius: 8px;"/>
         </div>
 
         <div class="mb-3">
-          <label for="filterpatientId" class="form-label">Patient Email:</label>
+          <label for="filterpatientId" class="form-label" style="font-weight: 600;">Patient Email:</label>
           <input type="text" id="filterpatientId" [(ngModel)]="filter.emailPatient" name="filterpatientId"
-            class="form-control" />
+            class="form-control" style="border-radius: 8px;"/>
         </div>
 
         <div class="mb-3">
-          <label for="filterOperationType" class="form-label">Operation Type:</label>
+          <label for="filterOperationType" class="form-label" style="font-weight: 600;">Operation Type:</label>
           <input type="text" id="filterOperationType" [(ngModel)]="filter.operationTypeName" name="filterOperationType"
-            class="form-control" />
+            class="form-control" style="border-radius: 8px;"/>
         </div>
 
         <div class="mb-3">
-          <label for="filterPriority" class="form-label">Priority:</label>
-          <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select">
+          <label for="filterPriority" class="form-label" style="font-weight: 600;">Priority:</label>
+          <select id="filterPriority" [(ngModel)]="filter.priority" name="filterPriority" class="form-select" style="border-radius: 8px;">
             <option value="">All</option>
             <option value="Urgent">Urgent</option>
             <option value="Elective">Elective</option>
@@ -399,7 +419,7 @@ id="updateAppointmentModal" class="modal">
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Apply Filter</button>
+        <button type="submit" class="btn btn-primary" style="border-radius: 8px;">Apply Filter</button>
       </form>
     </div>
   </div>
@@ -410,27 +430,27 @@ id="updateAppointmentModal" class="modal">
     <div class="modal-content">
       <span (click)="closeModal('updateRequestModal')" class="close">&times;</span>
       <form (ngSubmit)="onUpdateRequest(updateRequest)">
-        <h3 class="text-center">Update Operation Request</h3>
+        <h3 class="text-center" style="font-weight: 600;"> Update Operation Request</h3>
 
         <!-- Deadline -->
         <div class="mb-3">
-          <label for="updateDeadline" class="form-label">Deadline:</label>
+          <label for="updateDeadline" class="form-label" style="font-weight: 600;">Deadline:</label>
           <input type="date" id="updateDeadline" [(ngModel)]="updateRequest.deadline" name="updateDeadline"
-            class="form-control" required />
+            class="form-control" required style="border-radius: 8px;"/>
         </div>
 
         <!-- Priority -->
         <div class="mb-3">
-          <label for="updatePriority" class="form-label">Priority:</label>
+          <label for="updatePriority" class="form-label" style="font-weight: 600;">Priority:</label>
           <select id="updatePriority" [(ngModel)]="updateRequest.priority" name="updatePriority" class="form-select"
-            required>
+            required style="border-radius: 8px;">
             <option value="Urgent">Urgent</option>
             <option value="Elective">Elective</option>
             <option value="Emergency">Emergency</option>
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Request</button>
+        <button type="submit" class="btn btn-primary" style="border-radius: 8px;">Update Request</button>
       </form>
     </div>
   </div>
@@ -440,11 +460,11 @@ id="updateAppointmentModal" class="modal">
     <div class="modal-content">
       <span (click)="closeModal('deleteModal')" class="close">&times;</span>
       <div>
-        <h3 class="text-center">Confirm Delete</h3>
-        <p style="font-size: 20px;">Are you sure you want to delete this operation request?</p>
-        <button class="btn btn-danger" (click)="onDeleteRequest(updateRequest.id)" style="margin-right: 5px;">Yes,
+        <h3 class="text-center" style="font-weight: 600;">Confirm Delete</h3>
+        <p class="text-center" style="font-size: 25px; font-weight: 300;" >Are you sure you want to delete this operation request?</p>
+        <button class="btn btn-danger" (click)="onDeleteRequest(updateRequest.id)" style="margin-right: 5px; border-radius: 8px;" >Yes,
           Delete</button>
-        <button class="btn btn-secondary" (click)="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-secondary" (click)="closeModal('deleteModal')" style="border-radius: 8px;">Cancel</button>
       </div>
     </div>
   </div>
