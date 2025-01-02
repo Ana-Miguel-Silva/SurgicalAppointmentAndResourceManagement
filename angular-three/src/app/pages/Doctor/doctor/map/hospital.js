@@ -325,7 +325,9 @@ export default class ThumbRaiser {
     }
     async fetchRoomStatus(id) {
         console.log(id);
-        let date = this.selectedDate ?? new Date().toISOString();
+        let date = (this.selectedDate && typeof this.selectedDate === 'string' && !isNaN(Date.parse(this.selectedDate))) 
+  ? this.selectedDate 
+  : new Date().toISOString();
         console.log(date);
         console.log(this.selectedDate);
         try {
