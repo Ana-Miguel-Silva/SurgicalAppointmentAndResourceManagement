@@ -115,5 +115,19 @@ namespace DDDSample1.Tests.Domain.OperationRequests
 
             Assert.False(operationRequest.Active);
         }
+
+        [Fact]
+        public void WhenMarkingAsActive_ThenIsActive()
+        {
+            var patientId = new PatientId(Guid.NewGuid());
+            var doctorId = new StaffGuid(Guid.NewGuid());
+            var operationTypeId = new OperationTypeId(Guid.NewGuid());
+            var operationRequest = new OperationRequest(patientId, doctorId, operationTypeId, DateTime.Now.AddDays(7), "URGENT");
+            operationRequest.MarkAsInative();
+
+            operationRequest.MarkAsActive();
+
+            Assert.True(operationRequest.Active);
+        }
     }
 }

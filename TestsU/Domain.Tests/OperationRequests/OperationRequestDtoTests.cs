@@ -1,41 +1,33 @@
 using System;
+using Xunit;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
-using Xunit;
 
-namespace DDDSample1.Domain.Tests
+namespace DDDSample1.Tests.Domain.OperationRequests
 {
     public class OperationRequestDtoTests
     {
         [Fact]
-        public void Constructor_ShouldSetPropertiesCorrectly()
+        public void OperationRequestDto_WithValidParameters_ThenIsCreatedSuccessfully()
         {
-            Guid expectedId = Guid.NewGuid();
-            PatientId expectedPatientId = new PatientId(Guid.NewGuid());
-            StaffGuid expectedDoctorId = new StaffGuid(Guid.NewGuid());
-            OperationTypeId expectedOperationTypeId = new OperationTypeId(Guid.NewGuid());
-            DateTime expectedDeadline = DateTime.UtcNow.AddDays(7);
-            string expectedPriority = "ELECTIVE";
+            var id = Guid.NewGuid();
+            var patientId = new PatientId(Guid.NewGuid());
+            var doctorId = new StaffGuid(Guid.NewGuid());
+            var operationTypeId = new OperationTypeId(Guid.NewGuid());
+            var deadline = DateTime.Now.AddDays(7);
+            var priority = "ELECTIVE";
 
-            OperationRequestDto operationRequestDto = new OperationRequestDto(
-                expectedId,
-                expectedPatientId,
-                expectedDoctorId,
-                expectedOperationTypeId,
-                expectedDeadline,
-                expectedPriority
-            );
+            var dto = new OperationRequestDto(id, patientId, doctorId, operationTypeId, deadline, priority);
 
-            Assert.Equal(expectedId, operationRequestDto.Id);
-            Assert.Equal(expectedPatientId, operationRequestDto.MedicalRecordNumber);
-            Assert.Equal(expectedDoctorId, operationRequestDto.DoctorId);
-            Assert.Equal(expectedOperationTypeId, operationRequestDto.OperationTypeId);
-            Assert.Equal(expectedDeadline, operationRequestDto.Deadline);
-            Assert.Equal(expectedPriority, operationRequestDto.Priority);
+            Assert.NotNull(dto);
+            Assert.Equal(id, dto.Id);
+            Assert.Equal(patientId, dto.MedicalRecordNumber);
+            Assert.Equal(doctorId, dto.DoctorId);
+            Assert.Equal(operationTypeId, dto.OperationTypeId);
+            Assert.Equal(deadline, dto.Deadline);
+            Assert.Equal(priority, dto.Priority);
         }
-    
-
     }
 }

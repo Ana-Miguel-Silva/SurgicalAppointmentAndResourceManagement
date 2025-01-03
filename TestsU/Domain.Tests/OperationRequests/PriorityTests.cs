@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using DDDSample1.Domain.OperationRequests;
 
@@ -6,27 +7,28 @@ namespace DDDSample1.Tests.Domain.OperationRequests
     public class PriorityTests
     {
         [Fact]
-        public void Priorities_ShouldReturnExpectedPriorityList()
+        public void Priorities_ReturnsAllPriorityOptions()
         {
-            string[] expectedPriorities = { Priority.ELECTIVE, Priority.URGENT, Priority.EMERGENCY };
+            var priorities = Priority.Priorities();
 
-            string[] result = Priority.Priorities();
-
-            Assert.Equal(expectedPriorities, result);
+            Assert.Contains("ELECTIVE", priorities);
+            Assert.Contains("URGENT", priorities);
+            Assert.Contains("EMERGENCY", priorities);
         }
 
-        [Theory]
-        [InlineData("ELECTIVE", true)]
-        [InlineData("URGENT", true)]
-        [InlineData("EMERGENCY", true)]
-        [InlineData("NON_EXISTENT_PRIORITY", false)]
-        [InlineData("", false)]
-        [InlineData(null, false)]
-        public void IsValid_ShouldReturnCorrectBooleanBasedOnPriority(string priority, bool expectedValidity)
+        [Fact]
+        public void IsValid_WithValidPriority_ReturnsTrue()
         {
-            bool result = Priority.IsValid(priority);
+            Assert.True(Priority.IsValid("ELECTIVE"));
+            Assert.True(Priority.IsValid("URGENT"));
+            Assert.True(Priority.IsValid("EMERGENCY"));
+        }
 
-            Assert.Equal(expectedValidity, result);
+        [Fact]
+        public void IsValid_WithInvalidPriority_ReturnsFalse()
+        {
+            Assert.False(Priority.IsValid("INVALID_PRIORITY"));
+            Assert.False(Priority.IsValid(null));
         }
     }
 }

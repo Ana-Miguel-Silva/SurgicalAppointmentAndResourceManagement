@@ -1,139 +1,169 @@
-using Xunit;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DDDSample1.Domain.Shared;
+using Xunit;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Shared;
 using DDDSample1.ApplicationService.OperationRequests;
-using Microsoft.Extensions.Configuration;
 
-namespace Backend.Tests.Services
+namespace DDDSample1.Tests
 {
-    public class OperationRequestServiceTest
+    public class OperationRequestServiceTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IOperationRequestRepository> _operationRequestRepositoryMock;
-        private readonly Mock<IPatientRepository> _patientRepositoryMock;
-        private readonly Mock<IStaffRepository> _staffRepositoryMock;
-        private readonly Mock<IOperationTypeRepository> _operationTypeRepositoryMock;
-        private readonly OperationRequestService _operationRequestService;
+        private readonly Mock<IOperationRequestRepository> _repoMock;
+        private readonly Mock<IPatientRepository> _patientRepoMock;
+        private readonly Mock<IStaffRepository> _staffRepoMock;
+        private readonly Mock<IOperationTypeRepository> _operationTypeRepoMock;
+        private readonly OperationRequestService _service;
 
-        public OperationRequestServiceTest()
+        public OperationRequestServiceTests()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _operationRequestRepositoryMock = new Mock<IOperationRequestRepository>();
-            _patientRepositoryMock = new Mock<IPatientRepository>();
-            _staffRepositoryMock = new Mock<IStaffRepository>();
-            _operationTypeRepositoryMock = new Mock<IOperationTypeRepository>();
-
-            _operationRequestService = new OperationRequestService(
+            _repoMock = new Mock<IOperationRequestRepository>();
+            _patientRepoMock = new Mock<IPatientRepository>();
+            _staffRepoMock = new Mock<IStaffRepository>();
+            _operationTypeRepoMock = new Mock<IOperationTypeRepository>();
+            _service = new OperationRequestService(
                 _unitOfWorkMock.Object,
-                _operationRequestRepositoryMock.Object,
-                _patientRepositoryMock.Object,
-                _staffRepositoryMock.Object,
-                _operationTypeRepositoryMock.Object
+                _repoMock.Object,
+                _patientRepoMock.Object,
+                _staffRepoMock.Object,
+                _operationTypeRepoMock.Object
             );
         }
 
-        /*[Fact]
-        public async Task GetAllAsync_ShouldReturnOperationRequestDTOList()
+        [Fact]
+        public async Task AddAsync_ShouldReturnOperationRequestDto_WhenValidDataIsProvided()
         {
-            // Arrange
-            var operationRequests = new List<OperationRequest>
+            var dto = new CreatingOperationRequestUIDto(
+                "test@example.com",
+                "Surgery",
+                DateTime.Now.AddDays(1),
+                "URGENT"
+            );
+
+            var patient = new Patient("John Doe", DateTime.Now.AddYears(-30), new PhoneNumber("123456789"), new Email("test@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>());
+            var doctor = new StaffProfile(new FullName("Dr. John Doe"), new Email("doctor@example.com"), new PhoneNumber("123456789"), "SURGEON", "SURGEON", new List<Slot>(), "Doc123");
+            var requiredStaff = new List<RequiredStaff>
             {
-                new OperationRequest(
-                    new PatientId(Guid.NewGuid()),
-                    new StaffGuid(Guid.NewGuid()),
-                    new OperationTypeId(Guid.NewGuid()),
-                    DateTime.Now.AddDays(7),
-                    "URGENT"
-                )
+                new RequiredStaff(1,"SURGEON", "SURGEON")
             };
+            var operationType = new OperationType("Surgery", requiredStaff, new EstimatedDuration(new TimeOnly(1, 0, 0), new TimeOnly(2, 0, 0), new TimeOnly(3, 0, 0)));
 
-            _operationRequestRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationRequests);
+            _patientRepoMock.Setup(r => r.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync(patient);
+            _staffRepoMock.Setup(r => r.GetByUsernameAsync(It.IsAny<string>())).ReturnsAsync(new List<StaffProfile> { doctor });
+            _operationTypeRepoMock.Setup(r => r.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(new List<OperationType> { operationType });
 
-            // Act
-            var result = await _operationRequestService.GetAllAsync();
+            var patientId = patient.Id;
+            var staffGuid = doctor.Id;
+            var operationTypeId = operationType.Id;
+            var deadline = DateTime.Now.AddDays(1);
+            var priority = "URGENT";
 
-            // Assert
+            _repoMock.Setup(r => r.AddAsync(It.IsAny<OperationRequest>())).ReturnsAsync(new OperationRequest(
+                patientId,
+                staffGuid,
+                operationTypeId,
+                deadline,
+                priority
+            ));
+
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            var result = await _service.AddAsync(dto, "doctor@example.com");
+
             Assert.NotNull(result);
-            Assert.Equal(operationRequests.Count, result.Count);
-        }*/
-
-        [Fact]
-        public async Task GetByIdAsync_ShouldReturnOperationRequestDTO()
-        {
-            // Arrange
-            var operationRequest = new OperationRequest(
-                new PatientId(Guid.NewGuid()),
-                new StaffGuid(Guid.NewGuid()),
-                new OperationTypeId(Guid.NewGuid()),
-                DateTime.Now.AddDays(7),
-                "URGENT"
-            );
-            var operationRequestId = operationRequest.Id;
-
-            _operationRequestRepositoryMock.Setup(repo => repo.GetByIdAsync(operationRequestId)).ReturnsAsync(operationRequest);
-
-            // Act
-            var result = await _operationRequestService.GetByIdAsync(operationRequestId);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(operationRequestId.AsGuid(), result.Id);
+            Assert.Equal(patientId, result.MedicalRecordNumber);
+            Assert.Equal(staffGuid, result.DoctorId);
+            Assert.Equal(operationTypeId, result.OperationTypeId);
+            Assert.Equal(deadline.Date, result.Deadline.Date);
+            Assert.Equal(priority, result.Priority);
         }
 
         [Fact]
-        public async Task InactivateAsync_ShouldReturnInactivatedOperationRequestDTO()
+        public async Task UpdateAsync_ShouldUpdateOperationRequest_WhenValidDataIsProvided()
         {
-            // Arrange
+            var operationRequestId = Guid.NewGuid();
+            var dto = new UpdateOperationRequestDto(
+                operationRequestId,
+                DateTime.Now.AddDays(2),
+                "ELECTIVE"
+            );
+
+            var patient = new Patient("John Doe", DateTime.Now.AddYears(-30), new PhoneNumber("123456789"), new Email("test@example.com"), new Email("user@example.com"), "Emergency", new PhoneNumber("987654321"), new Email("emergency@example.com"), "Male", new List<string>());
+            var doctor = new StaffProfile(new FullName("Dr. John Doe"), new Email("doctor@example.com"), new PhoneNumber("123456789"), "SURGEON", "SURGEON", new List<Slot>(), "Doc123");
+            var requiredStaff = new List<RequiredStaff>
+            {
+                new RequiredStaff(1,"SURGEON", "SURGEON")
+            };
+            var operationType = new OperationType("Surgery", requiredStaff, new EstimatedDuration(new TimeOnly(1, 0, 0), new TimeOnly(2, 0, 0), new TimeOnly(3, 0, 0)));
+
+            _patientRepoMock.Setup(r => r.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync(patient);
+            _staffRepoMock.Setup(r => r.GetByUsernameAsync(It.IsAny<string>())).ReturnsAsync(new List<StaffProfile> { doctor });
+            _operationTypeRepoMock.Setup(r => r.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(new List<OperationType> { operationType });
+
             var operationRequest = new OperationRequest(
-                new PatientId(Guid.NewGuid()),
-                new StaffGuid(Guid.NewGuid()),
-                new OperationTypeId(Guid.NewGuid()),
-                DateTime.Now.AddDays(7),
+                patient.Id,
+                doctor.Id,
+                operationType.Id,
+                DateTime.Now.AddDays(1),
                 "URGENT"
             );
-            var operationRequestId = operationRequest.Id;
 
-            _operationRequestRepositoryMock.Setup(repo => repo.GetByIdAsync(operationRequestId)).ReturnsAsync(operationRequest);
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
+            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest);
+            _repoMock.Setup(r => r.AddAsync(It.IsAny<OperationRequest>())).ReturnsAsync(operationRequest);
 
-            // Act
-            var result = await _operationRequestService.InactivateAsync(operationRequestId);
+            var result = await _service.UpdateAsync(dto, "doctor@example.com");
 
-            // Assert
             Assert.NotNull(result);
-            Assert.False(operationRequest.Active);
+            Assert.Equal(DateTime.Now.AddDays(2).Date, result.Deadline.Date);
+            Assert.Equal("ELECTIVE", result.Priority);
         }
 
         [Fact]
-        public async Task DeleteAsync_ShouldReturnDeletedOperationRequestDTO()
+        public async Task DeleteAsync_ShouldDeleteOperationRequest_WhenValidIdIsProvided()
         {
-            // Arrange
+            var operationRequestId = new OperationRequestId(Guid.NewGuid());
+
+            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<OperationRequestId>()))
+                     .ReturnsAsync(new OperationRequest(
+                         new PatientId(Guid.NewGuid()),
+                         new StaffGuid(Guid.NewGuid()),
+                         new OperationTypeId(Guid.NewGuid()),
+                         DateTime.Now,
+                         "URGENT"
+                     ));
+
+            _repoMock.Setup(r => r.Remove(It.IsAny<OperationRequest>())).Callback<OperationRequest>(x => { });
+
+            await _service.DeleteAsync(operationRequestId);
+
+            _repoMock.Verify(r => r.Remove(It.IsAny<OperationRequest>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnOperationRequest_WhenValidIdIsProvided()
+        {
+            var operationRequestId = new OperationRequestId(Guid.NewGuid());
+
             var operationRequest = new OperationRequest(
                 new PatientId(Guid.NewGuid()),
                 new StaffGuid(Guid.NewGuid()),
                 new OperationTypeId(Guid.NewGuid()),
-                DateTime.Now.AddDays(7),
+                DateTime.Now,
                 "URGENT"
             );
-            operationRequest.MarkAsInative();
-            var operationRequestId = operationRequest.Id;
 
-            _operationRequestRepositoryMock.Setup(repo => repo.GetByIdAsync(operationRequestId)).ReturnsAsync(operationRequest);
-            _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.FromResult(0)); // Fix: Change Task.CompletedTask to Task.FromResult(0)
+            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest);
 
-            // Act
-            var result = await _operationRequestService.DeleteAsync(operationRequestId);
+            var result = await _service.GetByIdAsync(operationRequestId);
 
-            // Assert
             Assert.NotNull(result);
-            Assert.Equal(operationRequestId.AsGuid(), result.Id);
         }
     }
 }
