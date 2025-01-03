@@ -101,5 +101,39 @@ it('should remove dates from appointmentHistory', () => {
   
 });
 
+
+it('should open and close the view Patient Modal', () => {
+  cy.get('.selectionDiv')
+  .contains('View Patient Profile')
+  .should('be.visible')
+  .click();
+
+  cy.get('#viewPatientModal', { timeout: 10000 }).should('be.visible');
+
+  cy.get('#viewPatientModal .close').click();
+  cy.get('#viewPatientModal').should('not.be.visible');
+});
+
+it('should view medical record in Patient view', () => {
+  cy.get('.selectionDiv')
+  .contains('View Patient Profile')
+  .should('be.visible')
+  .click();
+
+  cy.get('#viewPatientModal', { timeout: 10000 }).should('be.visible');
+
+
+  cy.get('button[id="viewMedicalRecordPatient"]').click();   
+
+  cy.get('#ViewMedicalRecord', { timeout: 10000 }).should('be.visible');
+
+  cy.get('#ViewMedicalRecord .close').click();
+  cy.get('#ViewMedicalRecord').should('not.be.visible');
+
+  cy.get('#viewPatientModal .close').click();
+  cy.get('#viewPatientModal').should('not.be.visible');  
+});
+
+
 });
 

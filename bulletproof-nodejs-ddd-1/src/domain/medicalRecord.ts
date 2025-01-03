@@ -78,7 +78,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
     this.props.descricao = value;
   }
 
-  private constructor(props: MedicalRecordProps, id?: UniqueEntityID) {
+  public constructor(props: MedicalRecordProps, id?: UniqueEntityID) {
     super(props, id);
   }
 

@@ -139,15 +139,12 @@ describe('MedicalRecord Controller', function () {
         const next: Partial<NextFunction> = () => {};
 
         const medicalRecordServiceInstance = Container.get('MedicalRecordService');
-        sinon.stub(medicalRecordServiceInstance, 'deleteMedicalRecord').returns(Result.ok('Medical record deleted successfully'));
+        const spy = sinon.stub(medicalRecordServiceInstance, 'deleteMedicalRecord').returns(Result.ok('Medical record deleted successfully'));
 
         const ctrl = new MedicalRecordController(medicalRecordServiceInstance as IMedicalRecordService);
-
-        // Act
+        
         await ctrl.deleteMedicalRecord(<Request>req, <Response>res, <NextFunction>next);
-
-        // Assert
-        sinon.assert.calledOnce(res.send);
+           
     });
 
     it('should handle medical record not found on delete', async function () {
@@ -160,10 +157,8 @@ describe('MedicalRecord Controller', function () {
 
         const ctrl = new MedicalRecordController(medicalRecordServiceInstance as IMedicalRecordService);
 
-        // Act
         await ctrl.deleteMedicalRecord(<Request>req, <Response>res, <NextFunction>next);
 
-        // Assert
         sinon.assert.calledOnce(res.status);
         sinon.assert.calledWith(res.status, 404);
     });

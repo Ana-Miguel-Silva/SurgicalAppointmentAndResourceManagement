@@ -29,7 +29,18 @@
     </p>
     <p style="margin-bottom: 20px;">
       <strong>Contacte-nos:</strong> <br>
-      Encarregado de Proteção de Dados (DPO): {{ 'mtf&#64;isep.ipp.pt' }}
+      <span style="display: block; text-indent: 20px;">
+        Encarregado de Proteção de Dados (DPO) – Paulo Alexandre Sousa
+      </span> 
+      <span style="display: block; text-indent: 20px;">
+        Email: {{ 'pauloSousaDpo&#64;gmail.com' }}
+      </span>
+      <span style="display: block; text-indent: 20px;">
+        Número de telemóvel: 966866765
+      </span> 
+      <span style="display: block; text-indent: 20px;">
+        Morada: Rua Mte. Guilherme Camarinha, 221, 2.º esquerdo
+      </span> 
     </p>
 
     <h4>2. Dados Pessoais que Recolhemos</h4>
@@ -130,7 +141,7 @@
 
 
     <p style="margin-bottom: 20px;">
-      Para exercer os seus direitos, contacte-nos através do email {{ 'mtf&#64;isep.ipp.pt' }}.
+      Para exercer os seus direitos, contacte-nos através do email {{ 'pauloSousaDpo&#64;gmail.com' }} ou do número de telemóvel: 966866765.
     </p>
 
     <h4 style="margin-top: 20px;"> 9. Segurança dos Dados </h4>
@@ -534,7 +545,15 @@
             </table>
           </div>-->
 
-          <button class="fs-5 btn btn-outline-info" (click)="getMedicalRecord()">View Medical Record <i class="bi bi-info-square-fill"></i></button>
+
+          <div class="modal-footer">
+            <div class="d-flex justify-content-center w-100">
+              <button class="fs-5 btn btn-outline-info me-2" id="viewMedicalRecordPatient" (click)="getMedicalRecord()">
+                View Medical Record <i class="bi bi-info-square-fill"></i>
+              </button>                   
+            </div>
+          </div>
+          
 
 
           <div class="col-md-2"></div>
@@ -551,7 +570,7 @@
 <div [ngStyle]="{'display': isModalOpen('ViewMedicalRecord') ? 'block' : 'none'}" id="ViewMedicalRecord" class="modal">
   <div class="modal-content">
     <span (click)="closeModal('ViewMedicalRecord')" class="close">&times;</span>
-    <form  class="row g-3 needs-validation" novalidate="">
+    <div  class="row g-3 needs-validation" novalidate="">
       <div *ngIf="medicalRecordProfile">
         <div class="row g-3 needs-validation">
           <div class="col-md-12"></div>
@@ -559,7 +578,7 @@
       
 
             <!-- Allergies Section -->
-            <div class="col-md-10">
+            <div class="col-md-12">
               <div class="input-group has-validation">
                 <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
                 <span class="input-group-text" style="width:60%" id="add">Allergies</span>
@@ -571,6 +590,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Status</th>
+                    <th>Notes</th>
                   </tr>
                 </thead>
                 <tbody>               
@@ -579,6 +599,7 @@
                     <td>{{ tag.designacao }}</td>
                     <td>{{ tag.descricao }}</td>
                     <td>{{ tag.status }}</td>
+                    <td [style.white-space]="'pre-wrap'">{{ tag.note }}</td>    
                    
                   </tr>                
                 </tbody>
@@ -592,12 +613,12 @@
 
 
           <!-- Medical Conditions Section -->
-          <div class="col-md-10">
+          <div class="col-md-12">
             <div class="input-group has-validation">
               <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
               <span class="input-group-text" style="width:60%" id="add">Medical Conditions</span>
             </div>
-            <table class="table table-striped table-hover table-over-update"style="scrollbar-width: none;">
+            <table class="table table-striped table-hover table-over-update" >
               <thead>
                 <tr>
                   <th>#</th>
@@ -606,6 +627,7 @@
                   <th>Description</th>
                   <th>Status</th>
                   <th>Symptoms</th>
+                  <th>Notes</th> 
                 </tr>
               </thead>
               <tbody>
@@ -613,17 +635,17 @@
                   <td>{{ i + 1 }}</td>
                   <td>{{ condition.codigo }}</td>
                   <td>{{ condition.designacao }}</td>
-                  <td>{{ condition.descricao }}</td>
+                  <td style="white-space: pre-wrap;">{{ condition.descricao }}</td>
                   <td>{{ condition.status }}</td>
-                  <td>{{ condition.sintomas }}</td>
-                 
+                  <td style="white-space: pre-wrap;">{{ condition.sintomas }}</td>
+                  <td [style.white-space]="'pre-wrap'">{{ condition.note }}</td>    
                 </tr>
               </tbody>
             </table>
           </div>
 
 
-          <div class="col-md-10">
+          <div class="col-md-12">
             <div class="input-group has-validation">
               <span class="input-group-text" style="width:20%" id="basic-addon1"><i class="bi bi-virus"></i></span>
               <span class="input-group-text" style="width:60%" id="add">Free text</span>
@@ -649,19 +671,21 @@
             <p *ngIf="descricaoList && descricaoList.length === 0" class="text-muted">No descriptions available.</p>
           </div>
 
-
-          
-          
-        
+          <div class="modal-footer">
+            <div class="d-flex justify-content-center w-100">
+              <button class="fs-5 btn btn-outline-secondary" id="downloadMedicalHistory2" (click)="downloadMedicalHistory()">
+                Download Medical History <i class="bi bi-download"></i>
+              </button>     
+            </div>
+          </div>
+         
 
          
         </div>
-
-       
-
-       
+             
       </div>
-    </form>
+      
+    </div>
      
   </div>
 </div>

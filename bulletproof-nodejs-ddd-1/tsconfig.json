@@ -9,6 +9,7 @@
       "./node_modules/@types",
       "./src/types"
     ],
+    "types": ["mocha"],  
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -20,13 +21,12 @@
     "outDir": "./build",
     "allowJs": true,
     "noEmit": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
-    "./src/**/*", "index.js"
-  ],
+    "./src/**/*", "index.js", "./src/**/*.ts" ],
   "exclude": [
-    "node_modules",
-    "tests"
+    "node_modules"
   ]
 }

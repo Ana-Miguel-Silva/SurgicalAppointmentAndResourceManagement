@@ -72,7 +72,7 @@ export default class MedicalConditionService implements IMedicalConditionService
     try {
       const medicalCondition = await this.MedicalConditionRepo.findMedicalCondition(MedicalConditionId);
 
-      if (!MedicalCondition) {
+      if (!MedicalCondition || medicalCondition.length === 0) {
         return Result.fail<MedicalConditionId>('Medical Condition not found');
       } else {
         return Result.ok<MedicalConditionId>(medicalCondition[0].MedicalConditionId);

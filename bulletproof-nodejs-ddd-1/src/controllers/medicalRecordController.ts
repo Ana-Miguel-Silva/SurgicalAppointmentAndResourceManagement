@@ -46,7 +46,7 @@ export default class MedicalRecordController implements IMedicalRecordController
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
       if (MedicalRecordOrError.isFailure) {
-        return res.status(402).send();
+        return res.status(400).json({ error: 'Dados inválidos' }); 
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();
@@ -63,7 +63,7 @@ export default class MedicalRecordController implements IMedicalRecordController
       const MedicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
       if (MedicalRecordOrError.isFailure) {
-        return res.status(402).send();
+        return res.status(404).json({ error: 'MedicalRecord not found' });
       }
 
       const MedicalRecordDTO = MedicalRecordOrError.getValue();
@@ -81,10 +81,10 @@ export default class MedicalRecordController implements IMedicalRecordController
      
 
       if (MedicalRecordOrError.isSuccess) {        
-        return res.status(200).send();
+        return res.status(200).json({ message: 'Medical Record was deleted' });
       }
 
-      return res.status(404).send();
+      return res.status(404).json({ error: 'Medical Record not found' });
     }
     catch (e) {
       return next(e);

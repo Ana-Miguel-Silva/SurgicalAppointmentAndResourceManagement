@@ -22,6 +22,9 @@ using DDDSample1.ApplicationService.PendingActions;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DDDSample1.Controllers
 {
@@ -40,8 +43,10 @@ namespace DDDSample1.Controllers
         private readonly PendingActionsService _pendingActionsService;
         private readonly UserService _userService;
 
+        private readonly IMemoryCache _cache;
 
-        public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, PendingActionsService pendingActionsService, UserService userService)
+
+        public PatientsController(PatientService service, AuthorizationService authService, LogService logService, IMailService mailService, PendingActionsService pendingActionsService, UserService userService, IMemoryCache cache)
         {
             _service = service;
             _authService = authService;
@@ -49,8 +54,8 @@ namespace DDDSample1.Controllers
             _mailService = mailService;
             _pendingActionsService = pendingActionsService;
             _userService = userService;
-
-        }
+             _cache = cache;
+         }
 
         // GET: api/User
         [HttpGet]
@@ -103,6 +108,44 @@ namespace DDDSample1.Controllers
                 return result;
            
         }
+
+        
+        [HttpPost("send-verification-code/{email}")]
+        public async Task<IActionResult> SendVerificationCode(string email)
+        {
+            
+            var verificationCode = new Random().Next(100000, 999999).ToString();           
+            var data = new VerificationRequest(email, verificationCode);
+
+           
+            _cache.Set($"VerificationCode_{email}", verificationCode, TimeSpan.FromMinutes(10));
+
+         
+            var emailRequest = new SendEmailRequest(email, "Your Verification Code To Download Medical History", $"Your code is: {verificationCode}");
+            await _mailService.SendEmailAsync(emailRequest);
+
+            return Ok("Verification code sent.");
+        }
+
+        [HttpPost("verify-code")]
+        public async Task<IActionResult> VerifyCode([FromBody] VerificationRequest request)
+        {
+            var storedCode = _cache.Get<string>($"VerificationCode_{request.Email}");
+
+            if (storedCode == null)
+            {
+                return NotFound("Verification code not found or expired.");
+            }
+
+            if (storedCode != request.Code)
+            {
+                return Unauthorized("Invalid verification code.");
+            }
+
+            return Ok("Code verified successfully.");
+        }
+
+
 
         [HttpGet("ExternalIAM")]
         public async Task<ActionResult<PatientDto>> ExternalIAM()
@@ -234,7 +277,7 @@ namespace DDDSample1.Controllers
                     try
                     {
                         var sendEmail = await _service.VerifySensiveData(dto, email);
-
+                 
                         if(sendEmail.ToString().Equals("1")){
 
 
@@ -835,4 +878,6 @@ namespace DDDSample1.Controllers
 
 
     }
+
+   
 }

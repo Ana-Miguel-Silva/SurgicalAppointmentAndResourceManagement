@@ -276,15 +276,27 @@ table.table td .btn.manage:hover {
 .table-over{
   display: block; 
   height: 35vh; 
-  overflow-y: scroll;
+  
 }
 
 .table-over-update{
-  display: block; 
-  height: 20vh; 
-  overflow-y: scroll;
+  width: 100%;
+  table-layout: fixed; 
+  border-collapse: collapse;
+
 }
 
+.table-over-update th, .table-over-update td {
+  word-wrap: break-word;
+  white-space: normal;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-over-update thead th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
 
 
 .dates-input {

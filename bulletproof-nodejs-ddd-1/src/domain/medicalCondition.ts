@@ -23,6 +23,7 @@ export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
     return MedicalConditionId.caller(this.id)
   }
 
+
   get codigo(): string {
     return this.props.codigo;
   }

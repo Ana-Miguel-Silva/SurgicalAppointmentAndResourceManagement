@@ -23,7 +23,7 @@ describe("Allergie Domain", () => {
   it("should sucess to create an Allergie if designacao is empty", () => {
     const allergieDTO: IAllergieDTO = {
       id: "12345",
-      designacao: "", // designação inválida
+      designacao: "", 
       descricao: "Allergie caused by pollen",
     };
 
@@ -36,7 +36,7 @@ describe("Allergie Domain", () => {
     const allergieDTO: IAllergieDTO = {
       id: "12345",
       designacao: "Pollen Allergie",
-      descricao: "", // descrição inválida
+      descricao: "",
     };
 
     const result = Allergie.create(allergieDTO);

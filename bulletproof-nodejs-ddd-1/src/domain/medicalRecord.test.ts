@@ -12,11 +12,11 @@ describe("MedicalRecord Domain", () => {
       staff: "Dr. John Doe",
       patientId: "patient-123",
       allergies: [
-        { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active },
-        { designacao: "allergy Teste", descricao: "Teste", status: AllergyStatus.Active },
+        { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active, note: ""},
+        { designacao: "allergy Teste", descricao: "Teste", status: AllergyStatus.Active, note: "" },
       ],
       medicalConditions: [
-        { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active },
+        { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active, note: ""},
       ],
       descricao: ["Patient requires annual follow-up.", "Monitor respiratory symptoms."],
     };
@@ -39,10 +39,10 @@ describe("MedicalRecord Domain", () => {
       staff: "Dr. John Doe",
       patientId: "patient-123",
       allergies: [
-        { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active },
+        { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active, note: "" },
       ],
       medicalConditions: [
-        { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active },
+        { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active, note: "" },
       ],
       descricao: ["Patient requires annual follow-up."],
     };
@@ -70,10 +70,10 @@ describe("MedicalRecord Domain", () => {
     medicalRecord.staff = "Dr. Jane Smith";
     medicalRecord.patientId = "patient-456";
     medicalRecord.allergies = [
-      { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active },
+      { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active, note: "" },
     ];
     medicalRecord.medicalConditions = [
-      { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active },
+      { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active, note: "" },
     ];
     medicalRecord.descricao = ["Patient should monitor blood sugar levels."];
 
@@ -83,10 +83,10 @@ describe("MedicalRecord Domain", () => {
 
 
     expect(medicalRecord.allergies).to.deep.equal([
-      { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active },
+      { designacao: "allergy-3", descricao: "Peanuts", status: AllergyStatus.Active, note: "" },
     ]);
     expect(medicalRecord.medicalConditions).to.deep.equal([
-      { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active },
+      { codigo: "A044",  designacao: "Diabetes", descricao: "Type 2 diabetes", sintomas: ['Nausia'], status: AllergyStatus.Active, note: "" },
     ]);
     expect(medicalRecord.descricao).to.deep.equal([
       "Patient should monitor blood sugar levels.",

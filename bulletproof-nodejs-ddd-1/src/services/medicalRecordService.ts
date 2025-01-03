@@ -243,12 +243,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async updateMedicalRecord(MedicalRecordDTO: IUpdateMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
       const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(MedicalRecordDTO.patientId);
-      const MedicalRecord = MedicalRecords[0];
+      
 
-      if (MedicalRecord === null || !MedicalRecord) {
+      if (!Array.isArray(MedicalRecords) || MedicalRecords.length === 0) {
         return Result.fail<IMedicalRecordDTO>("MedicalRecord not found");
       }
       else {
+        const MedicalRecord = MedicalRecords[0];
        
         MedicalRecord.descricao = MedicalRecordDTO.descricao;
         MedicalRecord.allergies = MedicalRecordDTO.allergies;
@@ -267,12 +268,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async deleteMedicalRecord(patientId: string): Promise<Result<string>> {
     try {
       const MedicalRecords = await this.MedicalRecordRepo.findMedicalRecord(patientId);
-      const MedicalRecord = MedicalRecords[0];
+     
       
-      if (MedicalRecord === null || MedicalRecord === undefined) {       
+      if (!Array.isArray(MedicalRecords) || MedicalRecords.length === 0) {
         return Result.fail<string>("Medical Record not found");
       }
       else {       
+        const MedicalRecord = MedicalRecords[0];
         const deleteMessage = await this.MedicalRecordRepo.delete(MedicalRecord);
 
         if(deleteMessage == "Medical record successfully deleted"){

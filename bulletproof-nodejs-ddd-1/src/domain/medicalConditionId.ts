@@ -10,3 +10,5 @@ export class MedicalConditionId extends Entity<any> {
     super(null, id)
   }
 }
+
+export { UniqueEntityID };

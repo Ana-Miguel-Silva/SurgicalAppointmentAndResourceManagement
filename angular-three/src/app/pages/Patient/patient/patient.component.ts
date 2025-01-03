@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { forkJoin } from 'rxjs';
+import * as XLSX from 'xlsx';
 
 
 interface IAllergieMedicalRecord {
@@ -20,6 +21,7 @@ interface IAllergieMedicalRecord {
   descricao: string;
   status: string;
   _id?: string;
+  note: string;
 }
 
 export interface IMedicalConditionMedicalRecord {
@@ -29,6 +31,7 @@ export interface IMedicalConditionMedicalRecord {
   sintomas: string[];
   status: string;
   _id?: string;
+  note: string;
 }
 
 
@@ -266,6 +269,7 @@ export class PatientComponent {
                   descricao: condition.descricao,
                   sintomas: condition.sintomas,
                   status: condition.status,
+                  note: condition.note,
                 });
               });
               
@@ -275,12 +279,13 @@ export class PatientComponent {
                   designacao: allergy.designacao,
                   descricao: allergy.descricao,
                   status: allergy.status,
+                  note: allergy.note,
                 });
               });
 
               this.tagsConditions = this.medicalRecordProfile.medicalConditions;
               this.tagsAllergies = this.medicalRecordProfile.allergies;
-              this.descricaoList = this.medicalRecordProfile.designacao;
+              this.descricaoList = this.medicalRecordProfile.descricao;
 
               this.openModal('ViewMedicalRecord');
             },
@@ -657,7 +662,130 @@ export class PatientComponent {
       });
     }
   }
-  
+
+
+  downloadMedicalHistory(){  
+   console.log("Email patient: ", this.selectedPatientEmail);
+
+    this.patientService.sendVerificationCode(this.selectedPatientEmail).subscribe({
+      next: (response: any) => {
+        console.log(response);
+
+        Swal.fire({
+          title: "Submit your code",
+          input: "text",
+          inputAttributes: {
+            autocapitalize: "off"
+          },
+          showCancelButton: true,
+          confirmButtonText: "Submit",
+          showLoaderOnConfirm: true,
+          preConfirm: (code) => {
+            if (!code) {
+              Swal.showValidationMessage('Please enter your code');
+            }
+            return code;
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            console.log("Code: ", result.value)
+
+          
+            this.patientService.verifyCode(this.selectedPatientEmail, result.value).subscribe({
+              next: async (confirmResponse: any) => {
+                console.log(confirmResponse);
+                Swal.fire({
+                  title: 'Success!',
+                  text: 'Data submitted successfully.',
+                  icon: 'success',
+                });
+
+                const data: any[] = [];
+
+                data.push({
+                  "Name": `${this.patientProfileSingle.name.firstName} ${this.patientProfileSingle.name.lastName}`,
+                  "Email": this.patientProfileSingle.email.fullEmail,
+                  "Phone number": this.patientProfileSingle.phone.number,
+                  "Date of Birth": new Date(this.patientProfileSingle.dateOfBirth).toLocaleDateString('pt-PT'),
+                  "Gender": this.patientProfileSingle.gender,
+                  "Emergency contact name": this.patientProfileSingle.nameEmergency,
+                  "Emergency contact email": this.patientProfileSingle.emailEmergency.fullEmail,
+                  "Emergency contact phone number": this.patientProfileSingle.phoneEmergency.number
+                });
+            
+                const dataConditions: any[] = [];
+                this.tagsConditions.forEach((condition) => {
+                  dataConditions.push({
+                    "Medical Condition": condition.designacao,
+                    "Description": condition.descricao,
+                    "Symptoms": condition.sintomas.join(", "),
+                    "Status": condition.status,
+                    "Note": condition.note
+                  });
+                });
+                
+                const dataAllergies: any[] = [];
+                this.tagsAllergies.forEach((allergy) => {
+                  dataAllergies.push({
+                    "Allergy": allergy.designacao,
+                    "Description": allergy.descricao,
+                    "Status": allergy.status,
+                    "Note": allergy.note
+                  });
+                });
+                
+                const worksheetPatient = XLSX.utils.json_to_sheet(data);
+                const worksheetConditions = XLSX.utils.json_to_sheet(dataConditions);
+                const worksheetAllergies = XLSX.utils.json_to_sheet(dataAllergies);
+
+                const autoAdjustColumnWidth = (sheet: XLSX.WorkSheet, dataPatient: any[]) => {
+                  if (!dataPatient || dataPatient.length === 0) return;
+                
+                  const colWidths = Object.keys(dataPatient[0]).map((key, colIndex) => {
+                    return Math.max(
+                      key.length, 
+                      ...dataPatient.map((row) => {
+                        const value = row[key];
+                        return value ? value.toString().length : 0;
+                      })
+                    );
+                  });
+                
+
+                  sheet["!cols"] = colWidths.map((width: number) => ({ width: width + 2 }));
+                };
+                
+                autoAdjustColumnWidth(worksheetPatient, data);
+                autoAdjustColumnWidth(worksheetConditions, dataConditions);
+                autoAdjustColumnWidth(worksheetAllergies, dataAllergies);
+                
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheetPatient, "Patient Info");
+                XLSX.utils.book_append_sheet(workbook, worksheetConditions, "Medical Conditions");
+                XLSX.utils.book_append_sheet(workbook, worksheetAllergies, "Allergies");  
+                
+                const fileName = `Patient_Data_${this.selectedPatientEmail}.xlsx`;
+        
+                XLSX.writeFile(workbook, fileName);
+              },
+              error: (error) => {
+                console.error('Error:', error);
+                Swal.fire({
+                  title: 'Error!',
+                  text: `Invalid verification code!`,
+                  icon: 'error',
+                });
+              },
+            });
+          }
+
+      })
+    
+    }});
+
+  }
+
 
  }
 

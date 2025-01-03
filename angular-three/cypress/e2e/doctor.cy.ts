@@ -63,8 +63,7 @@ describe('Doctor Operation Requests', () => {
 
     cy.get('button[id="buttonRegisterMedicalRecord"]').click();
     
-    cy.contains('Medical Record created successfully!').should('be.visible');
-   
+    cy.contains('Medical Record created successfully!').should('be.visible');   
   }); 
 
  

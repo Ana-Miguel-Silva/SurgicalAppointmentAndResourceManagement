@@ -42,6 +42,8 @@ namespace DDDSample1.ApplicationService.Patients
             return listDto;
         }
 
+
+
         public async Task<PatientDto> GetByIdAsync(PatientId id)
         {
             var prod = await this._repo.GetByIdAsync(id);

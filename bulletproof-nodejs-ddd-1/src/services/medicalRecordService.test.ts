@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { expect } from "chai";
-import MedicalRecordService from "../services/medicalRecordService";
-import { MedicalRecord } from "../../src/domain/medicalRecord";
-import { Result } from "../../src/core/logic/Result";
+import MedicalRecordService from "./medicalRecordService";
+import { MedicalRecord } from "../domain/medicalRecord";
+import { Result } from "../core/logic/Result";
 import { mock } from "sinon";
-import IMedicalRecordRepo from "../services/IRepos/IMedicalRecordRepo";
-import IAllergieService from "../../src/services/IServices/IAllergieService";
-import IMedicalConditionService from "../../src/services/IServices/IMedicalConditionService";
+import IMedicalRecordRepo from "./IRepos/IMedicalRecordRepo";
+import IAllergieService from "./IServices/IAllergieService";
+import IMedicalConditionService from "./IServices/IMedicalConditionService";
 
 
 describe("MedicalRecordService", () => {

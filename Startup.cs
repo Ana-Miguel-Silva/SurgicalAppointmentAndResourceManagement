@@ -136,6 +136,8 @@ namespace DDDSample1
 
             services.AddAuthorization();
 
+            services.AddMemoryCache();
+
             
 
             ConfigureMyServices(services);

@@ -142,6 +142,19 @@ adminDeletePatient(selectedPatientEmail: string): Observable<any> {
 }
 
 
+sendVerificationCode(email: string): Observable<any> {
+
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+
+  return this.http.post(`${this.apiUrl}/Patients/send-verification-code/${email}`, {}, { headers, responseType: 'text' });
+ 
+}
+
+verifyCode(email: string, code: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/Patients/verify-code`, { email, code }, { responseType: 'text' }); 
+}
 
 
 
