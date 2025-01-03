@@ -188,9 +188,10 @@ export default class ThumbRaiser {
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
-        console.log("ROOM DATA 2" + this.maze.roomData);
         this.CurrentRoom = null;
-
+        this.CorrectlyLoaded = false;
+        this.selectedDate = null;
+        this.roomDataCache = null;
         // Create the player
         this.player = new Player(this.playerParameters);
 
@@ -316,9 +317,37 @@ export default class ThumbRaiser {
         this.activeViewCamera.target.z = this.maze.Lobby.z;*/
     }
     async fetchRoomData(index) {
-        let x = await this.maze.fetchRoomData(index);
-        console.log("Fetch Room Data, in hospital " + x);
-        return x.roomNumber;
+        let x = this.roomDataCache ?? await this.maze.fetchRoomData();
+        if(this.roomDataCache == null) this.roomDataCache = x;
+        console.log("Fetch Room Data, in hospital ")
+        console.log(x[index]);
+        return x[index];
+    }
+    async fetchRoomStatus(id) {
+        console.log(id);
+        let date = (this.selectedDate && typeof this.selectedDate === 'string' && !isNaN(Date.parse(this.selectedDate))) 
+  ? this.selectedDate 
+  : new Date().toISOString();
+        console.log(date);
+        console.log(this.selectedDate);
+        try {
+            const response = await fetch('https://localhost:5001/api/SurgeryRooms/Availability', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ id, date })
+            });
+            if (!response.ok) {
+                console.log(response);
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('There was an error fetching the room number:', error);
+        }
     }
     buildHelpPanel() {
         const table = document.getElementById("help-table");
@@ -459,51 +488,25 @@ export default class ThumbRaiser {
 
             if (intersects.length > 0) {
 
-                const intersectionPoint = intersects[0].point; // Intersection point
-                //console.log("Intersection Point:", intersectionPoint);
-
-                // Create geometry for the line
-                /*const points = [
-                    this.activeViewCamera.perspective.position.clone(), // Start at the camera position
-                    intersectionPoint.clone()     // End at the intersection point
-                ];
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-                // Create material for the line
-                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0ffff0 });
-
-                // Create the line and add it to the scene
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                this.scene3D.add(line);*/
-
-
                 const intersectedObject = intersects[0].object;
         
-                // Store original material if not already stored
                 if (!this.originalMaterials.has(intersectedObject)) {
                     this.originalMaterials.set(intersectedObject, intersectedObject.material);
                 }
         
-                // Apply highlight material
                 intersectedObject.material = this.highlightMaterial;
                 intersectedObject.material.opacity = 0.5;
         
-                // Revert back after a short delay
                 setTimeout(() => {
                     if (this.originalMaterials.has(intersectedObject)) {
                         intersectedObject.material = this.originalMaterials.get(intersectedObject);
                         this.originalMaterials.delete(intersectedObject);
                     }
                 }, 500); // Highlight for 500ms
-                //console.log(intersectedObject);
                 const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
-                //console.log("Index is: "+intersectedIndex);
                 this.CurrentRoom = intersectedIndex;
                 const modelPosition = this.maze.RoomArr[intersectedIndex].position;
-                /*console.log(new THREE.Vector3(modelPosition.x,this.activeViewCamera.perspective.position.y, modelPosition.z));
-                console.log(this.activeViewCamera.target);*/
                 this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
-                //console.log(this.activeViewCamera.target);
             }
         }
     }
@@ -642,9 +645,14 @@ export default class ThumbRaiser {
         return 0;
     }
 
-    update() {
+    async update() {
         if (!this.gameRunning) {
             if (this.maze.loaded) { // If all resources have been loaded
+                if(this.CurrentRoom == null) {
+                    this.CurrentRoom = 0;
+                    const modelPosition = this.maze.RoomArr[0].position;
+                    this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+                }
                 this.scene3D.add(this.maze.object);
                 this.scene3D.add(this.lights.object);
 
@@ -668,6 +676,29 @@ export default class ThumbRaiser {
             }
         }
         else {
+            if (this.maze.loaded) {
+                if(!this.CorrectlyLoaded && (this.maze.BedArr.length==(this.maze.RoomArr.length-1) && this.maze.BedArr.length > 0)) {
+                    this.CorrectlyLoaded = true;
+                    console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
+                    setTimeout(() => {
+                        this.CorrectlyLoaded = false;
+                        console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
+                    }, 60000);
+                    for (let index = 0; index < this.maze.BedArr.length; index++) {
+                        const element = this.maze.BedArr[index];
+                        let room = await this.fetchRoomData(index);
+                        let status = await this.fetchRoomStatus(room.id);
+                        if (status) {
+                            element.visible = false;
+                            console.log("Luigi is Died!");
+                        } else {
+                            element.visible = true;
+                            console.log("Luigi is Live!");
+                        }
+                        console.log("Checked Room: " + room.roomNumber);
+                    }
+                }
+            }
             // Update the model animations
             const deltaT = this.clock.getDelta();
             this.animations.update(deltaT);

@@ -63,10 +63,10 @@ interface SurgeryRoomUIDto {
 }
 
 interface StaffUIDto {
-  Id: string;
-  LicenseNumber: string;
-  Role: string;
-  Specialization: string;
+  id: string;
+  licenseNumber: string;
+  role: string;
+  specialization: string;
 }
 
 
@@ -247,7 +247,7 @@ export class DoctorComponent implements OnInit {
 
   appointmentData = {
     date: { start: ''},
-    selectedStaff: ['']
+    selectedStaff: [] as StaffUIDto[]
   };
 
   selectedOperationRequestId: string | null = null;
@@ -360,6 +360,12 @@ export class DoctorComponent implements OnInit {
         console.error('Error fetching staffs:', error);
       }
     });
+  }
+  
+  onMapTimeChange(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value;
+    console.log('Datetime value changed:', inputValue);
+    this.thumbRaiser.selectedDate = inputValue;
   }
 
   getAllOperationRequests() {
@@ -1026,12 +1032,14 @@ updateAllergieToInvalid(): void {
       roomId: this.selectedSurgeryRoomId,
       operationRequestId: this.selectedOperationRequestId,
       start: this.appointmentData.date.start,
-      selectedStaff: this.appointmentData.selectedStaff
+      selectedStaff: this.appointmentData.selectedStaff.map(staff => staff.id)
     };
+
+    console.log('Creating appointmentXXXXXXXXXXXXXX:', payload);
 
     this.appointmentService.createAppointments(payload).subscribe({
       next: () => {
-        // this.getAllAppointments();
+        this.getAllAppointments();
         this.cleanRegister();
         Swal.fire({
           icon: 'success',
@@ -1053,17 +1061,25 @@ updateAllergieToInvalid(): void {
     });
   }
 
+  selectedStaffMemberId: string = '';
 
-addStaffMember() {
-  this.appointmentData.selectedStaff.push('');
-}
+  addStaffMember() {
 
+    const selectedStaff = this.staffs.find(staff => staff.id === this.selectedStaffMemberId);
 
-removeStaffMember(index: number) {
-  if (this.appointmentData.selectedStaff.length > 1) {
-    this.appointmentData.selectedStaff.splice(index, 1);
+    if (selectedStaff) {
+      this.appointmentData.selectedStaff.push(selectedStaff);
+      this.selectedStaffMemberId = '';
+    } else {
+      alert('Please select a valid staff member!');
+    }
   }
-}
+  
+  removeStaffMember(index: number) {
+    if (this.appointmentData.selectedStaff.length > 0) {
+      this.appointmentData.selectedStaff.splice(index, 1);
+    }
+  }
 
   onCreateRequest(requestData: CreatingOperationRequestUIDto) {
     const token = this.authService.getToken();
@@ -1225,6 +1241,8 @@ removeStaffMember(index: number) {
     };
 
     console.log("Payload: ", payload);
+
+
     this.appointmentService.updateAppointments(payload).subscribe({
       next: () => {
         this.getAllAppointments();
@@ -1260,15 +1278,26 @@ removeStaffMember(index: number) {
 
   }
 
-  addUpdateStaffMember() {
-    this.updateAppointment.selectedStaff.push('');
-  }
+  selectedUpdateStaffMemberId: string = '';
 
+  addUpdateStaffMember() {
+    const selectedStaff = this.staffs.find(staff => staff.id === this.selectedUpdateStaffMemberId);
+  
+    if (selectedStaff) {
+      this.updateAppointment.selectedStaff.push(selectedStaff.id);
+    } else {
+      console.log('Please select a valid staff member!');
+    }
+  }
 
   removeUpdateStaffMember(index: number) {
     if (index > -1) {
       this.updateAppointment.selectedStaff.splice(index, 1);
     }
+  }
+
+  getStaffById(staffId: string) {
+    return this.staffs.find(staff => staff.id === staffId);
   }
 
   onDeleteRequest(id: string) {
@@ -1780,7 +1809,7 @@ removeStaffMember(index: number) {
   cleanAppointmentModal() {
     this.appointmentData = {
       date: { start: ''},
-      selectedStaff: ['']
+      selectedStaff: []
     };
     this.selectedOperationRequestId = null;
     this.selectedSurgeryRoomId = null;
