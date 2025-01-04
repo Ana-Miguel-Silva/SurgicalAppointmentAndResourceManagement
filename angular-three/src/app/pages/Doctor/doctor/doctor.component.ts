@@ -1035,8 +1035,6 @@ updateAllergieToInvalid(): void {
       selectedStaff: this.appointmentData.selectedStaff.map(staff => staff.id)
     };
 
-    console.log('Creating appointmentXXXXXXXXXXXXXX:', payload);
-
     this.appointmentService.createAppointments(payload).subscribe({
       next: () => {
         this.getAllAppointments();
@@ -1049,8 +1047,10 @@ updateAllergieToInvalid(): void {
           timer: 1500,
         });
         this.modalService.closeModal('createAppointmentModal');
+        this.rejectPolicy();
       },
       error: (error) => {
+        this.rejectPolicy();
         console.error('Error creating appointment:', error);
         Swal.fire({
           icon: 'error',
@@ -1103,6 +1103,7 @@ updateAllergieToInvalid(): void {
       next: () => {
         this.getAllOperationRequests();
         this.cleanRegister();
+        this.rejectPolicy();
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -1114,6 +1115,7 @@ updateAllergieToInvalid(): void {
       },
       error: (error) => {
         console.error('Error creating operation request:', error);
+        this.rejectPolicy();
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -1152,7 +1154,7 @@ updateAllergieToInvalid(): void {
     this.operationRequestsService.updateOperationRequests(payload).subscribe({
       next: () => {
         this.getAllOperationRequests();
-
+        this.rejectPolicy();
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -1164,6 +1166,7 @@ updateAllergieToInvalid(): void {
         this.modalService.closeModal('updateRequestModal');
       },
       error: (error) => {
+        this.rejectPolicy();
         console.error('Error updating operation request:', error);
         Swal.fire({
           icon: 'error',
@@ -1246,7 +1249,7 @@ updateAllergieToInvalid(): void {
     this.appointmentService.updateAppointments(payload).subscribe({
       next: () => {
         this.getAllAppointments();
-
+        this.rejectPolicy();
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -1258,6 +1261,7 @@ updateAllergieToInvalid(): void {
         this.modalService.closeModal('updateAppointmentModal');
       },
       error: (error) => {
+        this.rejectPolicy();
         console.error('Error updating Appointment:', error);
         Swal.fire({
           icon: 'error',

@@ -508,6 +508,7 @@ export class AdminComponent {
       next: (response: any) => {
         this.scheduledAppointmentMessage = response.message.replace(/\n/g, '<br>');
 
+        this.rejectPolicy();
         if (this.scheduledAppointmentMessage == null || this.scheduledAppointmentMessage == '') {
           Swal.fire({
             icon: 'warning',
@@ -519,6 +520,7 @@ export class AdminComponent {
         }
       },
       error: (error) => {
+        this.rejectPolicy();
         console.error('Error scheduling appointment:', error);
         Swal.fire({
           icon: 'error',
@@ -532,7 +534,6 @@ export class AdminComponent {
   onCreateOperationType(operationTypeData: CreatingOperationTypeDto) {
     const token = this.authService.getToken();
 
-    // Check if the user is logged in
     if (!token) {
       Swal.fire({
         icon: 'error',
@@ -548,17 +549,17 @@ export class AdminComponent {
       estimatedDuration: operationTypeData.estimatedDuration
     };
 
-    // Send a POST request to create the operation type
     this.operationTypesService.createOperationTypes(payload)
       .subscribe({
         next: () => {
           this.sweetService.sweetSuccess('Operation Type created successfully!')
 
-          // Close the modal after success
+          this.rejectPolicy();
           this.getAllOperationTypes();
           this.modalService.closeModal('createOperationTypeModal');
         },
         error: (error) => {
+          this.rejectPolicy();
           console.error('Error creating operation type:', error);
           this.sweetService.sweetErro('Failed to create Operation Type.')
         }
@@ -569,7 +570,6 @@ export class AdminComponent {
   onCreateSpecialization(specializationData: CreatingSpecializationDto) {
     const token = this.authService.getToken();
 
-    // Check if the user is logged in
     if (!token) {
       Swal.fire({
         icon: 'error',
@@ -584,16 +584,16 @@ export class AdminComponent {
       specializationDescription: specializationData.specializationDescription
     };
 
-    // Send a POST request to create the operation type
+    this.rejectPolicy();
     this.specializationService.createSpecialization(payload)
       .subscribe({
         next: () => {
           this.sweetService.sweetSuccess('Specialization created successfully!')
 
-          // Close the modal after success
           this.modalService.closeModal('createSpecializationModal');
         },
         error: (error) => {
+          this.rejectPolicy();
           console.error('Error creating operation type:', error);
           Swal.fire({
             icon: 'error',
