@@ -1,4 +1,16 @@
-<div *ngIf="stats">
-  <h2>HAProxy Statistics</h2>
-  <pre>{{ stats }}</pre>  <!-- Exibe os dados em formato legível ou bruto -->
-</div>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Minha Página</title>
+   
+</head>
+<body>
+  <div *ngIf="stats">
+    <h2>HAProxy Statistics</h2>
+    <pre>{{ stats | json }}</pre>
+  </div>
+</body>
+</html>

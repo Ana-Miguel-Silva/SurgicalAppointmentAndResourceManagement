@@ -11,15 +11,13 @@ import { AppComponent } from './app.component';
 import { StatsComponent } from './pages/Stats/stats.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
+  declarations: [    
     StatsComponent
   ],
   imports: [
     HttpClientModule 
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: []
 })
 
 export class AppModule { }

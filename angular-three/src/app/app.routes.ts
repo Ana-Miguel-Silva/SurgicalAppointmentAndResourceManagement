@@ -21,7 +21,7 @@ export const routes: Routes = [
 
   { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
 
-  { path: 'haproxy', component: StatsComponent, canActivate: [AuthGuard]},
+  { path: 'haproxy', component: StatsComponent},
 
   ];
 
