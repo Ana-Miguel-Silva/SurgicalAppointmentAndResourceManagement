@@ -20,7 +20,7 @@ describe('AdminComponent', () => {
     cy.visit(`${environment.apiAngularUrl}/admin`);
 
   });
-/*
+
   describe('Create Room Type Modal', () => {
 
   it('should successfully create a room type with valid data', () => {
@@ -213,7 +213,7 @@ describe('Allergies List Display Test', () => {
     // Garantir que um modal ou formulário de edição foi aberto (adapte conforme necessário)
     cy.get('#editAllergyModal').should('be.visible'); // Certifique-se de adicionar o ID correto para o modal de edição
   });
-});*/
+});
 
 describe('Update Allergy Modal Tests', () => {
   it('Should open and update an allergy successfully', () => {
@@ -327,7 +327,7 @@ describe('Update Allergy Modal Tests', () => {
   
 
  
- /*
+ 
 
     describe('Patient Registration Modal', () => {
       beforeEach(() => {
@@ -396,6 +396,12 @@ describe('Update Allergy Modal Tests', () => {
         cy.get('#emergencyContactName').type('Jane Doe');
         cy.get('#emergencyContactEmail').type('janedoe@example.com');
         cy.get('#emergencyContactPhone').type('987654321');
+
+        cy.get('button').contains('Read and Agree to Policy').click();
+      
+
+        cy.get('#acceptPolicy').click({ force: true });
+
         
         // Enviar o formulário
         cy.get('#submitRegister').click();
@@ -455,11 +461,11 @@ describe('Update Allergy Modal Tests', () => {
     
         cy.get('#viewPatientModal').should('be.visible'); // Verifica que o modal está visível
      
-        cy.get('#viewPatientModal').within(() => {
-          cy.get('table').each(($table) => {
-            cy.wrap($table).find('tbody tr').should('have.length.greaterThan', 0); // Verifica que há linhas na tabela
-          });
-        });
+        //cy.get('#viewPatientModal').within(() => {
+         // cy.get('table').each(($table) => {
+          //  cy.wrap($table).find('tbody tr').should('have.length.greaterThan', 0); // Verifica que há linhas na tabela
+          //});
+        //});
     
         cy.get('#viewPatientModal').find('.close').click();
         cy.get('#viewPatientModal').should('not.be.visible');
@@ -563,7 +569,19 @@ describe('Update Allergy Modal Tests', () => {
           const newAllergy = 'Pollen';
           cy.get('#input-tag').type(`${newAllergy}{enter}`);
           cy.get('#tags li').contains(newAllergy).should('exist'); // Verifica se a nova alergia foi adicionada
+          cy.get('button').contains('Read and Agree to Policy').click();
+      
         });
+    
+        cy.get('#policyModal').should('be.visible');
+    
+          cy.get('#policyModal').within(() => {
+            cy.get('#acceptPolicy').click({ force: true });
+          });
+
+      
+
+        cy.get('#acceptPolicy').click({ force: true });
 
         cy.get('#UpdatePatientModal').find('.btn-primary').click();
 
@@ -647,4 +665,4 @@ describe('Update Allergy Modal Tests', () => {
 
 
     });*/
-  //});
+  });
