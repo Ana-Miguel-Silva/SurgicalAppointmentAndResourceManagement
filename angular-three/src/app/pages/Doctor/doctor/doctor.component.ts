@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, Input, ViewChild, NgZone} from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, ElementRef, Input, ViewChild, NgZone} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
@@ -327,12 +327,32 @@ export class DoctorComponent implements OnInit {
       }
     });
   }
+
+  count: boolean = true;
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if ((event.key === 'i' || event.key === 'I') && this.isModalOpen('mapModal')) {
+      if(this.count){
+        this.doTheClick();
+        this.count=false
+      } 
+      else{
+        this.roomData = null
+        this.count=true
+      }
+    }
+  }
+
+  roomData: any ; 
+
+
   doTheClick(){
     let a = this.thumbRaiser.CurrentRoom;
     console.log(a);
     if(a != 0 && a!= null) {
-      this.thumbRaiser.fetchRoomData(a - 1).then((roomData: string) => {
-      console.log("Room " + roomData);
+      this.thumbRaiser.fetchRoomData(a - 1).then((roomInfo: string) => {
+        this.roomData = roomInfo
+      console.log("Room " + this.roomData);
       }).catch((error: any) => {
           console.error("Failed to fetch room data:", error);
       });
@@ -341,6 +361,7 @@ export class DoctorComponent implements OnInit {
       console.log("Lobby");
     }
   }
+
   getAllStaffs() {
     const token = this.authService.getToken();
     if (!token) {
@@ -1783,12 +1804,15 @@ updateAllergieToInvalid(): void {
 
 
 
+  //isModalOpenValida: boolean = false;
 
   openModal(modalId: string): void {
+    //if(modalId == "mapModal"){ this.isModalOpenValida = true }
     this.modalService.openModal(modalId);
   }
 
   closeModal(modalId: string): void {
+    //if(modalId == "mapModal"){ this.isModalOpenValida = false }
     this.modalService.closeModal(modalId);
     this.rejectPolicy();
   }

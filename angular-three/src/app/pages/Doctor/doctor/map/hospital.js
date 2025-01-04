@@ -22,6 +22,7 @@ import Fog from "./fog.js";
 import Camera from "./camera.js";
 import Animations from "./animations.js";
 import UserInterface from "./user_interface.js";
+import  TWEEN  from '@tweenjs/tween.js';
 
 /*
  * generalParameters = {
@@ -213,7 +214,7 @@ export default class ThumbRaiser {
         // Create the statistics and make its node invisible
         this.statistics = new Stats();
         this.statistics.dom.style.visibility = "hidden";
-        document.body.appendChild(this.statistics.dom);
+        //document.body.appendChild(this.statistics.dom);
 
         // Create a renderer and turn on shadows in the renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true});
@@ -476,6 +477,8 @@ export default class ThumbRaiser {
 
             const modalBounds = this.renderer.domElement.getBoundingClientRect();
 
+
+
             this.pointer.x = ((event.clientX - modalBounds.left) / modalBounds.width) * 2 - 1;
             this.pointer.y = -((event.clientY - modalBounds.top) / modalBounds.height) * 2 + 1;
             this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
@@ -504,9 +507,65 @@ export default class ThumbRaiser {
                     }
                 }, 500); // Highlight for 500ms
                 const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
-                this.CurrentRoom = intersectedIndex;
-                const modelPosition = this.maze.RoomArr[intersectedIndex].position;
-                this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+        this.CurrentRoom = intersectedIndex;
+        const modelPosition = this.maze.RoomArr[intersectedIndex].position;
+
+        // Novo destino de posição para a câmera
+        const targetPosition = new THREE.Vector3(modelPosition.x, modelPosition.y + 5, modelPosition.z); // Posicionamento um pouco mais alto e distante
+
+        // O método setTarget vai direcionar a câmera para a posição correta, mantendo ela olhando para a sala
+
+        // Variáveis de controle
+        const duration = 1000; // Tempo de transição em ms
+        const startTime = Date.now();
+
+        // Função de animação para transição suave de posição
+        const animateCameraTransition = () => {
+            const elapsedTime = Date.now() - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+
+            // Interpolação linear para posição
+            this.activeViewCamera.perspective.position.lerp(targetPosition, progress);
+
+            if (progress < 1) {
+                requestAnimationFrame(animateCameraTransition);
+            }
+        };
+
+        // Inicia a animação
+        animateCameraTransition();
+
+        // Para mover o spotlight suavemente (se necessário)
+        if (this.spotlight) {
+            const spotlightTarget = new THREE.Vector3(modelPosition.x, this.spotlight.position.y, modelPosition.z);
+            const startSpotlightPosition = new THREE.Vector3().copy(this.spotlight.position);
+            const spotlightStartTime = Date.now();
+
+            const animateSpotlightTransition = () => {
+                const spotlightElapsedTime = Date.now() - spotlightStartTime;
+                const spotlightProgress = Math.min(spotlightElapsedTime / duration, 1);
+                
+                this.spotlight.position.lerpVectors(startSpotlightPosition, spotlightTarget, spotlightProgress);
+
+                if (spotlightProgress < 1) {
+                    requestAnimationFrame(animateSpotlightTransition);
+                }
+            };
+
+            animateSpotlightTransition();
+
+
+        console.log("here")
+
+
+                    //const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+                    //this.CurrentRoom = intersectedIndex;
+                    //const modelPosition = this.maze.RoomArr[intersectedIndex].position;
+                    //this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+                
+                }
+        this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x, 0, modelPosition.z));
+
             }
         }
     }

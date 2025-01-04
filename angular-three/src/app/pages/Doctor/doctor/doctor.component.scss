@@ -258,10 +258,9 @@ canvas {
 }
 
 .canvas-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
 }
 
 input, textarea {
@@ -437,3 +436,49 @@ input, textarea {
 .dropdown-list li:hover,  .dropdown2-list li:hover, .dropdown-listUpdate li:hover{
   background: #f0f0f0;
 }
+
+
+
+/* Div que contém a tabela flutuante */
+#floating-info-div {
+  position: fixed; /* Fixa a posição em relação ao viewport */
+  top: 50%; /* Centraliza verticalmente */
+  left: 50%; /* Centraliza horizontalmente */
+  transform: translate(-50%, -50%); /* Ajusta o centro corretamente */
+  z-index: 1000; /* Garante que está à frente */
+  background: rgba(255, 255, 255, 0.95); /* Fundo com opacidade para flutuar */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh; /* Limita a altura */
+  overflow-y: auto; /* Rolagem caso tenha muito conteúdo */
+}
+
+/* Garantindo que a tabela tenha uma boa aparência */
+#floating-info-div table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#floating-info-div th,
+#floating-info-div td {
+  padding: 10px;
+  text-align: left;
+}
+
+#floating-info-div tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Estilo adicional do cabeçalho */
+#floating-info-div .table-header {
+  background-color: #378E73;
+  color: rgb(206, 221, 220);
+  font-size: 1.2em;
+  text-align: center;
+}
+
+
