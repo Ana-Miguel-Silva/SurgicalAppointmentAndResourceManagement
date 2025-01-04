@@ -635,34 +635,55 @@ describe('Update Allergy Modal Tests', () => {
     });*/
   
   });
-  
-    
-
-    /*it('should allow creating a new operation type', () => {
-
-      // Visit the page and ensure the modal button is visible
-      cy.visit(`${environment.apiAngularUrl}/admin`);
 
   
-      // Open the modal to create a new operation type
+  describe('Create Operation Type Modal Tests', () => {
+    beforeEach(() => {
+      cy.visit('http://localhost:4200/admin');
       cy.get('.selectionDiv').contains('Create Operation Type').click();
-  
-      // Ensure the modal is visible before interacting with it
-      cy.get('#createOperationTypeModal', { timeout: 10000 }).should('be.visible');
-  
-      // Test the "Add Staff" button functionality
-      cy.get('.staff-entry') // Ensure this targets the correct parent element
-      .contains('Add Staff')  // Targeting the button by its text
-      .click();  
+      cy.get('#createOperationTypeModal').should('be.visible');
+    });
 
-      //cy.get('input[name="quantity_0"]').should('exist');  // Should exist after clicking "Add Staff"
-      //cy.get('select[name="specialization_0"]').should('exist');
-      //cy.get('select[name="role_0"]').should('exist');
+    it('Should allow filling all fields and submitting the form', () => {
+      cy.get('#name').type('teste');
+      cy.get('input[name="quantity"]').clear().type('1');
+      cy.get('#specialization').select(2);
+      cy.get('#role').select(1);
 
-      //cy.get('input[name="quantity_0"]').clear().type('2');
-      //cy.get('select[name="specialization_0"]').select('SURGERY');
-      //cy.get('select[name="role_0"]').select('DOCTOR');
+      cy.get('button.btn.btn-primary').contains('Add Staff').click();
 
+      cy.get('#staffEntries').should('contain.text', '1 DOCTOR');
+      cy.get('input[name="patientPreparation"]').type('00:10');
+      cy.get('input[name="surgery"]').type('00:10');
+      cy.get('input[name="cleaning"]').type('00:10');
 
-    });*/
+      cy.get('button[id="readPolicyButton"]').click();    
+
+      cy.get('button[id="acceptPolicy"]').click();    
+
+      //cy.get('button[id="submit"]').click();    
+
+      //cy.contains('Operation Type created successfully').should('be.visible');
+    });
+});
+
+describe('Create Specialization Modal Tests', () => {
+    beforeEach(() => {
+      cy.get('.selectionDiv').contains('Create Specialization').click();
+      cy.get('#createSpecializationModal').should('be.visible');
+    });
+
+    it('Should allow filling all fields and submitting the form for specialization', () => {
+      cy.get('#specializationName').type('Test Specialization');
+      cy.get('#specializationDescription').type('Description of test specialization');
+
+      cy.get('button[id="readPolicyButton1"]').click();    
+
+      cy.get('button[id="acceptPolicy"]').click();    
+
+      cy.get('button[id="submit1"]').click();    
+
+      cy.contains('Specialization created successfully').should('be.visible');
+    });
+});
   });

@@ -1727,12 +1727,12 @@
           </div>
                     <!-- Policy Agreement Section -->
                     <div class="col-12" style="margin-bottom: 20px;">
-                      <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+                      <button type="button" class="btn btn-secondary" id="readPolicyButton" (click)="openPolicyModal()">Read and Agree to Policy</button>
                   </div>
         
                   <!-- Submit Button -->
                   <div class="col-12 text-center">
-                      <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Operation Type</button>
+                      <button class="btn btn-primary" type="submit" id="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Operation Type</button>
                   </div>
       </form>
   </div>
@@ -1765,12 +1765,12 @@
 
           <!-- Policy Agreement Section -->
           <div class="col-12" style="margin-bottom: 20px;">
-              <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+              <button type="button" class="btn btn-secondary" id="readPolicyButton1" (click)="openPolicyModal()">Read and Agree to Policy</button>
           </div>
 
           <!-- Submit Button -->
           <div class="col-12 text-center">
-              <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Specialization</button>
+              <button class="btn btn-primary" id="submit1" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Specialization</button>
           </div>
       </form>
   </div>
