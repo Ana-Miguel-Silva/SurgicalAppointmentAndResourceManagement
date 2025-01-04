@@ -1,8 +1,9 @@
 /// <reference types="cypress" />
+import { environment } from '../../src/environments/environment'; // Importa o environment correto
 
 describe('Doctor Operation Requests', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:4200/login');
+    cy.visit(`${environment.apiAngularUrl}/login`);
 
     cy.intercept('POST', '/api/login', { statusCode: 200, body: { token: 'fake-jwt-token', role: 'doctor' } }).as('postLogin');
 
@@ -14,7 +15,7 @@ describe('Doctor Operation Requests', () => {
 
     cy.url().should('include', '/doctor');
 
-    cy.visit('http://localhost:4200/doctor');
+    cy.visit(`${environment.apiAngularUrl}/doctor`);
   });
 
   it('should open and close the register medical record modal', () => {
