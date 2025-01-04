@@ -2255,12 +2255,14 @@ onInsertRoomType(){
       return;
     }
     console.log(this.MedicalConditionSingle);
-    const updatedPatientData = this.medicalConditionEditForm.value;
+    let {designacao, descricao, sintomas} = this.medicalConditionEditForm.value;
+    sintomas = sintomas.split(',').map((item: string) => item.trim());
+    const formData = {designacao,descricao, sintomas};
 
-    this.medicalConditionService.updateMedicalCondition(this.MedicalConditionSingle.codigo, updatedPatientData )
+    this.medicalConditionService.updateMedicalCondition(this.MedicalConditionSingle.codigo, formData )
       .subscribe({
         next: (response: any) => {
-          this.sweetService.sweetSuccess("Patient atualizado com sucesso!")
+          this.sweetService.sweetSuccess("Medical Condition Updated Successfully!")
           this.getAllConditions(); // Refresh the list after creation
           this.closeModal('editConditionModal');
         },

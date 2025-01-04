@@ -306,7 +306,7 @@ describe('AdminComponent', () => {
   
     
 
-    /*it('should allow creating a new operation type', () => {
+    it('should allow creating a new operation type', () => {
 
       // Visit the page and ensure the modal button is visible
       cy.visit('http://localhost:4200/admin');
@@ -331,5 +331,88 @@ describe('AdminComponent', () => {
       //cy.get('select[name="role_0"]').select('DOCTOR');
 
 
-    });*/
+    });
+    
+    describe('Specializations List Interaction', () => {
+      it('Should select a Specialization from the list', () => {
+        // Abrir o modal de listagem de pacientes
+        cy.get('.selectionDiv').contains('List Specializations').click();
+    
+        // Garantir que o modal foi aberto
+        cy.get('#listSpecializationsModal').should('be.visible');
+    
+        // Selecionar um paciente na lista
+        cy.get('#listSpecializationsModal').find('td').first().click(); // Seleciona o primeiro paciente da lista
+    
+        // Garantir que o paciente foi selecionado (verificando se a linha tem a classe 'selected-row')
+        //cy.get('#listConditionsModal').find('tr').get('2').should('have.class', 'selected-row');
+      });
+    });
+    describe('Register Medical Conditions Form', () => {
+      it('Should fill out the Medical Conditions registration form and submit it', () => {
+        cy.get('.selectionDiv').contains('Insert Medical Condition').click();
+        // Preencher o campo de nome
+        cy.get('#medicalConditionCode').type('DB-1346');
+        // Preencher o campo de data de nascimento
+        cy.get('#medicalConditionDesignation').type('Dewbonic Craig');
+        // Preencher o campo de email
+        cy.get('#medicalConditionDescription').type('A type of craig caused by the bacteria Kanrsinia Crestis. ');
+
+        cy.get('#medicalConditionSymptoms').type('Beaver, Fiveheadaches, Crawmiting, Swole and Rainfun Gymph Toads, Dewboes');
+        
+        // Enviar o formulário
+        cy.get('#submitConition').click();
+    
+        // Verificar se o formulário foi enviado (supondo que há uma mensagem de sucesso ou redirecionamento)
+        cy.contains('Medical condition registered successfully').should('be.visible');
+
+      });
+    });
+    describe('Medical Conditions List Interaction', () => {
+      it('Should select a Medical from the list', () => {
+        // Abrir o modal de listagem de pacientes
+        cy.get('.selectionDiv').contains('List Medical Conditions').click();
+    
+        // Garantir que o modal foi aberto
+        cy.get('#listConditionsModal').should('be.visible');
+    
+        // Selecionar um paciente na lista
+        cy.get('#listConditionsModal').find('td').first().click(); // Seleciona o primeiro paciente da lista
+    
+        // Garantir que o paciente foi selecionado (verificando se a linha tem a classe 'selected-row')
+        //cy.get('#listConditionsModal').find('tr').get('2').should('have.class', 'selected-row');
+      });
+    });
+    describe('Edit and View Medical Conditions', () => {
+      beforeEach(() => {
+        // Abrir o modal de listagem de pacientes
+        cy.get('.selectionDiv').contains('List Medical Conditions').click();
+    
+        // Garantir que o modal foi aberto
+        cy.get('#listConditionsModal').should('be.visible');
+    
+        // Selecionar um paciente na lista
+        cy.get('#listConditionsModal').find('td').last().click();
+      });
+      it('Should view the Medical Condition', () => {
+        cy.get('#viewMedicalConditionButton').click();
+        cy.get('#viewConditionModal').should('be.visible');
+      });
+      it('Should fill out the Medical Conditions edition form and submit it', () => {
+       cy.get('#editMedicalConditionButton').click();
+        // Preencher o campo de nome
+        // Preencher o campo de data de nascimento
+        cy.get('#medicalConditionDesignationE').clear().type('Dewbonic Craig Edited');
+        // Preencher o campo de email
+        cy.get('#medicalConditionDescriptionE').clear().type('An edited type of craig caused by the bacteria Kanrsinia Crestis. ');
+
+        cy.get('#medicalConditionSymptomsE').clear().type('Creeper, Beaver, Fiveheadaches, Crawmiting, Swole and Rainfun Gymph Toads, Dewboes');
+        
+        // Enviar o formulário
+        cy.get('#submitEditCondition').click();
+    
+        // Verificar se o formulário foi enviado (supondo que há uma mensagem de sucesso ou redirecionamento)
+        cy.contains('edical Condition Updated Successfully!').should('be.visible');
+      });
+    });
   });

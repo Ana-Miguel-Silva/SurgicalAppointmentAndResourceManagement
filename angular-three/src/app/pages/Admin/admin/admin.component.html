@@ -2506,7 +2506,7 @@
 
           <!-- Submit Button -->
           <div class="col-12">
-              <button class="btn btn-primary" type="submit">Register Medical Condition</button>
+              <button class="btn btn-primary" id="submitConition" type="submit">Register Medical Condition</button>
           </div>
       </form>
   </div>
@@ -2613,8 +2613,8 @@
 
         <div class="col-md-9"></div>
         <div class="col-md-3">
-          <button class="fs-5 btn btn-outline-info" (click)="viewMedicalCondition()">View <i class="bi bi-info-square-fill"></i></button>
-          <button class="fs-5 btn btn-outline-warning" (click)="editMedicalCondition()">Edit <i class="bi bi-pencil-square"></i></button>
+          <button class="fs-5 btn btn-outline-info" id="viewMedicalConditionButton" (click)="viewMedicalCondition()">View <i class="bi bi-info-square-fill"></i></button>
+          <button class="fs-5 btn btn-outline-warning" id="editMedicalConditionButton" (click)="editMedicalCondition()">Edit <i class="bi bi-pencil-square"></i></button>
           <!--<button class="fs-5 btn btn-outline-danger" (click)="removeSpecializations()">Deactivate <i class="bi bi-archive-fill"></i></button>-->
         </div>
         </form>
@@ -2676,21 +2676,21 @@
           <div class="col-md-6">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
-              <input type="text" class="form-control" id="medicalConditionDesignation" formControlName="designacao"  name="medicalConditionDesignation" required step="2" placeholder="Designation" />
+              <input type="text" class="form-control" id="medicalConditionDesignationE" formControlName="designacao"  name="medicalConditionDesignation" required step="2" placeholder="Designation" />
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
-              <textarea class="form-control" id="medicalConditionDescription" formControlName="descricao" name="medicalConditionDescription" required rows="1" placeholder="Description"></textarea>
+              <textarea class="form-control" id="medicalConditionDescriptionE" formControlName="descricao" name="medicalConditionDescription" required rows="1" placeholder="Description"></textarea>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
-              <textarea class="form-control" id="medicalConditionSymptoms" formControlName="sintomas" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a comma (,)]"></textarea>
+              <textarea class="form-control" id="medicalConditionSymptomsE" formControlName="sintomas" name="medicalConditionSymptoms" required rows="1" placeholder="Symptoms [Separated by a comma (,)]"></textarea>
           </div>
         </div>
 
@@ -2698,7 +2698,7 @@
 
           <!-- Submit Button -->
           <div class="col-12">
-              <button class="btn btn-primary" type="submit">Register Medical Condition</button>
+              <button class="btn btn-primary" id="submitEditCondition" type="submit">Update Medical Condition</button>
           </div>
       </form>
     </div>
