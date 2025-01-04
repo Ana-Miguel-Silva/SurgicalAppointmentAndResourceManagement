@@ -179,9 +179,13 @@
           <div class="valid-feedback">Looks good!</div>
         </div>
 
-        <!-- Submit Button -->
-        <div class="col-12">
-          <button class="btn btn-primary" style="border-radius: 8px;" type="submit">Create Request</button>
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+      </div>
+      <!-- Submit Button -->
+       <div class="col-12 text-center">
+       <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Request</button>
         </div>
       </form>
     </div>
@@ -263,8 +267,16 @@
             </ul>
           </div>
   
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Create Appointment</button>
+        
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Appointment</button>
+      </div>
+      
       </form>
     </div>
   </div>
@@ -376,8 +388,14 @@
   </ul>
 </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Update Appointment</button>
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Update Appointment</button>
+      </div>
     </form>
   </div>
 </div>
@@ -450,7 +468,15 @@
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="border-radius: 8px;">Update Request</button>
+             <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Update Request</button>
+      </div>
+
       </form>
     </div>
   </div>
@@ -473,13 +499,51 @@
   <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
       <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
-          <button (click)="doTheClick()">Substituir a interação com este botão por interação com a tecla "i"</button>
-          <br>
-          <br>
-          <button>Valor de algo que tá duas camadas abaixo: {{thumbRaiser?.selectedDate}}</button>
-          <br>
-          <br>
           <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="" (change)="onMapTimeChange($event)">
+          <br><br>
+
+          <div id="floating-info-div" *ngIf="roomData">
+            <div id="floating-table-container">
+              <table class="info" id="info-table">
+                <tr>
+                  <th colspan="2" class="table-header">Room Information</th>
+                </tr>
+                <tr>
+                  <td>Room Number:</td>
+                  <td>{{roomData.roomNumber}}</td>
+                </tr>
+                <tr>
+                  <td>Capacity:</td>
+                  <td>{{roomData.capacity}}</td>
+                </tr>
+                <tr>
+                  <td>Status:</td>
+                  <td>{{roomData.status}}</td>
+                </tr>
+                <tr>
+                  <td>Assigned Equipment:</td>
+                  <td>
+                    <ul>
+                      <li *ngFor="let equipment of roomData?.assignedEquipment">{{equipment}}</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Maintenance Slots:</td>
+                  <td>
+                    <ul>
+                      <li *ngFor="let slot of roomData?.maintenanceSlots">
+                        Start: {{slot?.startTime}} <br />
+                        End: {{slot?.endTime}}
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+
           <div #canvasContainer class="canvas-container" id="canvasContainer">
             <div id="parent" hidden>
               <div id="views-panel" hidden>

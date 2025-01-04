@@ -1714,9 +1714,16 @@
       </div>
     </div>
 
+
+        <!-- Policy Agreement Section -->
+        <div class="col-12" style="margin-bottom: 20px;">
+          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+      </div>
+
+
     <!-- Generate Schedule Button -->
-    <div class="text-center my-3" style="padding: 20px;">
-      <button class="btn btn-primary" type="submit" style="border-radius: 8px;"
+    <div class="text-center my-3"  style="padding: 20px;" >
+      <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;"
         (click)="onScheduleAppointment({
           date: scheduleDate,
           Prob_CrossOver: probCrossOver,
@@ -1852,13 +1859,15 @@
               <label for="cleaning" class="form-label" style="font-weight: 600;">Cleaning Time</label>
               <input type="time" class="form-control" id="cleaning" [(ngModel)]="operationType.estimatedDuration.cleaning" name="cleaning" required step="2" style="border-radius: 8px;" />
           </div>
-
-          <!-- Submit Button -->
-          <div class="col-12">
-              <button class="btn btn-primary" type="submit" style="border-radius: 8px;">
-                Create Operation Type
-              </button>
-          </div>
+                    <!-- Policy Agreement Section -->
+                    <div class="col-12" style="margin-bottom: 20px;">
+                      <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+                  </div>
+        
+                  <!-- Submit Button -->
+                  <div class="col-12 text-center">
+                      <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Operation Type</button>
+                  </div>
       </form>
   </div>
 </div>
@@ -1876,21 +1885,26 @@
               <!-- Specialization Designation -->
               <div class="col-md-6 col-12">
                   <label for="specializationName" class="form-label" style="font-weight: 600;">Specialization Designation</label>
-                  <input type="text" class="form-control" id="specializationName" [(ngModel)]="specialization.specializationName" name="specializationName" required style="border-radius: 8px;"/>
+                  <input type="text" class="form-control" id="specializationName" [(ngModel)]="specialization.specializationName" name="specializationName" required style="border-radius: 8px;" />
                   <div class="valid-feedback">Looks good!</div>
               </div>
 
               <!-- Specialization Description -->
               <div class="col-md-6 col-12">
                   <label for="specializationDescription" class="form-label" style="font-weight: 600;">Specialization Description</label>
-                  <input type="text" class="form-control" id="specializationDescription" [(ngModel)]="specialization.specializationDescription" name="specializationDescription" required style="border-radius: 8px;"/>
+                  <input type="text" class="form-control" id="specializationDescription" [(ngModel)]="specialization.specializationDescription" name="specializationDescription" required style="border-radius: 8px;" />
                   <div class="valid-feedback">Looks good!</div>
               </div>
           </div>
 
+          <!-- Policy Agreement Section -->
+          <div class="col-12" style="margin-bottom: 20px;">
+              <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+          </div>
+
           <!-- Submit Button -->
           <div class="col-12 text-center">
-              <button class="btn btn-primary" type="submit" style="border-radius: 8px;">Create Specialization</button>
+              <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Specialization</button>
           </div>
       </form>
   </div>

@@ -22,6 +22,7 @@ import Fog from "./fog.js";
 import Camera from "./camera.js";
 import Animations from "./animations.js";
 import UserInterface from "./user_interface.js";
+import  TWEEN  from '@tweenjs/tween.js';
 
 /*
  * generalParameters = {
@@ -161,6 +162,8 @@ export default class ThumbRaiser {
         this.thirdPersonViewCameraParameters = merge({}, cameraData, thirdPersonViewCameraParameters);
         this.topViewCameraParameters = merge({}, cameraData, topViewCameraParameters);
         this.miniMapCameraParameters = merge({}, cameraData, miniMapCameraParameters);
+        this.isAnimating = false;
+
 
         // Create a 2D scene (the viewports frames)
         this.scene2D = new THREE.Scene();
@@ -213,7 +216,7 @@ export default class ThumbRaiser {
         // Create the statistics and make its node invisible
         this.statistics = new Stats();
         this.statistics.dom.style.visibility = "hidden";
-        document.body.appendChild(this.statistics.dom);
+        //document.body.appendChild(this.statistics.dom);
 
         // Create a renderer and turn on shadows in the renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true});
@@ -456,7 +459,8 @@ export default class ThumbRaiser {
     }
 
     mouseDown(event) {
-        if (event.buttons == 2) { // Only handle secondary (right) mouse button
+        if(!this.isAnimating){
+        if (event.buttons == 2  ) { // Only handle secondary (right) mouse button
             // Store current mouse position
             this.mousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
             // Select the camera whose view is being pointed
@@ -473,40 +477,95 @@ export default class ThumbRaiser {
                 }
             }
         } else {
-
-            const modalBounds = this.renderer.domElement.getBoundingClientRect();
-
-            this.pointer.x = ((event.clientX - modalBounds.left) / modalBounds.width) * 2 - 1;
-            this.pointer.y = -((event.clientY - modalBounds.top) / modalBounds.height) * 2 + 1;
-            this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
-
-            console.log("Pointer " + this.pointer);
-            console.log("Raycaster " + this.raycaster);
             
-            const intersects = this.raycaster.intersectObjects(this.maze.RoomArr, true);
-            console.log("Intersects " + this.intersects);
+        const modalBounds = this.renderer.domElement.getBoundingClientRect();
 
-            if (intersects.length > 0) {
+        this.pointer.x = ((event.clientX - modalBounds.left) / modalBounds.width) * 2 - 1;
+        this.pointer.y = -((event.clientY - modalBounds.top) / modalBounds.height) * 2 + 1;
+        this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
 
-                const intersectedObject = intersects[0].object;
-        
-                if (!this.originalMaterials.has(intersectedObject)) {
-                    this.originalMaterials.set(intersectedObject, intersectedObject.material);
+        const intersects = this.raycaster.intersectObjects(this.maze.RoomArr, true);
+
+        if (intersects.length > 0) {
+            const intersectedObject = intersects[0].object;
+
+            if (!this.originalMaterials.has(intersectedObject)) {
+                this.originalMaterials.set(intersectedObject, intersectedObject.material);
+            }
+
+            intersectedObject.material = this.highlightMaterial;
+            intersectedObject.material.opacity = 0.5;
+
+            setTimeout(() => {
+                if (this.originalMaterials.has(intersectedObject)) {
+                    intersectedObject.material = this.originalMaterials.get(intersectedObject);
+                    this.originalMaterials.delete(intersectedObject);
                 }
-        
-                intersectedObject.material = this.highlightMaterial;
-                intersectedObject.material.opacity = 0.5;
-        
-                setTimeout(() => {
-                    if (this.originalMaterials.has(intersectedObject)) {
-                        intersectedObject.material = this.originalMaterials.get(intersectedObject);
-                        this.originalMaterials.delete(intersectedObject);
-                    }
-                }, 500); // Highlight for 500ms
-                const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
-                this.CurrentRoom = intersectedIndex;
-                const modelPosition = this.maze.RoomArr[intersectedIndex].position;
-                this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+            }, 500); // Highlight for 500ms
+
+    
+            const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+            this.CurrentRoom = intersectedIndex;
+
+            // Posição inicial da câmera
+            const startPosition = this.activeViewCamera.perspective.position.clone();
+
+            const offSetPositionX = startPosition.x - this.activeViewCamera.target.clone().x;
+            const offSetPositionZ = startPosition.z - this.activeViewCamera.target.clone().z;
+
+            // Calcula posição da sala
+            const modelPosition = this.maze.RoomArr[intersectedIndex].position;
+
+
+            // Destino da câmera (posição alinhada ao setTarget)
+            const targetPosition = new THREE.Vector3(
+                modelPosition.x + offSetPositionX , // Ajuste a posição lateral conforme necessário
+                startPosition.y,     // Altura permanece a mesma
+                modelPosition.z + offSetPositionZ  // Ajuste de afastamento
+            );
+
+            // Destino para o "lookAt"
+            const lookAtTarget = modelPosition.clone();
+
+            // Inicia animação para posição da câmera
+            new TWEEN.Tween(startPosition)
+            .to({ x: targetPosition.x, y: targetPosition.y, z: targetPosition.z }, 1000) // Duração de 1 segundo para a animação
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(() => {
+                this.isAnimating = true;
+                
+                this.activeViewCamera.perspective.position.set(startPosition.x, startPosition.y, startPosition.z);
+                
+            })
+            .onComplete(() => {
+                // Garante que a posição final da câmera é a desejada
+                this.activeViewCamera.perspective.position.set(targetPosition.x, targetPosition.y, targetPosition.z);
+                this.activeViewCamera.setTarget(lookAtTarget);
+                this.isAnimating = false;
+
+
+            })
+            .start();
+            
+
+            // Caso tenha outros objetos relacionados, como spotlight:
+            if (this.spotlight) {
+                const spotlightTarget = new THREE.Vector3(
+                    modelPosition.x,
+                    this.spotlight.position.y,
+                    modelPosition.z
+                );
+
+                new TWEEN.Tween(this.spotlight.position)
+                    .to(spotlightTarget, 1000)
+                    .easing(TWEEN.Easing.Quadratic.InOut)
+                    .start();
+            }
+
+
+
+                }
+            
             }
         }
     }
@@ -651,7 +710,7 @@ export default class ThumbRaiser {
                 if(this.CurrentRoom == null) {
                     this.CurrentRoom = 0;
                     const modelPosition = this.maze.RoomArr[0].position;
-                    this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,0, modelPosition.z));
+                    this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,1.8, modelPosition.z));
                 }
                 this.scene3D.add(this.maze.object);
                 this.scene3D.add(this.lights.object);
@@ -867,6 +926,7 @@ export default class ThumbRaiser {
 
             // Update statistics
             this.statistics.update();
+            TWEEN.update()
 
             // Render primary viewport(s)
             this.renderer.clear();
