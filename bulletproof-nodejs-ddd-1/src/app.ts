@@ -11,7 +11,7 @@ async function startServer() {
   app.use(cors({
     origin: function (origin, callback) {
       // Permitindo tanto o IP da VM quanto o localhost (em qualquer porta)
-      if (origin === 'http://localhost:4200' || origin === 'http://20.82.142.194:4200' || origin === 'http://51.120.112.94/:4200' || !origin) {
+      if (origin === 'http://localhost:4200' || origin === 'http://20.82.142.194:4200' || origin === 'http://51.120.112.94:4200' || !origin) {
         callback(null, true); // Permite o acesso de localhost e do IP da VM
       } else {
         callback(new Error('Not allowed by CORS'), false); // Outros domínios não são permitidos

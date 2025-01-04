@@ -72,7 +72,7 @@ namespace DDDSample1
             {
                 options.AddPolicy("AllowLocalhost4200",
                     builder => builder.WithOrigins(//"http://"+Configuration.GetConnectionString("HostID") +":" + Configuration.GetConnectionString("PortID")
-                    "http://localhost:4200","http://20.82.142.194:4200", "http://51.120.112.94/:4200")
+                    "http://localhost:4200","http://20.82.142.194:4200", "http://51.120.112.94:4200")
                                     .AllowAnyMethod()
                                     .AllowAnyHeader());
             });
