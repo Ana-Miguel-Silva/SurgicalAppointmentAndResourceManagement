@@ -9,12 +9,14 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 
 import { AppComponent } from './app.component';
 import { StatsComponent } from './pages/Stats/stats.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [    
     StatsComponent
   ],
   imports: [
+    CommonModule,
     HttpClientModule 
   ],
   providers: []
