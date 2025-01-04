@@ -30,7 +30,18 @@ namespace DDDSample1.Controllers
         {
             return await _service.GetAllUIAsync();
         }
-
+        // GET: api/SurgeryRooms/5/SurgeryRooms
+        [HttpPost("Availability")]
+        public async Task<ActionResult<bool>> IsRoomAvailable(AvailabilityRequest request)
+        {
+            var isAvailable = await _service.IsRoomAvailable(new SurgeryRoomId(request.Id), request.Date);
+            return isAvailable;
+        }
+        public class AvailabilityRequest
+        {
+            public string Id { get; set; }
+            public DateTime Date { get; set; }
+        }
         // GET: api/SurgeryRooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SurgeryRoomDto>> GetGetById(Guid id)

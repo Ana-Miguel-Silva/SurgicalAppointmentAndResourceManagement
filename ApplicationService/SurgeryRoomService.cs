@@ -122,8 +122,11 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
 
         public async Task<bool> IsRoomAvailable(SurgeryRoomId id, DateTime date)
         {
+            Console.WriteLine(id);
+            Console.WriteLine(date);
             var appointments = await _appointmentRepository.GetAllAsync();
             var room = await _repo.GetByIdAsync(id);
+            Console.WriteLine(room);
             List<Slot> roomOccupiedSlots = new List<Slot>(room.MaintenanceSlots);
 
             foreach (var app in appointments)
@@ -133,7 +136,7 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
                     roomOccupiedSlots.Add(app.Date);
                 }
             }
-
+            Console.WriteLine(roomOccupiedSlots);
             foreach (var slot in roomOccupiedSlots)
             {
                 if (date >= slot.StartTime && date <= slot.EndTime){
