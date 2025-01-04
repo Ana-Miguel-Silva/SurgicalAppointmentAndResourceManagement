@@ -179,9 +179,13 @@
           <div class="valid-feedback">Looks good!</div>
         </div>
 
-        <!-- Submit Button -->
-        <div class="col-12">
-          <button class="btn btn-primary" style="border-radius: 8px;" type="submit">Create Request</button>
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+          <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+      </div>
+      <!-- Submit Button -->
+       <div class="col-12 text-center">
+       <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Request</button>
         </div>
       </form>
     </div>
@@ -263,8 +267,16 @@
             </ul>
           </div>
   
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Create Appointment</button>
+        
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Appointment</button>
+      </div>
+      
       </form>
     </div>
   </div>
@@ -376,8 +388,14 @@
   </ul>
 </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary mt-3" style="border-radius: 8px;">Update Appointment</button>
+      <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Update Appointment</button>
+      </div>
     </form>
   </div>
 </div>
@@ -450,7 +468,15 @@
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="border-radius: 8px;">Update Request</button>
+             <!-- Policy Agreement Section -->
+      <div class="col-12" style="margin-bottom: 20px;">
+        <button type="button" class="btn btn-secondary" (click)="openPolicyModal()">Read and Agree to Policy</button>
+    </div>
+    <!-- Submit Button -->
+     <div class="col-12 text-center">
+     <button class="btn btn-primary" type="submit" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Update Request</button>
+      </div>
+
       </form>
     </div>
   </div>
