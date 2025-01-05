@@ -2088,6 +2088,36 @@ export class AdminComponent {
     return 'bi bi-arrows-expand';
   }
 
+  specializationsSort: { column: string; direction: 'asc' | 'desc' } = { column: '', direction: 'asc' };
+
+sortSpecializations(column: string): void {
+  const { column: currentColumn, direction } = this.specializationsSort;
+
+  if (currentColumn === column) {
+    this.specializationsSort.direction = direction === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.specializationsSort = { column, direction: 'asc' };
+  }
+
+  const directionMultiplier = this.specializationsSort.direction === 'asc' ? 1 : -1;
+
+  this.Specializations.sort((a, b) => {
+    const valA = column === 'index' ? this.Specializations.indexOf(a) + 1 : a[column];
+    const valB = column === 'index' ? this.Specializations.indexOf(b) + 1 : b[column];
+
+    if (valA < valB) return -1 * directionMultiplier;
+    if (valA > valB) return 1 * directionMultiplier;
+    return 0;
+  });
+}
+
+getSpecializationsSortIcon(column: string): string {
+  if (this.specializationsSort.column === column) {
+    return this.specializationsSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
+  }
+  return 'bi bi-arrows-expand';
+}
+
 
 
 
