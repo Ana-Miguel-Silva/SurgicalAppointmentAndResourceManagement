@@ -51,16 +51,20 @@ As part of the development of the software system, it is necessary to implement 
 
 ### 3.1. Sequence Diagram
 
-**Login User Level 1**
+**Edit Medical Condition Level 1**
 
-![Login User](sequence-diagram-1.svg "Login User")
+![Edit Medical Condition](sequence-diagram-1.svg "Edit Medical Condition")
 
-**Login User Level 2**
+**Edit Medical Condition Level 2**
 
-![Login User](sequence-diagram-2.svg "Login User")
+![Edit Medical Condition](sequence-diagram-2.svg "Edit Medical Condition")
 
-**Login User Level 3**
+**Edit Medical Condition Level 3 Frontend**
 
-![Login User](sequence-diagram-3.svg "Login User")
+![Edit Medical Condition](sequence-diagram-3.svg "Edit Medical Condition")
+
+**Edit Medical Condition Level 3 Backend**
+
+![Edit Medical Condition](sequence-diagram-3B.svg "Edit Medical Condition")
 
 

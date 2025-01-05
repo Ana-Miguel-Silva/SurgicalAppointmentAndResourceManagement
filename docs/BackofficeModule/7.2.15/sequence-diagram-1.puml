@@ -1,4 +1,4 @@
-@startuml 5.1.1
+@startuml
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -11,11 +11,7 @@ participant "SAaRM System" as SYS <<system>>
 activate AD
 AD -> SYS: access page
 activate SYS
-SYS --> AD : data input
-deactivate SYS
-AD -> SYS : info to login(username, password)
-activate SYS
-SYS --> AD : success and access to their funtionalities.
+SYS --> AD : list of specializations
 
 deactivate SYS
 

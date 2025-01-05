@@ -1,0 +1,37 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Repository" as REPO <<component>>
+participant "Domain" as DOM <<component>>
+
+-> CTRL: Update(id, dto)
+activate CTRL
+CTRL -> SERV: UpdateAsync(id, dto)
+activate SERV
+SERV -> REPO: GetByIdAsync(id)
+activate REPO
+REPO --> SERV: staff
+deactivate REPO
+SERV -> DOM: updateName(dto.SpecializationName)
+activate DOM
+DOM --> SERV: success
+deactivate DOM
+SERV -> DOM: updateDescription(dto.SpecializationDescription)
+activate DOM
+DOM --> SERV: success
+deactivate DOM
+deactivate DOM
+SERV --> CTRL: success
+deactivate SERV
+<-- CTRL: success
+
+
+
+
+@enduml
