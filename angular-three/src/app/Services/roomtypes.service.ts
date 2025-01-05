@@ -24,15 +24,29 @@ insertRoomTypes(params : any): Observable<any> {
   return this.http.post(`${this.apiUrl}`, params, { headers })
 }
 
-/*
-getAllAllergies(): Observable<any[]> {
+
+getAllRoomTypes(): Observable<any[]> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.get<any[]>(`${this.apiUrl}/get`, { headers });
+  return this.http.get<any[]>(`${this.apiUrl}`, { headers });
 }
 
-updateAllergie(selectAllergy: string, updatedData: any): Observable<any> {
+getByCode(id : string): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
+}
+
+update(updatedData: any): Observable<any> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.patch<any>(`${this.apiUrl}/update`, updatedData, { headers });
+}
+
+/*updateAllergie(selectAllergy: string, updatedData: any): Observable<any> {
 
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

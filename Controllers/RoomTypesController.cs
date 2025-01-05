@@ -60,6 +60,46 @@ namespace DDDSample1.Controllers
 
         }
 
+       
+       
+        [HttpPatch("update")]  
+        public async Task<ActionResult<RoomTypesDto>> Update(RoomTypesDto dto)
+        {
+           
+
+
+            var result = await _service.UpdateAsync(dto);
+
+            if (result == null)
+            {
+                return BadRequest("Wasn't possible to update the RoomTypes.");
+            }
+
+            return Ok(result);
+
+
+
+        }
+
+
+          [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = $"{Role.ADMIN}")]
+         [HttpGet("{code}")]
+        public async Task<ActionResult<RoomTypesDto>> getByCode(string code)
+        {
+
+            var result = await _service.GetByCodeAsync(code);
+
+            if (result == null)
+            {
+                return BadRequest("Wasn't possible to get the RoomTypes.");
+            }
+
+            return Ok(result);
+
+        }
+
+
+       
 
 
     }

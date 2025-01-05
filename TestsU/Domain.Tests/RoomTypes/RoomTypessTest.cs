@@ -114,5 +114,6 @@ namespace Domain.Tests
             Assert.Contains("True", result);                // Verifica se o valor de SurgerySuitable (True) está presente
         }
 
+        
     }
 }

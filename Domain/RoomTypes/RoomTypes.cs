@@ -10,12 +10,12 @@
 
         private const int MaxDesignationLength = 100;
 
-        public RTId Id { get; private set; }
-        public RoomTypeId Code { get; private set; }
+        public RTId Id { get;  set; }
+        public RoomTypeId Code { get;  set; }
 
-        public string Designacao { get; private set; }
-        public string? Descricao { get; private set; }
-        public bool SurgerySuitable { get; private set; }
+        public string Designacao { get;  set; }
+        public string? Descricao { get;  set; }
+        public bool SurgerySuitable { get;  set; }
 
         
 

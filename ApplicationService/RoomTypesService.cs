@@ -1,6 +1,7 @@
 using DDDSample1.Domain.Shared;
 using Microsoft.Extensions.Options;
 using DDDSample1.Domain.RoomTypess;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 
 namespace DDDSample1.ApplicationService.RoomTypess
@@ -69,8 +70,46 @@ namespace DDDSample1.ApplicationService.RoomTypess
            return new RoomTypesDto(roomType.ObtainId().AsString(),roomType.ObtainCode().ToString(), roomType.ObtainDesignacao(), roomType.ObtainDescricao(), roomType.ObtainSurgerySuitability());
         }
 
+         public async Task<RoomTypesDto> UpdateAsync(RoomTypesDto dto)
+        {           
+
+            var roomType = await this._repo.GetByIdAsync(new RTId(dto.RoomTypeId));
+
+            if (roomType == null)
+                return null;
+
+            roomType.ChangeDescricao(dto.Descricao);
+            roomType.ChangeDesignacao(dto.Designacao);
+            roomType.ChangeSurgerySuitable(dto.SurgerySuitable);
+
+            await this._unitOfWork.CommitAsync();
+
+            return new RoomTypesDto(roomType.ObtainId().AsString(),roomType.ObtainCode().ToString(), roomType.ObtainDesignacao(), roomType.ObtainDescricao(), roomType.ObtainSurgerySuitability());
+        }
+
+        public async Task<RoomTypesDto> GetByCodeAsync(string code)
+        {
+            var roomTypes = await this._repo.GetAllAsync();
+
+            var roomType = roomTypes.FirstOrDefault(r => r.ObtainCode().ToString() == code);
+
+            if (roomType == null)
+                return null;
+
+            return new RoomTypesDto(
+                roomType.ObtainId().AsString(),
+                roomType.ObtainCode().ToString(),
+                roomType.ObtainDesignacao(),
+                roomType.ObtainDescricao(),
+                roomType.ObtainSurgerySuitability()
+            );
+        }
+
+
+
         
     }
 
+    
 
 }
