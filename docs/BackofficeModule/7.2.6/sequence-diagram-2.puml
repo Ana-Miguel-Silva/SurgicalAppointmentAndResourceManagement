@@ -17,9 +17,9 @@ BE --> FE: form
 deactivate BE
 --> FE : data input
 deactivate FE
- -> FE : update medical record(allergie/medicalCondition)
+ -> FE : update medical record(medicalRecord)
 activate FE
-FE -> BE : updateMedicalRecord(allergie/medicalCondition)
+FE -> BE : updateMedicalRecord(medicalRecord)
 activate BE
 BE --> FE: success
 deactivate BE
