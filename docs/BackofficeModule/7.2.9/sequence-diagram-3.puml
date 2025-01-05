@@ -1,5 +1,4 @@
-@startuml 5.1.1
-skinparam monochrome true
+@startuml 6.2.6
 skinparam packageStyle rectangle
 skinparam shadowing false
 
@@ -7,48 +6,42 @@ autonumber
 
 participant "WebAplication" as FE <<component>>
 participant "HTML+CSS" as HT <<component>>
-participant "component" as CM <<component>>
+participant "Component" as CM <<component>>
 participant "Service" as SERV <<component>>
 
 
+
+
+
+-> FE : Info to update Appointment
 activate FE
--> FE: access page
 
 FE -> HT : onClick()
 activate HT
 
-
-HT -> CM : onLogin(loginObj)
-
+HT -> CM : onUpdateAppointment(updateAppointmentData)
 activate CM
 
-CM -> SERV : postLogin(loginObj)
+CM -> SERV : updateAppointment(appointment)
+activate SERV
 
- activate SERV
+SERV -> : Update Appointment
 
-  SERV -> : Login Post Request
-
- SERV <-- : Success and Token to login
-
-SERV --> CM : Success
+ SERV <--: success and data
 
 
-deactivate SERV
+ SERV--> CM : success and data
 
-CM --> HT : Success
-deactivate CM
+deactivate  SERV
 
+ CM --> HT : success and data
+  deactivate CM
+ HT --> FE : success and data
 
-
-HT --> FE : Success
 deactivate HT
 
-<--- FE : success and access to their funtionalities.
 
+<-- FE   : success and data
 deactivate FE
-
-
-
-
 
 @enduml
