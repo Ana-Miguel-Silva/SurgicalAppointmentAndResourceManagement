@@ -353,8 +353,9 @@ export class DoctorComponent implements OnInit {
 
   doTheClick(){
     let a = this.thumbRaiser.CurrentRoom;
+    console.log("a",a)
     if (a != 0 && a != null) {
-      this.thumbRaiser.fetchRoomData(a - 1).then((roomInfo: any) => {
+      this.thumbRaiser.fetchRoomData(a-1).then((roomInfo: any) => {
           // Obter ID e data
           const id = roomInfo.id;
           const date = this.thumbRaiser.selectedDate &&

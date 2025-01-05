@@ -28,6 +28,8 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
             List<SurgeryRoomDto> listDto = list.ConvertAll<SurgeryRoomDto>(surgeryRoom =>
                 new(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots));
 
+            listDto = listDto.OrderBy(surgeryRoomDto => surgeryRoomDto.RoomNumber).ToList();
+
             return listDto;
         }
 
@@ -39,6 +41,8 @@ namespace DDDSample1.ApplicationService.SurgeryRooms
                 new(surgeryRoom.Id.AsGuid(), surgeryRoom.RoomNumber, surgeryRoom.Type, surgeryRoom.Capacity, surgeryRoom.AssignedEquipment, surgeryRoom.CurrentStatus, surgeryRoom.MaintenanceSlots));
 
             var UIList = await Dto_to_UIDto(listDto);
+
+            UIList = UIList.OrderBy(surgeryRoomDto => surgeryRoomDto.RoomNumber).ToList();
 
             return UIList;
         }

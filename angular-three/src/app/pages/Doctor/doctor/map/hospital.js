@@ -327,6 +327,7 @@ export default class ThumbRaiser {
         console.log(x[index]);
         return x[index];
     }
+
     async onMapTimeChange(inputValue) {
         this.selectedDate = inputValue;
         if(inputValue == null) {
@@ -507,6 +508,7 @@ export default class ThumbRaiser {
         this.raycaster.setFromCamera(this.pointer, this.activeViewCamera.perspective);
 
         const intersects = this.raycaster.intersectObjects(this.maze.RoomArr, true);
+        
 
         if (intersects.length > 0) {
             const intersectedObject = intersects[0].object;
@@ -590,6 +592,7 @@ export default class ThumbRaiser {
         //==========================Other way than TWEEN===================================== 
         const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
                 this.CurrentRoom = intersectedIndex;
+                console.log("index",this.maze.RoomArr)
         
                 // Posição inicial da câmera
                 const startPosition = this.activeViewCamera.perspective.position.clone();
@@ -820,12 +823,17 @@ export default class ThumbRaiser {
     async update() {
         if (!this.gameRunning) {
             if (this.maze.loaded) { // If all resources have been loaded
+                this.maze.RoomArr.sort((a, b) => a.roomNumber - b.roomNumber);
                 if(this.CurrentRoom == null) {
                     this.CurrentRoom = 0;
                     const modelPosition = this.maze.RoomArr[0].position;
                     this.activeViewCamera.setTarget(new THREE.Vector3(modelPosition.x,1.8, modelPosition.z));
                 }
                 this.scene3D.add(this.maze.object);
+                this.maze.RoomArr.forEach(room => {
+                    // Lógica para adicionar as salas à cena
+                    this.scene3D.add(room.object); // ou o equivalente no seu código
+                });
                 this.scene3D.add(this.lights.object);
 
                 // Create the clock
