@@ -90,7 +90,7 @@
       <div>
         <div class="table-wrapper">
           <!-- Action Buttons Section -->
-          <div class="table-title" > 
+          <div class="table-title" >
             <h2 style="font-weight: 600;">Operation Requests</h2>
             <div class="action-buttons">
               <button (click)="openModal('filterRequestModal')" id="filterRequest">
@@ -202,7 +202,7 @@
     <div class="modal-content">
       <span (click)="closeModal('createAppointmentModal')" class="close">&times;</span>
       <form (ngSubmit)="onCreateAppointment()">
-        
+
         <!-- Surgery Room Dropdown -->
         <div class="form-group">
           <label for="surgeryRoom" style="font-weight: 600;">Surgery Room</label>
@@ -213,25 +213,25 @@
             </option>
           </select>
         </div>
-  
+
         <!-- Operation Request Dropdown -->
         <div class="form-group">
           <label for="operationRequest" style="font-weight: 600;">Operation Request</label>
           <select id="operationRequest" class="form-control" [(ngModel)]="selectedOperationRequestId" name="operationRequest" required style="border-radius: 8px;">
             <option value="" disabled>Select an Operation Request</option>
             <option *ngFor="let operationRequest of notscheduledOperationRequests" [value]="operationRequest.id">
-              Type: {{ operationRequest.operationTypeName }} - Patient Email: {{ operationRequest.emailPatient }} 
+              Type: {{ operationRequest.operationTypeName }} - Patient Email: {{ operationRequest.emailPatient }}
               - Priority: {{ operationRequest.priority }} - Deadline: {{ operationRequest.deadline | date:'yyyy-MM-dd' }}
             </option>
           </select>
         </div>
-  
+
         <!-- Date Input -->
         <div class="form-group">
           <label for="startDate" style="font-weight: 600;">Start Date and Time</label>
           <input id="startDate" type="datetime-local" class="form-control" [(ngModel)]="appointmentData.date.start" name="startDate" required style="border-radius: 8px;"/>
         </div>
-  
+
         <!-- Staff Selection -->
         <div class="staff-list">
           <label for="staffSelect" style="font-weight: 600;">Select Staff for Appointment</label>
@@ -245,7 +245,7 @@
         <button type="button" class="btn btn-primary mt-3" (click)="addStaffMember()">
           <span style="border-radius: 8px;">+</span> Add Staff
         </button>
-        
+
 
 
           <!-- Staff List -->
@@ -266,8 +266,8 @@
               </li>
             </ul>
           </div>
-  
-        
+
+
       <!-- Policy Agreement Section -->
       <div class="col-12" style="margin-bottom: 20px;">
         <button type="button" class="btn btn-secondary" id="registerAppointment" (click)="openPolicyModal()">Read and Agree to Policy</button>
@@ -276,12 +276,12 @@
      <div class="col-12 text-center">
      <button class="btn btn-primary" type="submit" id="submitRegisterAppointment" [disabled]="!isPolicyAccepted" style="border-radius: 8px;">Create Appointment</button>
       </div>
-      
+
       </form>
     </div>
   </div>
 
-  
+
 
 
 <!-- List Appointment Modal -->
@@ -694,7 +694,6 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <!--TODO: Está US's é para estar no local do admin, está no doctor temporariamente -->
                       <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.id)"
                         [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
                         <td>{{ i + 1 }}</td>
@@ -786,7 +785,7 @@
               [(ngModel)]="filterAllergieNameText"  [ngModelOptions]="{standalone: true}"  placeholder="Choose an allergie"
               (input)="filterAllergieNameOptions()" (focus)="showDropdown = true" (blur)="onBlur('filterAllergie')" />
               <span class="input-group-text" id="validAllergie">{{ validAllergieText }}</span>
-            <input type="text" class="form-control" id="descricaoAllergie"  style="width: 40%;" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}" 
+            <input type="text" class="form-control" id="descricaoAllergie"  style="width: 40%;" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}"
               name="descricaoAllergie" required readonly />
           </div>
           <ul *ngIf="showDropdown" class="dropdown-list">
@@ -797,7 +796,7 @@
           </ul>
         </div>
 
-        <div class="col-md-12"></div>        
+        <div class="col-md-12"></div>
 
 
         <div class="col-md-2 offset-md-1">
@@ -812,10 +811,10 @@
                 (mousedown)="selectOptionTagStatusAllergies(option)">
                 {{ option }}
               </li>
-            </ul>              
+            </ul>
         </div>
 
-       
+
 
         <div class="col-12 offset-md-1">
           <button type="button" class="btn btn-primary" (click)="addAllergie('no')" [disabled]="!isAllergieValid()">Add Allergie</button>
@@ -859,8 +858,8 @@
             <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
             <input id="status-filter" class="form-control" type="text" name="filterConditionStatus"
               [(ngModel)]="filterConditionStatusText" placeholder="Filter status"
-              (input)="filterConditionStatusOptions()" (focus)="showDropdown4 = true" (blur)="onBlur('filterStatus')" />         
-          
+              (input)="filterConditionStatusOptions()" (focus)="showDropdown4 = true" (blur)="onBlur('filterStatus')" />
+
           </div>
           <ul *ngIf="showDropdown4" class="dropdown-list">
             <li *ngFor="let option of filteredAllergieStatusOptions"
@@ -869,7 +868,7 @@
             </li>
           </ul>
         </div>
-        
+
 
 
 
@@ -922,7 +921,7 @@
 
         <div class="col-md-12 d-flex justify-content-center mt-4" style="margin-bottom: 20px;">
           <button type="button" class="btn btn-secondary  me-2" id="registerMedicalRecordPolicy" (click)="openPolicyModal()">Read and Agree to Policy</button>
-        
+
           <button class="btn btn-primary" type="submit" id="buttonRegisterMedicalRecord" [disabled]="!isPolicyAccepted"  (click)="onCreateMedicalRecord(medicalRecordRequest)" >Create Medical Record</button>
         </div>
 
@@ -950,16 +949,16 @@
         <strong>Contacte-nos:</strong> <br>
         <span style="display: block; text-indent: 20px;">
           Encarregado de Proteção de Dados (DPO) – Paulo Alexandre Sousa
-        </span> 
+        </span>
         <span style="display: block; text-indent: 20px;">
           Email: {{ 'pauloSousaDpo&#64;gmail.com' }}
         </span>
         <span style="display: block; text-indent: 20px;">
           Número de telemóvel: 966866765
-        </span> 
+        </span>
         <span style="display: block; text-indent: 20px;">
           Morada: Rua Mte. Guilherme Camarinha, 221, 2.º esquerdo
-        </span> 
+        </span>
       </p>
 
       <h4>2. Dados Pessoais que Recolhemos</h4>
@@ -986,20 +985,20 @@
         <li><strong>Consulta:</strong> Permitir acesso ao perfil do paciente por utilizadores autorizados (próprio ou médicos/staff: para confirmar dados, marcar cirurgias e registar o histórico médico do titular).</li>
         <li><strong>Alteração:</strong> Atualizar ou corrigir dados de utilizadores.</li>
         <li><strong>Organização:</strong> Estruturar os dados para consultas futuras.</li>
-        <li><strong>Limitações:</strong> Restringir o acesso com base no papel do utilizador (ex.: pacientes acessam apenas os seus próprios dados).</li>        
+        <li><strong>Limitações:</strong> Restringir o acesso com base no papel do utilizador (ex.: pacientes acessam apenas os seus próprios dados).</li>
       </ul>
 
 
       <h4>4. Finalidades do Tratamento dos Dados</h4>
       <p style="margin-bottom: 20px;">
-        Os dados pessoais recolhidos são tratados para as seguintes finalidades, de acordo com o Artigo 5.º 
+        Os dados pessoais recolhidos são tratados para as seguintes finalidades, de acordo com o Artigo 5.º
         do RGPD:
       <ul>
         <li><strong>Agendamento e gestão de consultas e cirurgias:</strong> Os dados, como nome, email, número de telemóvel, alergias e histórico médico, são utilizados para organizar e gerir consultas e cirurgias com eficiência. Esses dados são essenciais para a prestação de serviços clínicos, garantindo que as necessidades do paciente sejam atendidas adequadamente. </li>
         <li><strong>Personalização de experiências:</strong>Envio de mensagens personalizadas por email (e.g., lembretes de consultas ou outras comunicações relevantes para o paciente). </li>
         <li><strong>Emergências médicas:</strong> Os contactos de emergência e informações de saúde, como histórico médico e alergias, são utilizados para proteger a vida e a integridade física do titular em emergências médica. </li>
         <li><strong>Cumprimento de obrigações legais:</strong> Conservação de nome, morada, histórico médico, e alergias por 20 anos, após o último registro de atividade médica, conforme exigido por lei, uma vez que estes dados são essenciais para assegurar a continuidade dos cuidados de saúde. Para a personalização da experiencia, os dados serão guardados até que o titular solicite a revogação do consentimento ou os dados deixem de ser relevantes para a finalidade. </li>
-        <li><strong>Monitorização do sistema:</strong> Análise de dados como nome, email, histórico de acessos e alergias para garantir a segurança e eficiência do sistema de informação, evitando acessos não autorizados, perdas de dados ou falhas operacionais. 
+        <li><strong>Monitorização do sistema:</strong> Análise de dados como nome, email, histórico de acessos e alergias para garantir a segurança e eficiência do sistema de informação, evitando acessos não autorizados, perdas de dados ou falhas operacionais.
         </li>
         <br> Sendo assim, cada finalidade é justificada conforme os Artigos 6.º e 9.º do RGPD.
       </ul>
@@ -1053,7 +1052,7 @@
         <li><strong>Portabilidade:</strong> Pode pedir uma cópia dos seus dados em formato eletrônico, na aplicação.
         </li>
         <li><strong>Oposição:</strong> Pode opor-se ao tratamento dos seus dados em certas situações.</li>
-        Caso o titular se recuse a consentir o tratamento dos dados, haverá restrições nas funcionalidades desta aplicação. Se for um paciente, não conseguirá atualizar o seu perfil. Para o caso de um médico ou staff, não será possível registar ou atualizar pacientes, criar ou atualizar alergias, condições médicas, histórico médico ou marcação de cirurgias. 
+        Caso o titular se recuse a consentir o tratamento dos dados, haverá restrições nas funcionalidades desta aplicação. Se for um paciente, não conseguirá atualizar o seu perfil. Para o caso de um médico ou staff, não será possível registar ou atualizar pacientes, criar ou atualizar alergias, condições médicas, histórico médico ou marcação de cirurgias.
         <li><strong>Limitação:</strong> Pode solicitar a limitação do tratamento dos seus dados em condições
           específicas.</li>
       </ul>
@@ -1143,7 +1142,7 @@
                           <li *ngFor="let description of request.descricao">{{ description }}</li>
                         </ul>
                       </td>
-                   
+
                     </tr>
                   </tbody>
                 </table>
@@ -1154,7 +1153,7 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <button class="fs-5 btn btn-outline-info" id="filterMedicalRecord" (click)="getMedicalRecord()">Filter <i class="bi bi-info-square-fill"></i></button>
-            
+
             <button class="fs-5 btn btn-outline-warning" id="editMedicalRecord" (click)="editMedicalRecord()">Edit <i
                 class="bi bi-pencil-square"></i></button>
 
@@ -1175,22 +1174,22 @@
 
           <div class="row g-3 needs-validation">
             <div class="col-md-12"></div>
-  
- 
+
+
             <div class="col-md-4">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-badge-fill"></i></span>
                 <input type="text" class="form-control" id="allergieNameFilter" [(ngModel)]="allergieNameFilter"  [ngModelOptions]="{standalone: true}"  name="allergieNameFilter" required step="1" placeholder="Name" />
               </div>
             </div>
-  
+
             <div class="col-md-4">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
                 <input type="text" class="form-control" id="allergieDescriptionFilter" [(ngModel)]="allergieDescriptionFilter"  [ngModelOptions]="{standalone: true}"  name="allergieDescriptionFilter" required step="2" placeholder="Description" />
               </div>
             </div>
-  
+
             <div class="col-md-4">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
@@ -1206,12 +1205,12 @@
                   placeholder="Note">></textarea>
               </div>
             </div>
-  
+
             <div class="input-group" style="padding:1cm">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
               <button type="submit" id="filterAllergieMedicalRecord" (click)="onFilterMedicalRecordRequests()" class="btn btn-primary">Apply Allergie Filter</button>
             </div>
-  
+
             <div class="col-md-12">
               <!-- Tabela de Alergias -->
               <div class="input-group has-validation">
@@ -1234,18 +1233,18 @@
                     <td>{{ tag.designacao }}</td>
                     <td>{{ tag.descricao }}</td>
                     <td>{{ tag.status }}</td>
-                    <td [style.white-space]="'pre-wrap'">{{ tag.note }}</td>    
+                    <td [style.white-space]="'pre-wrap'">{{ tag.note }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
             <hr>
-  
-  
+
+
             <div class="col-mb-12"></div>
-  
-            
+
+
             <div class="col-md-4">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-badge-fill"></i></span>
@@ -1260,17 +1259,17 @@
             </div>
          </div>
 
-  
+
             <div class="col-md-4">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-body-text"></i></span>
                 <input type="text" class="form-control" id="medicalConditionDescriptionFilter" [(ngModel)]="medicalConditionDescriptionFilter"  [ngModelOptions]="{standalone: true}"  name="medicalConditionDescriptionFilter" required step="2" placeholder="Description" />
               </div>
             </div>
-  
+
             <div class="col-md-4">
               <div class="input-group has-validation">
-                <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>               
+                <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-vcard-fill"></i></span>
                 <input class="form-control" id="medicalConditionStatusFilter" [(ngModel)]="medicalConditionStatusFilter"  [ngModelOptions]="{standalone: true}"  name="medicalConditionStatusFilter" required rows="1" placeholder="Status" />
               </div>
             </div>
@@ -1278,14 +1277,14 @@
             <div class="col-md-6">
               <div class="input-group has-validation">
                 <span  class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
-                <textarea type="text" class="form-control" id="medicalConditionSymptomsFilter" [(ngModel)]="medicalConditionSymptomsFilter"  [ngModelOptions]="{standalone: true}" 
+                <textarea type="text" class="form-control" id="medicalConditionSymptomsFilter" [(ngModel)]="medicalConditionSymptomsFilter"  [ngModelOptions]="{standalone: true}"
                  name="medicalConditionSymptomsFilter" required rows="1"
                   placeholder="Symptoms [Separated by a comma (,)]"></textarea>
               </div>
             </div>
 
 
-            
+
             <div class="col-md-6" >
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
@@ -1299,8 +1298,8 @@
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <button type="submit" id="filterConditionMedicalRecord" (click)="onFilterMedicalRecordRequestsConditions()" class="btn btn-primary">Apply Medical Condition Filter</button>
            </div>
-  
-  
+
+
             <!-- Medical Conditions Section -->
             <div class="col-md-12">
               <div class="input-group has-validation">
@@ -1327,20 +1326,20 @@
                     <td>{{ condition.descricao }}</td>
                     <td>{{ condition.status }}</td>
                     <td>{{ condition.sintomas }}</td>
-                    <td [style.white-space]="'pre-wrap'">{{ condition.note }}</td>    
-                   
+                    <td [style.white-space]="'pre-wrap'">{{ condition.note }}</td>
+
                   </tr>
                 </tbody>
               </table>
             </div>
 
-               
-  
-  
-          </div>         
+
+
+
+          </div>
         </div>
       </form>
-       
+
     </div>
   </div>
 
@@ -1419,12 +1418,12 @@
                     <td>{{ tag.designacao }}</td>
                     <td>{{ tag.descricao }}</td>
                     <td>{{ tag.status }}</td>
-                    <td [style.white-space]="'pre-wrap'">{{ tag.note }}</td>                    
-                    <td *ngIf="isDoctor"> <button type="button" class="btn btn-danger" 
+                    <td [style.white-space]="'pre-wrap'">{{ tag.note }}</td>
+                    <td *ngIf="isDoctor"> <button type="button" class="btn btn-danger"
                       (click)="removeAllergie(); $event.preventDefault()"> <i class="bi bi-trash"></i>
                     </button></td>
                     <td  *ngIf="!isDoctor">  <button type="button" class="btn btn-warning"
-                      (click)="editAllergieNote(tag.designacao); $event.preventDefault()"> <i class="bi bi-pencil"></i>                       
+                      (click)="editAllergieNote(tag.designacao); $event.preventDefault()"> <i class="bi bi-pencil"></i>
                     </button></td>
                   </tr>
                 </tbody>
@@ -1438,7 +1437,7 @@
                   [(ngModel)]="filterAllergieNameText"  [ngModelOptions]="{standalone: true}"  placeholder="Choose an allergie"
                   (input)="filterAllergieNameOptions()" (focus)="showDropdown = true" (blur)="onBlur('filterAllergie')" />
                   <span class="input-group-text" id="validAllergie">{{ validAllergieText }}</span>
-                <input type="text" class="form-control" id="descricaoAllergieUpdate"  style="width: 40%;" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}" 
+                <input type="text" class="form-control" id="descricaoAllergieUpdate"  style="width: 40%;" [(ngModel)]="filterAllergieDescricaoText"  [ngModelOptions]="{standalone: true}"
                   name="descricaoAllergieUpdate" required readonly />
               </div>
               <ul *ngIf="showDropdown" class="dropdown-listUpdate">
@@ -1449,7 +1448,7 @@
               </ul>
             </div>
 
-           
+
 
             <div class="col-md-2" *ngIf="isDoctor" >
               <div class="input-group has-validation">
@@ -1463,7 +1462,7 @@
                     (mousedown)="selectOptionTagStatusAllergies(option)">
                     {{ option }}
                   </li>
-                </ul>              
+                </ul>
             </div>
 
             <div class="col-md-6" *ngIf="isDoctor">
@@ -1477,7 +1476,7 @@
 
 
 
-           
+
             <div class="col-12" style="margin-bottom: 30px;" *ngIf="isDoctor">
               <button type="button" class="btn btn-primary"  id="updateAddAllergie" (click)="addAllergie('yes')" [disabled]="!isAllergieValid()">Add Allergie</button>
             </div>
@@ -1512,11 +1511,11 @@
                     <td>{{ condition.status }}</td>
                     <td>{{ condition.sintomas }}</td>
                     <td [style.white-space]="'pre-wrap'">{{ condition.note }}</td>
-                    <td *ngIf="isDoctor"> <button type="button" class="btn btn-danger" 
+                    <td *ngIf="isDoctor"> <button type="button" class="btn btn-danger"
                         (click)="removeMedicalCondition(); $event.preventDefault()"> <i class="bi bi-trash"></i>
                       </button></td>
                       <td  *ngIf="!isDoctor">  <button type="button" class="btn btn-warning"
-                        (click)="editMedicalConditionNote(condition.codigo); $event.preventDefault()"> <i class="bi bi-pencil"></i>                       
+                        (click)="editMedicalConditionNote(condition.codigo); $event.preventDefault()"> <i class="bi bi-pencil"></i>
                       </button></td>
                   </tr>
                 </tbody>
@@ -1530,7 +1529,7 @@
                   [(ngModel)]="filterTextCondition"  [ngModelOptions]="{standalone: true}"  placeholder="Choose an medical condition"
                   (input)="filterOptionsMedicalConditions()" (focus)="showDropdown2 = true" (blur)="onBlur('filterCondition')" />
                   <span class="input-group-text" id="validCondition">{{ validConditionText }}</span>
-                <input type="text" class="form-control" id="descricaoConditionUpdate"  style="width: 40%;" [(ngModel)]="filterConditionDescricaoText"  [ngModelOptions]="{standalone: true}" 
+                <input type="text" class="form-control" id="descricaoConditionUpdate"  style="width: 40%;" [(ngModel)]="filterConditionDescricaoText"  [ngModelOptions]="{standalone: true}"
                   name="descricaoConditionUpdate" required readonly />
               </div>
               <ul *ngIf="showDropdown2" class="dropdown-list">
@@ -1548,8 +1547,8 @@
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
                 <input id="status-filter" class="form-control" type="text" name="filterConditionStatusUpdate"
                   [(ngModel)]="filterConditionStatusText" [ngModelOptions]="{standalone: true}" placeholder="Filter status"
-                  (input)="filterConditionStatusOptions()" (focus)="showDropdown4 = true" (blur)="onBlur('filterStatus')" />         
-              
+                  (input)="filterConditionStatusOptions()" (focus)="showDropdown4 = true" (blur)="onBlur('filterStatus')" />
+
               </div>
               <ul *ngIf="showDropdown4" class="dropdown-listUpdate">
                 <li *ngFor="let option of filteredAllergieStatusOptions"
@@ -1569,7 +1568,7 @@
               </div>
             </div>
 
-          
+
             <div class="col-md-8" *ngIf="isDoctor">
               <div class="input-group has-validation">
                 <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
@@ -1610,7 +1609,7 @@
         <div class="row g-3 needs-validation">
           <div class="col-md-12"></div>
 
-       
+
           <div class="col-md-6">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
@@ -1624,14 +1623,14 @@
 
         </div>
 
-        
+
         <div class="col-12" style="margin-top: 30px;">
           <button type="button" class="btn btn-primary" id="updateAddOtherDoctorAllergie" (click)="updateNoteAllergies()" >Update Allergy Note</button>
         </div>
 
 
 
-       
+
       </div>
     </form>
   </div>
@@ -1650,7 +1649,7 @@
         <div class="row g-3 needs-validation">
           <div class="col-md-12"></div>
 
-       
+
           <div class="col-md-6">
             <div class="input-group has-validation">
               <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-clipboard-pulse"></i></span>
@@ -1664,14 +1663,14 @@
 
         </div>
 
-        
+
         <div class="col-12" style="margin-top: 30px;">
           <button type="button" class="btn btn-primary" id="updateAddOtherDoctorCondition" (click)="updateNoteMedicalCondition()" >Update Condition Note </button>
         </div>
 
 
 
-       
+
       </div>
     </form>
   </div>

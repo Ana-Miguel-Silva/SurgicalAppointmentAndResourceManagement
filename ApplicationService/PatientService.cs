@@ -63,7 +63,6 @@ namespace DDDSample1.ApplicationService.Patients
         public async Task<PatientDto> AddAsync(CreatingPatientDto dto, string userRole)
         {
 
-            //TODO: Mais checks ?
             CheckGender(dto.gender);
 
             
