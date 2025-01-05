@@ -770,4 +770,3 @@ describe('Create Specialization Modal Tests', () => {
         cy.contains('edical Condition Updated Successfully!').should('be.visible');
       });
     });
-  });

@@ -362,6 +362,7 @@ export class DoctorComponent implements OnInit {
     }
     else {
       console.log("Lobby");
+      this.roomData =  { id: "0", roomNumber: "Lobby", type: "Lobby", capacity: 0, assignedEquipment: [], status: "NOT SUITABLE", maintenanceSlots: [] };
     }
   }
 
@@ -389,7 +390,7 @@ export class DoctorComponent implements OnInit {
   onMapTimeChange(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value;
     console.log('Datetime value changed:', inputValue);
-    this.thumbRaiser.selectedDate = inputValue;
+    this.thumbRaiser.onMapTimeChange(inputValue);
   }
 
   getAllOperationRequests() {

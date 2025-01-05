@@ -236,6 +236,7 @@ export default class ThumbRaiser {
         this.dragMiniMap = false;
         this.changeCameraDistance = false;
         this.changeCameraOrientation = false;
+        this.timeout = 0;
 
         // Set the game state
         this.gameRunning = false;
@@ -325,6 +326,27 @@ export default class ThumbRaiser {
         console.log("Fetch Room Data, in hospital ")
         console.log(x[index]);
         return x[index];
+    }
+    async onMapTimeChange(inputValue) {
+        this.selectedDate = inputValue;
+        if(inputValue == null) {
+            this.CorrectlyLoaded = false;
+        } else {
+            clearTimeout(this.timeout);
+            for (let index = 0; index < this.maze.BedArr.length; index++) {
+                const element = this.maze.BedArr[index];
+                let room = await this.fetchRoomData(index);
+                let status = await this.fetchRoomStatus(room.id);
+                if (status) {
+                    element.visible = false;
+                    console.log("Luigi is Died!");
+                } else {
+                    element.visible = true;
+                    console.log("Luigi is Live!");
+                }
+                console.log("Checked Room: " + room.roomNumber);
+            }
+        }
     }
     async fetchRoomStatus(id) {
         console.log(id);
@@ -501,7 +523,7 @@ export default class ThumbRaiser {
                     intersectedObject.material = this.originalMaterials.get(intersectedObject);
                     this.originalMaterials.delete(intersectedObject);
                 }
-            }, 500); // Highlight for 500ms
+            }, 500);
 
     
             const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
@@ -739,7 +761,7 @@ export default class ThumbRaiser {
                 if(!this.CorrectlyLoaded && (this.maze.BedArr.length==(this.maze.RoomArr.length-1) && this.maze.BedArr.length > 0)) {
                     this.CorrectlyLoaded = true;
                     console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
-                    setTimeout(() => {
+                    this.timeout = setTimeout(() => {
                         this.CorrectlyLoaded = false;
                         console.log("CorrectlyLoaded is now: ", this.CorrectlyLoaded);
                     }, 60000);
