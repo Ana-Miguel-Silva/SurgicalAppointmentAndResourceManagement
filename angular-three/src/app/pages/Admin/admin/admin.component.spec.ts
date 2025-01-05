@@ -27,6 +27,7 @@ import { SpecializationService } from '../../../Services/specialization.service'
 import { RoomTypesService } from '../../../Services/roomtypes.service';
 import { MockAllergiesService } from '../../../Services/Tests/mock-allergies.service';
 import { MockRoomTypesService } from '../../../Services/Tests/mock-roomtypes.service';
+import { MockMedicalConditionService } from '../../../Services/Tests/mock-medicalCondition.service';
 class MockAuthService {
   getToken() {
     return 'fake-token';
@@ -72,10 +73,8 @@ describe('AdminComponent', () => {
         { provide: ModalService, useValue: mockModalService },
         { provide: MedicalRecordService, useClass: MockMedicalRecordService },
         { provide: RoomTypesService, useClass: MockRoomTypesService },
-
         { provide: AllergiesService, useClass: MockAllergiesService },
-         // TODO: MUDAR PARA  useClass: MockMedicalConditionService
-        { provide: MedicalConditionService, useClass: MedicalConditionService },
+        { provide: MedicalConditionService, useClass: MockMedicalConditionService },
         { provide: SpecializationService, useClass: MockSpecializationService },
         { provide: Router, useValue: mockRouter }
       ]
@@ -241,6 +240,70 @@ describe('AdminComponent', () => {
 
 
     });
+
+
+
+    it('should call getAllRoomTypes and show success alert on success', () => {
+
+      
+      component.roomTypeForm.setValue({
+        code: 'SR011234',
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: true,
+      });
+
+
+      spyOn(mockRoomTypesService, 'getAllRoomTypes').and.callThrough();
+
+      component.getAllRoomTypes();
+
+      // Verificar se o método do serviço foi chamado com os dados esperados
+      expect(mockRoomTypesService.getAllRoomTypes).toHaveBeenCalled;
+
+
+    });
+
+    it('should call onUpdateRoomTypes and show success alert on success', () => {
+
+      component.roomTypeUpdateForm.setValue({
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: "false"
+      })
+
+      component.updateRoomTypesPatch = ({
+        roomTypeId: "111111",
+        code: 'SR011234',
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: "false"
+      });
+
+
+
+      spyOn(mockRoomTypesService, 'update').and.callThrough();
+
+      component.onUpdateRoomTypes();
+
+  
+      expect(mockRoomTypesService.update).toHaveBeenCalled;
+
+
+    });
+
+    it('should call updateRoomTypes and show sucess', () => {
+
+      component.selectedRoomTypesCode = 'SR011234';
+
+      spyOn(mockRoomTypesService, 'getByCode').and.callThrough();
+
+      component.updateRoomTypes();
+
+  
+      expect(mockRoomTypesService.getByCode).toHaveBeenCalledWith("SR011234");
+
+    });
   });
 
 
@@ -335,202 +398,6 @@ describe('AdminComponent', () => {
     expect(modal).toBeTruthy();
     expect(modal.style.display).toBe('none');
   });
-
-
-  /*it('should call createStaff and display success message', fakeAsync(() => {
-    spyOn(mockStaffService, 'createStaff').and.returnValue(of({ success: true }));
-    spyOn(mockStaffService, 'viewStaff').and.returnValue(of([
-      {
-        id: "818300ea-3854-4da0-b2d2-b1cdb2ee7fb2",
-        licenseNumber: "100493647",
-        staffId: "D20241",
-        name: {
-          "firstName": "Gerald",
-          "middleNames": "Ivo",
-          "lastName": "Robotnik"
-        },
-        role: "DOCTOR",
-        specialization: "ORTHOPEDICS",
-        email: {
-          "fullEmail": "avlismana@gmail.com"
-        },
-        phoneNumber: {
-          "number": "966783434"
-        },
-        slots: [
-            {
-                "startTime": "2024-10-10T10:00:00",
-                "endTime": "2024-10-10T10:30:00"
-            }
-        ],
-        active: true
-      },
-    ]));
-    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-
-    const newOperationType = {
-      "email":"avlismana@gmail.com",
-      "name":"Gerald Ivo Robotnik",
-      "phoneNumber":966783434,
-      "license":100493647,
-      "specialization":"ORTHOPEDICS",
-      "role":"DOCTOR",
-      "slots":[{"start":"10/10/2024 10:00","end":"10/10/2024 10:30"}]
-    };
-    component.staffCreationForm2.setValue(newOperationType);
-    component.createStaff();
-
-    tick(500);
-
-    flush();
-
-    expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockStaffService.createStaff).toHaveBeenCalledWith(newOperationType);
-  }));*/
-
-
-  /*it('should call editStaffPostA and display success message', fakeAsync(() => {
-    spyOn(mockStaffService, 'editStaffPostA').and.returnValue(of({ success: true }));
-    spyOn(mockStaffService, 'viewStaff').and.returnValue(of([
-      {
-        id: "818300ea-3854-4da0-b2d2-b1cdb2ee7fb2",
-        licenseNumber: "100493647",
-        staffId: "D20241",
-        name: {
-          "firstName": "Gerald",
-          "middleNames": "Ivo",
-          "lastName": "Robotnik"
-        },
-        role: "DOCTOR",
-        specialization: "CARDIOLOGY",
-        email: {
-          "fullEmail": "doc9edit@gmail.com"
-        },
-        phoneNumber: {
-          "number": "123456789"
-        },
-        slots: [
-            {
-                "startTime": "2024-10-10T10:00:00",
-                "endTime": "2024-10-10T10:30:00"
-            }
-        ],
-        active: true
-      },
-    ]));
-    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-
-    const newOperationType = {
-      "email":"doc9edit@gmail.com",
-      "phone":123456789,
-      "specialization":"CARDIOLOGY",
-      "slots":[]
-    };
-    component.selectStaff("D20241");
-    component.staffEditionForm2.setValue(newOperationType);
-    component.editStaffPost();
-
-    tick(500);
-
-    flush();
-
-    expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockStaffService.editStaffPostA).toHaveBeenCalledWith("D20241",newOperationType);
-  }));
-  it('should call editStaffPostB and display success message', fakeAsync(() => {
-    spyOn(mockStaffService, 'editStaffPostB').and.returnValue(of({ success: true }));
-    spyOn(mockStaffService, 'viewStaff').and.returnValue(of([
-      {
-        id: "818300ea-3854-4da0-b2d2-b1cdb2ee7fb2",
-        licenseNumber: "100493647",
-        staffId: "D20241",
-        name: {
-          "firstName": "Gerald",
-          "middleNames": "Ivo",
-          "lastName": "Robotnik"
-        },
-        role: "DOCTOR",
-        specialization: "CARDIOLOGY",
-        email: {
-          "fullEmail": "doc9edit@gmail.com"
-        },
-        phoneNumber: {
-          "number": "123456789"
-        },
-        slots: [
-            {
-                "startTime": "2024-10-10T10:00:00",
-                "endTime": "2024-10-10T10:30:00"
-            },
-            {
-                "startTime": "2024-10-10T11:00:00",
-                "endTime": "2024-10-10T11:30:00"
-            }
-        ],
-        active: true
-      },
-    ]));
-    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-
-    const newOperationType = {
-      "email":"doc9edit@gmail.com",
-      "phone":123456789,
-      "specialization":"CARDIOLOGY",
-      "slots":[{"start":"10/10/2024 11:00","end":"10/10/2024 11:30"}]
-    };
-    component.selectStaff("D20241");
-    component.staffEditionForm2.setValue(newOperationType);
-    component.editStaffPost();
-
-    tick(500);
-
-    flush();
-
-    expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockStaffService.editStaffPostB).toHaveBeenCalledWith("D20241",newOperationType);
-  }));*/
-
-  /*it('should call deactivateStaff and display success message', fakeAsync(() => {
-    spyOn(mockStaffService, 'deactivateStaff').and.returnValue(of({ success: true }));
-    spyOn(mockStaffService, 'viewStaff').and.returnValue(of([
-      {
-        id: "818300ea-3854-4da0-b2d2-b1cdb2ee7fb2",
-        licenseNumber: "100493647",
-        staffId: "D20241",
-        name: {
-          "firstName": "Gerald",
-          "middleNames": "Ivo",
-          "lastName": "Robotnik"
-        },
-        role: "DOCTOR",
-        specialization: "CARDIOLOGY",
-        email: {
-          "fullEmail": "doc9edit@gmail.com"
-        },
-        phoneNumber: {
-          "number": "123456789"
-        },
-        slots: [
-            {
-                "startTime": "2024-10-10T10:00:00",
-                "endTime": "2024-10-10T10:30:00"
-            }
-        ],
-        active: false
-      },
-    ]));
-    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
-
-    component.selectStaff("D20241");
-    component.deactivateStaff();
-
-    tick(500);
-
-    flush();
-
-    expect(mockAuthService.getToken).toHaveBeenCalled();
-    expect(mockStaffService.deactivateStaff).toHaveBeenCalledWith("D20241");
-  }));*/
 
 
 
@@ -738,5 +605,88 @@ describe('AdminComponent', () => {
     expect(mockSpecializationService.getAllSpecializations).toHaveBeenCalled();
     expect(component.rejectPolicy).toHaveBeenCalled();
   }));
+
+  
+  describe('Medical Condition Tests', () => {
+    it('should fetch all medical Conditions', () => {
+      mockAllegiesService.getAllAllergies().subscribe((allergies) => {
+        expect(allergies.length).toBe(2);
+        expect(allergies[0].designacao).toBe('Pollen');
+      });
+    });
+
+    it('should insert a new allergy', () => {
+      const newAllergy = { designacao: 'Dust', descricao: 'Allergy to dust' };
+
+      mockAllegiesService.insertAllergies(newAllergy).subscribe((response) => {
+        expect(response.designacao).toBe('Dust');
+      });
+
+      mockAllegiesService.getAllAllergies().subscribe((allergies) => {
+        expect(allergies.length).toBe(3); // Verificar novo tamanho do array
+      });
+    });
+
+    it('should not insert duplicate allergy', () => {
+      const duplicateAllergy = { name: 'Pollen', description: 'Duplicate allergy' };
+
+      mockAllegiesService.insertAllergies(duplicateAllergy).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy already exists');
+        },
+      });
+    });
+
+    it('should fetch allergy by name', () => {
+      const allergyName = 'Pollen';
+      const obje = Object({ designacao: 'Pollen', descricao: 'Allergy to pollen' })
+
+      mockAllegiesService.getByDesignacao(allergyName).subscribe((response) => {
+        expect(response).toBeTruthy(); // Verifique se há resposta
+        expect(response).toEqual(obje);
+      });
+
+    });
+
+    it('should throw error if allergy not found', () => {
+      const allergyName = 'Nonexistent';
+
+      mockAllegiesService.getByDesignacao(allergyName).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy not found');
+        },
+      });
+    });
+
+
+    it('should update an existing allergy', () => {
+      const updatedData = { description: 'Updated description' };
+      const objec = Object({ designacao: 'Pollen', descricao: 'Allergy to pollen', description: 'Updated description' })
+
+      mockAllegiesService.updateAllergie('Pollen', updatedData).subscribe((response) => {
+        expect(response.description).toBe('Updated description');
+      });
+
+      mockAllegiesService.getByDesignacao('Pollen').subscribe((response) => {
+        expect(response).toEqual(objec);
+      });
+    });
+
+    it('should throw error if allergy to update is not found', () => {
+      const updatedData = { description: 'Should fail' };
+
+      mockAllegiesService.updateAllergie('Nonexistent', updatedData).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy not found');
+        },
+      });
+    });
+
+
+  });
+
 
 });
