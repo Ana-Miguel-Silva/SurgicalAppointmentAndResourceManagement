@@ -39,13 +39,6 @@
         </div>
       </div>
 
-      <div class="container col-md-4">
-        <div class="container-lg  selectionDiv" (click)="openModal('listAllergies')">
-          <div class="form-floating mb-3">
-            <h3 class="title">List Allergies</h3>
-          </div>
-        </div>
-      </div>
 
       <div class="container col-md-4">
         <div class="container-lg  selectionDiv" (click)="openModal('registerMedicalRecordModal')">
@@ -666,80 +659,6 @@
       </div>
     </div>
 
-  <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
-    <div id="mapModalContent" class="modal-content" style="height: 75vh;">
-      <span (click)="closeModal('listAllergies')" class="close">&times;</span>
-      <div>
-
-        <form class="row g-3 needs-validation" novalidate="">
-          <div class="col-md-10"></div>
-
-          <div class="col-md-2">
-            <div class="input-group">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button
-                class="btn btn-outline-info" (click)="openModal('filterRequestModal')"> Filter </button>
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <div class="table-wrapper">
-              <div class="table-title">
-                <form class="row g-3 needs-validation" novalidate="">
-                  <table class="table table-striped table-hover table-over">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let request of allergiesList; let i = index" (click)="selectAllergie(request.id)"
-                        [ngClass]="{ 'selected-row': selectedAllergie === request.id }">
-                        <td>{{ i + 1 }}</td>
-                        <td><input class="selectRequest" type="radio" id="allergie_{{ request.id }}" name="id"
-                            value="{{ request.id }}" [checked]="selectedAllergie === request.id" hidden>{{
-                          request.designacao }} </td>
-
-                        <td>{{ request.descricao }}</td>
-                        <!--<td>{{ request.descricao }}</td>-->
-                        <!--<td id="active_{{ request.email.fullEmail }}_{{request.active}}">
-                            <span *ngIf="request.active; else failure" class="badge rounded-pill bg-success">Yes</span>
-                            <ng-template #failure>
-                              <span class="badge rounded-pill bg-danger">No</span>
-                            </ng-template>
-                          </td>-->
-                      </tr>
-                    </tbody>
-                  </table>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-9"></div>
-          <div class="col-md-3">
-            <button class="fs-5 btn btn-outline-info">View <i class="bi bi-info-square-fill"></i></button>
-            <button class="fs-5 btn btn-outline-warning"> Edit <i class="bi bi-pencil-square"></i></button>
-            <button class="fs-5 btn btn-outline-danger"> Deactivate <i class="bi bi-archive-fill"></i></button>
-          </div>
-        </form>
-
-
-        <div class="dropdown">
-          <input type="text" placeholder="Escolha uma opção" [(ngModel)]="filterText" (input)="filterOptions()"
-            (focus)="showDropdown = true" (blur)="hideDropdown()" />
-          <ul *ngIf="showDropdown" class="dropdown-list">
-            <li *ngFor="let option of filteredOptions" (mousedown)="selectOption(option.designacao)">
-              {{ option.designacao }}
-            </li>
-          </ul>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
 
 
 
@@ -1109,13 +1028,13 @@
                 <table class="table table-striped table-hover table-over">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                      <th>Staff</th>
-                      <th>Patient Email</th>
-                      <th>Allergies</th>
-                      <th>Medical Conditions</th>
-                      <th>Description</th>
+                      <th (click)="sortData('index')">#<i [ngClass]="getSortIcon('index')"></i></th>
+                      <th (click)="sortData('date')" >Date<i [ngClass]="getSortIcon('date')"></i></th>
+                      <th (click)="sortData('staff')">Staff<i [ngClass]="getSortIcon('staff')"></i></th>
+                      <th (click)="sortData('patientEmail')">Patient Email<i [ngClass]="getSortIcon('patientEmail')"></i></th>
+                      <th (click)="sortData('allergies')">Allergies<i [ngClass]="getSortIcon('allergies')"></i></th>
+                      <th (click)="sortData('medicalConditions')">Medical Conditions<i [ngClass]="getSortIcon('medicalConditions')"></i></th>
+                      <th (click)="sortData('descricao')">Description<i [ngClass]="getSortIcon('descricao')"></i></th>
                     </tr>
                   </thead>
                   <tbody>

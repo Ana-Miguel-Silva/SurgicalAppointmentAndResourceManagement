@@ -1,4 +1,4 @@
-@startuml 5.1.1
+@startuml 5.1.8
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -13,9 +13,9 @@ AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : info to login(username, password)
+AD -> SYS : info to create Specialization(SpecializationName, SpecializationDescription)
 activate SYS
-SYS --> AD : success and access to their funtionalities.
+SYS --> AD : success and data
 
 deactivate SYS
 

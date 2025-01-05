@@ -1,33 +1,30 @@
-@startuml 5.1.1
+@startuml 5.1.8
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+ -> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getUpdateForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<-- FE   : data input
 deactivate FE
-AD -> FE : info to login(username, password)
+-> FE : info to update Appointment(SurgeryRoom, RequiredStaff, StartTime)
 activate FE
-FE -> BE : login(username, password)
+FE -> BE : updateAppointment(SurgeryRoom, RequiredStaff, StartTime)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and access to their funtionalities.
-deactivate FE
-deactivate AD
+
+<-- FE   : success and data
 
 
 @enduml

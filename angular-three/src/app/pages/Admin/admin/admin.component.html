@@ -2399,27 +2399,38 @@
 
 
 
-          <div class="col-md-12">
-            <div class="table-wrapper" >
-              <div class="table-title">
+        <div class="col-md-12">
+          <div class="table-wrapper">
+            <div class="table-title">
               <form (ngSubmit)="onSubmitSpecializations()" class="row g-3 needs-validation" novalidate="">
-              <table class="table table-striped table-hover table-over">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Specialization</th>
-                    <th>Description</th>
-                    <th>Active</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let request of Specializations; let i = index" (click)="selectSpecializations(request.id)" [ngClass]="{ 'selected-row': selectSpecializationsId === request.id }">
-                    <td>{{ i + 1 }}</td>
-                    <td hidden><input class="selectRequest" type="radio" id="specialization_{{ request.id }}" name="SpecializationsFormID" value="{{ request.id }}" [checked]="selectSpecializationsId === request.id" hidden>{{ request.id }}</td>
-                    <td>{{ request.specializationName }} </td>
-                    <td>{{ request.specializationDescription }} </td>
-</tbody>
-              </table>
+                <table class="table table-striped table-hover table-over">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th (click)="sortSpecializations('specializationName')">Specialization <i [ngClass]="getSpecializationsSortIcon('specializationName')"></i></th>
+                      <th (click)="sortSpecializations('specializationDescription')">Description <i [ngClass]="getSpecializationsSortIcon('specializationDescription')"></i></th>
+                      <th>Active</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let request of Specializations; let i = index" 
+                        (click)="selectSpecializations(request.id)" 
+                        [ngClass]="{ 'selected-row': selectSpecializationsId === request.id }">
+                      <td>{{ i + 1 }}</td>
+                      <td hidden>
+                        <input class="selectRequest" 
+                               type="radio" 
+                               id="specialization_{{ request.id }}" 
+                               name="SpecializationsFormID" 
+                               value="{{ request.id }}" 
+                               [checked]="selectSpecializationsId === request.id" hidden>
+                        {{ request.id }}
+                      </td>
+                      <td>{{ request.specializationName }}</td>
+                      <td>{{ request.specializationDescription }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </form>
             </div>
           </div>

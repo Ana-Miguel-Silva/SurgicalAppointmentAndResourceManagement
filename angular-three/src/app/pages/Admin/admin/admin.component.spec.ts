@@ -7,7 +7,7 @@ import { MockStaffService } from '../../../Services/Tests/mock-staff.service';
 /*import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
 import { PatientService } from '../../../Services/patient.service';*/
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -25,6 +25,8 @@ import { AllergiesService } from '../../../Services/allergies.service';
 import { MedicalConditionService } from '../../../Services/medicalCondition.service';
 import { SpecializationService } from '../../../Services/specialization.service';
 import { RoomTypesService } from '../../../Services/roomtypes.service';
+import { MockAllergiesService } from '../../../Services/Tests/mock-allergies.service';
+import { MockRoomTypesService } from '../../../Services/Tests/mock-roomtypes.service';
 class MockAuthService {
   getToken() {
     return 'fake-token';
@@ -68,12 +70,10 @@ describe('AdminComponent', () => {
         { provide: StaffService, useClass: MockStaffService },
         { provide: AuthService, useClass: MockAuthService },
         { provide: ModalService, useValue: mockModalService },
-        { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
-        // TODO: MUDAR PARA  useClass: MockRoomTypesService
-        { provide: RoomTypesService, useClass: RoomTypesService },       
+        { provide: MedicalRecordService, useClass: MockMedicalRecordService },
+        { provide: RoomTypesService, useClass: MockRoomTypesService },
 
-          // TODO: MUDAR PARA  useClass: MockAllergiesService
-        { provide: AllergiesService, useClass: AllergiesService },
+        { provide: AllergiesService, useClass: MockAllergiesService },
          // TODO: MUDAR PARA  useClass: MockMedicalConditionService
         { provide: MedicalConditionService, useClass: MedicalConditionService },
         { provide: SpecializationService, useClass: MockSpecializationService },
@@ -89,7 +89,7 @@ describe('AdminComponent', () => {
     mockMedicalConditionService = TestBed.inject(MedicalConditionService) as jasmine.SpyObj<MedicalConditionService>;
     mockSpecializationService = TestBed.inject(SpecializationService) as jasmine.SpyObj<SpecializationService>;
     mockRoomTypesService = TestBed.inject(RoomTypesService) as jasmine.SpyObj<RoomTypesService>;
-    
+
 
 
 
@@ -102,6 +102,145 @@ describe('AdminComponent', () => {
 
 
 
+  });
+
+
+  describe('Allergy Tests', () => {
+    it('should fetch all allergies', () => {
+      mockAllegiesService.getAllAllergies().subscribe((allergies) => {
+        expect(allergies.length).toBe(2);
+        expect(allergies[0].designacao).toBe('Pollen');
+      });
+    });
+
+    it('should insert a new allergy', () => {
+      const newAllergy = { designacao: 'Dust', descricao: 'Allergy to dust' };
+
+      mockAllegiesService.insertAllergies(newAllergy).subscribe((response) => {
+        expect(response.designacao).toBe('Dust');
+      });
+
+      mockAllegiesService.getAllAllergies().subscribe((allergies) => {
+        expect(allergies.length).toBe(3); // Verificar novo tamanho do array
+      });
+    });
+
+    it('should not insert duplicate allergy', () => {
+      const duplicateAllergy = { name: 'Pollen', description: 'Duplicate allergy' };
+
+      mockAllegiesService.insertAllergies(duplicateAllergy).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy already exists');
+        },
+      });
+    });
+
+    it('should fetch allergy by name', () => {
+      const allergyName = 'Pollen';
+      const obje = Object({ designacao: 'Pollen', descricao: 'Allergy to pollen' })
+
+      mockAllegiesService.getByDesignacao(allergyName).subscribe((response) => {
+        expect(response).toBeTruthy(); // Verifique se há resposta
+        expect(response).toEqual(obje);
+      });
+
+    });
+
+    it('should throw error if allergy not found', () => {
+      const allergyName = 'Nonexistent';
+
+      mockAllegiesService.getByDesignacao(allergyName).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy not found');
+        },
+      });
+    });
+
+
+    it('should update an existing allergy', () => {
+      const updatedData = { description: 'Updated description' };
+      const objec = Object({ designacao: 'Pollen', descricao: 'Allergy to pollen', description: 'Updated description' })
+
+      mockAllegiesService.updateAllergie('Pollen', updatedData).subscribe((response) => {
+        expect(response.description).toBe('Updated description');
+      });
+
+      mockAllegiesService.getByDesignacao('Pollen').subscribe((response) => {
+        expect(response).toEqual(objec);
+      });
+    });
+
+    it('should throw error if allergy to update is not found', () => {
+      const updatedData = { description: 'Should fail' };
+
+      mockAllegiesService.updateAllergie('Nonexistent', updatedData).subscribe({
+        next: () => fail('Expected an error to be thrown'),
+        error: (error) => {
+          expect(error.message).toBe('Allergy not found');
+        },
+      });
+    });
+
+
+  });
+
+
+  describe('RoomTypes Tests', () => {
+
+    it('should call insertRoomTypes and show success alert on success', () => {
+
+
+      const formData = {
+        code: 'SR011234',
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: true,
+      };
+
+      spyOn(mockRoomTypesService, 'insertRoomTypes').and.callThrough();
+
+
+      component.roomTypeForm.setValue({
+        code: 'SR011234',
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: true,
+      });
+
+      component.onInsertRoomType();
+
+      // Verificar se o método do serviço foi chamado com os dados esperados
+      expect(mockRoomTypesService.insertRoomTypes).toHaveBeenCalledWith(formData);
+
+
+    });
+
+    it('should show an error alert if there is an error', () => {
+      const formData = {
+        code: 'SR011234',
+        designacao: 'Single Room',
+        descricao: 'A standard single room with basic amenities.',
+        surgerySuitable: true,
+      };
+
+      component.roomTypeForm.setValue(formData);
+
+      // Simulando um erro no serviço
+      spyOn(mockRoomTypesService, 'insertRoomTypes').and.returnValue(
+        new Observable((observer) => {
+          observer.error(new Error('Room Type already exists'));
+        })
+      );
+
+      component.onInsertRoomType();
+
+      // Verificar se o método do serviço foi chamado com os dados esperados
+      expect(mockRoomTypesService.insertRoomTypes).toHaveBeenCalledWith(formData);
+
+
+    });
   });
 
 
@@ -409,7 +548,7 @@ describe('AdminComponent', () => {
       emergencyContactEmail: 'jane.doe@example.com',
       emergencyContactPhone: '987654321',
       appointmentHistory: []
-     
+
     });
 
     // Adicionar valores ao appointmentHistory
@@ -436,7 +575,7 @@ describe('AdminComponent', () => {
       emergencyContactEmail: 'jane.doe@example.com',
       emergencyContactPhone: '987654321',
       appointmentHistory: ['2021-09-15', '2022-10-10']
-      
+
     });
 
     // Simular uma resposta de sucesso
@@ -556,7 +695,7 @@ describe('AdminComponent', () => {
       },
       phoneEmergency: {
         "number": "999999999"
-      },   
+      },
       dateOfBirth: "1994-11-19T17:23:59.346839"
      };
     spyOn(component, 'populateUpdateForm');
@@ -581,23 +720,23 @@ describe('AdminComponent', () => {
     spyOn(mockSpecializationService, 'getAllSpecializations').and.returnValue(of([]));
     spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
     spyOn(component, 'rejectPolicy').and.callThrough();
-    
+
     const specializationData = {
       specializationName: 'Specialization Test',
       specializationDescription: 'Specialization Description Test',
     };
-  
+
     component.specialization = specializationData;
-  
+
     component.onCreateSpecialization(specializationData);
-  
+
     tick();
     flush();
-  
+
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockSpecializationService.createSpecialization).toHaveBeenCalledWith(specializationData);
     expect(mockSpecializationService.getAllSpecializations).toHaveBeenCalled();
     expect(component.rejectPolicy).toHaveBeenCalled();
   }));
-  
+
 });
