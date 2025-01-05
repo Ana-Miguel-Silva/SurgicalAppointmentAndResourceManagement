@@ -148,6 +148,8 @@ namespace DDDSample1.Tests.ApplicationService
             Assert.Equal(2, result.Count);
             mockRepo.Verify(r => r.GetSurgerySuitableActiveAsync(), Times.Once);
         }
-    }
+    
 
+        
+    }
 }
