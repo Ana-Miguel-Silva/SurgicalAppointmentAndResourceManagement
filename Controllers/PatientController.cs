@@ -263,8 +263,7 @@ namespace DDDSample1.Controllers
 
 
 
-            //TODO: Testes e verificar se funciona sem ser com id
-            
+
            // if (_authService.ValidateUserRole(Request.Headers["Authorization"].ToString(), new List<string> { Role.ADMIN, Role.PATIENT }).Result)
             {
                 try
