@@ -13,7 +13,7 @@ AD -> SYS: access page
 activate SYS
 SYS --> AD : data input
 deactivate SYS
-AD -> SYS : update medical record(allergie, medical Condition)
+AD -> SYS : update medical record(medicalRecord)
 activate SYS
 SYS --> AD : success and view medical record updated.
 

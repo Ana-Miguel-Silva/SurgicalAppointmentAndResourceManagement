@@ -18,11 +18,11 @@ FE -> HT : onClick()
 activate HT
 
 
-HT -> CM : onUpdateMedicalRecord(allergie/medicalCondition)
+HT -> CM : onUpdateMedicalRecord(medicalRecord)
 
 activate CM
 
-CM -> SERV : postUpdateMedicalRecord(allergie/medicalCondition)
+CM -> SERV : postUpdateMedicalRecord(medicalRecord)
 
  activate SERV
 
