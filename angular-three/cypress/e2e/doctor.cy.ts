@@ -301,7 +301,96 @@ describe('Doctor Operation Requests', () => {
     });
   });
 
+  describe('Create Operation Request Modal Tests', () => {
+    beforeEach(() => {
+      cy.visit('http://localhost:4200/doctor');
+      cy.get('.selectionDiv').contains('Resgister Operation Request').click();
+      cy.get('#createRequestModal').should('be.visible');
+    });
 
- 
+    it('Should allow filling all fields and submitting the form', () => {
+      cy.get('#patientEmail').type('avlismana@gmail.com');
+      cy.get('#operationTypeName').type('Cypress');
+      cy.get('#deadline').type('2025-10-01');
+      cy.get('#priority').select('Urgent');
+      cy.get('button[id="registerRequest"]').click();
+      cy.get('button[id="acceptPolicy"]').click();
+      cy.get('button[id="submitRegisterRequest"]').click();
+      cy.wait(3000);
+    });
+});
+
+describe('Operations Through List Modal', () => {
+    beforeEach(() => {
+      cy.get('.selectionDiv').contains('List Operation Requests').click();
+      cy.get('#listOperationRequestModal').should('be.visible');
+    });
+
+    it('Should update the priority of an operation request', () => {
+      cy.get('.btn-warning').first().click();
+      cy.get('#updateRequestModal').should('be.visible');
+      cy.get('#updatePriority').select('Elective');
+      cy.get('button[id="updateRequest"]').click();
+      cy.get('button[id="acceptPolicy"]').click();
+      cy.get('button[id="submitUpdateRequest"]').click();
+      cy.wait(3000);
+    });
+
+    it('Should filter the requests by priority', () => {
+      cy.get('button[id="filterRequest"]').click();
+      cy.get('#filterPriority').select('Elective');
+      cy.get('button[id="applyFilter"]').click();
+      cy.get('table').contains('Elective').should('be.visible');
+    });
+
+    it('Should delete an operation request', () => {
+      cy.get('.btn-danger').first().click();
+      cy.get('#deleteModal').should('be.visible');
+      cy.get('button[id="deleteRequest"]').click();
+    });
+});
+
+describe('Appointment Modals', () => {
+    beforeEach(() => {
+      cy.visit('http://localhost:4200/doctor');
+    });
+
+    it('should open and interact with the Create Appointment modal', () => {
+      cy.get('.selectionDiv').contains('Create Appointment').click();
+      cy.get('.modal').should('be.visible');
+      cy.get('#surgeryRoom').select('Room Number: 120 - Room Type: (2L20IP22)');
+      cy.get('#operationRequest').select('Type: Cypress - Patient Email: avlismana@gmail.com - Priority: Emergency - Deadline: 2025-10-10');
+      cy.get('#startDate').type('2025-10-10T15:30');
+      cy.get('#staffSelect').select('License: 603437210 - Role: DOCTOR - Specialization: ANAESTHETIST');
+      cy.get('.btn').contains('+ Add Staff').click();
+      cy.get('#staffSelect').select('License: 606437410 - Role: DOCTOR - Specialization: ORTHOPEDICS');
+      cy.get('.btn').contains('+ Add Staff').click();
+      cy.get('#staffSelect').select('License: 603430210 - Role: NURSE - Specialization: ASSISTANT');
+      cy.get('.btn').contains('+ Add Staff').click();
+      cy.get('button[id="registerAppointment"]').click();
+      cy.get('button[id="acceptPolicy"]').click();
+      cy.get('button[id="submitRegisterAppointment"]').click();
+      cy.wait(5000);
+    });
+
+    it('should list existing appointments', () => {
+      cy.get('.selectionDiv').contains('Update Appointments').click();
+      cy.get('#listAppointmentModal').should('be.visible');
+      cy.get('table tbody tr').should('have.length.greaterThan', 0);
+      cy.get('table tbody tr').first().find('.btn-warning').click({ force: true });
+      cy.get('#updateAppointmentModal').should('be.visible');
+    });
+
+    it('should interact with the Update Appointment modal', () => {
+      cy.get('.selectionDiv').contains('Update Appointments').click();
+      cy.get('table tbody tr').first().find('.btn-warning').click({ force: true });
+      cy.get('#updateRoom').select('Room Number: 119 - Room Type: (2L20IP22)');
+      cy.get('#updateStartDate').clear().type('2025-10-10T16:00');
+      cy.get('button[id="updateAppointment"]').click();
+      cy.get('button[id="acceptPolicy"]').click();
+      cy.get('button[id="submitUpdateAppointment"]').click();
+      cy.wait(10000);
+    });
+});
 
 });
