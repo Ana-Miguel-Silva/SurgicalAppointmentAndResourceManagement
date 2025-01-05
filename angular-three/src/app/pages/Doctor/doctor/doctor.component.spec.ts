@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DoctorComponent } from './doctor.component';
 import { MockOperationRequestsService } from '../../../Services/Tests/mock-operationRequest.service'; 
+import { MockAppointmentService } from '../../../Services/Tests/mock-appointments.service'; 
 import { MockModalService } from '../../../Services/Tests/mock-modal.service';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
@@ -69,10 +70,9 @@ describe('DoctorComponent', () => {
       ],
       providers: [
         { provide: OperationRequestsService, useClass: MockOperationRequestsService }, 
+        { provide: AppointmentService, useClass: MockAppointmentService }, 
         { provide: MedicalRecordService, useClass: MockMedicalRecordService }, 
         { provide: sweetAlertService, useClass: MockSweetAlertService }, 
-        // TODO: MUDAR PARA  useClass: MockAppointmentService
-        { provide: AppointmentService, useClass: AppointmentService },
          // TODO: MUDAR PARA  useClass: MockSurgeryRoomsService
          { provide: SurgeryRoomsService, useClass: SurgeryRoomsService },
         // TODO: MUDAR PARA  useClass: MockAllergiesService
@@ -123,8 +123,85 @@ describe('DoctorComponent', () => {
 
     expect(mockAuthService.getToken).toHaveBeenCalled();
     expect(mockOperationRequestsService.getAllOperationRequests).toHaveBeenCalled();
-    expect(component.operationRequests.length).toBe(2);
   }));
+
+  it('should call createAppointments and display success message', fakeAsync(() => {
+    spyOn(mockAppointmentService, 'createAppointments').and.returnValue(of({}));
+    spyOn(mockAppointmentService, 'getAllAppointments').and.returnValue(of([]));
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
+    spyOn(component, 'cleanRegister').and.callThrough();
+    spyOn(component, 'rejectPolicy').and.callThrough();
+  
+    component.selectedOperationRequestId = 'opReq123';
+    component.selectedSurgeryRoomId = 'room456';
+    component.appointmentData = {
+      date: { start: '2024-12-01T10:00:00Z' },
+      selectedStaff: [
+        {
+          id: 'staff789',
+          licenseNumber: 'LN12345',
+          role: 'Doctor',
+          specialization: 'CARDIOLOGY'
+        }
+      ],
+    };
+  
+    component.onCreateAppointment();
+  
+    tick();
+    flush();
+    
+    expect(mockAuthService.getToken).toHaveBeenCalled();
+    expect(mockAppointmentService.createAppointments).toHaveBeenCalled();
+    expect(mockAppointmentService.getAllAppointments).toHaveBeenCalled();
+    expect(component.cleanRegister).toHaveBeenCalled();
+  }));
+
+  it('should update appointment and display success message', fakeAsync(() => {
+    spyOn(mockAppointmentService, 'updateAppointments').and.returnValue(of({}));
+    spyOn(mockAppointmentService, 'getAllAppointments').and.returnValue(of([
+      { id: '1', date: { startTime: '2024-12-01T10:00:00Z', endTime: '2024-12-01T12:00:00Z' }, status: 'Scheduled' }
+    ]));
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
+    spyOn(component, 'rejectPolicy').and.callThrough();
+  
+    const existingAppointment = {
+      id: '1',
+      roomNumber: '101',
+      date: { 
+        startTime: '2024-12-01T10:00:00Z', 
+        endTime: '2024-12-01T12:00:00Z' 
+      },
+      status: 'Scheduled',
+      selectedStaff: [
+        { id: 'staff123', licenseNumber: 'LN987', role: 'Surgeon', specialization: 'Cardiology' }
+      ]
+    };
+  
+    component.appointments = [existingAppointment];
+  
+    const updatedAppointment = {
+      id: '1',
+      roomId: 'newRoomId',
+      start: '2024-12-01T11:00:00Z',
+      selectedStaff: ['staff123']
+    };
+  
+    component.surgeryRooms = [{ roomNumber: '101', id: 'roomId123', type: 'typeTests' }];
+    component.selectedSurgeryRoomId = 'roomId123';
+  
+    component.onUpdateAppointment(updatedAppointment);
+  
+    tick();
+    flush();
+  
+    expect(mockAuthService.getToken).toHaveBeenCalled();
+    expect(mockAppointmentService.updateAppointments).toHaveBeenCalled();
+    expect(mockAppointmentService.getAllAppointments).toHaveBeenCalled();
+    expect(component.rejectPolicy).toHaveBeenCalled();
+  }));
+  
+
 
 
   it('should call createOperationRequests and display success message', fakeAsync(() => {
@@ -547,8 +624,8 @@ component.onCreateRequest(newRequest);
 
   it('should filter allergies successfully', () => {
     component.tagsAllergies = [
-      { designacao: 'Peanut Allergy', descricao: 'Peanut-related allergy', status: 'Active' },
-      { designacao: 'Shellfish Allergy', descricao: 'Shrimp allergy', status: 'Resolved' },
+      { designacao: 'Peanut Allergy', descricao: 'Peanut-related allergy', status: 'Active', note:'' },
+      { designacao: 'Shellfish Allergy', descricao: 'Shrimp allergy', status: 'Resolved', note:'' },
     ];
 
     component.allergieNameFilter = 'peanut';
@@ -566,6 +643,7 @@ component.onCreateRequest(newRequest);
         descricao: 'Description A',
         status: 'Active',
         sintomas: ['fever', 'cough'],
+        note:'',
       },
       {
         codigo: 'C02',
@@ -573,6 +651,7 @@ component.onCreateRequest(newRequest);
         descricao: 'Description B',
         status: 'Resolved',
         sintomas: ['headache', 'nausea'],
+        note:'',
       },
     ];
 

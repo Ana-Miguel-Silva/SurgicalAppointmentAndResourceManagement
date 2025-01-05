@@ -499,7 +499,7 @@
   <div [ngStyle]="{'display': isModalOpen('mapModal') ? 'block' : 'none'}" id="mapModal" class="modal" style=" padding-top: 20px;">
       <div id="mapModalContent" class="modal-content" style="height: 95vh;">
           <span (click)="closeModal('mapModal')" class="close">&times;</span>
-          <input type="datetime-local" class="form-control" id="mapTime" formControlName="mapTime" placeholder="" (change)="onMapTimeChange($event)">
+          <input type="datetime-local" class="form-control" id="mapTime" placeholder="" (change)="onMapTimeChange($event)">
           <br><br>
 
           <div id="floating-info-div" *ngIf="roomData">

@@ -2,10 +2,10 @@ import { AdminComponent } from './admin.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from '../../../Services/auth.service';
 import { MockOperationTypesService } from '../../../Services/Tests/mock-operationTypes.service';
+import { MockSpecializationService } from '../../../Services/Tests/mock-specializations.service';
 import { MockStaffService } from '../../../Services/Tests/mock-staff.service';
 /*import { MockPatientService } from '../../../Services/Tests/mock-patient.service';
 import { PatientService } from '../../../Services/patient.service';*/
-
 import { OperationTypesService } from '../../../Services/operationTypes.service.';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -76,8 +76,7 @@ describe('AdminComponent', () => {
         { provide: AllergiesService, useClass: AllergiesService },
          // TODO: MUDAR PARA  useClass: MockMedicalConditionService
         { provide: MedicalConditionService, useClass: MedicalConditionService },
-        // TODO: MUDAR PARA  useClass: MockSpecializationService
-        { provide: SpecializationService, useClass: SpecializationService },
+        { provide: SpecializationService, useClass: MockSpecializationService },
         { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
@@ -577,5 +576,28 @@ describe('AdminComponent', () => {
   });
 
 
-
+  it('should call createSpecialization and display success message', fakeAsync(() => {
+    spyOn(mockSpecializationService, 'createSpecialization').and.returnValue(of({}));
+    spyOn(mockSpecializationService, 'getAllSpecializations').and.returnValue(of([]));
+    spyOn(mockAuthService, 'getToken').and.returnValue('fake-token');
+    spyOn(component, 'rejectPolicy').and.callThrough();
+    
+    const specializationData = {
+      specializationName: 'Specialization Test',
+      specializationDescription: 'Specialization Description Test',
+    };
+  
+    component.specialization = specializationData;
+  
+    component.onCreateSpecialization(specializationData);
+  
+    tick();
+    flush();
+  
+    expect(mockAuthService.getToken).toHaveBeenCalled();
+    expect(mockSpecializationService.createSpecialization).toHaveBeenCalledWith(specializationData);
+    expect(mockSpecializationService.getAllSpecializations).toHaveBeenCalled();
+    expect(component.rejectPolicy).toHaveBeenCalled();
+  }));
+  
 });

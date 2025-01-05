@@ -589,7 +589,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.sweetService.sweetSuccess('Specialization created successfully!')
-
+          this.getAllSpecializations();
           this.modalService.closeModal('createSpecializationModal');
         },
         error: (error) => {
