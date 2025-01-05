@@ -1,33 +1,31 @@
-@startuml 5.1.1
+@startuml
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
 
 
-activate AD
-AD -> FE: access page
+-> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getMedicalConditionEditForm()
 activate BE
 BE --> FE: form
 deactivate BE
-FE --> AD : data input
+<--FE : Medical Condition data edit input
 deactivate FE
-AD -> FE : info to login(username, password)
+ -> FE : edit info of Medical Condition
 activate FE
-FE -> BE : login(username, password)
+FE -> BE : Update(string id, MedicalConditionEditDTO dto)
 activate BE
 BE --> FE: success
 deactivate BE
-FE --> AD : success and access to their funtionalities.
+<--FE : success of operation and edited data
 deactivate FE
-deactivate AD
 
 
 @enduml

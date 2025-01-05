@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Repository" as REPO <<component>>
+
+-> CTRL: GetAll(filters)
+activate CTRL
+CTRL -> SERV: GetAllFilteredAsync(filters)
+activate SERV
+SERV -> REPO: GetAllAsync()
+activate REPO
+REPO --> SERV: allSpecializationList
+deactivate REPO
+SERV --> CTRL: filteredSpecializationList
+deactivate SERV
+<-- CTRL : SpecializationDTOList
+
+
+
+@enduml

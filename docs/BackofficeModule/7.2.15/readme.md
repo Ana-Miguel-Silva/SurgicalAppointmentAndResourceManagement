@@ -34,15 +34,19 @@ As part of the development of the software system, it is necessary to implement 
 
 ### 3.1. Sequence Diagram
 
-**Login User Level 1**
+**List Specialization Level 1**
 
-![Login User](sequence-diagram-1.svg "Login User")
+![List Specialization](sequence-diagram-1.svg "List Specialization")
 
-**Login User Level 2**
+**List Specialization Level 2**
 
-![Login User](sequence-diagram-2.svg "Login User")
+![List Specialization](sequence-diagram-2.svg "List Specialization")
 
-**Login User Level 3**
+**List Specialization Level 3 Frontend**
 
-![Login User](sequence-diagram-3.svg "Login User")
+![List Specialization](sequence-diagram-3.svg "List Specialization")
+
+**List Specialization Level 3 Backend**
+
+![List Specialization](sequence-diagram-3B.svg "List Specialization")
 
