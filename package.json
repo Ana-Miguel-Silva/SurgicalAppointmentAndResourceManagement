@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@tweenjs/tween.js": "^25.0.0",
     "@types/three": "^0.169.0",
     "bootstrap-icons": "^1.11.3",
     "nodemon": "^3.1.9",

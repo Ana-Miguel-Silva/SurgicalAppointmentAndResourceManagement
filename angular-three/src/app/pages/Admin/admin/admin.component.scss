@@ -7,8 +7,6 @@ body {
     font-family: Arial, sans-serif;
     justify-content: center;
     align-items: center;
-    //height: 100vh; //TODO: TROCAR TIRAR ISTO PARA APARECER TUDO, ESTA TEMPORARIAMENTE
-
     //background-attachment: scroll!important;
 }
 
@@ -275,14 +273,14 @@ table.table td .btn.manage:hover {
 
 .table-over{
     display: block;
-    height: 50vh; 
+    height: 50vh;
     overflow-y: scroll;
 
 }
 
 .table-over-update{
-  display: block; 
-  height: 20vh; 
+  display: block;
+  height: 20vh;
   overflow-y: scroll;
 }
 
@@ -332,7 +330,7 @@ table.table td .btn.manage:hover {
 .dates-input {
     margin-top: 10px;
   }
-  
+
   .dates-input ul#dates, .dates-input ul#dates2 {
     list-style-type: none;
     padding: 0;
@@ -341,7 +339,7 @@ table.table td .btn.manage:hover {
     flex-wrap: wrap;
     gap: 5px;
   }
-  
+
   .dates-input ul#dates li.date, .dates-input ul#dates2 li.date {
     background-color: #e0f7fa;
     color: #00796b;
@@ -352,7 +350,7 @@ table.table td .btn.manage:hover {
     font-size: 0.9rem;
     font-weight: 500;
   }
-  
+
   .dates-input ul#dates li.date .delete-button, .dates-input ul#dates2 li.date .delete-button {
     background: none;
     border: none;
@@ -362,11 +360,11 @@ table.table td .btn.manage:hover {
     margin-left: 8px;
     cursor: pointer;
   }
-  
+
   .dates-input ul#dates li.date .delete-button:hover, .dates-input ul#dates2 li.date .delete-button:hover {
     color: #d32f2f;
   }
-  
+
   .dates-input input[type="date"] {
     width: 100%;
     padding: 8px;
@@ -375,17 +373,17 @@ table.table td .btn.manage:hover {
     font-size: 0.9rem;
     color: #495057;
   }
-  
+
   .dates-input input[type="date"]::placeholder {
     color: #6c757d;
   }
-  
+
   .dates-input input[type="date"]:focus {
     border-color: #80bdff;
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
-  
+
 
 
 
@@ -395,7 +393,7 @@ table.table td .btn.manage:hover {
     display: inline-block;
     border-bottom: 1px dotted black;
   }
-  
+
   .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
@@ -404,19 +402,19 @@ table.table td .btn.manage:hover {
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
-  
+
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
   }
-  
+
   .tooltip .tooltiptext {
     width: 120px;
     bottom: 100%;
     left: 50%;
     margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
   }
-  
+
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
@@ -434,7 +432,7 @@ table.table td .btn.manage:hover {
     right: 200px; /* Posicionamento no canto direito */
     top: 60px; /* Ajuste da posição no eixo vertical */
   }
-  
+
   .btn-right:hover {
     background: rgb(255,0,0);
     background: radial-gradient(circle, rgba(255, 0, 0, 0.411) 0%, rgba(255,80,80,1) 50%, rgba(255,0,0,1) 100%);
@@ -451,7 +449,7 @@ table.table td .btn.manage:hover {
     height: 100%; /* Optional: Ensure it fills the parent container */
     font-family: Arial, sans-serif; /* Optional: Set a desired font */
   }
-  
+
   /* CSS para personalização */
 .custom-checkbox {
   position: relative;

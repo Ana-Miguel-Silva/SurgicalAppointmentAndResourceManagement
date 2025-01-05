@@ -52,7 +52,7 @@
 
         public override string ToString()
         {
-            return $"RoomTypes [Id={Id}, Designacao={Designacao}, Descricao={Descricao}, SurgerySuitable={SurgerySuitable}]";
+            return $"RoomTypes [Id={Id.Value}, Code={Code}, Designacao={Designacao}, Descricao={Descricao}, SurgerySuitable={SurgerySuitable}]";
         }
 
         public string ObtainDesignacao()

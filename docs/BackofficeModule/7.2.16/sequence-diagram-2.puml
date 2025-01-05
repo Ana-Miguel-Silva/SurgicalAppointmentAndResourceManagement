@@ -1,4 +1,5 @@
-@startuml 6.2.6
+@startuml 5.1.9
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
@@ -7,24 +8,26 @@ autonumber
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
-
-
- -> FE: access page
+-> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getEditForm(email)
 activate BE
-BE --> FE: form
+BE --> FE: AllergyDto
 deactivate BE
-<-- FE   : data input
+<-- FE : provide edit form
 deactivate FE
--> FE : info to create RoomTypes(Code,Designation, Description, SurgerySuitable)
+-> FE : edit info of Allergy
 activate FE
-FE -> BE : createRoomTypes(roomTypesDTO)
+FE -> BE: updateAllergy(designation, AllergyDTO)
 activate BE
+
 BE --> FE: success
 deactivate BE
+<-- FE : success and data
 
-<-- FE   : success and data
+deactivate FE
+
+
 
 
 @enduml

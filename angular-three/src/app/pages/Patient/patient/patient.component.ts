@@ -126,8 +126,8 @@ export class PatientComponent {
   medicalRecordProfile: any = null;
 
 
-  isPolicyAccepted = false; 
-  showPolicyModal = false; 
+  isPolicyAccepted = false;
+  showPolicyModal = false;
 
 
   openPolicyModal() {
@@ -189,51 +189,51 @@ export class PatientComponent {
   addDate(event: Event) {
     const input = event.target as HTMLInputElement;
     const selectedDate = input.value;
-  
+
     if (selectedDate) {
       // Adiciona ao array local
       event.preventDefault(); // Impede o envio do formulário
       this.appointmentHistory.push(selectedDate);
-  
+
       // Adiciona ao FormArray
       const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
       appointmentHistoryControl.push(new FormControl(selectedDate));
-  
+
       // Limpa o campo de entrada
       input.value = '';
     }
   }
-  
+
   removeDate(index: number) {
     // Remove do array local
     this.appointmentHistory.splice(index, 1);
-  
+
     // Remove do FormArray
     const appointmentHistoryControl = this.patientUpdateForm.get('appointmentHistory') as FormArray;
     appointmentHistoryControl.removeAt(index);
   }
-  
+
  /* addTag(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value.trim();
-  
+
     if (event.key === 'Enter' && value) {
-      event.preventDefault(); 
-      this.tags.push(value); 
-  
+      event.preventDefault();
+      this.tags.push(value);
+
       // Adiciona ao FormArray
       const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
       allergiesControl.push(new FormControl(value));
-  
+
       // Limpa o campo de entrada
       input.value = '';
     }
   }
-  
+
   removeTag(index: number) {
     // Remove do array local
     this.tags.splice(index, 1);
-  
+
     // Remove do FormArray
     const allergiesControl = this.patientUpdateForm.get('allergies') as FormArray;
     allergiesControl.removeAt(index);
@@ -248,19 +248,19 @@ export class PatientComponent {
     console.log("Entrei get medical record");
 
     forkJoin({
-      patient: this.patientService.getPatientByEmail(this.selectedPatientEmail)        
+      patient: this.patientService.getPatientByEmail(this.selectedPatientEmail)
     }).subscribe({
       next: ({ patient }) => {
-  
-        const getPatientId = patient.id.value;   
-        console.log("patient id " , getPatientId);      
-  
+
+        const getPatientId = patient.id.value;
+        console.log("patient id " , getPatientId);
+
         this.medicalRecordService.getAllMedicalRecordByPatientId(getPatientId)
-          .subscribe({            
-            next: (response) => {    
+          .subscribe({
+            next: (response) => {
               this.medicalRecordProfile = response[0];
               console.log("Medical record: ", this.medicalRecordProfile);
- 
+
               // Add existing conditions to the form
               this.medicalRecordProfile.medicalConditions.forEach((condition: IMedicalConditionMedicalRecord) => {
                 this.tagsConditions.push({
@@ -272,8 +272,8 @@ export class PatientComponent {
                   note: condition.note,
                 });
               });
-              
-  
+
+
               this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
                 this.tagsAllergies.push({
                   designacao: allergy.designacao,
@@ -295,7 +295,7 @@ export class PatientComponent {
             }
           });
         },
-        error: (error: any) => {          
+        error: (error: any) => {
           console.error('Error fetching patient:', error);
           Swal.fire({
             icon: 'error',
@@ -319,7 +319,7 @@ export class PatientComponent {
 
   onUpdatePatient() {
     const token = this.authService.getToken();
-  
+
     if (!token) {
       alert('You are not logged in!');
       return;
@@ -334,14 +334,14 @@ export class PatientComponent {
       return;
     }
 
-  
+
     const updatedPatientData = this.patientUpdateForm.value;
     console.log('Updated Patient Data:', updatedPatientData);
-  
+
     this.patientService.updatePatient(this.selectedPatientEmail, updatedPatientData).subscribe({
       next: (response: any) => {
         console.log(response);
-  
+
         if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
           Swal.fire({
             title: "Submit your code",
@@ -372,7 +372,7 @@ export class PatientComponent {
                 return;
               }
 
-  
+
               this.patientService.confirmAction(this.actionId, this.selectedPatientEmail).subscribe({
                 next: (confirmResponse: any) => {
                   console.log(confirmResponse);
@@ -414,16 +414,16 @@ export class PatientComponent {
       },
     });
   }
-  
+
 
 
 
 
   populateUpdateForm(): void {
-    console.log('Patient Profile Single:', this.patientProfileSingle); 
+    console.log('Patient Profile Single:', this.patientProfileSingle);
     if (!this.patientProfileSingle) {
         console.error('Patient profile is not available');
-        return; 
+        return;
     }
 
     this.patientUpdateForm.patchValue({
@@ -436,13 +436,13 @@ export class PatientComponent {
       emergencyContactEmail: this.patientProfileSingle.emailEmergency?.fullEmail || '',
       emergencyContactPhone: this.patientProfileSingle.phoneEmergency?.number || '',
     });
-    
+
 
     const appointmentHistoryArray = this.patientUpdateForm.get('appointmentHistory') as FormArray;
     //const allergiesArray = this.patientUpdateForm.get('allergies') as FormArray;
     appointmentHistoryArray.clear();
     //allergiesArray.clear();
-  
+
     // Popula o FormArray de appointmentHistory
     if (this.patientProfileSingle.appointmentHistory) {
       this.patientProfileSingle.appointmentHistory.forEach((appointment: string) => {
@@ -450,16 +450,16 @@ export class PatientComponent {
       });
       this.appointmentHistory = [...this.patientProfileSingle.appointmentHistory]; // Sincroniza com o array local
     }
-  
+
 
     /*if (this.patientProfileSingle.allergies) {
       this.patientProfileSingle.allergies.forEach((allergy: string) => {
         allergiesArray.push(new FormControl(allergy));
       });
-      this.tags = [...this.patientProfileSingle.allergies]; 
+      this.tags = [...this.patientProfileSingle.allergies];
     }*/
 
-    
+
 }
 
 
@@ -475,7 +475,7 @@ export class PatientComponent {
       this.router.navigate(['/']);
     }
 
-    this.viewPatient();     
+    this.viewPatient();
   }
 
 
@@ -524,13 +524,13 @@ export class PatientComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); 
+    this.router.navigate(['/login']);
   }
 
 
   deactivatePatient() {
     const token = this.authService.getToken();
-  
+
     if (!token) {
       Swal.fire({
         icon: "error",
@@ -543,11 +543,11 @@ export class PatientComponent {
       this.errorMessage = 'You are not logged in!';
       return;
     }
-  
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-  
+
     if (this.selectedPatientEmail === null) {
       return;
     } else {
@@ -562,7 +562,7 @@ export class PatientComponent {
         });
         return;
       }
-  
+
       Swal.fire({
         icon: "warning",
         iconColor: '#d33',
@@ -588,7 +588,7 @@ export class PatientComponent {
           this.patientService.deactivatePatient(this.selectedPatientEmail).subscribe({
               next: (response: any) => {
                 console.log(response);
-  
+
                 if (typeof response === 'string' && response.includes('Please check your email to confirm this action')) {
                   Swal.fire({
                     title: "Submit your code",
@@ -609,7 +609,7 @@ export class PatientComponent {
                   }).then((result) => {
                     if (result.isConfirmed) {
                       this.actionId = result.value;
-  
+
                       if (!this.selectedPatientEmail) {
                         Swal.fire({
                           icon: 'error',
@@ -618,7 +618,7 @@ export class PatientComponent {
                         });
                         return;
                       }
-  
+
                       this.patientService.confirmDeactivateAction(this.actionId).subscribe({
                         next: (confirmResponse: any) => {
                           console.log(confirmResponse);
@@ -628,7 +628,7 @@ export class PatientComponent {
                             icon: 'success',
                           });
                           this. logout()
-                        }                      
+                        }
                         ,
                         error: (error: any) => {
                           console.error('Error confirming action:', error);
@@ -664,7 +664,7 @@ export class PatientComponent {
   }
 
 
-  downloadMedicalHistory(){  
+  downloadMedicalHistory(){
    console.log("Email patient: ", this.selectedPatientEmail);
 
     this.patientService.sendVerificationCode(this.selectedPatientEmail).subscribe({
@@ -691,7 +691,7 @@ export class PatientComponent {
           if (result.isConfirmed) {
             console.log("Code: ", result.value)
 
-          
+
             this.patientService.verifyCode(this.selectedPatientEmail, result.value).subscribe({
               next: async (confirmResponse: any) => {
                 console.log(confirmResponse);
@@ -713,7 +713,7 @@ export class PatientComponent {
                   "Emergency contact email": this.patientProfileSingle.emailEmergency.fullEmail,
                   "Emergency contact phone number": this.patientProfileSingle.phoneEmergency.number
                 });
-            
+
                 const dataConditions: any[] = [];
                 this.tagsConditions.forEach((condition) => {
                   dataConditions.push({
@@ -724,7 +724,7 @@ export class PatientComponent {
                     "Note": condition.note
                   });
                 });
-                
+
                 const dataAllergies: any[] = [];
                 this.tagsAllergies.forEach((allergy) => {
                   dataAllergies.push({
@@ -734,39 +734,39 @@ export class PatientComponent {
                     "Note": allergy.note
                   });
                 });
-                
+
                 const worksheetPatient = XLSX.utils.json_to_sheet(data);
                 const worksheetConditions = XLSX.utils.json_to_sheet(dataConditions);
                 const worksheetAllergies = XLSX.utils.json_to_sheet(dataAllergies);
 
                 const autoAdjustColumnWidth = (sheet: XLSX.WorkSheet, dataPatient: any[]) => {
                   if (!dataPatient || dataPatient.length === 0) return;
-                
+
                   const colWidths = Object.keys(dataPatient[0]).map((key, colIndex) => {
                     return Math.max(
-                      key.length, 
+                      key.length,
                       ...dataPatient.map((row) => {
                         const value = row[key];
                         return value ? value.toString().length : 0;
                       })
                     );
                   });
-                
+
 
                   sheet["!cols"] = colWidths.map((width: number) => ({ width: width + 2 }));
                 };
-                
+
                 autoAdjustColumnWidth(worksheetPatient, data);
                 autoAdjustColumnWidth(worksheetConditions, dataConditions);
                 autoAdjustColumnWidth(worksheetAllergies, dataAllergies);
-                
+
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheetPatient, "Patient Info");
                 XLSX.utils.book_append_sheet(workbook, worksheetConditions, "Medical Conditions");
-                XLSX.utils.book_append_sheet(workbook, worksheetAllergies, "Allergies");  
-                
+                XLSX.utils.book_append_sheet(workbook, worksheetAllergies, "Allergies");
+
                 const fileName = `Patient_Data_${this.selectedPatientEmail}.xlsx`;
-        
+
                 XLSX.writeFile(workbook, fileName);
               },
               error: (error) => {
@@ -781,7 +781,7 @@ export class PatientComponent {
           }
 
       })
-    
+
     }});
 
   }

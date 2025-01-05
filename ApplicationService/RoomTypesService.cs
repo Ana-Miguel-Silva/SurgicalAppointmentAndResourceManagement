@@ -42,7 +42,6 @@ namespace DDDSample1.ApplicationService.RoomTypess
             return new RoomTypesDto(RoomTypes.ObtainId().AsString(),RoomTypes.ObtainCode().ToString(), RoomTypes.ObtainDesignacao(), RoomTypes.ObtainDescricao(), RoomTypes.ObtainSurgerySuitability());
         }
 
-        // Método para obter todos os RoomTypes ativos e com SurgerySuitable == true
         public async Task<List<RoomTypesDto>> GetSurgerySuitableActiveAsync()
         {
             var list = await _repo.GetSurgerySuitableActiveAsync();
@@ -53,7 +52,6 @@ namespace DDDSample1.ApplicationService.RoomTypess
             return listDto;
         }
 
-        // Método para criar um novo RoomType
         public async Task<RoomTypesDto>  AddAsync(CreatingRoomTypesDto createDto)
         {
             // Criação de RoomTypeId

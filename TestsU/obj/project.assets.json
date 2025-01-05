@@ -7396,39 +7396,37 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\tiago\\.nuget\\packages\\": {},
+    "C:\\Users\\dmopm\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
+      "projectUniqueName": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
       "projectName": "TestsU",
-      "projectPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
-      "packagesPath": "C:\\Users\\tiago\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\obj\\",
+      "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\TestsU.csproj",
+      "packagesPath": "C:\\Users\\dmopm\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\TestsU\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\tiago\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\dmopm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
-              "projectPath": "C:\\Users\\tiago\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj"
+            "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj": {
+              "projectPath": "C:\\Users\\dmopm\\IdeaProjects\\SurgicalAppointmentAndResourceManagement\\DDDNetCore.csproj"
             }
           }
         }
@@ -7442,8 +7440,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -7482,7 +7479,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
