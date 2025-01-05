@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, AfterViewInit, ElementRef, Input, ViewChild, NgZone} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../../../Services/modal.service';
 import { AuthService } from '../../../Services/auth.service';
@@ -21,6 +21,7 @@ import Orientation from './map/orientation';
 //@ts-ignore
 import ThumbRaiser from './map/hospital';
 import { sweetAlertService } from '../../../Services/sweetAlert.service';
+import { environment } from '../../../../environments/environment';
 
 interface CreatingOperationRequestUIDto {
   patientEmail: string;
@@ -347,21 +348,54 @@ export class DoctorComponent implements OnInit {
   }
 
   roomData: any ; 
+  available: boolean = true;
 
 
   doTheClick(){
     let a = this.thumbRaiser.CurrentRoom;
-    console.log(a);
-    if(a != 0 && a!= null) {
-      this.thumbRaiser.fetchRoomData(a - 1).then((roomInfo: string) => {
-        this.roomData = roomInfo
-      console.log("Room " + this.roomData);
+    if (a != 0 && a != null) {
+      this.thumbRaiser.fetchRoomData(a - 1).then((roomInfo: any) => {
+          // Obter ID e data
+          const id = roomInfo.id;
+          const date = this.thumbRaiser.selectedDate &&
+              typeof this.thumbRaiser.selectedDate === 'string' &&
+              !isNaN(Date.parse(this.thumbRaiser.selectedDate))
+              ? this.thumbRaiser.selectedDate
+              : new Date().toISOString();
+  
+          const payload = { id, date };
+  
+          const headers = new HttpHeaders({
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+          });
+
+
+  
+          this.http.post(
+              `${environment.apiBaseUrl}/SurgeryRooms/Availability`,payload,
+              { headers,
+                
+               } // Headers configurados separadamente
+          ).subscribe({
+              next: (response) => {
+                if(response == false) this.available = false;
+                else this.available = true ;
+
+              },
+              error: (error) => console.error("Failed to get the slot:", error),
+          });
+  
+          this.roomData = roomInfo;
+          console.log("Room:", this.roomData);
+
       }).catch((error: any) => {
           console.error("Failed to fetch room data:", error);
       });
-    }
+  }
     else {
       console.log("Lobby");
+      this.available = true
       this.roomData =  { id: "0", roomNumber: "Lobby", type: "Lobby", capacity: 0, assignedEquipment: [], status: "NOT SUITABLE", maintenanceSlots: [] };
     }
   }
