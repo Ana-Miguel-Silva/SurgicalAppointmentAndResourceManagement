@@ -2177,9 +2177,8 @@
 
 
 <div [ngStyle]="{'display': isModalOpen('listAllergies') ? 'block' : 'none'}" id="listAllergies" class="modal">
-  <div id="mapModalContent" class="modal-content" style="height: 75vh;">
+  <div id="mapModalContent"  class="modal-content">
     <span (click)="closeModal('listAllergies')" class="close">&times;</span>
-    <div>
 
 
       <form class="row g-3 needs-validation" novalidate="">
@@ -2224,16 +2223,22 @@
               </table>
             </div>
           </div>
+
+
         </div>
 
-        <!-- Botões -->
-        <div class="col-md-9"></div>
-          <div class="col-md-3">
-            <button class="fs-5 btn btn-outline-warning" (click)="updateAllergy()" id="editAllergyModal" > Edit <i class="bi bi-pencil-square"></i></button>
+        <div class="col-md-12">
+          <div class="row justify-content-end mt-3">
+            <div class="col-md-3 text-end">
+              <button class="fs-5 btn btn-outline-warning" (click)="updateAllergy()" id="editAllergyModal"> Edit <i class="bi bi-pencil-square"></i></button>
+            </div>
           </div>
+        </div>
+        
+
+
           </form>
 
-    </div>
   </div>
 </div>
 
