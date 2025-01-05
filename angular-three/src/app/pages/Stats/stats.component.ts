@@ -13,7 +13,7 @@ export class StatsComponent implements OnInit {
 
   ngOnInit(): void {
     // Alterar para fazer uma requisição HTTP, não usar o roteamento do Angular
-    this.http.get('http://51.120.112.94:4200/haproxy?stats', { responseType: 'text' })
+    this.http.get('http://51.120.112.62:4200/haproxy?stats', { responseType: 'text' })
       .subscribe(
         data => {
           this.stats = data;  // Salvar os dados na variável 'stats'

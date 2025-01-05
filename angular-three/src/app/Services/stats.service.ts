@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StatsService {
-  private statsUrl = 'http://51.120.112.94:4200/haproxy?stats'; // URL com a porta do HAProxy
+  private statsUrl = 'http://51.120.112.62:4200/haproxy?stats'; // URL com a porta do HAProxy
 
   constructor(private http: HttpClient) {}
 
