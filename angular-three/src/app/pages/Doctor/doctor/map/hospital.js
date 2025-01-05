@@ -525,8 +525,10 @@ export default class ThumbRaiser {
                 }
             }, 500);
 
+
+            //========================== TWEEN Way =====================================
     
-            const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+            /*const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
             this.CurrentRoom = intersectedIndex;
 
             // Posição inicial da câmera
@@ -546,12 +548,13 @@ export default class ThumbRaiser {
                 modelPosition.z + offSetPositionZ  // Ajuste de afastamento
             );
 
+
             // Destino para o "lookAt"
             const lookAtTarget = modelPosition.clone();
 
             // Inicia animação para posição da câmera
-            new TWEEN.Tween(startPosition)
-            .to({ x: targetPosition.x, y: targetPosition.y, z: targetPosition.z }, 1000) // Duração de 1 segundo para a animação
+            const tween = new TWEEN.Tween(startPosition)
+            .to({ x: targetPosition.x, y: targetPosition.y, z: targetPosition.z }, 500) // Duração de 1 segundo para a animação
             .easing(TWEEN.Easing.Quadratic.InOut)
             .onUpdate(() => {
                 this.isAnimating = true;
@@ -566,23 +569,111 @@ export default class ThumbRaiser {
                 this.isAnimating = false;
 
 
-            })
-            .start();
-            
+            }).start();
 
-            // Caso tenha outros objetos relacionados, como spotlight:
-            if (this.spotlight) {
-                const spotlightTarget = new THREE.Vector3(
-                    modelPosition.x,
-                    this.spotlight.position.y,
-                    modelPosition.z
+      
+         
+                // Caso tenha outros objetos relacionados, como spotlight:
+                if (this.spotlight) {
+                    const spotlightTarget = new THREE.Vector3(
+                        modelPosition.x,
+                        this.spotlight.position.y,
+                        modelPosition.z
+                    );
+
+                    new TWEEN.Tween(this.spotlight.position)
+                        .to(spotlightTarget, 1000)
+                        .easing(TWEEN.Easing.Quadratic.InOut)
+                        .start();
+                }*/
+
+        //==========================Other way than TWEEN===================================== 
+        const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+                this.CurrentRoom = intersectedIndex;
+        
+                // Posição inicial da câmera
+                const startPosition = this.activeViewCamera.perspective.position.clone();
+        
+                const offSetPositionX = startPosition.x - this.activeViewCamera.target.clone().x;
+                const offSetPositionZ = startPosition.z - this.activeViewCamera.target.clone().z;
+        
+                // Calcula posição da sala
+                const modelPosition = this.maze.RoomArr[intersectedIndex].position;
+        
+                // Destino da câmera (posição alinhada ao setTarget)
+                const targetPosition = new THREE.Vector3(
+                    modelPosition.x + offSetPositionX, // Ajuste a posição lateral conforme necessário
+                    startPosition.y, // Altura permanece a mesma
+                    modelPosition.z + offSetPositionZ  // Ajuste de afastamento
                 );
+        
+                // Destino para o "lookAt"
+                const lookAtTarget = modelPosition.clone();
+        
+                // Interpolação de animação (sem usar o TWEEN)
+                const duration = 600;  // duração em milissegundos
+                const startTime = Date.now();
+                const animateCameraMovement = () => {
+                    this.isAnimating = true;
+                    const elapsedTime = Date.now() - startTime;
+                    const progress = Math.min(elapsedTime / duration, 1);
+        
+                    // Interpolando posição
+                    const currentPosition = new THREE.Vector3(
+                        THREE.MathUtils.lerp(startPosition.x, targetPosition.x, progress),
+                        THREE.MathUtils.lerp(startPosition.y, targetPosition.y, progress),
+                        THREE.MathUtils.lerp(startPosition.z, targetPosition.z, progress)
+                    );
+        
+                    this.activeViewCamera.perspective.position.copy(currentPosition);
+        
+                    // Continuar animação enquanto não atingiu o alvo
+                    if (progress < 1) {
+                        requestAnimationFrame(animateCameraMovement);
+                    } else {
+                        // Quando a animação terminar, defina a posição final e o lookAt
+                        this.activeViewCamera.setTarget(lookAtTarget);
+                        this.isAnimating = false
+                    }
+                };
+                
+                // Inicia a animação
+                animateCameraMovement();
+        
+                // Caso tenha outros objetos relacionados, como spotlight:
+                if (this.spotlight) {
+                    const spotlightTarget = new THREE.Vector3(
+                        modelPosition.x,
+                        this.spotlight.position.y,
+                        modelPosition.z
+                    );
+        
+                    const spotlightStartPosition = this.spotlight.position.clone();
+                    const spotlightDuration = 1000;
+        
+                    const animateSpotlightMovement = () => {
+                        const spotlightElapsedTime = Date.now() - startTime;
+                        const spotlightProgress = Math.min(spotlightElapsedTime / spotlightDuration, 1);
+        
+                        // Interpolando posição do spotlight
+                        const currentSpotlightPosition = new THREE.Vector3(
+                            THREE.MathUtils.lerp(spotlightStartPosition.x, spotlightTarget.x, spotlightProgress),
+                            spotlightStartPosition.y, // Mantém a posição Y do spotlight constante
+                            THREE.MathUtils.lerp(spotlightStartPosition.z, spotlightTarget.z, spotlightProgress)
+                        );
+        
+                        this.spotlight.position.copy(currentSpotlightPosition);
+        
+                        if (spotlightProgress < 1) {
+                            requestAnimationFrame(animateSpotlightMovement);
+                        }
+                    };
+        
+                    // Inicia a animação do spotlight
+                    animateSpotlightMovement();
+                }
 
-                new TWEEN.Tween(this.spotlight.position)
-                    .to(spotlightTarget, 1000)
-                    .easing(TWEEN.Easing.Quadratic.InOut)
-                    .start();
-            }
+
 
 
 

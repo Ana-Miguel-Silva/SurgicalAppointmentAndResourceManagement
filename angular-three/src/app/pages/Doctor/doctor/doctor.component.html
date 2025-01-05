@@ -511,7 +511,8 @@
                 </tr>
                 <tr>
                   <td>Status:</td>
-                  <td>{{roomData.status}}</td>
+                  <td *ngIf="available">Available</td> 
+                  <td *ngIf="!available">Not Available</td>
                 </tr>
                 <tr>
                   <td>Assigned Equipment:</td>
@@ -532,6 +533,26 @@
                     </ul>
                   </td>
                 </tr>
+                <br>
+
+                <ng-container *ngIf="!available">
+                <tr>
+                  <td>Name:</td>
+                  <td>Luigi Mario</td>
+                </tr>
+                <tr >
+                  <td>Date of Birth:</td>
+                  <td>11-10-1980</td>
+                </tr>
+                <tr >
+                  <td>Gender:</td>
+                  <td>Male</td>
+                </tr>
+                <tr>
+                  <td>Surgery:</td>
+                  <td>Appendectomy</td>
+                </tr>
+              </ng-container>
               </table>
             </div>
           </div>

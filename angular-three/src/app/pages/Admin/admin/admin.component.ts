@@ -112,7 +112,7 @@ export class AdminComponent {
   scheduledAppointmentMessage: string = '';
 
 
-  
+
 
 
   constructor(
@@ -190,6 +190,12 @@ export class AdminComponent {
       surgerySuitable: [false]
     });
 
+    this.roomTypeUpdateForm = this.fb.group({
+      designacao: ['', Validators.required],
+      descricao: ['', Validators.required],
+      surgerySuitable: [null, Validators.required],
+    });
+
 
     this.medicalConditionForm = this.fb.group({
       codigo: ['', Validators.required],
@@ -204,7 +210,7 @@ export class AdminComponent {
       sintomas: ['', Validators.required]
     });
     this.specializationEditForm = this.fb.group({
-      id: ['', Validators.required],      
+      id: ['', Validators.required],
       SpecializationName: ['', Validators.required],
       SpecializationDescription: ['', Validators.required]
     })
@@ -258,6 +264,8 @@ export class AdminComponent {
   selectSpecializationsId: string | null = null;
   selectConditionId: string | null = null;
 
+  selectedRoomTypesCode: string | null = null;
+
   selectStaff(id: string) {
     this.selectedStaffId = this.selectedStaffId === id ? null : id;
   }
@@ -279,8 +287,13 @@ export class AdminComponent {
     this.selectConditionId = this.selectConditionId === id ? null : id;
   }
 
+  selectRoomTypes(id: string) {
+    this.selectedRoomTypesCode = this.selectedRoomTypesCode === id ? null : id;
+  }
 
-  
+
+
+
 
   myForm: FormGroup;
   patientUpdateForm!: FormGroup;
@@ -289,6 +302,8 @@ export class AdminComponent {
   allergieForm!: FormGroup;
   allergyUpdate: any = null;
   roomTypeForm!: FormGroup;
+  roomTypeUpdateForm!: FormGroup;
+  roomTypesUpdate: any ;
   medicalConditionForm!: FormGroup;
   medicalConditionEditForm!: FormGroup;
   specializationEditForm: FormGroup;
@@ -331,6 +346,9 @@ export class AdminComponent {
   tagsAllergies: IAllergieMedicalRecord[] = [];
   descricaoList : string[] = [];
 
+  roomTypesList: any[] = [];
+  roomTypesRoomId: string = '';
+
 
   filteredPatients: any[] = [];
   filter = {
@@ -354,6 +372,22 @@ export class AdminComponent {
     description: '',
   } as const;
 
+
+  filteredRoomTypes: any[] = [];
+  filterRoomTypes = {
+    code: '',
+    designacao: '',
+    description: ''
+  } as const;
+
+updateRoomTypesPatch = {
+    roomTypeId: '',
+    code: '',
+    designacao: '',
+    descricao: '',
+    surgerySuitable: ''
+  };
+
   filteredStaffs: any[] = [];
   filterStaff = {
     name: '',
@@ -374,10 +408,10 @@ export class AdminComponent {
     this.closeModal(); // Fecha o modal ao clicar fora do conteúdo
   }*/
 
-  isPolicyAccepted = false; 
-  showPolicyModal = false; 
+  isPolicyAccepted = false;
+  showPolicyModal = false;
 
-    
+
   openPolicyModal() {
     this.showPolicyModal = true;
   }
@@ -416,7 +450,7 @@ export class AdminComponent {
     specialization: '',
     role: '',
   };
-  
+
   addStaff1() {
     if (
       this.newStaff.quantity > 0 &&
@@ -432,7 +466,7 @@ export class AdminComponent {
         text: 'Please fill all fields with valid values!',
       });    }
   }
-  
+
   removeStaff1(index: number) {
     this.operationType.requiredStaff.splice(index, 1);
   }
@@ -633,6 +667,7 @@ export class AdminComponent {
     });
   }
 
+
   // Método para submeter o formulário
   onSubmit() {
     const token = this.authService.getToken();
@@ -765,7 +800,7 @@ export class AdminComponent {
     if (this.selectedStaffId === null) {
 
       this.sweetService.sweetWarning("Por favor seleciona um membro de Staff.")
-    
+
     } else {
       console.log(`Viewing staff ID: ${this.selectedStaffId}`);
      // this.http.get<string>(`${this.staffUrl}/${this.selectedStaffId}`, { headers })
@@ -790,7 +825,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      
+
       this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
@@ -1046,7 +1081,7 @@ export class AdminComponent {
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          
+
 
           if (!this.selectedPatientEmail) {
             Swal.fire({
@@ -1077,7 +1112,7 @@ export class AdminComponent {
             }
           });
         } else if (result.isDenied) {
-          this.rejectPolicy();          
+          this.rejectPolicy();
         }
       });
 
@@ -1111,8 +1146,8 @@ export class AdminComponent {
           this.patientProfileSingle = response;
 
           this.medicalRecordService.getAllMedicalRecordByPatientId(this.patientProfileSingle.id.value)
-          .subscribe({            
-            next: (res) => {    
+          .subscribe({
+            next: (res) => {
               this.medicalRecordProfile = res[0];
               console.log("Medical record: ", this.medicalRecordProfile);
 
@@ -1125,8 +1160,8 @@ export class AdminComponent {
                   status: condition.status,
                 });
               });
-              
-  
+
+
               this.medicalRecordProfile.allergies.forEach((allergy: IAllergieMedicalRecord) => {
                 this.tagsAllergies.push({
                   designacao: allergy.designacao,
@@ -1411,6 +1446,7 @@ export class AdminComponent {
     this.getAllConditions();
     this.setMinDate();
     this.getAllSelectableSpecialization();
+    this.getAllRoomTypes();
 
       if (!this.operationTypeUpdateForm.get('requiredStaff')) {
         this.operationTypeUpdateForm.addControl('requiredStaff', this.fb.array([]));
@@ -1746,7 +1782,7 @@ export class AdminComponent {
     const token = this.authService.getToken();
 
     if (!token) {
-      
+
       this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
 
       this.errorMessage = 'You are not logged in!';
@@ -1757,7 +1793,7 @@ export class AdminComponent {
       'Authorization': `Bearer ${token}`
     });
     if (this.selectOperationTypeId === null) {
-      
+
       this.sweetService.sweetWarning("Por favor seleciona uma Operation Type.")
     }else {
       console.log(`Viewing Operation Type Id: ${this.selectOperationTypeId}`);
@@ -2020,7 +2056,7 @@ export class AdminComponent {
 
         },
         error: (error) => {
-          this.rejectPolicy(); 
+          this.rejectPolicy();
 
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a allergie  !';
@@ -2042,7 +2078,7 @@ export class AdminComponent {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     this.allergiesService.getAllAllergies()
       .subscribe({
         next: (response) => {
@@ -2064,11 +2100,11 @@ export class AdminComponent {
       const nameMatch = this.filterAllergy.name
         ? String(allergy.designacao).toLowerCase().includes(String(this.filterAllergy.name).toLowerCase())
         : true;
-  
+
       const descriptionMatch = this.filterAllergy.description
         ? String(allergy.descricao).toLowerCase().includes(String(this.filterAllergy.description).toLowerCase())
         : true;
-  
+
       return nameMatch && descriptionMatch;
     });
   }
@@ -2078,16 +2114,34 @@ export class AdminComponent {
       const nameMatch = this.filterCondition.designacao
         ? String(allergy.designacao).toLowerCase().includes(String(this.filterCondition.designacao).toLowerCase())
         : true;
-  
+
       const descriptionMatch = this.filterCondition.descricao
         ? String(allergy.descricao).toLowerCase().includes(String(this.filterCondition.descricao).toLowerCase())
         : true;
-  
+
       const sintomasMatch = this.filterCondition.sintomas
         ? String(allergy.sintomas).toLowerCase().includes(String(this.filterCondition.sintomas).toLowerCase())
         : true;
-  
+
       return nameMatch && descriptionMatch && sintomasMatch;
+    });
+  }
+
+  applyFiltersRoomTypes() {
+    this.roomTypesList = this.roomTypesList.filter(room => {
+      const nameMatch = this.filterRoomTypes.designacao
+        ? String(room.designacao).toLowerCase().includes(String(this.filterRoomTypes.designacao).toLowerCase())
+        : true;
+
+        const codeMatch = this.filterRoomTypes.code
+        ? String(room.code).toLowerCase().includes(String(this.filterRoomTypes.code).toLowerCase())
+        : true;
+
+      const descriptionMatch = this.filterRoomTypes.description
+        ? String(room.descricao).toLowerCase().includes(String(this.filterRoomTypes.description).toLowerCase())
+        : true;
+
+      return nameMatch && descriptionMatch && codeMatch;
     });
   }
 
@@ -2190,6 +2244,35 @@ getSpecializationsSortIcon(column: string): string {
 }
 
 
+currentSortRoomTypes: { column: string; direction: 'asc' | 'desc' } = { column: '', direction: 'asc' };
+
+sortDataRoomTypes(column: string): void {
+    const { column: currentColumn, direction } = this.currentSort;
+
+    if (currentColumn === column) {
+      this.currentSort.direction = direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.currentSort = { column, direction: 'asc' };
+    }
+
+    const directionMultiplier = this.currentSort.direction === 'asc' ? 1 : -1;
+
+    this.roomTypesList.sort((a, b) => {
+      const valA = column === 'index' ? this.roomTypesList.indexOf(a) + 1 : a[column];
+      const valB = column === 'index' ? this.roomTypesList.indexOf(b) + 1 : b[column];
+
+      if (valA < valB) return -1 * directionMultiplier;
+      if (valA > valB) return 1 * directionMultiplier;
+      return 0;
+    });
+  }
+
+  getSortIconRoomType(column: string): string {
+    if (this.currentSort.column === column) {
+      return this.currentSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
+    }
+    return 'bi bi-arrows-expand';
+  }
 
 
 
@@ -2198,7 +2281,7 @@ getSpecializationsSortIcon(column: string): string {
 
 
 
-  
+
 
   selectedAllergieId: string | null = null;
 
@@ -2356,7 +2439,7 @@ onInsertRoomType(){
 
         },
         error: (error) => {
-          this.rejectPolicy(); 
+          this.rejectPolicy();
 
           console.error('Error fetched:', error);
           this.errorMessage = 'Failed to create a Room Type  !';
@@ -2560,7 +2643,7 @@ sweetErro(text: string){
       'Authorization': `Bearer ${token}`
     });
     if (this.selectConditionId === null) {
-      
+
       this.sweetService.sweetWarning("Please select a Medical Condition.")
     } else {
       console.log(`Viewing medical condition ID: ${this.selectConditionId}`);
@@ -2591,7 +2674,7 @@ sweetErro(text: string){
     const token = this.authService.getToken();
 
     if (!token) {
-      
+
       this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
@@ -2629,7 +2712,7 @@ sweetErro(text: string){
     const token = this.authService.getToken();
 
     if (!token) {
-      
+
       this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
       this.errorMessage = 'You are not logged in!';
       return;
@@ -2660,6 +2743,168 @@ sweetErro(text: string){
       });
     }
   }
+
+
+  getAllRoomTypes(){
+    const token = this.authService.getToken();
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.roomTypesService.getAllRoomTypes()
+      .subscribe({
+        next: (response) => {
+          this.roomTypesList = response;
+          this.applyFiltersRoomTypes();
+          console.log("RoomTypes: ", response);
+          console.log("filtered: ", this.filterRoomTypes)
+        },
+        error: (error) => {
+          console.error('Error fetching  allergies:', error);
+          this.errorMessage = 'Failed to fetch allergies!';
+        }
+      });
+
+  }
+
+  updateRoomTypes(){
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.sweetService.sweetErro("Nenhuma conta com sessão ativa.")
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    if (this.selectRoomTypes === null) {
+      this.sweetService.sweetWarning("Please select a room type.")
+    }else {
+
+      console.log("room type",this.selectedRoomTypesCode)
+
+      if(this.selectedRoomTypesCode){
+
+      this.roomTypesService.getByCode(this.selectedRoomTypesCode)
+      .subscribe({
+        next: (response) => {
+          this.rejectPolicy();
+
+          console.log(response);
+
+          this.roomTypesUpdate = response;
+          this.populateRoomTypesUpdateForm();
+
+          this.roomTypesRoomId = this.roomTypesUpdate.roomTypeId;
+
+          const updateRoomTypesData = this.roomTypeUpdateForm.value;
+          console.log('Updated Room Types Data:', updateRoomTypesData);
+
+          this.openModal('UpdateRoomTypesModal');
+
+        },
+        error: (error) => {
+          this.rejectPolicy();
+
+          console.error('Error getting room type:', error);
+          this.errorMessage = 'Failed to getting room type!';
+        }
+      });
+    } else{
+      this.sweetService.sweetWarning("Please select a room type.")
+    }
+
+  }
+
+  }
+
+  populateRoomTypesUpdateForm(): void {
+    if (!this.roomTypesUpdate) {
+      console.error('roomTypesUpdate is null or undefined.');
+      return;
+    }
+
+    this.roomTypeUpdateForm.patchValue({
+      designacao: this.roomTypesUpdate.designacao,
+      descricao: this.roomTypesUpdate.descricao,
+      surgerySuitable: this.roomTypesUpdate.surgerySuitable
+    });
+  }
+
+
+  onUpdateRoomTypes(){
+
+    const token = this.authService.getToken();
+
+    if (!token) {
+      this.errorMessage = 'You are not logged in!';
+      return;
+    }
+
+
+    if (!this.selectRoomTypes) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Nenhum operation type selecionado.',
+      });
+      return;
+    }
+
+
+    if(this.selectedRoomTypesCode){
+
+
+      console.log("Room type update:", this.roomTypeUpdateForm.value);
+    const roomType = this.roomTypeUpdateForm.value;
+
+
+   this.updateRoomTypesPatch.code = this.selectedRoomTypesCode;
+   this.updateRoomTypesPatch.roomTypeId = this.roomTypesRoomId;
+   this.updateRoomTypesPatch.descricao = roomType.descricao;
+   this.updateRoomTypesPatch.designacao = roomType.designacao;
+
+   this.updateRoomTypesPatch.surgerySuitable = roomType.surgerySuitable;
+
+   console.log("Room type dto:", this.updateRoomTypesPatch);
+
+
+
+    this.roomTypesService.update(this.updateRoomTypesPatch)
+    .subscribe({
+        next: (response: any) => {
+          console.log(response);
+          this.rejectPolicy();
+
+          this.sweetService.sweetSuccess("Room Type updated successfully!")
+          this.getAllRoomTypes();
+          this.closeModal('UpdateRoomTypesModal');
+        },
+        error: (error) => {
+          this.rejectPolicy();
+          console.error('Error editing Room Type:', error);
+
+          if (error.status === 400) {
+            // Erro 400 específico
+            this.sweetService.sweetErro("Não podes editar um Room Type desativado ou com campos vazios")
+          } else {
+            // Outros erros
+            this.sweetService.sweetErro("Failed to update Room Type!")
+          }
+
+        },
+      });
+
+  }
+}
 
   logout(): void {
     this.authService.logout();
