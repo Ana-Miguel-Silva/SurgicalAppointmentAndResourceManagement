@@ -34,6 +34,10 @@ As Admin I want to update an allergy
 
 ## 3. Analysis
 
+> **Question 1: regarding User Story 7.2.16, we would like to confirm the details for updating an allergy. Could you clarify which parameters the admin should be able to modify when performing this action?**
+
+> **Answer 1: it is possible to update the designation (to fix a typo for instance) and the description.**
+
 
 ## 4. Design
 

@@ -32,6 +32,16 @@ backoffice system with appropriate permissions."
 **Output Data:**
 * Display the success of the operation
 
+## 3. Analysis
+
+> **Question 1: What will be the Room Type fields to input when adding??**
+
+> **Answer 1: a room type is characterized by an internal code, a designation and an optional longer description. it also indicates if it the room type is suitable for surgeries or not**
+
+> **Question 2: With the characterization of the room type, the internal code must have a format? If so, what will be the format? For the designation, exists any restrition (max n° of characters, is unique, etc.)? If so, what restrition??**
+
+> **Answer 2: code is a text entered by the Admin. it must be 8 characters long, no spaces, only letters, numbers, and dashes ("-") are allowed. it must be unique. designation. free text, alphanumeric, 100 characters max.**
+
 
 
 ## 4. Design

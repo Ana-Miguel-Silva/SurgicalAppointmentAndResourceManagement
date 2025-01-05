@@ -29,6 +29,12 @@ backoffice system with appropriate permissions."
 **Output Data:**
 * Display the success of the operation
 
+## 3. Analysis
+
+> **Question 1: What information is to be known in an Allergy? Like designation, and anything more??**
+
+> **Answer 1: it consist of a code (for instance, SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) or ICD-11 (International Classification of Diseases, 11th Revision)), a designation and an optional longer description**
+
 
 ## 4. Design
 
