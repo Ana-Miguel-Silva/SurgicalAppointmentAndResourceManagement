@@ -2280,7 +2280,6 @@
     </form>
   </div>
 </div>
-
 <div [ngStyle]="{'display': isModalOpen('UpdateAllergyModal') ? 'block' : 'none'}" id="UpdateAllergyModal" class="modal" >
   <div class="modal-content">
       <span (click)="closeModal('UpdateAllergyModal')" class="close">&times;</span>
@@ -2468,7 +2467,7 @@
 
           <div class="col-md-2">
             <div class="input-group">
-            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button class="btn btn-outline-info" (click)="openModal('listConditionsModal')"> Filter </button>
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel-fill"></i></span><button id="filterConditionsModal" class="btn btn-outline-info" (click)="openModal('filterConditionsModal')"> Filter </button>
           </div>
         </div>
 
@@ -2481,10 +2480,10 @@
               <table class="table table-striped table-hover table-over">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Designation</th>
-                    <th>Description</th>
+                    <th (click)="sortDataCondition('index')"># <i [ngClass]="getSortIconCondition('index')"></i></th>
+                    <th (click)="sortDataCondition('codigo')">Code <i [ngClass]="getSortIconCondition('codigo')"></i></th>
+                    <th (click)="sortDataCondition('designacao')">Designation <i [ngClass]="getSortIconCondition('designacao')"></i></th>
+                    <th (click)="sortDataCondition('descricao')">Description <i [ngClass]="getSortIconCondition('descricao')"></i></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2684,6 +2683,35 @@
   </div>
 </div>
 
+<div [ngStyle]="{'display': isModalOpen('filterConditionsModal') ? 'block' : 'none'}" id="filterConditionsModal" class="modal">
+  <div class="modal-content">
+
+    <span (click)="closeModal('filterConditionsModal')" class="close">&times;</span>
+    <form>
+
+      <h3 class="text-center">Filter Medical Conditions</h3>
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text btn-outline-info" (click)="cleanFilterCondition()" id="basic-addon1"><i class="bi bi-arrow-clockwise"></i></span>
+     </div>
+
+      <div class="mb-3">
+        <label for="filterName" class="form-label">Designation:</label>
+        <input type="text" id="filterName" [(ngModel)]="filterCondition.designacao"  name="filterDesignacao" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label for="filterDescription" class="form-label">Description:</label>
+        <input type="text" id="filterDescription" [(ngModel)]="filterCondition.descricao"  name="filterDescricao" class="form-control" />
+      </div>
+
+      <div class="input-group" style="padding:1cm">
+        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <button type="submit" (click)="onFilterConditions()" class="btn btn-primary">Apply Filter</button>
+     </div>
+
+    </form>
+  </div>
+</div>
 
 
 <div [ngStyle]="{'display': isModalOpen('listRoomTypes') ? 'block' : 'none'}" id="listRoomTypes" class="modal">

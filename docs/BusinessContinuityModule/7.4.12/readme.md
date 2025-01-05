@@ -1,14 +1,14 @@
-# US 6.4.3
+# US 7.4.12
 
 
 ## 1. Context
 
 
-As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+As a system administrator, we need to ensure that backups have been carried out correctly if necessary. To do this, we must automate their recovery
 
 ## 2. Requirements
 
-**US 6.4.3** As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+**US 7.4.12** As a system administrator, we need to ensure that backups have been carried out correctly if necessary. To do this, we must automate their recovery
 
 **Acceptance Criteria:**
 
@@ -16,9 +16,9 @@ As system administrator, I want the clients listed in the requirement 6.3.2 to b
 
 **Customer Specifications and Clarifications:**
 
-> **Question:**
+> **Question: Should the recovery validation process be scheduled, on-demand, or both?**
 >
->**Answer:**
+>**Answer: Recovery should only be performed when needed. As so, on-demand is likely to be the best approach.**
 
 
 **Dependencies/References:**

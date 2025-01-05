@@ -1,14 +1,14 @@
-# US 6.4.3
+# US 7.4.10
 
 
 ## 1. Context
 
 
-As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+As system administrator, I want the administrator to have SSH access to the virtual machine, by certificate only, without a password.
 
 ## 2. Requirements
 
-**US 6.4.3** As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+**US 7.4.10** As system administrator, I want the administrator to have SSH access to the virtual machine, by certificate only, without a password.
 
 **Acceptance Criteria:**
 

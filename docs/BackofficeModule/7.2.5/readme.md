@@ -1,94 +1,87 @@
-# US 6.2.4
+# US 7.2.5
 
 
 ## 1. Context
 
-As part of the development of the software system, it is necessary to implement user management functionalities within the administrative interface. These functionalities are essential to allow on-authenticated users to log in to the system.
+As part of the development of the software system, it is necessary to implement a feature that enables a Doctor to search for Medical Conditions while updating a Patient's medical record
 
 ## 2. Requirements
 
-**US 6.2.4** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role. 
-
+**US 7.2.5** As a Doctor, I want to search for Medical Conditions, so that I can use it to update the Patient Medical Record.
 
 **Acceptance Criteria:** 
 
-- Backoffice users log in using their username and password.
+- The Doctor should be able to search for a medical condition by code or designation
 
-- Role-based access control ensures that users only have access to features appropriate to their
-role (e.g., doctors can manage appointments, admins can manage users and settings).
+**Customer Specifications and Clarifications:**
 
-- After five failed login attempts, the user account is temporarily locked, and a notification is
-sent to the admin.
+> **Question:** What do you define as Medical Condition? Is it an allergy?
+>
+>**Answer:** they are two different things. a Medical Condition represents a diagnosed health issue or disease. Examples: Diabetes, Hypertension, Asthma, etc.
 
-- Login sessions expire after a period of inactivity to ensure security.
+> **Question:** Gostaria de lhe perguntar se existe alguma lista de medical conditions que prefere que utilizemos no sistema por default, se sim, quais?
+>
+>**Answer:** default medical conditions (ICD-11):
+> A04.0 Cholera
+> A08.0: Rotavirus enteritis
+> B20: Human Immunodeficiency Virus (HIV) disease
+> B50: Plasmodium falciparum malaria
+> 2A20.0: Malignant neoplasm of lung
+> 2F44.0: Malignant neoplasm of the breast
+> 3A01.1: Iron deficiency anemia
+> 4A44: Hereditary hemochromatosis
+> 5A11: Type 1 diabetes mellitus
+> 5B55: Obesity
+> 6A80: Major depressive disorder
+> 6C40: Generalized anxiety disorder
+> FB20.1: Osteoporosis with pathological fracture
+> FB81.1: Osteoarthritis of the knee
+> FB81.2: Osteoarthritis of the hip
+> FB80.1: Rheumatoid arthritis
+> FA24.0: Fracture of femur
+> FA22.0: Fracture of radius and ulna
+> FA21.0: Dislocation of shoulder
+> FB70.0: Low back pain
 
-[//]: # ()
-[//]: # (**Customer Specifications and Clarifications:**)
+> **Question:** Também gostariamos de perguntar se quando diz "I want to search for Medical Conditions, so that I can use it to update the Patient Medical Record" o que é que implica a ultima parte?
+>
+>**Answer:** quando o médico está a editar o registo médico do paciente, deve ter a possibilidade de inserir entradas de alergias e/ou condições médicas através de pesquisa de alergias/condições médicas
 
-[//]: # ()
-[//]: # (> **Question:** )
+> **Question:** Regarding User Story 7.2.5, we would like to confirm how the search for medical conditions should work. Should the search return all registered medical conditions, or should it allow filtering based on a specific parameter? If it’s based on a parameter, could you specify which one?
+>
+>**Answer:** This requirement is related to the adding/updating of an medical condition entry in the medical record. Thus, when the doctor is adding or editing a medical condition entry, they must be able to search for medical condition by code or designation instead of entering the "id" directly or selecting it from a drop down.
 
-[//]: # (>)
-
-[//]: # (>**Answer:** )
 
 **Dependencies/References:**
 
-
-* There is a dependency to "US 5.1.1- As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the
-backoffice system with appropriate permissions."
-
-
-
-* There is a dependency to "US 5.1.6- As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role."
-
+* There is a dependency to US 7.2.6, as this user story is used in tandem with its functionalities
+* There is a dependency to 7.2.4, as there needs to be Medical Conditions in order to search for them
 
 **Input and Output Data**
 
 **Input Data:**
-
 * Typed data:
-    * E-mail
-    * Password
+    * Code/Designation
+
+* **Output Data:**
+  * Matching Medical Conditions
+
+## 3. Design
+
+
+**Domain Class/es:** MedicalCondition
+
+**Controller:** MedicalConditionController
+
+**UI:** Doctor.component
+
+**Repository:**	MedicalConditionRepo
+
+**Service:** MedicalConditionService, AuthorizationService
 
 
 
-
-**Output Data:**
-* Display the success of the operation
-
-[//]: # ()
-[//]: # (## 3. Analysis)
-
-[//]: # ()
-[//]: # (> **Question:** )
-
-[//]: # (>)
-
-[//]: # (>**Answer:** )
-
-
-
-[//]: # (### 3.1. Domain Model)
-
-[//]: # (![sub domain model]&#40;us1000-sub-domain-model.svg&#41;)
-
-## 4. Design
-
-
-**Domain Class/es:** Email, User, UserDto, Role
-
-**Controller:** UserController
-
-**UI:** 
-
-**Repository:**	UserRepository
-
-**Service:** UserService, AuthorizationService
-
-
-
-### 4.1. Sequence Diagram
+### 3.1. Sequence Diagram
 
 **Login User Level 1**
 
@@ -98,108 +91,11 @@ backoffice system with appropriate permissions."
 
 ![Login User](sequence-diagram-2.svg "Login User")
 
-**Login User Level 3**
+**Login User Level 3 Frontend**
 
 ![Login User](sequence-diagram-3.svg "Login User")
 
+**Login User Level 3 Backend**
 
+![Login User](sequence-diagram-3B.svg "Login User")
 
-[//]: # (### 4.2. Class Diagram)
-
-[//]: # ()
-[//]: # (![a class diagram]&#40;us1000-class-diagram.svg "A Class Diagram"&#41;)
-[//]: # ()
-[//]: # (### 4.3. Applied Patterns)
-
-[//]: # ()
-[//]: # (### 4.4. Tests)
-
-[//]: # ()
-[//]: # (Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.)
-
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (**Before Tests** **Setup of Dummy Users**)
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # (    public static SystemUser dummyUser&#40;final String email, final Role... roles&#41; {)
-
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
-
-[//]: # (        return userBuilder.with&#40;email, "duMMy1", "dummy", "dummy", email&#41;.build&#40;&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    public static SystemUser crocodileUser&#40;final String email, final Role... roles&#41; {)
-
-[//]: # (        final SystemUserBuilder userBuilder = new SystemUserBuilder&#40;new NilPasswordPolicy&#40;&#41;, new PlainTextEncoder&#40;&#41;&#41;;)
-
-[//]: # (        return userBuilder.with&#40;email, "CroC1_", "Crocodile", "SandTomb", email&#41;.withRoles&#40;roles&#41;.build&#40;&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserFirst&#40;&#41; {)
-
-[//]: # (        return dummyUser&#40;"dummy@gmail.com", Roles.ADMIN&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (    private SystemUser getNewUserSecond&#40;&#41; {)
-
-[//]: # (        return crocodileUser&#40;"crocodile@gmail.com", Roles.OPERATOR&#41;;)
-
-[//]: # (    })
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # ()
-[//]: # (**Test 1:** *Verifies if Users are equals*)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test)
-
-[//]: # (public void verifyIfUsersAreEquals&#40;&#41; {)
-
-[//]: # (    assertTrue&#40;getNewUserFirst&#40;&#41;.equals&#40;getNewUserFirst&#40;&#41;&#41;&#41;;)
-
-[//]: # (})
-
-[//]: # (````)
-
-[//]: # ()
-[//]: # (## 5. Implementation)
-
-[//]: # ()
-[//]: # ()
-[//]: # (### Methods in the UsersController)
-
-[//]: # (* **public async Task<ActionResult<UserDto>> Create&#40;CreatingUserDto dto&#41;**  this method creates a user)
-
-[//]: # ()
-[//]: # ()
-[//]: # ()
-[//]: # (## 6. Integration/Demonstration)
-
-[//]: # ()
-
-
-[//]: # (## 7. Observations)
-
-[//]: # ()
-[//]: # (*This section should be used to include any content that does not fit any of the previous sections.*)
-
-[//]: # ()
-[//]: # (*The team should present here, for instance, a critical perspective on the developed work including the analysis of alternative solutions or related works*)
-
-[//]: # ()
-[//]: # (*The team should include in this section statements/references regarding third party works that were used in the development this work.*)

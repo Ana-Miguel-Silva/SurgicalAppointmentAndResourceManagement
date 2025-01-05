@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Repository" as REPO <<component>>
+
+-> CTRL: Get Filtered Medical Conditions
+activate CTRL
+CTRL -> SERV: getMedicalCondition()
+activate SERV
+SERV -> REPO: GetAllAsync()
+activate REPO
+REPO --> SERV: medicalConditionsDTOList
+deactivate REPO
+SERV --> CTRL: medicalConditionsDTOList
+deactivate SERV
+<-- CTRL : filteredMedicalConditionsDTOList
+
+
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml 5.1.1
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+participant "Controller" as CTRL <<component>>
+participant "Service" as SERV <<component>>
+participant "Schema" as DOM <<component>>
+participant "Repository" as REPO <<component>>
+
+-> CTRL: Create(MedicalConditionDTO dto)
+activate CTRL
+CTRL -> SERV: createMedicalCondition(dto)
+activate SERV
+SERV -> DOM**: create(MedicalConditionDTO)
+SERV -> REPO: AddAsync(MedicalCondition)
+activate REPO
+REPO --> SERV: success
+deactivate REPO
+SERV --> CTRL: success
+deactivate SERV
+<--- CTRL : success
+deactivate CTRL
+
+
+
+@enduml

@@ -1,14 +1,15 @@
-# US 6.4.3
+# US 7.4.4
 
 
 ## 1. Context
 
 
-As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+As a system administrator, I want the US backup of the DB backup to have a lifetime of no more than 7 (seven) days, except for the US retention of the monthly and annual copies
 
 ## 2. Requirements
 
-**US 6.4.3** As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file.
+**US 7.4.4** As a system administrator, I want the US backup of the DB backup to have a lifetime of no more than 7 (seven) days, except for the US retention of the monthly and annual copies
+
 
 **Acceptance Criteria:**
 
@@ -16,10 +17,13 @@ As system administrator, I want the clients listed in the requirement 6.3.2 to b
 
 **Customer Specifications and Clarifications:**
 
+> **Question 1: Aqui entendemos que é para apagar todos os backups diários criados na US7.4.3 com mais de 7 dias, exceto os que cumprirem as datas: 1 por mês do ultimo ano, 1 por semana do ultimo mês, 1 por dia dos últimos 7 dias, é isso? É que nós já tinhamos feito isso na US7.4.4 - Podemos juntar as 2?**
+
+>**Answer 1:  o enunciado diz "to have a lifetime of no more than 7 (seven) days, except for the US retention of the monthly and annual copies". Ou seja, não se pretende um script com execução mensal mas um script que selecione e elimine os backups com mais de 7 dias, excepto os previstos nos critérios de retenção. Para prova de conceito, é possível copiar para outras pastas. E podem juntar as US 7.4.4 e 7.4.6 numa só tarefa.**
+
 > **Question:**
 >
->**Answer:**
-
+>**Answer :**
 
 **Dependencies/References:**
 
@@ -41,8 +45,6 @@ As system administrator, I want the clients listed in the requirement 6.3.2 to b
 
 
 ## 4. Design
-
-
 
 [//]: # (### 4.2. Class Diagram)
 

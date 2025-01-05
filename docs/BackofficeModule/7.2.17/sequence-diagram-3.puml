@@ -1,4 +1,4 @@
-@startuml 5.1.4
+@startuml 5.1.1
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -10,36 +10,43 @@ participant "HTML+CSS" as HT <<component>>
 participant "component" as CM <<component>>
 participant "Service" as SERV <<component>>
 
- -> FE: access page
+
 activate FE
+-> FE: access page
 
 FE -> HT : onClick()
 activate HT
-HT -> CM : getAllAllergiesProfiles()
+
+
+HT -> CM : onLogin(loginObj)
+
 activate CM
 
-CM -> SERV : getAllAllergiesProfiles(params)
-activate SERV
+CM -> SERV : postLogin(loginObj)
+
+ activate SERV
+
+  SERV -> : Login Post Request
+
+ SERV <-- : Success and Token to login
+
+SERV --> CM : Success
 
 
-SERV -> : getAllAllergiesProfiles(params)
-
-
-
-SERV <-- : AllergiesDTOList
-
-
-SERV --> CM : AllergiesDTOList
 deactivate SERV
-CM --> HT : AllergiesDTOList
+
+CM --> HT : Success
 deactivate CM
 
-HT --> FE : AllergiesDTOList
+
+
+HT --> FE : Success
 deactivate HT
 
-<-- FE : list of Allergies
+<--- FE : success and access to their funtionalities.
 
 deactivate FE
+
 
 
 

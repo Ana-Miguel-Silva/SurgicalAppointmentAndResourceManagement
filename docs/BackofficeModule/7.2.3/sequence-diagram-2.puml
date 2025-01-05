@@ -1,33 +1,23 @@
-@startuml 5.1.1
+@startuml
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-actor "Admin" as AD
 participant "Frontend" as FE <<component>>
 participant "DM Backend" as BE <<component>>
 
-
-
-activate AD
-AD -> FE: access page
+ -> FE: access page
 activate FE
-FE -> BE: getCreateForm()
+FE -> BE: getAllergies()
 activate BE
-BE --> FE: form
+BE --> FE: AllergiesDTOList
 deactivate BE
-FE --> AD : data input
+<-- FE : list of Allergies
+
 deactivate FE
-AD -> FE : info to login(username, password)
-activate FE
-FE -> BE : login(username, password)
-activate BE
-BE --> FE: success
-deactivate BE
-FE --> AD : success and access to their funtionalities.
-deactivate FE
-deactivate AD
+
 
 
 @enduml
