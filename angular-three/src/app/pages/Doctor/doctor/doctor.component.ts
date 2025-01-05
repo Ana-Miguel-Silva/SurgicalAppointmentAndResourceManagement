@@ -1829,6 +1829,64 @@ updateAllergieToInvalid(): void {
     return this.modalService.isModalOpen(modalId);
   }
 
+  currentSort: { column: string; direction: 'asc' | 'desc' } = { column: '', direction: 'asc' };
+
+  sortData(column: string): void {
+    const { column: currentColumn, direction } = this.currentSort;
+  
+    if (currentColumn === column) {
+      this.currentSort.direction = direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.currentSort = { column, direction: 'asc' };
+    }
+  
+    const directionMultiplier = this.currentSort.direction === 'asc' ? 1 : -1;
+  
+    const columnMap: { [key: string]: keyof MedicalRecordRequest } = {
+      date: 'date',
+      staff: 'staff',
+      patientEmail: 'patientEmail',
+      description: 'descricao',
+      allergies: 'allergies',
+    };
+  
+    this.medicalRecordRequests.sort((a, b) => {
+      let valA: any, valB: any;  
+  
+      if (column === 'index') {
+        valA = this.medicalRecordRequests.indexOf(a) + 1;
+        valB = this.medicalRecordRequests.indexOf(b) + 1;
+      } else if (column === 'descricao') {        
+        valA = a.descricao.length > 0 ? a.descricao[0] : '';
+        valB = b.descricao.length > 0 ? b.descricao[0] : '';
+      } else if (column === 'allergies') {
+        valA = a.allergies.length > 0 ? a.allergies[0].designacao : '';
+        valB = b.allergies.length > 0 ? b.allergies[0].designacao : '';
+      } else if (column === 'medicalConditions') {
+        valA = a.medicalConditions.length > 0 ? a.medicalConditions[0].designacao : '';
+        valB = b.medicalConditions.length > 0 ? b.medicalConditions[0].designacao : '';          
+      }else if (columnMap[column]) {
+        valA = a[columnMap[column]];
+        valB = b[columnMap[column]];
+      } else {
+        return 0; // Não faça nada se a coluna não for reconhecida
+      }
+  
+      if (valA < valB) return -1 * directionMultiplier;
+      if (valA > valB) return 1 * directionMultiplier;
+      return 0;
+    });
+  }
+  
+  
+
+  getSortIcon(column: string): string {
+    if (this.currentSort.column === column) {
+      return this.currentSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
+    }
+    return 'bi bi-arrows-expand';
+  }
+
   cleanRegister() {
     this.operationRequest = {
       patientEmail: '',
