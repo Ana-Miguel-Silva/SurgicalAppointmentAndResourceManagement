@@ -2145,7 +2145,7 @@ export class AdminComponent {
         next: (response: any) => {
           this.rejectPolicy();
 
-          this.sweetService.sweetSuccess("Alergia atualizado com sucesso!")
+          this.sweetService.sweetSuccess("Allergy updated successfully!")
           this.getAllAllergies(); // Refresh the list after creation
           this.closeModal('UpdateAllergyModal');
         },
@@ -2158,7 +2158,7 @@ export class AdminComponent {
             this.sweetService.sweetErro("Não podes editar um alergia desativado ou com campos vazios")
           } else {
             // Outros erros
-            this.sweetService.sweetErro("Não foi possível atualizar a alergia.")
+            this.sweetService.sweetErro("Failed to update allergy!")
           }
 
         },

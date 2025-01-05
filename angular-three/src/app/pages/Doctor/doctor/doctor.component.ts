@@ -335,10 +335,13 @@ export class DoctorComponent implements OnInit {
       if(this.count){
         this.doTheClick();
         this.count=false
+        //this.thumbRaiser.isAnimating = true
       } 
       else{
         this.roomData = null
         this.count=true
+        //this.thumbRaiser.isAnimating = false
+
       }
     }
   }
