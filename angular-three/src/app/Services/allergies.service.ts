@@ -22,20 +22,6 @@ insertAllergies(params : any): Observable<any> {
   return this.http.post(`${this.apiUrl}/create`, params, { headers })
 }
 
-/*updateOperationRequests(operationRequest: any): Observable<any> {
-  const token = this.authService.getToken();
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-  return this.http.patch(`${this.apiUrl}/${operationRequest.id}`, operationRequest, { headers });
-}
-
-deleteOperationRequests(id: any): Observable<any> {
-  const token = this.authService.getToken();
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-  return this.http.delete(`${this.apiUrl}/${id}`, { headers });
-}*/
-
 
 getAllAllergies(): Observable<any[]> {
   const token = this.authService.getToken();
