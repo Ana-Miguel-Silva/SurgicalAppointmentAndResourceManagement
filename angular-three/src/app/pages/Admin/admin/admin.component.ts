@@ -341,6 +341,12 @@ export class AdminComponent {
     allergies: '',
     appointmentHistory: ''
   } as const;
+  filterCondition = {
+    codigo: '',
+    designacao: '',
+    descricao: '',
+    sintomas: ''
+  } as const;
 
   filteredAllergies: any[] = [];
   filterAllergy = {
@@ -965,10 +971,25 @@ export class AdminComponent {
     };
   }
 
+  cleanFilterCondition() {
+    this.filterCondition = {
+      codigo: '',
+      designacao: '',
+      descricao: '',
+      sintomas: ''
+    };
+  }
+
 
   onFilterAllergies(){
     this.getAllAllergies();
     this.closeModal('filterAllergyModal');
+  }
+
+
+  onFilterConditions(){
+    this.getAllConditions();
+    this.closeModal('filterConditionsModal');
   }
 
   cleanFilterAllergy() {
@@ -2052,6 +2073,24 @@ export class AdminComponent {
     });
   }
 
+  applyFiltersConditions() {
+    this.Conditions = this.Conditions.filter(allergy => {
+      const nameMatch = this.filterCondition.designacao
+        ? String(allergy.designacao).toLowerCase().includes(String(this.filterCondition.designacao).toLowerCase())
+        : true;
+  
+      const descriptionMatch = this.filterCondition.descricao
+        ? String(allergy.descricao).toLowerCase().includes(String(this.filterCondition.descricao).toLowerCase())
+        : true;
+  
+      const sintomasMatch = this.filterCondition.sintomas
+        ? String(allergy.sintomas).toLowerCase().includes(String(this.filterCondition.sintomas).toLowerCase())
+        : true;
+  
+      return nameMatch && descriptionMatch && sintomasMatch;
+    });
+  }
+
 
 
 
@@ -2082,6 +2121,38 @@ export class AdminComponent {
   }
 
   getSortIcon(column: string): string {
+    if (this.currentSort.column === column) {
+      return this.currentSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
+    }
+    return 'bi bi-arrows-expand';
+  }
+
+  currentSortCondition: { column: string; direction: 'asc' | 'desc' } = { column: '', direction: 'asc' };
+
+  sortDataCondition(column: string): void {
+    const { column: currentColumn, direction } = this.currentSort;
+
+    if (currentColumn === column) {
+      // Toggle direction
+      this.currentSort.direction = direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Set new column and default direction
+      this.currentSort = { column, direction: 'asc' };
+    }
+
+    const directionMultiplier = this.currentSort.direction === 'asc' ? 1 : -1;
+
+    this.Conditions.sort((a, b) => {
+      const valA = column === 'index' ? this.Conditions.indexOf(a) + 1 : a[column];
+      const valB = column === 'index' ? this.Conditions.indexOf(b) + 1 : b[column];
+
+      if (valA < valB) return -1 * directionMultiplier;
+      if (valA > valB) return 1 * directionMultiplier;
+      return 0;
+    });
+  }
+
+  getSortIconCondition(column: string): string {
     if (this.currentSort.column === column) {
       return this.currentSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
     }
@@ -2422,6 +2493,7 @@ onInsertRoomType(){
         next: (response) => {
           console.log(response);
           this.Conditions = response;
+          this.applyFiltersConditions();
         },
         error: (error) => {
           console.error('Error fetching medical conditions:', error);
