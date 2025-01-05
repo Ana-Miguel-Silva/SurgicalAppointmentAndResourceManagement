@@ -2198,9 +2198,9 @@
               <table class="table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th (click)="sortData('index')"># <i [ngClass]="getSortIcon('index')"></i></th>
+                    <th (click)="sortData('designacao')">Name <i [ngClass]="getSortIcon('designacao')"></i></th>
+                    <th (click)="sortData('descricao')">Description <i [ngClass]="getSortIcon('descricao')"></i></th>
                   </tr>
                 </thead>
                 <tbody>

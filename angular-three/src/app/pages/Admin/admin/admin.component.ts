@@ -2051,6 +2051,52 @@ export class AdminComponent {
       return nameMatch && descriptionMatch;
     });
   }
+
+
+
+
+
+  currentSort: { column: string; direction: 'asc' | 'desc' } = { column: '', direction: 'asc' };
+
+  sortData(column: string): void {
+    const { column: currentColumn, direction } = this.currentSort;
+
+    if (currentColumn === column) {
+      // Toggle direction
+      this.currentSort.direction = direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Set new column and default direction
+      this.currentSort = { column, direction: 'asc' };
+    }
+
+    const directionMultiplier = this.currentSort.direction === 'asc' ? 1 : -1;
+
+    this.allergiesList.sort((a, b) => {
+      const valA = column === 'index' ? this.allergiesList.indexOf(a) + 1 : a[column];
+      const valB = column === 'index' ? this.allergiesList.indexOf(b) + 1 : b[column];
+
+      if (valA < valB) return -1 * directionMultiplier;
+      if (valA > valB) return 1 * directionMultiplier;
+      return 0;
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.currentSort.column === column) {
+      return this.currentSort.direction === 'asc' ? 'bi bi-arrow-down' : 'bi bi-arrow-up';
+    }
+    return 'bi bi-arrows-expand';
+  }
+
+
+
+
+
+
+
+
+
+
   
 
   selectedAllergieId: string | null = null;
