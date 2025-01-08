@@ -155,12 +155,33 @@ export default class Maze {
                                 this.object.add(cube); // Add to the scene
                                 this.RoomArr.push(cube);
                                 this.RoomArrCoord.push(cube.position);
+
+                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                                doorLight.position.set(
+                                    doorObject.position.x,
+                                    doorObject.position.y + 5, 
+                                    doorObject.position.z
+                                );
+                                doorLight.castShadow = true; 
+                                this.object.add(doorLight);
+
                             });
                             const door2 = new Decor({ url: 'assets/models/gltf/hospital_table_occupied.glb', scale: new THREE.Vector3(0.75, 0.75, 0.75) }, (doorObject) => {
                                 doorObject.position.set(i - actual_width / 2.0, 0, j - actual_height / 2 + 0.5);
                                 doorObject.rotateY(Math.PI/2);
                                 this.object.add(doorObject); // Add to the scene
                                 faux_BedArr.push(doorObject);
+
+                                const doorLight = new THREE.PointLight(0xFFFFFF, 1, 10); 
+                                doorLight.position.set(
+                                    doorObject.position.x,
+                                    doorObject.position.y + 5, 
+                                    doorObject.position.z
+                                );
+                                doorLight.castShadow = true; 
+                                this.object.add(doorLight);
+
+
                             });
                         roomData.shift();
                     }
