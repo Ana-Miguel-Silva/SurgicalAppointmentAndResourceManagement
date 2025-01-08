@@ -590,7 +590,7 @@ export default class ThumbRaiser {
                 }*/
 
         //==========================Other way than TWEEN===================================== 
-        const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
+                const intersectedIndex = this.maze.RoomArr.indexOf(intersectedObject);
                 this.CurrentRoom = intersectedIndex;
                 console.log("index",this.maze.RoomArr)
         
