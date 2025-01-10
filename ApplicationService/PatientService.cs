@@ -71,18 +71,20 @@ namespace DDDSample1.ApplicationService.Patients
             var emailUserObject = new Email(dto.UserEmail);
             //var emergencyContactObject = new EmergencyContact(dto.EmergencyContact.Name, new PhoneNumber(dto.EmergencyContact.Phone), new Email(dto.EmergencyContact.Email));
             var phoneNumberObject = new PhoneNumber(dto.Phone);
+            var emailEmergency = new Email(dto.emailEmergency);
+            var phoneEmergency = new PhoneNumber(dto.phoneEmergency);
 
 
             var Patient = new Patient(dto.Name, dto.DateOfBirth, 
-                   phoneNumberObject, emailObject, emailUserObject, dto.gender);
+                   phoneNumberObject, emailObject, emailUserObject,dto.nameEmergency, phoneEmergency,emailEmergency , dto.gender, dto.AppointmentHistory);
 
             if(userRole.ToUpper() == Role.ADMIN ){
 
                 //Patient.ChangeAllergies(dto.Allergies);
                 Patient.ChangeAppointmentHistory(dto.AppointmentHistory);
-                Patient.ChangeEmailEmergency(dto.emailEmergency);
+                Patient.ChangeEmailEmergency(emailEmergency);
                 Patient.ChangeNameEmergency(dto.nameEmergency);
-                Patient.ChangePhoneEmergency(dto.phoneEmergency);
+                Patient.ChangePhoneEmergency(phoneEmergency);
 
             }
 
@@ -98,10 +100,38 @@ namespace DDDSample1.ApplicationService.Patients
             {
                 throw new ArgumentException("Patient's name cannot be null or empty.");
             }
-            if ( string.IsNullOrEmpty(dto.nameEmergency))
+          
+            
+            return newDto;
+        }
+
+
+        public async Task<PatientDto> AddPatientUser(CreatingPatientDtoUser dto, string userRole)
+        {
+
+            CheckGender(dto.gender);
+
+            var emailObject = new Email(dto.Email);
+            var emailUserObject = new Email(dto.UserEmail);
+            var phoneNumberObject = new PhoneNumber(dto.Phone);
+
+            var Patient = new Patient(dto.Name, dto.DateOfBirth, 
+                   phoneNumberObject, emailObject, emailUserObject, dto.gender, dto.AppointmentHistory);
+
+            
+            await this._repo.AddAsync(Patient);
+
+            
+
+            await this._unitOfWork.CommitAsync();
+
+             PatientDto newDto = new PatientDto( Patient.Id.AsGuid(),Patient.name.GetFullName(), Patient.medicalRecordNumber, Patient.DateOfBirth, Patient.Phone, Patient.Email, Patient.UserEmail, Patient.nameEmergency,Patient.phoneEmergency , Patient.emailEmergency, Patient.gender,Patient.AppointmentHistory, Patient.Active);
+
+             if (string.IsNullOrEmpty(dto.Name))
             {
-                throw new ArgumentException("Emergency contact's name cannot be null or empty.");
+                throw new ArgumentException("Patient's name cannot be null or empty.");
             }
+          
             
             return newDto;
         }
@@ -525,6 +555,23 @@ namespace DDDSample1.ApplicationService.Patients
         public async Task<Patient> GetPatientByEmailAsync(string emailClaim)
         {
              var patient = await this._repo.GetByEmailAsync(emailClaim);
+
+            if (patient == null)
+            {
+                return null; // Patient not found
+            }
+
+            return patient;
+        }
+
+
+        public async Task<Patient> GetPatientByUserEmailAsync(string emailClaim)
+        {
+            var email = new Email(emailClaim);
+            var patients = await this._repo.GetAllAsync();
+
+            var patient = patients.FirstOrDefault(p => p.UserEmail == email);
+
 
             if (patient == null)
             {

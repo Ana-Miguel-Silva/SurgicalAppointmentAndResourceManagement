@@ -44,6 +44,7 @@ using System.Security.Claims;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.RoomTypess;
 using DDDSample1.ApplicationService.RoomTypess;
+using System;
 //using DDDSample1.ApplicationService.RoomTypess;
 
 
@@ -382,15 +383,19 @@ namespace DDDSample1
                 DateTime dateOfBirth = DateTime.Now.AddYears(-30);
                 var phoneNumberObject = "966783435";
                 var patientGender = "Female";
+                var phoneNumberObject2 = "966783439";
+                var nameObject2 = "Luís Pereira";
+                var emailObject2 = "luisPereira@gmail.com";
                 
   
 
                 Patient existingPatientByUserEmail = await patientService.GetPatientByEmailAsync(patientEmail);
                 Patient existingPatientByEmail = await patientService.GetPatientByEmailAsync(patientEmail);
 
+                
                 if (existingPatientByEmail == null && existingPatientByUserEmail == null)
                 {
-                    var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientEmail,patientEmail, patientGender);
+                    var patientDto = new CreatingPatientDto(patientUsername, dateOfBirth, phoneNumberObject,  patientEmail,patientEmail, patientGender, phoneNumberObject2, nameObject2, emailObject2);
 
                     await patientService.AddAsync(patientDto, patientRole);
                 }
@@ -402,16 +407,18 @@ namespace DDDSample1
                 
                 var patientEmail2 = "testeCypress@gmail.com";
         
-                var phoneNumberObject2 = "966783436";
+                var phoneNumberObject3 = "966783436";
+
+                var phoneNumberObject4 = "966783440";
                 
   
 
                 Patient existingPatientByUserEmail2 = await patientService.GetPatientByEmailAsync(patientEmail2);
                 Patient existingPatientByEmail2 = await patientService.GetPatientByEmailAsync(patientEmail2);
-
+               
                 if (existingPatientByEmail2 == null && existingPatientByUserEmail2 == null)
                 {
-                    var patientDto2 = new CreatingPatientDto(patientUsername2, dateOfBirth, phoneNumberObject2,  patientEmail2,patientEmail2, patientGender);
+                    var patientDto2 = new CreatingPatientDto(patientUsername2, dateOfBirth, phoneNumberObject3,  patientEmail2,patientEmail2, patientGender, phoneNumberObject4, nameObject2, emailObject2);
 
                     await patientService.AddAsync(patientDto2, patientRole);
                 }

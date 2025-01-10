@@ -10,12 +10,11 @@ namespace DDDSample1.Domain.Patients
         public string Email { get; set; }
         public string UserEmail { get; set; }
         public string gender { get; set; }  
-        public List<string>? Allergies { get; set; } 
         public List<string>? AppointmentHistory { get; set; }  
 
         public string nameEmergency { get;   set; }
-        public PhoneNumber phoneEmergency { get;   set; }
-        public Email emailEmergency { get;   set; }
+        public string phoneEmergency { get;   set; }
+        public string emailEmergency { get;   set; }
         public bool Active { get; private set; }
 
         //public EmergencyContact? EmergencyContact { get; set; } 
@@ -37,6 +36,21 @@ namespace DDDSample1.Domain.Patients
         }*/
 
 
+
+        public CreatingPatientDto(string name1, DateTime dateOfBirth, string phoneNumberObject, string emailObject, string emailUserObject, string gender, string phoneEmergency, string nameEmergency, string emailEmergency)
+        {           
+            this.Name = name1;
+            this.Phone = phoneNumberObject;
+            this.DateOfBirth = dateOfBirth;
+            this.Email = emailObject;
+            this.UserEmail = emailUserObject;
+            this.gender = gender;
+            this.nameEmergency = nameEmergency;
+            this.phoneEmergency = (phoneEmergency);
+            this.emailEmergency = (emailEmergency);
+            this.Active = true;
+        }
+
         public CreatingPatientDto(string name1, DateTime dateOfBirth, string phoneNumberObject, string emailObject, string emailUserObject, string gender)
         {           
             this.Name = name1;
@@ -45,9 +59,9 @@ namespace DDDSample1.Domain.Patients
             this.Email = emailObject;
             this.UserEmail = emailUserObject;
             this.gender = gender;
-            this.nameEmergency = "default dd";
-            this.phoneEmergency = new PhoneNumber("999999999");
-            this.emailEmergency = new Email("default@gmail.com");
+            this.nameEmergency = "default";
+            this.phoneEmergency = "999999999";
+            this.emailEmergency = "default@gmail.com";
             this.Active = true;
         }
 

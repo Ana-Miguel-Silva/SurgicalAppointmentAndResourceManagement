@@ -12,12 +12,16 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
 
 
-    const exemptedRoutes = ['/user']; 
+    const exemptedRoutes = ['user']; 
+    const exemptedRoutes2 = ['users']; 
+ 
+    const currentRoute = route.url.map(segment => segment.path).join('/');
 
-    if (exemptedRoutes.includes(route.routeConfig?.path || '')) {
-      return true; 
+    if (exemptedRoutes.includes(route.routeConfig?.path|| '') || exemptedRoutes2.includes(route.routeConfig?.path || '')) {
+      return true;
     }
 
+   
 
     const expectedRole = route.data['role'];
     const token = route.queryParams['token'];

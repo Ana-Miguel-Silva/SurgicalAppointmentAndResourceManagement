@@ -78,7 +78,7 @@ export class LoginComponent {
   // Login pelo Google
   onGoogleLogin() {
     // Redireciona para o backend Google OAuth endpoint
-    window.location.href = `${environment.apiMongoUrl}/Patients/ExternalIAM`;
+    window.location.href = `${environment.apiBaseUrl}/Patients/ExternalIAM`;
     
     
   }

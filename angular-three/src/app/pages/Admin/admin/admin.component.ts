@@ -141,9 +141,9 @@ export class AdminComponent {
       gender: ['', Validators.required],
       appointmentHistory: [''],
      // allergies: [''], // Controlador para o campo de "Allergies"
-      emergencyContactName: ['', Validators.required],
-      emergencyContactEmail: ['', [Validators.required, Validators.email]],
-      emergencyContactPhone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      nameEmergency: ['', Validators.required],
+      emailEmergency: ['', [Validators.required, Validators.email]],
+      phoneEmergency: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       //agree: [false, Validators.requiredTrue]
     });
 
@@ -690,6 +690,7 @@ updateRoomTypesPatch = {
 
       // Obtém os valores do formulário
       const formData = this.myForm.value;
+      console.log("Register Patient: ", formData);
 
 
 

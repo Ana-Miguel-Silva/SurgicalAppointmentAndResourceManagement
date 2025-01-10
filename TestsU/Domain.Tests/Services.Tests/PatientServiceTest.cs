@@ -103,7 +103,10 @@ namespace Backend.Tests.Services
                     phoneNumberObject: "988652872", 
                     emailObject: "test@example.com",
                     emailUserObject: "user@example.com",
-                    gender: "Male"             
+                    gender: "Male",
+                    phoneEmergency: "988652999",
+                    nameEmergency: "Teste",
+                    emailEmergency: "testeeee@gmail.com"            
                 );
 
             var user = new User("user", new Email("user@example.com"), "ADMIN");

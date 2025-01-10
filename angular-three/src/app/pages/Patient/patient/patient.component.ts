@@ -231,7 +231,7 @@ export class PatientComponent {
   }
 
   removeTag(index: number) {
-    // Remove do array local
+    // Remove do array localGetPatientByUserEmailAsync
     this.tags.splice(index, 1);
 
     // Remove do FormArray

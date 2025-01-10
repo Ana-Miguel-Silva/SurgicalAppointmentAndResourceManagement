@@ -57,8 +57,31 @@ namespace DDDSample1.Domain.Patients
         this.ExpirationDate = null;
         }
 
-        protected Patient() { }
 
+        public Patient(string name, DateTime dateOfBirth, 
+                   PhoneNumber phone,Email email, Email userEmail, string gender,List<string> AppointmentHistory)
+        {
+
+        //Validação para se não forem nulls
+        this.Id = new PatientId(Guid.NewGuid());
+        this.medicalRecordNumber = new MedicalRecordNumber();
+        this.name = new FullName(name);
+        this.AppointmentHistory = AppointmentHistory;
+        this.Phone = phone;
+        this.DateOfBirth = dateOfBirth;
+        this.Email = email;
+        this.UserEmail = userEmail;
+        this.gender = gender; 
+        this.nameEmergency = "default";
+        this.phoneEmergency = new PhoneNumber("999999999");
+        this.emailEmergency = new Email("default@gmail.com");
+        this.Active = true;  
+        this.ExpirationDate = null;
+        }
+
+
+        protected Patient() { }
+          /*
         public Patient(string name1, DateTime dateOfBirth, PhoneNumber phoneNumberObject, Email emailObject, Email emailUserObject, string gender)
         {
             this.Id = new PatientId(Guid.NewGuid());
@@ -80,7 +103,7 @@ namespace DDDSample1.Domain.Patients
         
         }
 
-        /*
+    
         public void ChangeDescription(string description)
         {
             if (!this.Active)

@@ -109,7 +109,7 @@ adminRegisterPatient(formData: any): Observable<any> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.post<any>(`${this.patientUrl}/register`, formData, { headers })
+  return this.http.post<any>(`${this.patientUrl}/register`, formData, { headers,  responseType: 'text' as 'json'})
 }
 
 

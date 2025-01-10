@@ -102,10 +102,10 @@ namespace DDDSample1.Controllers
 
         [HttpPost("registerPatient")]
 
-        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDto dto)
+        public async Task<ActionResult<PatientDto>> Create(CreatingPatientDtoUser dto)
         {
               
-                var result = await _patientService.AddAsync(dto, Role.PATIENT);
+                var result = await _patientService.AddPatientUser(dto, Role.PATIENT);
 
                 if (result == null)
                 {

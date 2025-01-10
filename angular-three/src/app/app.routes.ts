@@ -5,7 +5,7 @@ import { PatientComponent } from './pages/Patient/patient/patient.component';
 import { AuthGuard } from './Guard/AuthGuard';
 import { DoctorComponent } from './pages/Doctor/doctor/doctor.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UserComponent } from './pages/Utilizador/user.component';
+import { UserComponent } from './pages/User/user.component';
 import { StatsComponent } from './pages/Stats/stats.component';
 
 export const routes: Routes = [
@@ -20,6 +20,7 @@ export const routes: Routes = [
   { path: 'doctor', component: DoctorComponent, canActivate: [AuthGuard], data: { role: 'Doctor' } },
 
   { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+  {path: 'users/registerPatient', component: UserComponent, canActivate: [AuthGuard]},
 
   //{ path: 'haproxy', component: StatsComponent},
 
